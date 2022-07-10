@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "lib": [
+            "ES6",
+            "ES2021.String",
+            "ES2021.Promise",
+            "dom"
+        ],
+        "moduleResolution": "node",
+        "baseUrl": "./front",
+        "strict": true,
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "paths": {
+            "@": [
+                "front"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "front_temp",
+    ]
+}

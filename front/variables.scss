@@ -1,0 +1,61 @@
+$color-default-lighten-2: #6DA6DD; //#4B7DDF;
+$color-default-lighten-1: #3581CB; //#1359E4;
+$color-default: #0c6dcb; //#0540B4;
+$color-default-darken-1: #0b57a1; //#042F84;
+$color-default-darken-2: #032C52; //#021E55;
+
+$color-success-lighten-2: #3EDF49;
+$color-success-lighten-1: #00E20F;
+$color-success: #00B60C;
+$color-success-darken-1: #008809;
+$color-success-darken-2: #005005;
+
+$color-info-lighten-2: #FFBF6C;
+$color-info-lighten-1: #FF9F21;
+$color-info: #FF9000;
+$color-info-darken-1: #E78200;
+$color-info-darken-2: #AD6200;
+
+$color-error-lighten-2: #FF7E6D;
+$color-error-lighten-1: #FF4128;
+$color-error: #FF1E00;
+$color-error-darken-1: #C91700;
+$color-error-darken-2: #6B0C00;
+
+$color-gray-lighten-2: #d7d7d7;
+$color-gray-lighten-1: #bdbdbd;
+$color-gray: #858585;
+$color-gray-darken-1: #656565;
+$color-gray-darken-2: #444444;
+
+$color-white: #FFFFFF;
+$color-black: #101010;
+$color-text-black: #2f2f2f;
+
+@import "./assets/fonts/source-sans-pro";
+$project_font: 'Source Sans Pro';
+
+$base_size_unit: 32px;
+
+$animation_time: 150ms;
+$animation: cubic-bezier(0.24, 0.19, 0.28, 1.29);
+$animation_bounce: cubic-bezier(0.24, 0.19, 0.63, 2.26);
+
+$shadow_1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+$shadow_2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+$shadow_3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+$shadow_4: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+$shadow_5: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+$shadow_hover: 0 2px 4px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
+
+/* Disable selection */
+@mixin no_selection($classes: '&, & *') {
+    #{$classes} {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+}

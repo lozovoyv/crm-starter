@@ -1,0 +1,256 @@
+@use "sass:math";
+@import "@/variables";
+
+$dialog_background: $color-white !default;
+
+$dialog_default_color: $color-default !default;
+$dialog_success_color: $color-success !default;
+$dialog_info_color: $color-info !default;
+$dialog_error_color: $color-error !default;
+
+$dialog_button_default_color: $color-white !default;
+$dialog_button_default_hover_color: $color-white !default;
+$dialog_button_default_text_color: $color-text-black !default;
+$dialog_button_primary_color: $color-default-darken-1 !default;
+$dialog_button_primary_hover_color: lighten($color-default-darken-1, 5%) !default;
+$dialog_button_primary_text_color: $color-white !default;
+$dialog_button_success_color: $color-success-darken-1 !default;
+$dialog_button_success_hover_color: lighten($color-success-darken-1, 5%) !default;
+$dialog_button_success_text_color: $color-white !default;
+$dialog_button_info_color: $color-info-darken-1 !default;
+$dialog_button_info_hover_color: lighten($color-info-darken-1, 5%) !default;
+$dialog_button_info_text_color: $color-white !default;
+$dialog_button_error_color: $color-error-darken-1 !default;
+$dialog_button_error_hover_color: lighten($color-error-darken-1, 5%) !default;
+$dialog_button_error_text_color: $color-white !default;
+
+$dialog_scroll_thumb_color: $color-default-darken-1 !default;
+$dialog_scroll_track_color: $color-white !default;
+
+.dialog {
+    &__overlay {
+        position: fixed;
+        z-index: 300;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(1px);
+        background-color: rgba(0, 0, 0, 0.2);
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity $animation $animation_time, visibility $animation $animation_time;
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding: 15px 5px;
+        scrollbar-color: $dialog_scroll_thumb_color $dialog_scroll_track_color;
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: $dialog_scroll_track_color;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: $dialog_scroll_thumb_color;
+            border-radius: 4px;
+        }
+
+        &-shown {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        &-hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    &__window {
+        text-align: left;
+        display: inline-block;
+        background-color: $color-white;
+        border-radius: 2px;
+        box-sizing: border-box;
+        padding: 20px;
+        box-shadow: $shadow_2;
+        min-width: 150px;
+        max-width: 98%;
+
+        &-header {
+            display: flex;
+            margin-bottom: 15px;
+
+            &-icon {
+                width: 16px;
+                height: 18px;
+                flex-shrink: 0;
+                flex-grow: 0;
+                box-sizing: border-box;
+                padding: 2px 0 0;
+                margin-right: 10px;
+
+                &-confirmation {
+                    color: $dialog_default_color;
+                }
+
+                &-success {
+                    color: $dialog_success_color;
+                }
+
+                &-info {
+                    color: $dialog_info_color;
+                }
+
+                &-error {
+                    color: $dialog_error_color;
+                }
+            }
+
+            &-title {
+                font-family: $project_font;
+                font-size: 18px;
+                font-weight: bold;
+                letter-spacing: 0.01em;
+                flex-grow: 1;
+                box-sizing: border-box;
+                line-height: 20px;
+                padding: 0 10px 0 0;
+                text-rendering: geometricPrecision;
+            }
+
+            &-close {
+                width: 14px;
+                height: 18px;
+                flex-shrink: 0;
+                flex-grow: 0;
+                box-sizing: border-box;
+                padding: 4px 0 0;
+                cursor: pointer;
+                color: $color-error;
+                position: relative;
+
+                & > svg {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 100%;
+                    height: 100%;
+                    transform: translate(-50%, -50%);
+                    transition: transform $animation_time $animation_bounce;
+                }
+
+                &:hover > svg {
+                    transform: translate(-50%, -50%) scale(1.2);
+                }
+            }
+        }
+
+        &-message {
+            font-family: $project_font;
+            font-size: 16px;
+            line-height: 20px;
+            letter-spacing: 0.01em;
+            text-rendering: geometricPrecision;
+        }
+
+        &-buttons {
+            margin-top: 25px;
+
+            &-left {
+                text-align: left;
+            }
+
+            &-center {
+                text-align: center;
+            }
+
+            &-right {
+                text-align: right;
+            }
+
+            &-button {
+                text-rendering: geometricPrecision;
+                display: inline-block;
+                text-decoration: none;
+                height: $base_size_unit;
+                line-height: $base_size_unit;
+                text-align: center;
+                cursor: pointer;
+                border-radius: 2px;
+                padding: 0 math.div($base_size_unit, 1.5);
+                letter-spacing: 0.03rem;
+                color: $dialog_button_default_text_color;
+                border: 1px solid #efefef;
+                background-color: $dialog_button_default_color;
+                transition: background-color $animation $animation_time, border-color $animation $animation_time, box-shadow $animation $animation_time;
+                font-family: $project_font;
+                font-size: 16px;
+                box-shadow: $shadow_1;
+                box-sizing: content-box;
+                white-space: nowrap;
+                @include no_selection;
+
+                &:not(:last-child) {
+                    margin-right: 15px;
+                }
+
+                &:hover {
+                    box-shadow: $shadow_hover;
+                    background-color: $dialog_button_default_hover_color;
+                    border-color: #efefef;
+                }
+
+                &-success {
+                    background-color: $dialog_button_success_color;
+                    border-color: $dialog_button_success_color;
+                    color: $dialog_button_success_text_color;
+
+                    &:hover {
+                        background-color: $dialog_button_success_hover_color;
+                        border-color: $dialog_button_success_hover_color;
+                    }
+                }
+
+                &-info {
+                    background-color: $dialog_button_info_color;
+                    border-color: $dialog_button_info_color;
+                    color: $dialog_button_info_text_color;
+
+                    &:hover {
+                        background-color: $dialog_button_info_hover_color;
+                        border-color: $dialog_button_info_hover_color;
+                    }
+                }
+
+                &-error {
+                    background-color: $dialog_button_error_color;
+                    border-color: $dialog_button_error_color;
+                    color: $dialog_button_error_text_color;
+
+                    &:hover {
+                        background-color: $dialog_button_error_hover_color;
+                        border-color: $dialog_button_error_hover_color;
+                    }
+                }
+
+                &-default {
+                    background-color: $dialog_button_primary_color;
+                    border-color: $dialog_button_primary_color;
+                    color: $dialog_button_primary_text_color;
+
+                    &:hover {
+                        background-color: $dialog_button_primary_hover_color;
+                        border-color: $dialog_button_primary_hover_color;
+                    }
+                }
+            }
+        }
+    }
+}
