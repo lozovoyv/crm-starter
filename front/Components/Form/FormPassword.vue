@@ -1,5 +1,5 @@
 <template>
-    <FieldString
+    <FieldPassword
         :name="name"
         :model-value="value"
         :original="original"
@@ -12,7 +12,6 @@
         :errors="errors"
         :hide-title="hideTitle"
         :vertical="vertical"
-        :type="type"
         :autocomplete="autocomplete"
         :placeholder="title"
         @change="change"
@@ -21,10 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import FieldString from "../Fields/FieldString.vue";
 import {Form} from "../../Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
+import FieldPassword from "../Fields/FieldPassword.vue";
 
 const props = defineProps<{
     // common props
@@ -39,13 +38,12 @@ const props = defineProps<{
     form: Form,
     defaultValue?: any,
     // string props
-    type?: string,
     autocomplete?: string | 'off',
 }>();
 
 const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
 
-const input = ref<FieldString | null>(null);
+const input = ref<FieldPassword | null>(null);
 
 const title = computed(() => {
     return getTitle(props.form, props.name);

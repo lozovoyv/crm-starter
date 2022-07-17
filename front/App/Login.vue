@@ -12,8 +12,8 @@
             </div>
             <div class="login__divider"></div>
             <div class="login__form">
-                <FormString :form="form" name="username" :clearable="true" :default-value="'admin'" :vertical="true" autocomplete="username" @keyup.enter="enter" ref="login"/>
-                <FormString :form="form" name="password" :clearable="true" :vertical="true" autocomplete="current-password" type="password" @keyup.enter="enter" ref="password"/>
+                <FormString :form="form" name="username" :clearable="true" :vertical="true" autocomplete="username" @keyup.enter="enter" ref="login"/>
+                <FormPassword :form="form" name="password" :clearable="true" :vertical="true" autocomplete="current-password" @keyup.enter="enter" ref="password"/>
 <!--                                <FormCheckBox :form="form" :name="'remember'"/>-->
             </div>
             <div class="login__actions">
@@ -31,11 +31,12 @@ import Logo from "@/App/Logo";
 import GuiButton from "@/Components/GUI/GuiButton";
 import LoadingProgress from "../../front_temp/Components/LoadingProgress";
 import FormString from "@/Components/Form/FormString";
+import FormPassword from "@/Components/Form/FormPassword";
 // import FormCheckBox from "@/Components/Form/FormCheckBox";
 
 export default {
 
-    components: {FormString, LoadingProgress, GuiButton, Logo},
+    components: {FormPassword, FormString, LoadingProgress, GuiButton, Logo},
 
     props: {
         // message: {type: [String,null], default:null},
