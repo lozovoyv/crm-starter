@@ -1,6 +1,6 @@
 <template>
     <div class="login">
-        <LoadingProgress :loading="form.is_loading">
+        <LoadingProgress :loading="form.is_loading || form.is_saving">
             <div class="login__logo">
                 <div class="login__logo-img">
                     <Logo/>
@@ -29,7 +29,7 @@ import {Form} from "@/Core/Form";
 import dialog from "@/Core/Dialog/Dialog";
 import Logo from "@/App/Logo";
 import GuiButton from "@/Components/GUI/GuiButton";
-import LoadingProgress from "../../front_temp/Components/LoadingProgress";
+import LoadingProgress from "../Components/LoadingProgress";
 import FormString from "@/Components/Form/FormString";
 import FormPassword from "@/Components/Form/FormPassword";
 import FormCheckBox from "@/Components/Form/FormCheckBox";

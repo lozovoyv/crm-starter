@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-    title: string
+    title?: string
     required?: boolean,
     disabled?: boolean,
     hasErrors?: boolean,

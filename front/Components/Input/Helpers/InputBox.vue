@@ -40,7 +40,7 @@ const classList = computed(() => {
 });
 
 function clear() {
-    if (!props.disabled) emit('clear');
+    if (!props.disabled && !props.isEmpty) emit('clear');
 }
 </script>
 
