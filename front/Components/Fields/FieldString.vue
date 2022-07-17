@@ -1,67 +1,85 @@
 <template>
-    <FieldWrapper :title="title" :hide-title="hideTitle" :required="required" :disabled="disabled" :valid="valid" :errors="errors">
+    <FieldWrapper
+        :disabled="disabled"
+        :has-errors="hasErrors"
+        :title="title"
+        :required="required"
+        :errors="errors"
+        :hide-title="hideTitle"
+        :vertical="vertical"
+    >
         <InputString
-            v-model="proxyValue"
             :name="name"
+            v-model="proxyValue"
             :original="original"
-            :valid="valid"
             :disabled="disabled"
+            :has-errors="hasErrors"
+            :clearable="clearable"
+            :small="small"
             :type="type"
             :autocomplete="autocomplete"
             :placeholder="placeholder"
-            :small="small"
             @change="change"
             ref="input"
         />
     </FieldWrapper>
 </template>
 
-<script>
+<script setup lang="ts">
 import FieldWrapper from "./Helpers/FieldWrapper.vue";
 import InputString from "../Input/InputString.vue";
+import {computed, ref} from "vue";
 
-export default {
-    components: {InputString, FieldWrapper},
-    props: {
-        name: String,
-        modelValue: {type: String, default: null},
-        original: {type: String, default: null},
+const props = defineProps<{
+    // common props
+    name?: string,
+    modelValue?: string,
+    original?: string,
+    disabled?: boolean,
+    hasErrors?: boolean,
+    clearable?: boolean,
+    small?: boolean,
+    // field props
+    title?: string,
+    required?: boolean,
+    errors?: string[],
+    hideTitle?: boolean,
+    vertical?: boolean,
+    // string props
+    type?: string,
+    autocomplete?: string,
+    placeholder?: string,
+}>();
 
-        title: {type: String, default: null},
-        required: {type: Boolean, default: false},
-        disabled: {type: Boolean, default: false},
-        valid: {type: Boolean, default: true},
-        errors: {type: Array, default: null},
-        hideTitle: {type: Boolean, default: false},
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: string | null): void,
+    (e: 'change', value: string | null, name: string | undefined): void,
+}>()
 
-        placeholder: {type: String, default: null},
-        small: {type: Boolean, default: false},
+const input = ref<InputString | null>(null);
 
-        type: {type: String, default: 'text', validation: (value) => ['text', 'password'].indexOf(value) !== -1},
-        autocomplete: {type: String, default: 'off'},
+const proxyValue = computed({
+    get: (): string | null => {
+        return props.modelValue || null;
     },
+    set: (value: string | null) => {
+        emit('update:modelValue', value);
+    }
+});
 
-    emits: ['update:modelValue', 'change'],
+function change(value: string | null, name: string | undefined): void {
+    emit('change', value, name);
+}
 
-    computed: {
-        proxyValue: {
-            get() {
-                return this.modelValue
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-            }
-        }
-    },
-
-    methods: {
-        focus() {
-            this.$refs.input.focus();
-        },
-        change(value, name) {
-            this.$emit('change', value, name);
-        },
+function focus(): void {
+    if (input.value !== null) {
+        input.value.focus();
     }
 }
+
+defineExpose({
+    input,
+    focus,
+});
 </script>
 

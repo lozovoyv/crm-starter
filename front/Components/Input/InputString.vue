@@ -1,71 +1,84 @@
 <template>
-    <InputWrapper class="input-string" :dirty="isDirty" :disabled="disabled" :valid="valid">
+    <InputBox class="input-string" :label="true" :dirty="isDirty" :disabled="disabled" :has-errors="hasErrors" :is-empty="!modelValue" :clearable="clearable" @clear="clear">
         <input
             class="input-string__input"
             :class="{'input-string__input-small': small}"
             :value="modelValue"
-            :type="type"
+            :type="type || 'text'"
             :disabled="disabled"
             :autocomplete="autocomplete"
             :placeholder="placeholder"
             @input="update"
             ref="input"
         />
-    </InputWrapper>
+    </InputBox>
 </template>
 
-<script>
-import InputWrapper from "./Helpers/InputWrapper.vue";
+<script setup lang="ts">
+import {computed, ref} from "vue";
+import InputBox from "./Helpers/InputBox.vue";
 
-export default {
-    components: {InputWrapper},
-    props: {
-        name: String,
-        modelValue: {type: String, default: null},
-        original: {type: String, default: null},
-        valid: {type: Boolean, default: true},
-        disabled: {type: Boolean, default: false},
+const props = defineProps<{
+    // common props
+    name?: string,
+    modelValue?: string,
+    original?: string,
+    disabled?: boolean,
+    hasErrors?: boolean,
+    clearable?: boolean,
+    small?: boolean,
+    // string props
+    type?: string,
+    autocomplete?: string,
+    placeholder?: string,
+}>();
 
-        type: {type: String, default: 'text', validation: (value) => ['text', 'password'].indexOf(value) !== -1},
-        autocomplete: {type: String, default: 'off'},
-        placeholder: {type: String, default: null},
-        small: {type: Boolean, default: false},
-    },
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: string | null): void,
+    (e: 'change', value: string | null, name: string | undefined): void,
+}>()
 
-    emits: ['update:modelValue', 'change'],
+const input = ref<HTMLInputElement | null>(null);
 
-    computed: {
-        isDirty() {
-            return this.original !== this.modelValue;
-        },
-    },
+const isDirty = computed((): boolean => {
+    return props.modelValue !== undefined && props.modelValue !== props.original;
+});
 
-    methods: {
-        focus() {
-            this.$refs.input.focus()
-        },
+function clear() {
+    emit('update:modelValue', null);
+    emit('change', null, props.name);
+}
 
-        update(event) {
-            let value = String(event.target.value);
-            if (value === '') {
-                value = null;
-            }
-            this.$emit('update:modelValue', value);
-            this.$emit('change', value, this.name);
-        },
+function update(event: InputEvent) {
+    const target: HTMLInputElement = <HTMLInputElement>event.target;
+    let value: string | null = String(target.value);
+    if (value === '') {
+        value = null;
+    }
+    emit('update:modelValue', value);
+    emit('change', value, props.name);
+}
+
+function focus(): void {
+    if (input.value !== null) {
+        input.value.focus();
     }
 }
+
+defineExpose({
+    input,
+    focus,
+});
 </script>
 
 <style lang="scss">
 @import "../../variables";
 
-$project_font: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !default;
-$base_size_unit: 35px !default;
 $input_placeholder_color: #757575 !default;
 
 .input-string {
-    height: $base_size_unit;
+    height: $base_size_unit + 2px;
+    box-sizing: content-box;
 
     &__input {
         border: none !important;

@@ -12,9 +12,9 @@
             </div>
             <div class="login__divider"></div>
             <div class="login__form">
-                <FormString :form="form" :name="'username'" :autocomplete="'username'" @keyup.enter="enter" ref="login"/>
-                <FormString :form="form" :name="'password'" :autocomplete="'current-password'" :type="'password'" @keyup.enter="enter" ref="password"/>
-                <FormCheckBox :form="form" :name="'remember'"/>
+                <FormString :form="form" name="username" :clearable="true" :default-value="'admin'" :vertical="true" autocomplete="username" @keyup.enter="enter" ref="login"/>
+                <FormString :form="form" name="password" :clearable="true" :vertical="true" autocomplete="current-password" type="password" @keyup.enter="enter" ref="password"/>
+<!--                                <FormCheckBox :form="form" :name="'remember'"/>-->
             </div>
             <div class="login__actions">
                 <span class="link" @click="forgot">Забыл пароль</span>
@@ -31,11 +31,11 @@ import Logo from "@/App/Logo";
 import GuiButton from "@/Components/GUI/GuiButton";
 import LoadingProgress from "../../front_temp/Components/LoadingProgress";
 import FormString from "@/Components/Form/FormString";
-import FormCheckBox from "@/Components/Form/FormCheckBox";
+// import FormCheckBox from "@/Components/Form/FormCheckBox";
 
 export default {
 
-    components: {FormCheckBox, FormString, LoadingProgress, GuiButton, Logo},
+    components: {FormString, LoadingProgress, GuiButton, Logo},
 
     props: {
         // message: {type: [String,null], default:null},
@@ -57,18 +57,19 @@ export default {
         //     this.form.errors['login'] = [message];
         //     this.form.valid = {login: false, password: true};
         // }
-        // this.$refs.login.focus();
+        this.$refs.login.focus();
+        // this.form.is_loading = true;
     },
 
     methods: {
         enter() {
-            // if (this.form.values['login'] === null) {
-            //     this.$refs.login.focus();
-            // } else if (this.form.values['password'] === null) {
-            //     this.$refs.password.focus();
-            // } else {
-            //     this.login();
-            // }
+            if (this.form.values['username'] === null) {
+                this.$refs.login.focus();
+            } else if (this.form.values['password'] === null) {
+                this.$refs.password.focus();
+            } else {
+                this.login();
+            }
         },
 
         login() {
@@ -100,6 +101,7 @@ body, html {
     width: 100%;
     height: 100%;
     background-color: #f9fafd;
+    min-width: 300px;
 }
 
 body {
@@ -113,7 +115,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 400px;
+    width: calc(100% - 4px);
+    margin: 0 2px;
+    max-width: 300px;
     box-shadow: $shadow_1;
     background-color: #fff;
     border-radius: 3px;
@@ -133,7 +137,7 @@ body {
             font-family: $project_font;
             color: $color-text-black;
             box-sizing: border-box;
-            padding-left: 20px;
+            padding-left: 10px;
             flex-grow: 1;
 
             &-title {
@@ -151,7 +155,7 @@ body {
     &__divider {
         width: 100%;
         border-bottom: 1px solid #d9d9d9;
-        margin: 10px 0 20px;
+        margin: 15px 0 20px;
     }
 
     &__actions {
