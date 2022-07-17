@@ -1,49 +1,64 @@
 <template>
     <div class="input-checkbox">
-        <CheckBox class="input-checkbox__input" :value="value" v-model="proxyValue" :valid="valid" :label="label" :disabled="disabled" :small="small">
+        <CheckBox class="input-checkbox__input"
+                  :value="value"
+                  v-model="proxyValue"
+                  :has-errors="hasErrors"
+                  :label="label"
+                  :disabled="disabled"
+                  :small="small"
+                  :dirty="isDirty"
+        >
             <slot/>
         </CheckBox>
     </div>
 </template>
 
-<script>
-import CheckBox from "@/Components/Input/Helpers/CheckBox";
-import empty from "@/Core/Helpers/Empty";
+<script setup lang="ts">
+import CheckBox from "./Helpers/CheckBox.vue";
+import {computed} from "vue";
 
-export default {
-    components: {CheckBox},
-    props: {
-        name: String,
-        modelValue: {type: [Number, String, Boolean, Array], default: null},
-        original: {type: [Number, String, Boolean, Array], default: null},
-        value: {type: [Number, String, Boolean], default: null},
-        valid: {type: Boolean, default: true},
-        disabled: {type: Boolean, default: false},
-        label: {type: String, default: null},
-        small: {type: Boolean, default: false},
+const props = defineProps<{
+    // common props
+    name?: string,
+    modelValue?: boolean | number | string | number[] | string[],
+    original?: boolean | number | string | number[] | string[],
+    disabled?: boolean,
+    hasErrors?: boolean,
+    small?: boolean,
+    // checkbox props
+    label?: string,
+    value?: number | string,
+}>();
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: boolean | number | string | number[] | string[]): void,
+    (e: 'change', value: boolean | number | string | number[] | string[], name: string | undefined): void,
+}>();
+
+const proxyValue = computed({
+    get: (): boolean | number | string | number[] | string[] => {
+        return props.modelValue || false;
     },
-
-    emits: ['update:modelValue', 'change'],
-
-    computed: {
-        isDirty() {
-            if (this.modelValue instanceof Array) {
-                return empty(this.original) ? this.modelValue.indexOf(this.value) !== -1 : this.original.indexOf(this.value) !== this.modelValue.indexOf(this.value);
-            } else {
-                return this.modelValue === (this.original === null || this.original === false);
-            }
-        },
-        proxyValue: {
-            get() {
-                return this.modelValue;
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-                this.$emit('change', value, this.name);
-            }
-        }
+    set: (value: boolean | number | string | number[] | string[]) => {
+        emit('update:modelValue', value);
+        emit('change', value, props.name);
     }
-}
+});
+
+const isDirty = computed((): boolean => {
+    if (typeof props.modelValue === "object") {
+        const val: Array<string | number> = props.modelValue;
+        const orig: boolean | number | string | Array<string | number> = props.original || false;
+        if (typeof orig === "object") {
+            return typeof props.value !== "undefined" && orig.indexOf(props.value) !== val.indexOf(props.value);
+        } else {
+            return typeof props.value !== "undefined" && val.indexOf(props.value) !== -1;
+        }
+    } else {
+        return props.modelValue === (props.original === null || props.original === false);
+    }
+});
 </script>
 
 <style lang="scss">

@@ -1,10 +1,18 @@
 <template>
-    <FieldWrapper :title="title" :hide-title="hideTitle" :required="required" :disabled="disabled" :valid="valid" :errors="errors">
+    <FieldWrapper
+        :disabled="disabled"
+        :has-errors="hasErrors"
+        :title="title"
+        :required="required"
+        :errors="errors"
+        :hide-title="hideTitle"
+        :vertical="vertical"
+    >
         <InputCheckbox
             v-model="proxyValue"
             :name="name"
             :original="original"
-            :valid="valid"
+            :has-errors="hasErrors"
             :disabled="disabled"
             :value="value"
             :label="label"
@@ -15,51 +23,47 @@
     </FieldWrapper>
 </template>
 
-<script>
-import FieldWrapper from "./Helpers/FieldWrapper";
-import InputCheckbox from "@/Components/Input/InputCheckbox";
+<script setup lang="ts">
+import FieldWrapper from "./Helpers/FieldWrapper.vue";
+import InputCheckbox from "../Input/InputCheckbox.vue";
+import {computed} from "vue";
 
-export default {
-    components: {InputCheckbox, FieldWrapper},
-    props: {
-        name: {type: String, required: true},
-        modelValue: {type: [Number, String, Boolean, Array], default: null},
-        original: {type: [Number, String, Boolean, Array], default: null},
+const props = defineProps<{
+    // common props
+    name?: string,
+    modelValue?: boolean | number | string | Array<number | string>,
+    original?: boolean | number | string | Array<number | string>,
+    disabled?: boolean,
+    hasErrors?: boolean,
+    small?: boolean,
+    // field props
+    title?: string,
+    required?: boolean,
+    errors?: string[],
+    hideTitle?: boolean,
+    vertical?: boolean,
+    // checkbox props
+    label?: string,
+    value?: number | string,
+}>();
 
-        title: {type: String, default: null},
-        required: {type: Boolean, default: false},
-        disabled: {type: Boolean, default: false},
-        valid: {type: Boolean, default: true},
-        errors: {type: Array, default: null},
-        hideTitle: {type: Boolean, default: false},
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: boolean | number | string | Array<number | string>): void,
+    (e: 'change', value: boolean | number | string | Array<number | string>, name: string | undefined): void,
+}>();
 
-        label: {type: String, default: null},
-        value: {type: [Number, String, Boolean], default: null},
-
-        small: {type: Boolean, default: false},
+const proxyValue = computed({
+    get: (): boolean | number | string | Array<number | string> => {
+        return props.modelValue || false;
     },
-
-    emits: ['update:modelValue', 'change'],
-
-    computed: {
-        proxyValue: {
-            get() {
-                return this.modelValue
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-            }
-        }
-    },
-
-    methods: {
-        focus() {
-            this.$refs.input.focus()
-        },
-        change(value, name) {
-            this.$emit('change', value, name);
-        },
+    set: (value: boolean | number | string | Array<number | string>) => {
+        emit('update:modelValue', value);
+        emit('change', value, props.name);
     }
+});
+
+function change(value: boolean | number | string | Array<number | string>, name: string | undefined): void {
+    emit('change', value, name);
 }
 </script>
 

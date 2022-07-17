@@ -1,36 +1,71 @@
 <template>
     <FieldCheckBox
-        :model-value="value"
         :name="name"
-        :title="null"
-        :hide-title="hideTitle"
+        :model-value="modelValue"
         :original="original"
-        :valid="valid"
-        :errors="errors"
-        :required="required"
         :disabled="disabled"
-        :value="val"
-        :label="title"
+        :has-errors="!valid"
+        :clearable="clearable"
+        :small="small"
+        :title="label ? title : ''"
+        :required="required"
+        :errors="errors"
+        :hide-title="hideTitle"
+        :vertical="vertical"
+        :placeholder="title"
+        :label="label ? label : title"
+        :value="value"
         @change="change"
-        ref="input"
     />
 </template>
 
-<script>
-import FormMixin from "./Helpers/FormMixin";
-import FieldCheckBox from "../Fields/FieldCheckBox";
+<script setup lang="ts">
+import {Form} from "../../Core/Form";
+import {computed} from "vue";
+import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
+import FieldCheckBox from "../Fields/FieldCheckBox.vue";
 
-export default {
-    components: {FieldCheckBox},
-    props: {
-        disabled: {type: Boolean, default: false},
-        hideTitle: {type: Boolean, default: false},
+const props = defineProps<{
+    // common props
+    name: string,
+    disabled?: boolean,
+    clearable?: boolean,
+    small?: boolean,
+    // field props
+    hideTitle?: boolean,
+    vertical?: boolean,
+    // form props
+    form: Form,
+    defaultValue?: any,
+    // string props
+    label?: string,
+    value?: number | string,
+}>();
 
-        val: {type: [Number, String, Boolean], default: null},
+const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
 
-        small: {type: Boolean, default: false},
-    },
+const title = computed(() => {
+    return getTitle(props.form, props.name);
+});
+const modelValue = computed((): boolean | number | string | Array<number | string> => {
+    return getValue(props.form, props.name, null);
+});
+const original = computed((): string | null => {
+    return getOriginal(props.form, props.name, props.defaultValue);
+});
+const valid = computed((): boolean => {
+    return isValid(props.form, props.name);
+});
+const errors = computed((): string[] => {
+    return getErrors(props.form, props.name);
+});
 
-    mixins: [FormMixin],
+const required = computed((): boolean => {
+    return isRequired(props.form, props.name)
+});
+
+function change(value: any, name: string, payload: any = null) {
+    props.form.update(name, value);
+    emit('change', value, name, payload);
 }
 </script>

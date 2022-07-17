@@ -1,7 +1,7 @@
 <template>
     <FieldString
         :name="name"
-        :model-value="value"
+        :model-value="modelValue"
         :original="original"
         :disabled="disabled"
         :has-errors="!valid"
@@ -50,7 +50,7 @@ const input = ref<FieldString | null>(null);
 const title = computed(() => {
     return getTitle(props.form, props.name);
 });
-const value = computed((): string | null => {
+const modelValue = computed((): string | null => {
     return getValue(props.form, props.name, null);
 });
 const original = computed((): string | null => {

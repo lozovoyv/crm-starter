@@ -62,13 +62,16 @@ $field_error_color: $color-error !default;
     }
 
     &__vertical &__title {
-        margin-bottom: 5px;
         width: 100% !important;
         padding-left: 2px;
     }
 
     &__vertical &__title-wrapper {
         padding-right: 0;
+
+        &:not(:empty) {
+            margin-bottom: 5px;
+        }
     }
 
     &__required &__title-wrapper:after {

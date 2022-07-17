@@ -1,11 +1,11 @@
 <template>
-    <label class="checkbox" :class="{'checkbox__disabled': disabled, 'checkbox__error': !valid}">
+    <label class="checkbox" :class="{'checkbox__disabled': disabled, 'checkbox__error': hasErrors}">
         <input class="checkbox__input" type="checkbox"
                v-model="proxyValue"
                :value="value"
                :disabled="disabled"
         >
-        <span class="checkbox__check">
+        <span class="checkbox__check" :class="{'checkbox__check-dirty': dirty}">
             <IconCheck class="checkbox__check-checked"/>
         </span>
         <span class="checkbox__label" v-if="!label" :class="{'checkbox__label-small': small}"><slot/></span>
@@ -13,44 +13,45 @@
     </label>
 </template>
 
-<script>
-import IconCheck from "../../../../front_temp/Components/Icons/IconCheck";
+<script setup lang="ts">
+import IconCheck from "../../../Icons/IconCheck.vue";
+import {computed} from "vue";
 
-export default {
-    components: {IconCheck},
-    props: {
-        modelValue: {type: [String, Number, Boolean, Array], default: null},
-        label: {type: String, default: null},
-        value: {type: [String, Number, Boolean], default: null},
-        valid: {type: Boolean, default: true},
-        disabled: {type: Boolean, default: false},
-        small: {type: Boolean, default: false},
+const props = defineProps<{
+    modelValue?: boolean | number | string | Array<number | string>,
+    value?: number | string,
+    dirty?: boolean,
+    disabled?: boolean,
+    hasErrors?: boolean,
+    small?: boolean,
+    label?: string,
+}>();
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: boolean | number | string | Array<number | string>): void,
+}>();
+
+const proxyValue = computed({
+    get: (): boolean | number | string | Array<number | string> => {
+        return props.modelValue || false;
     },
-
-    emits: ['update:modelValue'],
-
-    computed: {
-        proxyValue: {
-            get() {
-                return this.modelValue;
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-            }
-        },
+    set: (value: boolean | number | string | Array<number | string>) => {
+        emit('update:modelValue', value);
     }
-}
+});
 </script>
 
 <style lang="scss">
 @import "@/variables";
 
-$input_color: #1e1e1e !default;
-$input_disabled_color: #626262 !default;
+$input_color: $color-text-black !default;
+$input_disabled_color: $color-gray !default;
 $input_active_color: $color-default !default;
 $input_background_color: $color-white !default;
-$input_placeholder_color: #757575;
+$input_hover_color: $color-default-lighten-2 !default;
 $input_error_color: $color-error !default;
+$input_border_color: $color-gray-lighten-1 !default;
+$input_dirty_color: transparentize($color-default-lighten-2, 0.9) !default;
 
 .checkbox {
     height: 100%;
@@ -74,18 +75,26 @@ $input_error_color: $color-error !default;
     &__check {
         width: 16px;
         height: 16px;
-        border: 1px solid $input_placeholder_color;
+        border: 1px solid $input_border_color;
         border-radius: 2px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
 
+        &:hover {
+            border-color: $input_hover_color;
+        }
+
         &-checked {
             color: inherit;
             display: none;
-            width: 80%;
-            height: 80%;
+            width: 75%;
+            height: 75%;
+        }
+
+        &-dirty {
+            background-color: $input_dirty_color;
         }
     }
 
@@ -100,9 +109,7 @@ $input_error_color: $color-error !default;
     }
 
     &__input:checked + &__check {
-        border-color: $input_active_color;
-        background-color: $input_active_color;
-        color: $input_background_color;
+        color: $input_active_color;
     }
 
     &__input:checked + &__check > &__check-checked {

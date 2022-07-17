@@ -12,9 +12,9 @@
             </div>
             <div class="login__divider"></div>
             <div class="login__form">
-                <FormString :form="form" name="username" :clearable="true" :vertical="true" autocomplete="username" @keyup.enter="enter" ref="login"/>
-                <FormPassword :form="form" name="password" :clearable="true" :vertical="true" autocomplete="current-password" @keyup.enter="enter" ref="password"/>
-<!--                                <FormCheckBox :form="form" :name="'remember'"/>-->
+                <FormString :form="form" name="username" :clearable="true" autocomplete="username" @keyup.enter="enter" ref="login"/>
+                <FormPassword :form="form" name="password" :clearable="true" autocomplete="current-password" @keyup.enter="enter" ref="password"/>
+                <FormCheckBox :form="form" :name="'remember'"/>
             </div>
             <div class="login__actions">
                 <span class="link" @click="forgot">Забыл пароль</span>
@@ -32,11 +32,12 @@ import GuiButton from "@/Components/GUI/GuiButton";
 import LoadingProgress from "../../front_temp/Components/LoadingProgress";
 import FormString from "@/Components/Form/FormString";
 import FormPassword from "@/Components/Form/FormPassword";
+import FormCheckBox from "@/Components/Form/FormCheckBox";
 // import FormCheckBox from "@/Components/Form/FormCheckBox";
 
 export default {
 
-    components: {FormPassword, FormString, LoadingProgress, GuiButton, Logo},
+    components: {FormCheckBox, FormPassword, FormString, LoadingProgress, GuiButton, Logo},
 
     props: {
         // message: {type: [String,null], default:null},
@@ -118,7 +119,7 @@ body {
     align-items: center;
     width: calc(100% - 4px);
     margin: 0 2px;
-    max-width: 300px;
+    max-width: 400px;
     box-shadow: $shadow_1;
     background-color: #fff;
     border-radius: 3px;
