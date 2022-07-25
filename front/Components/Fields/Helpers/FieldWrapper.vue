@@ -46,11 +46,11 @@ $field_error_color: $color-error !default;
 
     &__title {
         font-family: $project_font;
-        font-size: 14px;
+        font-size: 15px;
         width: 200px;
         box-sizing: border-box;
         flex-shrink: 0;
-        line-height: 14px;
+        line-height: 15px;
         color: $field_title_color;
         display: flex;
         align-items: center;

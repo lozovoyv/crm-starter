@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class Current
 {
-    /** @var User this helper for. */
-    protected User $user;
+    /** @var User|null This helper for. */
+    protected ?User $user;
 
     /**
      * Factory.
@@ -25,13 +25,53 @@ class Current
     /**
      * Create user current state.
      *
-     * @param User $user
+     * @param User|null $user
      *
      * @return  void
      */
-    public function __construct(User $user)
+    public function __construct(?User $user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * Weather user authenticated.
+     *
+     * @return  bool
+     */
+    public function isAuthenticated(): bool
+    {
+        return isset($this->user);
+    }
+
+    /**
+     * Get current user ID.
+     *
+     * @return  int|null
+     */
+    public function userId(): ?int
+    {
+        return isset($this->user) ? $this->user->id : null;
+    }
+
+    /**
+     * Get current username.
+     *
+     * @return  string|null
+     */
+    public function userName(): ?string
+    {
+        return isset($this->user) ? $this->user->info->compactName : null;
+    }
+
+    /**
+     * Get current user permissions.
+     *
+     * @return  array
+     */
+    public function permissions(): array
+    {
+        return [];
     }
 
     /**
@@ -45,15 +85,5 @@ class Current
     public function can(?string $key, bool $fresh = false): bool
     {
         return true;
-    }
-
-    /**
-     * Get current username.
-     *
-     * @return  string|null
-     */
-    public function userName(): ?string
-    {
-        return isset($this->user) ? $this->user->info->compactName : null;
     }
 }

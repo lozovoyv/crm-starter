@@ -21,10 +21,10 @@ class AdminSeeder extends Seeder
 
         if($admin === null) {
             $admin = new User;
-            $admin->login = 'admin';
+            $admin->username = 'admin';
             $admin->password = Hash::make('admin');
-            $admin->info()->create(['lastname' => 'Администратор', 'firstname' => 'Администратор', 'gender' => 'male', 'email' => 'admin@admin.admin']);
             $admin->save();
+            $admin->info()->create(['lastname' => 'Администратор', 'firstname' => 'Администратор', 'gender' => 'male', 'email' => 'admin@admin.admin']);
             // $admin->roles()->attach(Role::super);
         }
     }

@@ -2,32 +2,40 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Current;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
 use App\Models\Dictionaries\UserStatus;
 use App\Models\User\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class AuthController extends ApiController
 {
     /**
-     * Render login form.
+     * Get current user info.
      *
-     * @return  View
+     * @param Request $request
+     *
+     * @return  JsonResponse
      */
-    public function form(): View
+    public function current(Request $request): JsonResponse
     {
-        $message = Session::get('message');
+        $current = Current::get($request);
 
-        return view('login', ['message' => $message]);
+        $user = !$current->isAuthenticated() ? null : [
+            'id' => $current->userId(),
+            'name' => $current->userName(),
+        ];
+
+        return APIResponse::response([
+            'user' => $user,
+            'permissions' => $current->permissions(),
+        ]);
     }
 
     /**
@@ -53,22 +61,20 @@ class AuthController extends ApiController
         }
 
         // authenticate
-        if($errors = $this->authenticate($request)) {
+        if ($errors = $this->authenticate($request)) {
             return APIResponse::validationError($errors, 'Ошибка');
         }
 
         /** @var User $user */
         $user = $request->user();
 
-       if ($user->tokens()->count() === 0) {
+        if ($user->tokens()->count() === 0) {
             $user->createToken('base_token');
         }
 
         $request->session()->regenerate();
 
-        $intended = $request->session()->pull('url.intended', RouteServiceProvider::HOME);
-
-        return APIResponse::redirect($intended);
+        return APIResponse::success('OK');
     }
 
     /**
@@ -86,17 +92,17 @@ class AuthController extends ApiController
 
         $request->session()->regenerateToken();
 
-        return APIResponse::response('OK');
+        return APIResponse::success('OK');
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Attempt to authenticate the request credentials.
      *
      * @param Request $request
      *
      * @return array|null
      */
-    public function authenticate(Request $request): ?array
+    protected function authenticate(Request $request): ?array
     {
         if ($errors = $this->validateRateLimited($request)) {
             return $errors;
@@ -106,7 +112,7 @@ class AuthController extends ApiController
 
             RateLimiter::hit($this->throttleKey($request));
 
-            return ['username' => __('auth.failed')];
+            return ['username' => [__('auth.failed')]];
         }
 
         RateLimiter::clear($this->throttleKey($request));
@@ -149,7 +155,7 @@ class AuthController extends ApiController
      *
      * @return  null|array
      */
-    public function validateRateLimited(Request $request): ?array
+    protected function validateRateLimited(Request $request): ?array
     {
         if (!RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
             return null;
@@ -169,7 +175,7 @@ class AuthController extends ApiController
      *
      * @return  string
      */
-    public function throttleKey(Request $request): string
+    protected function throttleKey(Request $request): string
     {
         return Str::lower($request->input('username')) . '|' . $request->ip();
     }

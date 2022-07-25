@@ -4,14 +4,14 @@ namespace Database\Seeders;
 
 use Database\Seeders\Seeders\PermissionsSeeder;
 use Database\Seeders\Seeders\RolesSeeder;
-use Database\Seeders\Seeders\StatusesSeeder;
+use Database\Seeders\Seeders\UserStatusesSeeder;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     protected array $seeders = [
-        StatusesSeeder::class,
+        UserStatusesSeeder::class,
         RolesSeeder::class,
         PermissionsSeeder::class,
     ];

@@ -1,6 +1,6 @@
 <template>
     <div class="loading-progress">
-        <div class="loading-progress__wrapper" :class="{'loading-progress__wrapper-loading': loading, 'loading-progress__wrapper-transparent': transparent}">
+        <div class="loading-progress__wrapper" v-if="loading" :class="{'loading-progress__wrapper-loading': loading, 'loading-progress__wrapper-transparent': transparent}">
             <div class="loading-progress__spinner">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" xml:space="preserve">
                     <polygon class="loading-progress__spinner-part loading-progress__spinner-part-0" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
@@ -17,21 +17,20 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
-
 const props = defineProps<{
     loading: boolean,
     transparent?: boolean,
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @use "sass:math";
 @import "@/variables";
 
 $loader_background_color: transparentize($color-white, 0.5) !default;
 $delta: 5%;
 $max_size: 80px;
+$loader_animation_time: 2s;
 
 .loading-progress {
     width: 100%;
@@ -52,6 +51,7 @@ $max_size: 80px;
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
+        min-height: $base_size_unit;
 
         &-transparent {
             background-color: transparent;
@@ -68,34 +68,39 @@ $max_size: 80px;
         height: 100%;
         max-width: $max_size;
         max-height: $max_size;
-        animation: loading-progress 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        animation: loading-progress $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
+
+        & > svg {
+            width: 100%;
+            height: 100%;
+        }
 
         &-part {
             fill: #FF931E;
             transform-origin: center;
 
             &-0 {
-                animation: loading-progress-part-0 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                animation: loading-progress-part-0 $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
             }
 
             &-1 {
-                animation: loading-progress-part-1 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                animation: loading-progress-part-1 $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
             }
 
             &-2 {
-                animation: loading-progress-part-2 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                animation: loading-progress-part-2 $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
             }
 
             &-3 {
-                animation: loading-progress-part-3 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                animation: loading-progress-part-3 $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
             }
 
             &-4 {
-                animation: loading-progress-part-4 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                animation: loading-progress-part-4 $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
             }
 
             &-5 {
-                animation: loading-progress-part-5 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                animation: loading-progress-part-5 $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
             }
         }
     }

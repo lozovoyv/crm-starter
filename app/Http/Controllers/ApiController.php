@@ -10,7 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 class ApiController extends BaseController
 {
     /**
-     * Retrieve model by id or create new.
+     * Retrieve model by an ID or create new.
      *
      * @param string $class
      * @param int|null $id

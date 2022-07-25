@@ -5,7 +5,7 @@ namespace Database\Seeders\Seeders;
 use App\Models\Dictionaries\UserStatus;
 use Database\Seeders\GenericSeeder;
 
-class StatusesSeeder extends GenericSeeder
+class UserStatusesSeeder extends GenericSeeder
 {
     protected array $data = [
         UserStatus::class => [

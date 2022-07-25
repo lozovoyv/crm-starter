@@ -19,8 +19,8 @@ mix
     })
     .copy('front/assets/fonts/source-sans-pro/', 'public/fonts/')
     //.sourceMaps(true)
-    .ts('front/login.ts', 'js')
-    .ts('front/app.ts', 'js')
+    // .ts('front/login.ts', 'js')
+    .ts('front/application.ts', 'js')
     .vue();
 
 if (mix.inProduction()) {

@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Http\APIResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Session\TokenMismatchException;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,5 +51,23 @@ class Handler extends ExceptionHandler
         $this->reportable(static function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param Request $request
+     * @param Throwable $e
+     *
+     * @return Response
+     *
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e): Response
+    {
+        if ($e instanceof TokenMismatchException) {
+            return APIResponse::tokenMismatch();
+        }
+        return parent::render($request, $e);
     }
 }

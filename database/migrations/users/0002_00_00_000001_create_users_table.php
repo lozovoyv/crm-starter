@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('status_id')->references('id')->on('dictionary_user_statuses')->restrictOnDelete()->restrictOnUpdate();
+            $table->foreign('status_id')->references('id')->on('dictionary_user_statuses')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 

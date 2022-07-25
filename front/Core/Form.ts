@@ -110,7 +110,7 @@ export class Form {
                     resolve({values: this.values, payload: this.payload});
                 })
                 .catch((error: ErrorResponse) => {
-                    if(error.status !== 500) {
+                    if (error.status !== 500) {
                         this.notify(error.data.message, 0, 'error');
                     }
                     this.is_forbidden = error.status === 403;
@@ -131,8 +131,9 @@ export class Form {
      * Save form data.
      *
      * @param options Options to pass to load request. Overrides form default options if not null.
+     * @param silent Disable notifications for this operation.
      */
-    save(options = null) {
+    save(options = null, silent: boolean = false) {
         return new Promise((resolve: ((obj: { values: object, payload: object }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
             if (this.save_url === null) {
                 this.notify('Can not save form. Save URL is not defined.', 0, 'error');
@@ -153,7 +154,9 @@ export class Form {
             http.post(this.save_url, _options)
                 .then(response => {
                     this.is_forbidden = false;
-                    this.notify(response.data.message, 5000, 'success');
+                    if (!silent) {
+                        this.notify(response.data.message, 5000, 'success');
+                    }
                     this.originals = clone(this.values);
                     if (!empty(response.data.payload)) {
                         this.payload = response.data.payload;
@@ -163,10 +166,12 @@ export class Form {
                     }
                     resolve({values: this.values, payload: this.payload});
                 })
-                .catch((error:ErrorResponse) => {
+                .catch((error: ErrorResponse) => {
                     this.is_forbidden = error.status === 403;
                     if (error.status === 422) {
-                        this.notify(error.data.message, 5000, 'error');
+                        if (!silent) {
+                            this.notify(error.data.message, 5000, 'error');
+                        }
                         if (typeof error.data.errors !== "undefined") {
                             this.errors = error.data.errors;
                             Object.keys(this.errors).map(key => {
@@ -174,7 +179,7 @@ export class Form {
                             });
                         }
                     } else {
-                        if(error.status !== 500) {
+                        if (error.status !== 500) {
                             this.notify(error.data.message, 0, 'error');
                         }
                         if (typeof this.save_failed_callback === "function") {
@@ -218,7 +223,7 @@ export class Form {
      * @param title
      * @param initial
      */
-    set(name: string, value: unknown, rules: string | undefined = undefined, title: string | undefined = undefined, initial: boolean | undefined = undefined) {
+    set(name: string, value: unknown, rules: string | null | undefined = undefined, title: string | undefined = undefined, initial: boolean | undefined = undefined) {
         this.values[name] = value;
         if (rules !== undefined) {
             if (empty(rules)) {

@@ -113,6 +113,15 @@ $input_placeholder_color: #757575 !default;
         &::-ms-input-placeholder { /* Microsoft Edge */
             color: $input_placeholder_color;
         }
+
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus {
+            border: none;
+            -webkit-text-fill-color: inherit;
+            -webkit-box-shadow: 0 0 0 1000px transparent inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
     }
 }
 </style>

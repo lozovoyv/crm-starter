@@ -1,15 +1,17 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import dialog from "../Dialog/Dialog";
+import toaster from "../Toaster/Toaster";
 
 enum StatusCode {
     Unauthorized = 401,
-    Forbidden = 403,
-    NotFound = 403,
-    Error = 406,
     TokenExpired = 419,
     ValidationError = 422,
-    TooManyRequests = 429,
     InternalServerError = 500,
+
+    Forbidden = 403,
+    NotFound = 404,
+    Error = 406,
+    TooManyRequests = 429,
 }
 
 const headers: Readonly<Record<string, string | boolean>> = {
@@ -107,58 +109,71 @@ class Http {
         if (typeof response === "undefined") {
             return Promise.reject<R>(response);
         }
-
-        const error: ErrorResponse = {
-            status: response.status,
-            data: <any>response.data,
-        };
+        const error: ErrorResponse = {status: response.status, data: <any>response.data};
 
         switch (error.status) {
-            case StatusCode.InternalServerError: {
-                let message = '<b>' + error.data.message + '</b>';
-                if (error.data.exception) message += '</br></br>Exception: <b>' + error.data.exception + '</b>';
-                if (error.data.file) message += '</br></br>File: <b>' + error.data.file + '</b>';
-                if (error.data.line) message += '</br>Line: <b>' + error.data.line + '</b>';
-                if (error.data.trace) {
-                    message += '<br/><br/><b>Trace:</b>'
-                    error.data.trace.map(item => {
-                        message += '<br/>' + item.file + ':' + item.line;
-                    })
-                }
-                dialog.show('Ошибка сервера', message, [dialog.button('close', 'Закрыть', 'default'), dialog.button('copy', 'Скопировать и закрыть')], 'error')
-                    .then(result => {
-                        if(result === 'copy') {
-                            let message = error.data.message + '\n';
-                            if (error.data.exception) message += 'Exception: ' + error.data.exception + '\n';
-                            if (error.data.file) message += 'File: ' + error.data.file + '\n';
-                            if (error.data.line) message += 'Line: ' + error.data.line + '\n';
-                            if (error.data.trace) {
-                                message += 'Trace:\n'
-                                error.data.trace.map(item => {
-                                    message += item.file + ':' + item.line + '\n';
-                                })
-                            }
-                            navigator.clipboard.writeText(message);
-                        }
-                    });
-                break;
-            }
-            case StatusCode.Forbidden: {
-                // Handle Forbidden
-                break;
-            }
             case StatusCode.Unauthorized: {
-                // Handle Unauthorized
+                window.location.reload();
                 break;
             }
-            case StatusCode.TooManyRequests: {
-                // Handle TooManyRequests
+            case StatusCode.InternalServerError: {
+                Http.handleServerError(error);
                 break;
+            }
+            case StatusCode.TokenExpired: {
+                if (!response.headers['X-Retry-request']) {
+                    return new Promise((resolve) => {
+                        axios.get('/sanctum/csrf-cookie')
+                            .then(() => {
+                                response.headers['X-Retry-request'] = 'true';
+                                resolve(axios(response.config));
+                            })
+                            .catch((err) => {
+                                console.log('Can not retrieve new token', err);
+                            });
+                    });
+                }
+                break;
+            }
+            default: {
             }
         }
 
         return Promise.reject<R>(response);
     }
+
+    private static handleServerError(error: ErrorResponse) {
+        let message = '<b>' + error.data.message + '</b>';
+        if (error.data.exception) message += '</br></br>Exception: <b>' + error.data.exception + '</b>';
+        if (error.data.file) message += '</br></br>File: <b>' + error.data.file + '</b>';
+        if (error.data.line) message += '</br>Line: <b>' + error.data.line + '</b>';
+        if (error.data.trace) {
+            message += '<br/><br/><b>Trace:</b>'
+            error.data.trace.map(item => {
+                message += '<br/>' + item.file + ':' + item.line;
+            })
+        }
+        dialog.show('Ошибка сервера', message, [dialog.button('close', 'Закрыть', 'default'), dialog.button('copy', 'Скопировать и закрыть')], 'error')
+            .then(result => {
+                if (result === 'copy') {
+                    let message = error.data.message + '\n';
+                    if (error.data.exception) message += 'Exception: ' + error.data.exception + '\n';
+                    if (error.data.file) message += 'File: ' + error.data.file + '\n';
+                    if (error.data.line) message += 'Line: ' + error.data.line + '\n';
+                    if (error.data.trace) {
+                        message += 'Trace:\n'
+                        error.data.trace.map(item => {
+                            message += item.file + ':' + item.line + '\n';
+                        })
+                    }
+                    navigator.clipboard.writeText(message).catch(clipboard_error => {
+                        toaster.error('Ошибка буфера обмена');
+                        console.error(clipboard_error);
+                    });
+                }
+            });
+    }
 }
+
 
 export const http = new Http();

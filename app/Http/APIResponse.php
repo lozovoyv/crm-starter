@@ -8,6 +8,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class APIResponse
 {
+    protected const CODE_REDIRECT = 301;
+    protected const CODE_NOT_MODIFIED = 304;
+    protected const CODE_FORBIDDEN = 403;
+    protected const CODE_NOT_FOUND = 404;
+    protected const CODE_ERROR = 406;
+    protected const CODE_TOKEN_MISMATCH = 419;
+    protected const CODE_OK = 200;
+    protected const CODE_VALIDATION_ERROR = 422;
+
     /**
      * Make 301 redirect response.
      *
@@ -21,7 +30,7 @@ class APIResponse
         return response()->json([
             'message' => $message,
             'to' => $to,
-        ], 301);
+        ], self::CODE_REDIRECT);
     }
 
     /**
@@ -31,7 +40,7 @@ class APIResponse
      */
     public static function notModified(): JsonResponse
     {
-        return response()->json(null, 304);
+        return response()->json(null, self::CODE_NOT_MODIFIED);
     }
 
     /**
@@ -45,7 +54,7 @@ class APIResponse
     {
         return response()->json([
             'message' => $message,
-        ], 403);
+        ], self::CODE_FORBIDDEN);
     }
 
     /**
@@ -59,7 +68,7 @@ class APIResponse
     {
         return response()->json([
             'message' => $message,
-        ], 404);
+        ], self::CODE_NOT_FOUND);
     }
 
     /**
@@ -75,7 +84,23 @@ class APIResponse
         return response()->json([
             'message' => $message,
             'payload' => $payload,
-        ], 406);
+        ], self::CODE_ERROR);
+    }
+
+    /**
+     * Make token mismatch response.
+     *
+     * @param string $message
+     * @param array|null $payload
+     *
+     * @return  JsonResponse
+     */
+    public static function tokenMismatch(string $message = 'Неверный токен', ?array $payload = null): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'payload' => $payload,
+        ], self::CODE_TOKEN_MISMATCH);
     }
 
     /**
@@ -94,7 +119,7 @@ class APIResponse
             'message' => $message,
             'data' => $data,
             'payload' => $payload,
-        ], 200, self::lastModHeaders($lastModified));
+        ], self::CODE_OK, self::lastModHeaders($lastModified));
     }
 
     /**
@@ -116,7 +141,7 @@ class APIResponse
             'file_name' => $filename,
             'type' => $type,
             'payload' => $payload,
-        ], 200, self::lastModHeaders($lastModified));
+        ], self::CODE_OK, self::lastModHeaders($lastModified));
     }
 
     /**
@@ -155,7 +180,7 @@ class APIResponse
                 'total' => $list->total(),
                 'per_page' => $list->perPage(),
             ],
-        ], 200, self::lastModHeaders($lastModified));
+        ], self::CODE_OK, self::lastModHeaders($lastModified));
     }
 
     /**
@@ -176,7 +201,7 @@ class APIResponse
             'rules' => $rules,
             'titles' => $titles,
             'payload' => $payload,
-        ], 200);
+        ], self::CODE_OK);
     }
 
     /**
@@ -192,7 +217,7 @@ class APIResponse
         return response()->json([
             'message' => $message,
             'payload' => $payload,
-        ], 200);
+        ], self::CODE_OK);
     }
 
     /**
@@ -210,7 +235,7 @@ class APIResponse
             'message' => $message,
             'errors' => $errors,
             'payload' => $payload,
-        ], 422);
+        ], self::CODE_VALIDATION_ERROR);
     }
 
     /**
