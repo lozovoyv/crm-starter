@@ -30,6 +30,7 @@ class AuthController extends ApiController
         $user = !$current->isAuthenticated() ? null : [
             'id' => $current->userId(),
             'name' => $current->userName(),
+            'organization' => 'OPX core',
         ];
 
         return APIResponse::response([

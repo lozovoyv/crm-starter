@@ -56,7 +56,7 @@ const emit = defineEmits<{
     (e: 'change', value: string | null, name: string | undefined): void,
 }>()
 
-const input = ref<InputString | null>(null);
+const input = ref<InstanceType<typeof InputString> | null>(null);
 
 const proxyValue = computed({
     get: (): string | null => {
@@ -72,9 +72,7 @@ function change(value: string | null, name: string | undefined): void {
 }
 
 function focus(): void {
-    if (input.value !== null) {
-        input.value.focus();
-    }
+    input.value?.focus();
 }
 
 defineExpose({

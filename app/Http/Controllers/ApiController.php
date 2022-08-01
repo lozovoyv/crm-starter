@@ -10,49 +10,6 @@ use Illuminate\Routing\Controller as BaseController;
 class ApiController extends BaseController
 {
     /**
-     * Retrieve model by an ID or create new.
-     *
-     * @param string $class
-     * @param int|null $id
-     * @param array $with
-     * @param array $withCount
-     * @param array $where
-     *
-     * @return  Model|null
-     */
-    protected function firstOrNew(string $class, ?int $id, array $with = [], array $withCount = [], array $where = []): ?Model
-    {
-        if ($id === 0) {
-            return new $class;
-        }
-
-        return $this->first($class, $id, $with, $withCount, $where);
-    }
-
-    /**
-     * Retrieve model by id.
-     *
-     * @param string $class
-     * @param int|null $id
-     * @param array $with
-     * @param array $withCount
-     * @param array $where
-     *
-     * @return  Model|null
-     */
-    protected function first(string $class, ?int $id, array $with = [], array $withCount = [], array $where = []): ?Model
-    {
-        if ($id === null) {
-            return null;
-        }
-
-        /** @var Model $class */
-        $model = $class::query()->where('id', $id)->where($where)->with($with)->withCount($withCount)->first();
-
-        return $model ?? null;
-    }
-
-    /**
      * Get data from request.
      *
      * @param Request $request

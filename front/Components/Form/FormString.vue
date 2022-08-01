@@ -25,6 +25,7 @@ import FieldString from "../Fields/FieldString.vue";
 import {Form} from "../../Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
+import InputString from "../Input/InputString.vue";
 
 const props = defineProps<{
     // common props
@@ -45,7 +46,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
 
-const input = ref<FieldString | null>(null);
+const input = ref<InstanceType<typeof FieldString> | null>(null);
 
 const title = computed(() => {
     return getTitle(props.form, props.name);
@@ -73,9 +74,7 @@ function change(value: any, name: string, payload: any = null) {
 }
 
 function focus(): void {
-    if (input.value !== null) {
-        input.value.focus();
-    }
+    input.value?.focus();
 }
 
 defineExpose({

@@ -86,4 +86,27 @@ class Current
     {
         return true;
     }
+
+    /**
+     * Get current user permissions.
+     *
+     * @return  array
+     */
+    public function roles(): array
+    {
+        return [];
+    }
+
+    /**
+     * Check current user permission.
+     *
+     * @param string|int $role
+     * @param bool $fresh
+     *
+     * @return  bool
+     */
+    public function hasRole(string | int $role, bool $fresh = false): bool
+    {
+        return true;
+    }
 }

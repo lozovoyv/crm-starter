@@ -28,6 +28,7 @@
 import FieldWrapper from "./Helpers/FieldWrapper.vue";
 import {computed, ref} from "vue";
 import InputPassword from "../Input/InputPassword.vue";
+import InputString from "../Input/InputString.vue";
 
 const props = defineProps<{
     // common props
@@ -54,7 +55,7 @@ const emit = defineEmits<{
     (e: 'change', value: string | null, name: string | undefined): void,
 }>()
 
-const input = ref<InputPassword | null>(null);
+const input = ref<InstanceType<typeof InputPassword> | null>(null);
 
 const proxyValue = computed({
     get: (): string | null => {
@@ -70,9 +71,7 @@ function change(value: string | null, name: string | undefined): void {
 }
 
 function focus(): void {
-    if (input.value !== null) {
-        input.value.focus();
-    }
+    input.value?.focus();
 }
 
 defineExpose({

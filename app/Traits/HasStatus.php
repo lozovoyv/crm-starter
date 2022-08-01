@@ -3,31 +3,31 @@
 namespace App\Traits;
 
 use App\Models\Dictionaries\AbstractDictionary;
+use InvalidArgumentException;
 
 trait HasStatus
 {
     /**
-     * Check and set new status for the model having `status_id` attribute.
+     * Check and set new status for the model.
      *
      * @param string $class
      * @param int $status
-     * @param string $exception
      * @param bool $save
      * @param string $name
      *
      * @return  void
      *
      */
-    protected function checkAndSetStatus(string $class, int $status, string $exception, bool $save = false, string $name = 'status_id'): void
+    protected function checkAndSetStatus(string $class, int $status, string $name = 'status_id', bool $save = false): void
     {
         /** @var AbstractDictionary $class */
         $statusEntry = $class::get($status);
 
         if ($statusEntry === null || !$statusEntry->exists) {
-            throw new $exception;
+            throw new InvalidArgumentException('Неверный статус.');
         }
 
-        $this->setAttribute($name, $statusEntry->id);
+        $this->setAttribute($name, $status);
 
         if ($save) {
             $this->save();
@@ -37,11 +37,12 @@ trait HasStatus
     /**
      * Check if the model has the status or one of statuses.
      *
-     * @param int $status
+     * @param int|array $status
+     * @param string $name
      *
      * @return  bool
      */
-    public function hasStatus(int $status): bool
+    public function hasStatus(int|array $status, string $name = 'status_id'): bool
     {
         if(is_array($status)) {
             return in_array($this->getAttribute($name), $status, true);

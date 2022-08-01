@@ -26,7 +26,7 @@ abstract class AbstractDictionary extends Model
     ];
 
     /**
-     * Get dictionary item instance by id.
+     * Get dictionary item instance by an ID.
      *
      * @param int $id
      *
