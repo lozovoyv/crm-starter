@@ -19,7 +19,11 @@
             /></span>
         </span>
 
-        <div v-if="parent" class="application__menu-root-submenu" :class="{'application__menu-root-submenu-right': right, 'application__menu-root-submenu-dropped': dropped}">
+        <div v-if="parent" class="application__menu-root-submenu"
+             :class="{'application__menu-root-submenu-right': right, 'application__menu-root-submenu-dropped': dropped}"
+             :style="{left: right ? 'unset':leftAdjust + 'px', width: widthAdjust ? widthAdjust + 'px' : 'unset'}"
+             ref="subMenu"
+        >
             <ApplicationMenuItem v-for="menuItem in item.items"
                                  :item="menuItem"
                                  @clicked="clicked"
@@ -30,7 +34,7 @@
 
 <script setup lang="ts">
 import {MenuItem} from "../../../Core/Types/Menu";
-import {computed, defineEmits, ref, watch} from "vue";
+import {computed, defineEmits, nextTick, ref, watch} from "vue";
 import IconDropdown from "../../../Icons/IconDropdown.vue";
 import ApplicationMenuItem from "./ApplicationMenuItem.vue";
 
@@ -40,6 +44,7 @@ const props = defineProps<{
     right?: boolean,
     expanded: boolean,
     toggleState: boolean,
+    resizeState: boolean,
 }>();
 
 const emit = defineEmits<{
@@ -53,20 +58,27 @@ const parent = computed<boolean>((): boolean => {
 });
 
 const dropped = ref<boolean>(false);
+const leftAdjust = ref<number>(0);
+const widthAdjust = ref<number>(0);
+const subMenu = ref<HTMLDivElement | null>(null);
 
 // Hover handle
 let is_initiator: boolean = false;
 
 watch(() => props.toggleState, () => {
     if (!is_initiator) {
-        dropped.value = false;
+        drop(false);
     }
     is_initiator = false;
 });
 
-function mouseenter(event: PointerEvent): void {
+watch(() => props.resizeState, () => {
+    adjust();
+});
+
+function mouseenter(): void {
     if (props.expanded && parent.value) {
-        dropped.value = true;
+        drop(true);
         is_initiator = true;
         emit('hovered');
     }
@@ -76,7 +88,7 @@ function mouseenter(event: PointerEvent): void {
 function toggle(event: PointerEvent): void {
     event.stopPropagation();
     if (parent.value) {
-        dropped.value = !dropped.value;
+        drop(!dropped.value);
         emit('expand', dropped.value);
     } else {
         emit('clicked');
@@ -84,9 +96,35 @@ function toggle(event: PointerEvent): void {
 }
 
 // External click handler
-function clicked(event: PointerEvent): void {
-    dropped.value = false;
+function clicked(): void {
+    drop(false);
     emit('clicked');
+}
+
+function drop(state: boolean): void {
+    dropped.value = state;
+    adjust();
+}
+
+// Adjust submenu position
+function adjust(): void {
+    if (dropped.value) {
+        leftAdjust.value = 0;
+        nextTick(() => {
+            if (subMenu.value) {
+                const rect = subMenu.value.getBoundingClientRect();
+                const windowWidth = window.innerWidth;
+                const delta: number = windowWidth - rect.right;
+                if (delta < 0) {
+                    if (rect.left + delta > 0) {
+                        leftAdjust.value = delta;
+                    } else {
+                        leftAdjust.value = -rect.left;
+                    }
+                }
+            }
+        });
+    }
 }
 </script>
 

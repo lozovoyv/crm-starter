@@ -118,7 +118,7 @@ body, html {
         }
 
         &-widgets {
-            width: 50px;
+            //width: 50px;
         }
 
         &-user-menu {
