@@ -1,15 +1,18 @@
 <template>
     <div class="application__menu-item" :class="{'application__menu-item-dropped': dropped}" @click="toggle">
-        <span v-if="parent || !item.route" class="application__menu-item-link">
+        <span v-if="parent || !item.route" class="application__menu-item-link" @mouseenter="hovered">
             <span>{{ item.title }}<IconDropdown class="application__menu-item-link-drop" v-if="parent"/></span>
         </span>
-        <RouterLink v-else class="application__menu-item-link" :to="item.route">
+        <RouterLink v-else class="application__menu-item-link" :to="item.route" @mouseenter="hovered">
             <span>{{ item.title }}</span>
         </RouterLink>
-        <div v-if="parent" class="application__menu-submenu">
+        <div v-if="parent" class="application__menu-submenu" :class="{'application__menu-submenu-expanded': expanded}">
             <ApplicationMenuItem v-for="(menuItem, key) in item.items"
                                  :key="key"
                                  :item="menuItem"
+                                 :toggleState="toggle_state_internal"
+                                 @clicked="clicked"
+                                 @hovered="internalHovered"
             />
         </div>
     </div>
@@ -17,21 +20,26 @@
 
 <script setup lang="ts">
 import {MenuItem} from "../../../Core/Types/Menu";
-import {computed, defineEmits, ref} from "vue";
+import {computed, defineEmits, ref, watch} from "vue";
 import IconDropdown from "../../../Icons/IconDropdown.vue";
 
 const props = defineProps<{
     item: MenuItem,
+    toggleState: boolean,
 }>();
 
 const emit = defineEmits<{
     (event: 'clicked'): void,
+    (event: 'hovered'): void,
 }>()
 
 const parent = computed<boolean>((): boolean => {
     return typeof props.item.items !== 'undefined' && props.item.items.length > 0;
 });
 
+const expanded = ref<boolean>(false);
+const toggle_state_internal = ref<boolean>(false);
+const is_initiator = ref<boolean>(false);
 const dropped = ref<boolean>(false);
 
 function toggle(event: PointerEvent): void {
@@ -39,6 +47,30 @@ function toggle(event: PointerEvent): void {
     if (!parent.value) {
         emit('clicked');
     }
+}
+
+function hovered(): void {
+    if (parent.value) {
+        expanded.value = true;
+    }
+    is_initiator.value = true;
+    emit('hovered');
+}
+
+watch(() => props.toggleState, () => {
+    if (!is_initiator.value) {
+        toggle_state_internal.value = !toggle_state_internal.value;
+        expanded.value = false;
+    }
+    is_initiator.value = false;
+});
+
+function internalHovered(): void {
+    toggle_state_internal.value = !toggle_state_internal.value;
+}
+
+function clicked(): void {
+    emit('clicked');
 }
 </script>
 
@@ -64,6 +96,7 @@ function toggle(event: PointerEvent): void {
             white-space: nowrap;
             line-height: 22px;
             flex-grow: 1;
+            padding: 0 3px 0 5px;
 
             & > span {
                 padding: 0 14px 0 6px;
@@ -82,6 +115,14 @@ function toggle(event: PointerEvent): void {
             }
         }
 
+        &:first-child > &-link {
+            padding-top: 7px;
+        }
+
+        &:last-child > &-link {
+            padding-bottom: 7px;
+        }
+
         &-link:hover {
             color: $color-default-lighten-1;
         }
@@ -96,26 +137,21 @@ function toggle(event: PointerEvent): void {
         opacity: 0;
         visibility: hidden;
         position: absolute;
-        left: 0;
-        bottom: 0;
-        transform: translateY(100%);
+        top: 0;
+        right: 3px;
+        transform: translateX(100%);
         background-color: $color-white;
         box-sizing: border-box;
-        padding: 8px 5px 12px;
-        box-shadow: $shadow_2;
-        border-radius: 0 0 3px 3px;
+        padding: 0;
+        box-shadow: $shadow_1;
+        border-radius: 2px;
         min-width: 100%;
         z-index: 200;
+
+        &-expanded {
+            opacity: 1;
+            visibility: visible;
+        }
     }
 }
-
-//.application__menu-item-0.application__menu-item-dropped .application__menu-submenu-0 {
-//    opacity: 1;
-//    visibility: visible;
-//}
-//
-//.application__menu-item-0.application__menu-item-dropped > .application__menu-item-link .application__menu-item-link-drop,
-//.application__menu-item-0.application__menu-item-dropped > .application__menu-item-no-link .application__menu-item-link-drop {
-//    transform: rotate(-180deg);
-//}
 </style>

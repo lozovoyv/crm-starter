@@ -1,24 +1,26 @@
 <template>
-    <div class="application__menu-root-item"
-         :class="{'application__menu-root-item-dropped': dropped}"
+    <div class="application__menu-root-item-wrapper"
          :style="{width: width ? width + 'px' : 'auto'}"
-         @click="toggle"
-         @mouseenter="mouseenter"
     >
-        <span v-if="$slots.default" class="application__menu-root-item-link">
-            <slot/>
-        </span>
-        <RouterLink v-else-if="item.route" class="application__menu-root-item-link" :to="item.route">
-            <span>{{ item.title }}<IconDropdown class="application__menu-root-item-link-drop" v-if="parent"
-                                                :class="{'application__menu-root-item-link-drop-dropped': dropped}"
-            /></span>
-        </RouterLink>
-        <span v-else class="application__menu-root-item-link">
-            <span>{{ item.title }}<IconDropdown class="application__menu-root-item-link-drop" v-if="parent"
-                                                :class="{'application__menu-root-item-link-drop-dropped': dropped}"
-            /></span>
-        </span>
-
+        <div class="application__menu-root-item"
+             :class="{'application__menu-root-item-dropped': dropped}"
+             @click="toggle"
+             @mouseenter="mouseenter"
+        >
+            <span v-if="$slots.default" class="application__menu-root-item-link">
+                <slot/>
+            </span>
+            <RouterLink v-else-if="item.route" class="application__menu-root-item-link" :to="item.route">
+                <span>{{ item.title }}<IconDropdown class="application__menu-root-item-link-drop" v-if="parent"
+                                                    :class="{'application__menu-root-item-link-drop-dropped': dropped}"
+                /></span>
+            </RouterLink>
+            <span v-else class="application__menu-root-item-link">
+                <span>{{ item.title }}<IconDropdown class="application__menu-root-item-link-drop" v-if="parent"
+                                                    :class="{'application__menu-root-item-link-drop-dropped': dropped}"
+                /></span>
+            </span>
+        </div>
         <div v-if="parent" class="application__menu-root-submenu"
              :class="{'application__menu-root-submenu-right': right, 'application__menu-root-submenu-dropped': dropped}"
              :style="{left: right ? 'unset':leftAdjust + 'px', width: widthAdjust ? widthAdjust + 'px' : 'unset'}"
@@ -26,7 +28,9 @@
         >
             <ApplicationMenuItem v-for="menuItem in item.items"
                                  :item="menuItem"
+                                 :toggleState="toggle_state_internal"
                                  @clicked="clicked"
+                                 @hovered="internalHovered"
             />
         </div>
     </div>
@@ -61,6 +65,7 @@ const dropped = ref<boolean>(false);
 const leftAdjust = ref<number>(0);
 const widthAdjust = ref<number>(0);
 const subMenu = ref<HTMLDivElement | null>(null);
+const toggle_state_internal = ref<boolean>(false);
 
 // Hover handle
 let is_initiator: boolean = false;
@@ -70,6 +75,7 @@ watch(() => props.toggleState, () => {
         drop(false);
     }
     is_initiator = false;
+    toggle_state_internal.value = !toggle_state_internal.value;
 });
 
 watch(() => props.resizeState, () => {
@@ -106,6 +112,15 @@ function drop(state: boolean): void {
     adjust();
 }
 
+function hovered(): void {
+    is_initiator = true;
+    emit('hovered');
+}
+
+function internalHovered(): void {
+    toggle_state_internal.value = !toggle_state_internal.value;
+}
+
 // Adjust submenu position
 function adjust(): void {
     if (dropped.value) {
@@ -132,7 +147,7 @@ function adjust(): void {
 @import "@/variables.scss";
 
 .application__menu-root {
-    &-item {
+    &-item-wrapper {
         flex-grow: 0;
         font-family: $project_font;
         font-size: 14px;
@@ -140,7 +155,17 @@ function adjust(): void {
         color: $color-text-black;
         transition: color $animation $animation_time, background-color $animation $animation_time;
         display: flex;
+    }
+
+    &-item-wrapper:last-child > &-item > &-link {
+        border-right: 1px solid transparentize($color-gray-lighten-2, 0.5);
+    }
+
+    &-item {
         align-items: center;
+        height: 100%;
+        display: flex;
+        width: 100%;
 
         &-link {
             text-decoration: none;
@@ -167,10 +192,6 @@ function adjust(): void {
             }
         }
 
-        &:last-child > &-link {
-            border-right: 1px solid transparentize($color-gray-lighten-2, 0.5);
-        }
-
         &-link:hover {
             color: $color-default-lighten-1;
         }
@@ -190,7 +211,7 @@ function adjust(): void {
         transform: translateY(100%);
         background-color: $color-white;
         box-sizing: border-box;
-        padding: 5px 3px 7px 5px;
+        padding: 0;
         box-shadow: $shadow_1;
         border-radius: 0 0 2px 2px;
         min-width: 100%;
