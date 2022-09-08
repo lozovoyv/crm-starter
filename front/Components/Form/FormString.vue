@@ -25,7 +25,6 @@ import FieldString from "../Fields/FieldString.vue";
 import {Form} from "../../Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
-import InputString from "../Input/InputString.vue";
 
 const props = defineProps<{
     // common props

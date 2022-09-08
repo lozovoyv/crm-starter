@@ -11,9 +11,14 @@
                 <ApplicationMenu :menu="menu"/>
             </div>
             <div class="application__header-widgets"></div>
-            <div class="application__header-user-menu"></div>
+            <div class="application__header-user-menu">
+                <UserMenu :user="user">
+
+                </UserMenu>
+            </div>
         </div>
     </div>
+
     <div class="application__body">
         <RouterView/>
     </div>
@@ -30,6 +35,7 @@ import Logo from "./Logo.vue";
 import menuSrc from "./menu";
 import ApplicationMenu from "../Components/Layout/Menu/ApplicationMenu.vue";
 import {Menu} from "../Core/Types/Menu";
+import UserMenu from "../Components/Layout/UserMenu.vue";
 
 const store = useStore();
 const user = computed((): User => {
@@ -74,6 +80,7 @@ body, html {
             display: flex;
             flex-shrink: 1;
             flex-grow: 1;
+            height: 100%;
         }
 
         &-title {
@@ -122,6 +129,7 @@ body, html {
         }
 
         &-user-menu {
+
         }
     }
 

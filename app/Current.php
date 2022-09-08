@@ -65,6 +65,16 @@ class Current
     }
 
     /**
+     * Get current user email.
+     *
+     * @return  string|null
+     */
+    public function email(): ?string
+    {
+        return isset($this->user) ? $this->user->info->email : null;
+    }
+
+    /**
      * Get current user permissions.
      *
      * @return  array

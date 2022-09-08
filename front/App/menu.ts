@@ -11,6 +11,37 @@ const menu: Menu = [
         ]
     },
     {
+        title: 'Документы', items: [
+            {title: 'Реестр', route: {name: 'test21'}},
+            {
+                title: 'Финансы', items: [
+                    {title: 'Сметы', route: {name: 'test22'}},
+                    {title: 'Бюджет Доп. КР', route: {name: 'test23'}},
+                ]
+            },
+            {title: 'Контроль сроков документов', route: {name: 'test24'}},
+            {title: 'КПН Стандарты', route: {name: 'test25'}},
+            {title: 'КПН Протоколы', route: {name: 'test26'}},
+            {title: 'Журнал событий', route: {name: 'test27'}},
+            {title: 'Готовые формы', route: {name: 'test28'}},
+            {
+                title: 'Инструменты', items: [
+                    {title: 'Склеивание документов', route: {name: 'test29'}},
+                    {title: 'Массовая загрузка документов', route: {name: 'test30'}},
+                    {title: 'Копирование расписания', route: {name: 'test31'}},
+                    {
+                        title: 'Инвентарь', items: [
+                            {title: 'Инвентарь 1', route: {name: 'test32'}},
+                            {title: 'Инвентарь 2', route: {name: 'test32'}},
+                            {title: 'Инвентарь 3', route: {name: 'test32'}},
+                        ]
+                    },
+                ]
+            },
+            {title: 'Процедуры', route: {name: 'test33'}},
+        ]
+    },
+    {
         title: 'Группы', items: [
             {title: 'Группы', route: {name: 'test6'}},
             {title: 'Периоды обучения', route: {name: 'test7'}},
@@ -39,31 +70,6 @@ const menu: Menu = [
         title: 'Организации', items: [
             {title: 'Карточка организации', route: {name: 'test19'}},
             {title: 'Все организации', route: {name: 'test20'}},
-        ]
-    },
-    {
-        title: 'Документы', items: [
-            {title: 'Реестр', route: {name: 'test21'}},
-            {
-                title: 'Финансы', items: [
-                    {title: 'Сметы', route: {name: 'test22'}},
-                    {title: 'Бюджет Доп. КР', route: {name: 'test23'}},
-                ]
-            },
-            {title: 'Контроль сроков документов', route: {name: 'test24'}},
-            {title: 'КПН Стандарты', route: {name: 'test25'}},
-            {title: 'КПН Протоколы', route: {name: 'test26'}},
-            {title: 'Журнал событий', route: {name: 'test27'}},
-            {title: 'Готовые формы', route: {name: 'test28'}},
-            {
-                title: 'Инструменты', items: [
-                    {title: 'Склеивание документов', route: {name: 'test29'}},
-                    {title: 'Массовая загрузка документов', route: {name: 'test30'}},
-                    {title: 'Копирование расписания', route: {name: 'test31'}},
-                    {title: 'Инвентарь', route: {name: 'test32'}},
-                ]
-            },
-            {title: 'Процедуры', route: {name: 'test33'}},
         ]
     },
     {
