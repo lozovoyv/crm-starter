@@ -1,5 +1,5 @@
-import {File} from "../Classes/File";
-import {ImageFile} from "../Classes/ImageFile";
+import {File} from "@/Core/Classes/File";
+import {ImageFile} from "@/Core/Classes/ImageFile";
 
 /**
  * Get the size of an attribute.

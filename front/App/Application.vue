@@ -30,12 +30,12 @@
 <script setup lang="ts">
 import {useStore} from "vuex";
 import {computed} from "vue";
-import {User} from "../Core/Types/User";
-import Logo from "./Logo.vue";
-import menuSrc from "./menu";
-import ApplicationMenu from "../Components/Layout/Menu/ApplicationMenu.vue";
-import {Menu} from "../Core/Types/Menu";
-import UserMenu from "../Components/Layout/UserMenu.vue";
+import {User} from "@/Core/Types/User";
+import Logo from "@/App/Logo.vue";
+import menuSrc from "@/App/menu";
+import ApplicationMenu from "@/Components/Layout/Menu/ApplicationMenu.vue";
+import {Menu} from "@/Core/Types/Menu";
+import UserMenu from "@/Components/Layout/UserMenu.vue";
 
 const store = useStore();
 const user = computed((): User => {

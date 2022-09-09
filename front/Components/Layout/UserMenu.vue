@@ -32,9 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import {User} from "../../Core/Types/User";
-import IconUser from "../../Icons/IconUser.vue";
-import IconDropdown from "../../Icons/IconDropdown.vue";
+import {User} from "@/Core/Types/User";
+import IconUser from "@/Icons/IconUser.vue";
+import IconDropdown from "@/Icons/IconDropdown.vue";
 import {ref} from "vue";
 
 const props = defineProps<{

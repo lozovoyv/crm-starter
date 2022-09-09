@@ -1,5 +1,5 @@
-import empty from "../Helpers/Empty";
-import typeOf from "../Helpers/TypeOf";
+import empty from "@/Core/Helpers/Empty";
+import typeOf from "@/Core/Helpers/TypeOf";
 import {FieldRules} from "./ParseRules";
 import Localization from "./Localization";
 

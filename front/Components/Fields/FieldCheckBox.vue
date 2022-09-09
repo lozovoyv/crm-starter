@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import FieldWrapper from "./Helpers/FieldWrapper.vue";
-import InputCheckbox from "../Input/InputCheckbox.vue";
+import FieldWrapper from "@/Components/Fields/Helpers/FieldWrapper.vue";
+import InputCheckbox from "@/Components/Input/InputCheckbox.vue";
 import {computed} from "vue";
 
 const props = defineProps<{

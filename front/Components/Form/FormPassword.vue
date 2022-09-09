@@ -20,11 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import {Form} from "../../Core/Form";
+import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
-import FieldPassword from "../Fields/FieldPassword.vue";
-import InputString from "../Input/InputString.vue";
+import FieldPassword from "@/Components/Fields/FieldPassword.vue";
 
 const props = defineProps<{
     // common props

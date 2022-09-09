@@ -29,14 +29,14 @@
 <script setup lang="ts">
 import {useRouter, useRoute} from 'vue-router';
 import {onMounted, ref} from "vue";
-import {Form} from "../Core/Form";
-import dialog from "../Core/Dialog/Dialog";
-import LoadingProgress from "../Components/LoadingProgress.vue";
-import Logo from "./Logo.vue";
-import FormString from "../Components/Form/FormString.vue";
-import FormPassword from "../Components/Form/FormPassword.vue";
-import FormCheckBox from "../Components/Form/FormCheckBox.vue";
-import GuiButton from "../Components/GUI/GuiButton.vue";
+import {Form} from "@/Core/Form";
+import dialog from "@/Core/Dialog/Dialog";
+import LoadingProgress from "@/Components/LoadingProgress.vue";
+import Logo from "@/App/Logo.vue";
+import FormString from "@/Components/Form/FormString.vue";
+import FormPassword from "@/Components/Form/FormPassword.vue";
+import FormCheckBox from "@/Components/Form/FormCheckBox.vue";
+import GuiButton from "@/Components/GUI/GuiButton.vue";
 
 const props = defineProps<{
     message?: string,
@@ -92,7 +92,7 @@ function forgot() {
 </script>
 
 <style lang="scss">
-@import "../variables";
+@import "@/variables";
 
 .login {
     display: flex;

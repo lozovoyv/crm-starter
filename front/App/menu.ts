@@ -1,4 +1,4 @@
-import {Menu} from "../Core/Types/Menu";
+import {Menu} from "@/Core/Types/Menu";
 
 const menu: Menu = [
     {

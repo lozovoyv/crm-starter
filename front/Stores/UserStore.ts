@@ -1,8 +1,8 @@
 const getCurrentUserUrl = '/api/current';
 
 import {GetterTree, MutationTree, ActionTree} from "vuex"
-import {http} from "../Core/Http/Http";
-import {User} from "../Core/Types/User";
+import {http} from "@/Core/Http/Http";
+import {User} from "@/Core/Types/User";
 
 class State {
     user: User = null;

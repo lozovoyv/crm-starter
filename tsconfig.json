@@ -15,9 +15,7 @@
         "skipLibCheck": true,
         "noImplicitAny": true,
         "paths": {
-            "@": [
-                "front"
-            ]
+            "@/*": ["./*"],
         }
     },
     "exclude": [

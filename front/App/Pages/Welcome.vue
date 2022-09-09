@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import GuiButton from "../../Components/GUI/GuiButton.vue";
+import GuiButton from "@/Components/GUI/GuiButton.vue";
 import {useStore} from "vuex";
 const store = useStore();
 

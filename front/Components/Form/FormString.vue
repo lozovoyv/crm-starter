@@ -21,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import FieldString from "../Fields/FieldString.vue";
-import {Form} from "../../Core/Form";
+import FieldString from "@/Components/Fields/FieldString.vue";
+import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
 

@@ -30,11 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import {Menu, MenuItem} from "../../../Core/Types/Menu";
+import menu from "@/App/menu";
+import {Menu, MenuItem} from "@/Core/Types/Menu";
 import {computed, onMounted, ref} from "vue";
-import menu from "../../../App/menu";
-import ApplicationMenuRootItem from "./ApplicationMenuRootItem.vue";
-import IconBars from "../../../Icons/IconBars.vue";
+import ApplicationMenuRootItem from "@/Components/Layout/Menu/ApplicationMenuRootItem.vue";
+import IconBars from "@/Icons/IconBars.vue";
 
 const props = defineProps<{
     menu: Menu,

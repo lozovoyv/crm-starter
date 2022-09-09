@@ -28,7 +28,7 @@ function click() {
 
 <style lang="scss" scoped>
 @use "sass:math";
-@import "../../variables";
+@import "@/variables";
 
 $button_default_color: $color-white !default;
 $button_default_hover_color: $color-white !default;

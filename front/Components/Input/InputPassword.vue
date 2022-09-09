@@ -20,9 +20,9 @@
 
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import InputBox from "./Helpers/InputBox.vue";
-import IconEye from "../../Icons/IconEye.vue";
-import IconEyeSlash from "../../Icons/IconEyeSlash.vue";
+import InputBox from "@/Components/Input/Helpers/InputBox.vue";
+import IconEye from "@/Icons/IconEye.vue";
+import IconEyeSlash from "@/Icons/IconEyeSlash.vue";
 
 const props = defineProps<{
     // common props
@@ -79,7 +79,7 @@ defineExpose({
 
 <style lang="scss">
 @use "sass:math";
-@import "../../variables";
+@import "@/variables";
 
 $input_placeholder_color: $color-gray !default;
 $input_inner_button_color: $color-gray !default;

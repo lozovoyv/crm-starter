@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import IconCheck from "../../../Icons/IconCheck.vue";
+import IconCheck from "@/Icons/IconCheck.vue";
 import {computed} from "vue";
 
 const props = defineProps<{

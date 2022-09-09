@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import CheckBox from "./Helpers/CheckBox.vue";
+import CheckBox from "@/Components/Input/Helpers/CheckBox.vue";
 import {computed} from "vue";
 
 const props = defineProps<{

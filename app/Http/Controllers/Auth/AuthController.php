@@ -31,7 +31,7 @@ class AuthController extends ApiController
             'id' => $current->userId(),
             'name' => $current->userName(),
             'email' => $current->email(),
-            'avatar' => 'https://sun9-14.userapi.com/impg/8cwZ7jXcmQNkgVwyEiUz6OcyrXQI7frjvmh9Xg/4tfRdGRzawU.jpg?size=2560x1920&quality=95&sign=0c7f43da2f776a2453c246b3c6aa29b9&type=album',
+            'avatar' => null,
         ];
 
         return APIResponse::response([

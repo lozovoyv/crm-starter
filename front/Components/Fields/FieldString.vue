@@ -26,8 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import FieldWrapper from "./Helpers/FieldWrapper.vue";
-import InputString from "../Input/InputString.vue";
+import FieldWrapper from "@/Components/Fields/Helpers/FieldWrapper.vue";
+import InputString from "@/Components/Input/InputString.vue"
 import {computed, ref} from "vue";
 
 const props = defineProps<{

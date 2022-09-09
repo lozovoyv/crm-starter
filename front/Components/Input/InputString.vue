@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import InputBox from "./Helpers/InputBox.vue";
+import InputBox from "@/Components/Input/Helpers/InputBox.vue";
 
 const props = defineProps<{
     // common props
@@ -72,7 +72,7 @@ defineExpose({
 </script>
 
 <style lang="scss">
-@import "../../variables";
+@import "@/variables";
 
 $input_placeholder_color: #757575 !default;
 

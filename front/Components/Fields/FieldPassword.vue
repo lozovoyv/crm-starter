@@ -25,10 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import FieldWrapper from "./Helpers/FieldWrapper.vue";
 import {computed, ref} from "vue";
-import InputPassword from "../Input/InputPassword.vue";
-import InputString from "../Input/InputString.vue";
+import FieldWrapper from "@/Components/Fields/Helpers/FieldWrapper.vue";
+import InputPassword from "@/Components/Input/InputPassword.vue";
 
 const props = defineProps<{
     // common props

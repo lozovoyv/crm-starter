@@ -1,4 +1,4 @@
-import {Form} from "../../Core/Form";
+import {Form} from "@/Core/Form";
 
 export function getFromForm(form: Form, scope: 'titles' | 'values' | 'originals' | 'valid' | 'errors' | 'rules', name: string, defaults: any = null): any {
     if (!form.is_loaded) {

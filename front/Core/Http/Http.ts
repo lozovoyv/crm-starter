@@ -1,6 +1,6 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
-import dialog from "../Dialog/Dialog";
-import toaster from "../Toaster/Toaster";
+import dialog from "@/Core/Dialog/Dialog";
+import toaster from "@/Core/Toaster/Toaster";
 
 enum StatusCode {
     Unauthorized = 401,

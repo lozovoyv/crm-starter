@@ -1,4 +1,4 @@
-import empty from "../Helpers/Empty";
+import empty from "@/Core/Helpers/Empty";
 
 const Rules = function () {
     return {
