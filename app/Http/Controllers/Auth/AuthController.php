@@ -31,6 +31,7 @@ class AuthController extends ApiController
             'id' => $current->userId(),
             'name' => $current->userName(),
             'email' => $current->email(),
+            'organization' => null,
             'avatar' => null,
         ];
 

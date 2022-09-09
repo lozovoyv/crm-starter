@@ -5,16 +5,14 @@
                 <div class="application__header-title-logo">
                     <Logo/>
                 </div>
-                <div class="application__header-title-text">{{ user['organization'] }}</div>
+                <div v-if="organization" class="application__header-title-text">{{ organization }}</div>
             </router-link>
             <div class="application__header-menu">
                 <ApplicationMenu :menu="menu"/>
             </div>
             <div class="application__header-widgets"></div>
-            <div class="application__header-user-menu">
-                <UserMenu :user="user">
-
-                </UserMenu>
+            <div class="application__header-user-menu" v-if="user">
+                <UserMenu :user="user"></UserMenu>
             </div>
         </div>
     </div>
@@ -38,11 +36,14 @@ import {Menu} from "@/Core/Types/Menu";
 import UserMenu from "@/Components/Layout/UserMenu.vue";
 
 const store = useStore();
-const user = computed((): User => {
+const user = computed((): User | null => {
     return store.getters['user/user'];
 });
+const organization = computed((): string|null|undefined => {
+    return user.value?.organization;
+});
 const menu = computed((): Menu => {
-    // todo add menu filtering
+//     todo add menu filtering
     return menuSrc;
 })
 </script>
