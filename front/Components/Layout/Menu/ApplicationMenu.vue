@@ -44,6 +44,7 @@ const is_initialized = ref<boolean>(false);
 const is_expanded = ref<boolean>(false);
 const toggle_state = ref<boolean>(false);
 const resize_state = ref<boolean>(false);
+let is_initiator: boolean = false;
 
 const menuContainer = ref<HTMLDivElement | null>(null);
 const menuWidth = ref<number>(0);
@@ -105,6 +106,7 @@ const hiddenMenu = computed<MenuItem | null>((): MenuItem | null => {
 });
 
 function expand(expanded: boolean): void {
+    is_initiator = true;
     is_expanded.value = expanded;
 }
 
@@ -113,7 +115,9 @@ function hovered(): void {
 }
 
 function close(): void {
-    if (is_expanded.value) {
+    if (is_initiator) {
+        is_initiator = false;
+    } else if (is_expanded.value) {
         is_expanded.value = false;
         toggle_state.value = !toggle_state.value;
     }

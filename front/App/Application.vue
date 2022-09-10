@@ -12,7 +12,10 @@
             </div>
             <div class="application__header-widgets"></div>
             <div class="application__header-user-menu" v-if="user">
-                <UserMenu :user="user"></UserMenu>
+                <UserMenu :user="user">
+                    <span><IconUser/> Профиль</span>
+                    <span @click="logout"><IconExit/> Выход</span>
+                </UserMenu>
             </div>
         </div>
     </div>
@@ -34,18 +37,38 @@ import menuSrc from "@/App/menu";
 import ApplicationMenu from "@/Components/Layout/Menu/ApplicationMenu.vue";
 import {Menu} from "@/Core/Types/Menu";
 import UserMenu from "@/Components/Layout/UserMenu.vue";
+import IconUser from "@/Icons/IconUser.vue";
+import IconExit from "@/Icons/IconExit.vue";
+import dialog from "@/Core/Dialog/Dialog";
+import {http} from "@/Core/Http/Http";
+import toaster from "@/Core/Toaster/Toaster";
 
 const store = useStore();
 const user = computed((): User | null => {
     return store.getters['user/user'];
 });
-const organization = computed((): string|null|undefined => {
+const organization = computed((): string | null | undefined => {
     return user.value?.organization;
 });
 const menu = computed((): Menu => {
 //     todo add menu filtering
     return menuSrc;
 })
+
+function logout(): void {
+    dialog.show('Подтверждение', 'Выйти из системы?', [dialog.button('ok', 'Выйти', 'default'), dialog.button('cancel', 'Отмена')])
+        .then(result => {
+            if (result === 'ok') {
+                http.post('/api/logout', {})
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        toaster.error(error.response.data['message']);
+                    });
+            }
+        })
+}
 </script>
 
 <style lang="scss">

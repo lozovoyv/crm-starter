@@ -1,6 +1,6 @@
 <template>
     <div class="application__user-menu">
-        <div class="application__user-menu-button">
+        <div class="application__user-menu-button" @click="toggle">
             <div class="application__user-menu-button-avatar">
                 <div class="application__user-menu-button-avatar-wrapper">
                     <img v-if="user.avatar" :src="user.avatar" alt="avatar"/>
@@ -9,25 +9,25 @@
             </div>
             <div class="application__user-menu-button-name">
                 <div class="application__user-menu-button-name-title">{{ user.name }}</div>
-                <div class="application__user-menu-button-name-description">{{ user.email }}</div>
+                <div v-if="user.position" class="application__user-menu-button-name-description">{{ user.position }}</div>
             </div>
             <div class="application__user-menu-button-toggle">
                 <IconDropdown class="application__user-menu-button-toggle-icon" :class="{'application__user-menu-button-toggle-icon-dropped': dropped}"/>
             </div>
         </div>
-        <!--
-        <div class="application__user-menu-content">
-            <div class="application__user-menu-content-header">
-                <div class="application__user-menu-content-header-avatar"></div>
-                <div class="application__user-menu-content-header-name">
-                    <div class="application__user-menu-content-header-title">{{ user.name }}</div>
-                    <div class="application__user-menu-content-header-description">{{ user.email }}</div>
-                </div>
+        <div class="application__user-menu-content" :class="{'application__user-menu-content-shown': dropped}">
+            <div @click.stop="false">
+                <div v-if="user.organization" class="application__user-menu-content-organization">{{ user.organization }}</div>
+                <div v-if="user.position" class="application__user-menu-content-position">{{ user.position }}</div>
+                <div v-if="user.organization || user.position" class="application__user-menu-content-divider"/>
+                <div v-if="user.name" class="application__user-menu-content-title">{{ user.name }}</div>
+                <div v-if="user.email" class="application__user-menu-content-description">{{ user.email }}</div>
             </div>
-            <div class="application__user-menu-content-action">Профиль</div>
-            <div class="application__user-menu-content-action">Выход</div>
+            <div class="application__user-menu-content-divider"/>
+            <div class="application__user-menu-content-actions">
+                <slot/>
+            </div>
         </div>
-        -->
     </div>
 </template>
 
@@ -35,14 +35,36 @@
 import {User} from "@/Core/Types/User";
 import IconUser from "@/Icons/IconUser.vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
-import {ref} from "vue";
+import {nextTick, ref} from "vue";
 
 const props = defineProps<{
     user: User,
 }>();
 
 const dropped = ref<boolean>(false);
+let is_initiator: boolean = false;
 
+function toggle(): void {
+    dropped.value = !dropped.value;
+    if (dropped.value) {
+        is_initiator = true;
+        nextTick((): void => {
+            document.addEventListener('click', close, {passive: true, capture: false});
+        });
+    }
+}
+
+function close(): void {
+    if (is_initiator) {
+        is_initiator = false;
+    } else if (dropped.value) {
+        dropped.value = false;
+        nextTick((): void => {
+            document.removeEventListener('click', close);
+        });
+
+    }
+}
 </script>
 
 <style lang="scss">
@@ -62,7 +84,7 @@ $menu_height: $base_size_unit * 1.5;
         cursor: pointer;
         padding-right: 5px;
         transition: color $animation $animation_time;
-        color: $color-black;
+        color: $color-text-black;
 
         &:hover {
             color: $color-default-lighten-1;
@@ -93,7 +115,11 @@ $menu_height: $base_size_unit * 1.5;
         &-name {
             height: $menu_height;
             padding: 5px 5px 5px 0;
-
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            box-sizing: border-box;
+            flex-direction: column;
             @media screen and(max-width: 768px) {
                 display: none;
             }
@@ -138,30 +164,93 @@ $menu_height: $base_size_unit * 1.5;
         opacity: 0;
         visibility: hidden;
         position: absolute;
-        top: 0;
+        top: $menu_height;
         right: 0;
         background-color: $color-white;
         box-sizing: border-box;
-        padding: 0;
+        padding: 5px 10px 10px;
         box-shadow: $shadow_1;
-        border-radius: 2px;
+        border-radius: 0 0 2px 2px;
         z-index: 250;
+        font-family: $project_font;
+        color: $color-text-black;
+        cursor: default;
+        min-width: 200px;
 
-        &-header {
-            &-avatar {
-            }
-
-            &-name {
-            }
-
-            &-title {
-            }
-
-            &-description {
-            }
+        &:before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: $color-white;
         }
 
-        &-action {
+        &:after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 10px;
+            width: calc(100% - 20px);
+            height: 1px;
+            background-color: $color-gray-lighten-2;
+            opacity: 0.25;
+        }
+
+        &-shown {
+            opacity: 1;
+            visibility: visible;
+        }
+
+
+        &-organization {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        &-position {
+            font-size: 12px;
+            color: $color-gray-darken-1;
+        }
+
+        &-divider {
+            border-bottom: 1px solid transparentize($color-gray-lighten-2, 0.5);
+            margin: 5px 0 3px;
+        }
+
+        &-title {
+            font-size: 14px;
+        }
+
+        &-description {
+            font-size: 12px;
+            color: $color-gray-darken-1;
+        }
+
+        &-actions {
+            display: flex;
+            flex-direction: column;
+
+            & > * {
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                height: 22px;
+                cursor: pointer;
+                transition: color $animation $animation_time;
+                color: $color-text-black;
+
+                &:hover {
+                    color: $color-default-lighten-1;
+                }
+
+                & > svg {
+                    width: 14px;
+                    height: 14px;
+                    margin: 2px 3px 0 0;
+                }
+            }
         }
     }
 }

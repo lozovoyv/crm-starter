@@ -118,7 +118,7 @@ $input_dirty_color: transparentize($color-default-lighten-2, 0.9) !default;
 
     &__label {
         margin: 0 7px 0 7px;
-        font-size: 16px;
+        font-size: 15px;
         font-family: $project_font;
         display: inline-block;
         color: $input_color;

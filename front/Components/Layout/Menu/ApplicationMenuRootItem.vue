@@ -86,13 +86,12 @@ function mouseenter(): void {
     if (props.expanded && parent.value) {
         drop(true);
         is_initiator = true;
-        emit('hovered');
     }
+    emit('hovered');
 }
 
 // Local click handler
 function toggle(event: PointerEvent): void {
-    event.stopPropagation();
     if (parent.value) {
         drop(!dropped.value);
         emit('expand', dropped.value);
