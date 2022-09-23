@@ -13,8 +13,8 @@
                 </div>
                 <div class="login__divider"></div>
                 <div class="login__form">
-                    <FormString :form="form" name="username" :clearable="true" autocomplete="username" @keyup.enter="enter" ref="login_input"/>
-                    <FormPassword :form="form" name="password" :clearable="true" autocomplete="current-password" @keyup.enter="enter" ref="password_input"/>
+                    <FormString :form="form" name="username" autocomplete="username" @keyup.enter="enter" ref="login_input"/>
+                    <FormPassword :form="form" name="password" autocomplete="current-password" @keyup.enter="enter" ref="password_input"/>
                     <FormCheckBox :form="form" :name="'remember'"/>
                 </div>
                 <div class="login__actions">
@@ -126,7 +126,7 @@ function forgot() {
 
         &-text {
             font-family: $project_font;
-            color: $color-text-black;
+            color: $color_text_black;
             box-sizing: border-box;
             padding-left: 10px;
             flex-grow: 1;
@@ -165,7 +165,7 @@ function forgot() {
 
 .link {
     text-decoration: none;
-    color: $color-default;
+    color: $color_default;
     cursor: pointer;
     transition: color $animation $animation_time;
     font-family: $project_font;
@@ -176,7 +176,7 @@ function forgot() {
     }
 
     &:hover {
-        color: lighten($color-default, 5%);
+        color: lighten($color_default, 5%);
     }
 }
 </style>

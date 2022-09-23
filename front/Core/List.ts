@@ -1,14 +1,26 @@
 import clone from "./Helpers/Clone";
 import toaster from "./Toaster/Toaster";
 import {ErrorResponse, http} from "./Http/Http";
+import {LocalStore} from "@/Core/LocalStore";
 
-type ListPagination = {
+export type ListPagination = {
     current_page: number,
     last_page: number,
     from: number,
     to: number,
     total: number,
     per_page: number,
+}
+
+export type ListOptions = null | {
+    prefix: string,
+    without_pagination?: boolean,
+    without_toaster?: boolean,
+    remember?: {
+        pagination?: boolean,
+        filters?: Array<string>,
+        order?: boolean,
+    }
 }
 
 type ListResponse = {
@@ -21,7 +33,7 @@ type ListResponse = {
     pagination: ListPagination,
 }
 
-export class List {
+export class List<Type> {
 
     /** Url to load form data */
     load_url: string | null = null;
@@ -32,7 +44,7 @@ export class List {
     pagination: ListPagination | null = null;
 
     titles: { [index: string]: string } = {};
-    list: any[] = [];
+    list: Type[] = [];
     payload: { [index: string]: any } = {};
 
     filters: { [index: string]: any } = {};
@@ -44,6 +56,8 @@ export class List {
     order_by: string | null = null;
     order: 'asc' | 'desc' | null = null;
 
+    listOptions: ListOptions = null;
+
     is_loading: boolean = false;
     is_loaded: boolean = false;
     is_forbidden: boolean = false;
@@ -54,12 +68,13 @@ export class List {
     loaded_callback: ((list: object, titles: object, payload: object) => void) | null = null;
     load_failed_callback: ((code: number, message: string, response: ErrorResponse) => void) | null = null;
 
-    constructor(load_url: string | null, options: object = {}, pagination: boolean = true, use_toaster: boolean = true) {
+    constructor(load_url: string | null, options: object = {}, listOptions: ListOptions = null) {
         this.load_url = load_url;
         this.options = options;
-        this.use_toaster = use_toaster;
+        this.options = options;
+        this.listOptions = listOptions;
 
-        if (pagination) {
+        if (!listOptions || !listOptions.without_pagination) {
             this.pagination = {
                 current_page: 1,
                 last_page: 1,
@@ -68,6 +83,9 @@ export class List {
                 total: 0,
                 per_page: 10,
             };
+        }
+        if (!listOptions || !listOptions.without_toaster) {
+            this.use_toaster = false;
         }
     }
 
@@ -82,6 +100,35 @@ export class List {
      * Initial list load
      */
     initial() {
+        // get remembered filters
+        if (this.listOptions && this.listOptions.prefix && this.listOptions.remember) {
+            const prefix: string = this.listOptions.prefix;
+            if (this.listOptions.remember.pagination && this.pagination) {
+                this.pagination.per_page = Number(LocalStore.get(prefix + '::per_page'));
+            }
+            if (this.listOptions.remember.filters) {
+                let json: string | null = LocalStore.get(prefix + '::filters');
+                console.log(json);
+                if (json !== null) {
+                    let filters: { [index: string]: any } = JSON.parse(json);
+                    Object.keys(filters).map((key: string) => {
+                        this.filters[key] = filters[key];
+                    })
+                }
+            }
+            if (this.listOptions.remember.order) {
+                this.order_by = LocalStore.get(prefix + '::order_by');
+                let order = LocalStore.get(prefix + '::order');
+                if (order === 'asc') {
+                    this.order = 'asc';
+                } else if (order === 'desc') {
+                    this.order = 'desc';
+                } else {
+                    this.order = null;
+                }
+            }
+        }
+
         return this.load(1, null, true);
     }
 
@@ -112,6 +159,25 @@ export class List {
             options['page'] = page;
             options['per_page'] = perPage !== null ? perPage : (this.pagination ? this.pagination.per_page : null);
             options['initial'] = initial;
+
+            // remember options
+            if (this.listOptions && this.listOptions.prefix && this.listOptions.remember) {
+                const prefix: string = this.listOptions.prefix;
+                if (this.listOptions.remember.pagination && this.pagination) {
+                    LocalStore.set(prefix + '::per_page', options['per_page']);
+                }
+                if (this.listOptions.remember.filters) {
+                    let filters: { [index: string]: any } = {};
+                    this.listOptions.remember.filters.map((filter: string) => {
+                        filters[filter] = this.filters[filter];
+                    });
+                    LocalStore.set(prefix + '::filters', JSON.stringify(filters));
+                }
+                if (this.listOptions.remember.order) {
+                    LocalStore.set(prefix + '::order', options['order']);
+                    LocalStore.set(prefix + '::order_by', options['order_by']);
+                }
+            }
 
             http.post<ListResponse>(this.load_url, options)
                 .then(response => {

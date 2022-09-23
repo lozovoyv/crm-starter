@@ -1,5 +1,5 @@
 <template>
-    <LayoutPage title="Стартовая страница"></LayoutPage>
+    <LayoutPage title="Настройки системы"></LayoutPage>
 </template>
 
 <script setup lang="ts">

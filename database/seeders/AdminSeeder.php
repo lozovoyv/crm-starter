@@ -25,7 +25,7 @@ class AdminSeeder extends Seeder
             $admin->password = Hash::make('admin');
             $admin->save();
             $admin->info()->create(['lastname' => 'Администратор', 'firstname' => 'Администратор', 'gender' => 'male', 'email' => 'admin@admin.admin']);
-            // $admin->roles()->attach(Role::super);
+            // $admin->roles()->attach(PermissionRole::super);
         }
     }
 }

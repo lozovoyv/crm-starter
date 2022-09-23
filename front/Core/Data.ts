@@ -16,6 +16,7 @@ export class Data {
     is_loading: boolean = false;
     is_loaded: boolean = false;
     is_forbidden: boolean = false;
+    is_not_found: boolean = false;
 
     use_toaster: boolean = true;
 
@@ -33,10 +34,11 @@ export class Data {
      * Load data.
      *
      * @param options Options to pass to request.
+     * @param handleError
      *
      * @returns {Promise}
      */
-    load(options: { [index: string]: any } = {}) {
+    load(options: { [index: string]: any } = {}, handleError: boolean = false) {
         return new Promise((resolve: ((obj: { data: { [index: string]: any }, payload: { [index: string]: any } }) => void), reject: ((obj: { code: number, message: string, response: AxiosResponse | null }) => void)) => {
 
             if (this.load_url === null) {
@@ -61,18 +63,26 @@ export class Data {
                     }
                     this.is_loaded = true;
                     this.is_forbidden = false;
+                    this.is_not_found = false;
 
                     resolve({data: this.data, payload: this.payload});
                 })
                 .catch(error => {
-                    if(error.status !== 500) {
+                    this.is_forbidden = error.status === 403;
+                    this.is_not_found = error.status === 404;
+                    if ([403, 404, 500].indexOf(error.status) === -1) {
                         this.notify(error.data.message, 0, 'error');
                     }
-                    this.is_forbidden = error.response.status === 403;
                     if (typeof this.load_failed_callback === "function") {
-                        this.load_failed_callback(error.response.status, error.response.data.message, error.response);
+                        this.load_failed_callback(error.status, error.response.data.message, error.response);
                     }
-                    reject({code: error.response.status, message: error.response.data.message, response: error.response});
+                    if (handleError) {
+                        reject({
+                            code: error.status,
+                            message: error.response && error.response.data && error.response.data.message,
+                            response: error.response
+                        });
+                    }
                 })
                 .finally(() => {
                     this.is_loading = false;

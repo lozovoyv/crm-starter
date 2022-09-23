@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import {MenuItem} from "@/Core/Types/Menu";
-import {computed, defineEmits, nextTick, ref, watch} from "vue";
+import {computed, defineEmits, defineProps, nextTick, ref, watch} from "vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 import ApplicationMenuItem from "@/Components/Layout/Menu/ApplicationMenuItem.vue";
 
@@ -91,7 +91,7 @@ function mouseenter(): void {
 }
 
 // Local click handler
-function toggle(event: PointerEvent): void {
+function toggle(): void {
     if (parent.value) {
         drop(!dropped.value);
         emit('expand', dropped.value);
@@ -151,13 +151,13 @@ function adjust(): void {
         font-family: $project_font;
         font-size: 14px;
         position: relative;
-        color: $color-text-black;
+        color: $color_text_black;
         transition: color $animation $animation_time, background-color $animation $animation_time;
         display: flex;
     }
 
     &-item-wrapper:last-child > &-item > &-link {
-        border-right: 1px solid transparentize($color-gray-lighten-2, 0.5);
+        border-right: 1px solid transparentize($color_gray_lighten_2, 0.5);
     }
 
     &-item {
@@ -168,11 +168,11 @@ function adjust(): void {
 
         &-link {
             text-decoration: none;
-            color: $color-text-black;
+            color: $color_text_black;
             box-sizing: border-box;
             cursor: pointer;
             line-height: 100%;
-            border-left: 1px solid transparentize($color-gray-lighten-2, 0.5);
+            border-left: 1px solid transparentize($color_gray_lighten_2, 0.5);
             white-space: nowrap;
 
             & > span {
@@ -192,11 +192,11 @@ function adjust(): void {
         }
 
         &-link:hover {
-            color: $color-default-lighten-1;
+            color: $color_default_lighten_1;
         }
 
         &-link.router-link-exact-active {
-            color: $color-default;
+            color: $color_default;
         }
     }
 
@@ -208,7 +208,7 @@ function adjust(): void {
         left: 0;
         bottom: 0;
         transform: translateY(100%);
-        background-color: $color-white;
+        background-color: $color_white;
         box-sizing: border-box;
         padding: 0;
         box-shadow: $shadow_1;
@@ -223,7 +223,7 @@ function adjust(): void {
             left: 0;
             width: 100%;
             height: 2px;
-            background-color: $color-white;
+            background-color: $color_white;
         }
 
         &:after {
@@ -233,7 +233,7 @@ function adjust(): void {
             left: 10px;
             width: calc(100% - 20px);
             height: 1px;
-            background-color: $color-gray-lighten-2;
+            background-color: $color_gray_lighten_2;
             opacity: 0.25;
         }
 

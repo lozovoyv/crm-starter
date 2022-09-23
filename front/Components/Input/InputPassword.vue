@@ -81,9 +81,9 @@ defineExpose({
 @use "sass:math";
 @import "@/variables";
 
-$input_placeholder_color: $color-gray !default;
-$input_inner_button_color: $color-gray !default;
-$input_inner_button_hover_color: $color-default-lighten-1 !default;
+$input_placeholder_color: $color_gray !default;
+$input_inner_button_color: $color_gray !default;
+$input_inner_button_hover_color: $color_default_lighten_1 !default;
 
 .input-password {
     height: $base_size_unit + 2px;

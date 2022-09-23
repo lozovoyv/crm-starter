@@ -27,7 +27,7 @@ const props = defineProps<{
 @use "sass:math";
 @import "@/variables";
 
-$loader_background_color: transparentize($color-white, 0.5) !default;
+$loader_background_color: transparentize($color_white, 0.5) !default;
 $delta: 5%;
 $max_size: 80px;
 $loader_animation_time: 2s;

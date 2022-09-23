@@ -3,21 +3,49 @@
 namespace Database\Seeders\Seeders;
 
 use App\Models\Permissions\Permission;
+use App\Models\Permissions\PermissionModule;
 use Illuminate\Database\Seeder;
 
 class PermissionsSeeder extends Seeder
 {
-    protected array $permissions = [
-        'system' => [
-            //'system.settings' => ['name' => 'Просмотр и редактирование настроек системы', 'order' => 1],
-        ],
-        'dictionaries' => [
-            //'dictionaries.edit' => ['name' => 'Редактирование справочников', 'order' => 0],
-        ],
-        'roles' => [
-            //'roles.edit' => ['name' => 'Редактирование ролей', 'order' => 0],
-        ],
+    protected array $permissions = [];
+
+    protected array $modules = [
+        'system' => 'Система',
     ];
+
+    protected function permissions(): array
+    {
+        $this->add('system.settings', 'Изменение настроек системы', 'Пользователь, обладающий этим правом может менять системные настройки.');
+        $this->add('system.dictionaries', 'Редактирование справочников', 'Пользователь, обладающий этим правом может создавать, редактировать, удалять записи в системных справочниках.');
+        $this->add('system.roles', 'Редактирование ролей', 'Пользователь, обладающий этим правом может создавать, редактировать, удалять и настраивать роли.');
+
+        return $this->permissions;
+    }
+
+    /**
+     * Make permission record.
+     *
+     * @param string $key
+     * @param string $name
+     * @param string $description
+     *
+     * @return  void
+     */
+    protected function add(string $key, string $name, string $description): void
+    {
+        $module = explode('.', $key, 2)[0];
+        if (!isset($this->permissions[$module])) {
+            $this->permissions[$module] = [];
+        }
+        $this->permissions[$module][$key] = [
+            'key' => $key,
+            'module' => $module,
+            'name' => $name,
+            'description' => $description,
+            'order' => count($this->permissions[$module]) + 1,
+        ];
+    }
 
     /**
      * Run the database seeds.
@@ -26,13 +54,27 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        if (empty($this->permissions)) {
+        foreach ($this->modules as $moduleKey => $moduleName) {
+            /** @var PermissionModule|null $module */
+            $module = PermissionModule::query()->where('module', $moduleKey)->first();
+            if ($module === null) {
+                $module = new PermissionModule();
+            }
+            $module->name = $moduleName;
+            $module->module = $moduleKey;
+            $module->order = array_flip(array_keys($this->modules))[$moduleKey];
+            $module->save();
+        }
+
+        $permissionModules = $this->permissions();
+
+        if (empty($permissionModules)) {
             Permission::query()->delete();
 
         } else {
             $processed = [];
 
-            foreach ($this->permissions as $module => $permissions) {
+            foreach ($permissionModules as $module => $permissions) {
                 if (empty($permissions)) {
                     Permission::query()->where('module', $module)->delete();
                 } else {

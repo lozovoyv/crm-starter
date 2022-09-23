@@ -30,23 +30,23 @@ function click() {
 @use "sass:math";
 @import "@/variables";
 
-$button_default_color: $color-white !default;
-$button_default_hover_color: $color-white !default;
-$button_default_text_color: $color-text-black !default;
-$button_primary_color: $color-default !default;
-$button_primary_hover_color: lighten($color-default, 5%) !default;
-$button_primary_text_color: $color-white !default;
+$button_default_color: $color_white !default;
+$button_default_hover_color: $color_white !default;
+$button_default_text_color: $color_text_black !default;
+$button_primary_color: $color_default !default;
+$button_primary_hover_color: lighten($color_default, 5%) !default;
+$button_primary_text_color: $color_white !default;
 $button_success_color: $color-success-darken-1 !default;
 $button_success_hover_color: lighten($color-success-darken-1, 5%) !default;
-$button_success_text_color: $color-white !default;
+$button_success_text_color: $color_white !default;
 $button_info_color: $color-info-darken-1 !default;
 $button_info_hover_color: lighten($color-info-darken-1, 5%) !default;
-$button_info_text_color: $color-white !default;
+$button_info_text_color: $color_white !default;
 $button_error_color: $color-error-darken-1 !default;
 $button_error_hover_color: lighten($color-error-darken-1, 5%) !default;
-$button_error_text_color: $color-white !default;
-$button_disabled_color: $color-gray-darken-1 !default;
-$button_disabled_text_color: $color-white !default;
+$button_error_text_color: $color_white !default;
+$button_disabled_color: $color_gray_darken_1 !default;
+$button_disabled_text_color: $color_white !default;
 
 .button {
     text-rendering: geometricPrecision;

@@ -56,7 +56,7 @@ class UserInfo extends Model
     ];
 
     /**
-     * User this profile belongs to.
+     * User this info belongs to.
      *
      * @return  BelongsTo
      */

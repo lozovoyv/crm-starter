@@ -13,7 +13,7 @@
             <div class="application__header-widgets"></div>
             <div class="application__header-user-menu" v-if="user">
                 <UserMenu :user="user">
-                    <span><IconUser/> Профиль</span>
+                    <RouterLink :to="{name: 'profile'}"><IconUser/> Профиль</RouterLink>
                     <span @click="logout"><IconExit/> Выход</span>
                 </UserMenu>
             </div>
@@ -98,7 +98,7 @@ body, html {
         box-shadow: $shadow_1;
         flex-shrink: 0;
         flex-grow: 0;
-        background-color: $color-white;
+        background-color: $color_white;
 
         &-wrapper {
             display: flex;
@@ -134,7 +134,7 @@ body, html {
                 font-family: $project_font;
                 font-size: 16px;
                 font-weight: bold;
-                color: $color-text-black;
+                color: $color_text_black;
                 line-height: $header_height;
             }
 

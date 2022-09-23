@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property bool $locked
  * @property Collection $permissions
  */
-class Role extends Model
+class PermissionRole extends Model
 {
     /** @var int Id for super-admin role */
     public const super = 1;
@@ -38,6 +38,6 @@ class Role extends Model
      */
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'role_has_permission', 'role_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'permission_in_role', 'role_id', 'permission_id');
     }
 }

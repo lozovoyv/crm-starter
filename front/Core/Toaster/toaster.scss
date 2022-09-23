@@ -1,28 +1,28 @@
 @import "@/variables";
 
-$toast_color: $color-default-darken-1 !default;
-$toast_text_color: $color-white !default;
-$toast_close_border_color: transparentize($color-white, 0.7) !default;
-$toast_close_color: transparentize($color-white, 0.3) !default;
-$toast_close_hover_color: $color-white !default;
+$toast_color: $color_default_darken_1 !default;
+$toast_text_color: $color_white !default;
+$toast_close_border_color: transparentize($color_white, 0.7) !default;
+$toast_close_color: transparentize($color_white, 0.3) !default;
+$toast_close_hover_color: $color_white !default;
 
 $toast_success_color: $color-success-darken-1 !default;
-$toast_success_text_color: $color-white !default;
-$toast_success_close_border_color: transparentize($color-white, 0.7) !default;
-$toast_success_close_color: transparentize($color-white, 0.3) !default;
-$toast_success_close_hover_color: $color-white !default;
+$toast_success_text_color: $color_white !default;
+$toast_success_close_border_color: transparentize($color_white, 0.7) !default;
+$toast_success_close_color: transparentize($color_white, 0.3) !default;
+$toast_success_close_hover_color: $color_white !default;
 
 $toast_info_color: $color-info-darken-1 !default;
-$toast_info_text_color: $color-white !default;
-$toast_info_close_border_color: transparentize($color-white, 0.7) !default;
-$toast_info_close_color: transparentize($color-white, 0.3) !default;
-$toast_info_close_hover_color: $color-white !default;
+$toast_info_text_color: $color_white !default;
+$toast_info_close_border_color: transparentize($color_white, 0.7) !default;
+$toast_info_close_color: transparentize($color_white, 0.3) !default;
+$toast_info_close_hover_color: $color_white !default;
 
 $toast_error_color: $color-error-darken-1 !default;
-$toast_error_text_color: $color-white !default;
-$toast_error_close_border_color: transparentize($color-white, 0.7) !default;
-$toast_error_close_color: transparentize($color-white, 0.3) !default;
-$toast_error_close_hover_color: $color-white !default;
+$toast_error_text_color: $color_white !default;
+$toast_error_close_border_color: transparentize($color_white, 0.7) !default;
+$toast_error_close_color: transparentize($color_white, 0.3) !default;
+$toast_error_close_hover_color: $color_white !default;
 
 $toast: (
     xxs: (min-width: 100%, max-width: 100%),

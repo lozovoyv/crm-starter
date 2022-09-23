@@ -29,7 +29,7 @@ const props = defineProps<{
 <style lang="scss">
 @import "@/variables";
 
-$field_title_color: $color-text-black !default;
+$field_title_color: $color_text_black !default;
 $field_required_color: $color-error !default;
 $field_error_color: $color-error !default;
 

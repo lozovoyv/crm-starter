@@ -18,11 +18,15 @@ class CreatePermissionsTable extends Migration
             $table->unsignedSmallInteger('id', true);
 
             $table->string('key')->unique();
-            $table->string('module');
-            $table->string('name');
+            $table->string('module')->nullable();
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
+
             $table->unsignedSmallInteger('order')->nullable()->default(0);
 
             $table->timestamps();
+
+            $table->foreign('module')->references('module')->on('permission_modules')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

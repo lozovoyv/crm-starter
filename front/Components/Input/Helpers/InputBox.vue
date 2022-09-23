@@ -48,15 +48,15 @@ function clear() {
 @use "sass:math";
 @import "@/variables.scss";
 
-$input_color: $color-text-black !default;
-$input_hover_color: $color-default-lighten-2 !default;
-$input_active_color: $color-default-lighten-1 !default;
-$input_background_color: $color-white !default;
+$input_color: $color_text_black !default;
+$input_hover_color: $color_default_lighten_2 !default;
+$input_active_color: $color_default_lighten_1 !default;
+$input_background_color: $color_white !default;
 $input_error_color: $color-error !default;
-$input_border_color: $color-gray-lighten-1 !default;
-$input_dirty_color: transparentize($color-default-lighten-2, 0.9) !default;
-$input_disabled_color: $color-gray !default;
-$input_disabled_background_color: transparentize($color-gray, 0.9) !default;
+$input_border_color: $color_gray_lighten_1 !default;
+$input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
+$input_disabled_color: $color_gray !default;
+$input_disabled_background_color: transparentize($color_gray, 0.9) !default;
 $input_clear_color: $color-error !default;
 
 .input-box {

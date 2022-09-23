@@ -84,10 +84,10 @@ $menu_height: $base_size_unit * 1.5;
         cursor: pointer;
         padding-right: 5px;
         transition: color $animation $animation_time;
-        color: $color-text-black;
+        color: $color_text_black;
 
         &:hover {
-            color: $color-default-lighten-1;
+            color: $color_default_lighten_1;
         }
 
         &-avatar {
@@ -96,7 +96,7 @@ $menu_height: $base_size_unit * 1.5;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: $color-gray-lighten-1;
+            color: $color_gray_lighten_1;
 
             &-wrapper {
                 width: 80%;
@@ -166,14 +166,14 @@ $menu_height: $base_size_unit * 1.5;
         position: absolute;
         top: $menu_height;
         right: 0;
-        background-color: $color-white;
+        background-color: $color_white;
         box-sizing: border-box;
         padding: 5px 10px 10px;
         box-shadow: $shadow_1;
         border-radius: 0 0 2px 2px;
         z-index: 250;
         font-family: $project_font;
-        color: $color-text-black;
+        color: $color_text_black;
         cursor: default;
         min-width: 200px;
 
@@ -184,7 +184,7 @@ $menu_height: $base_size_unit * 1.5;
             left: 0;
             width: 100%;
             height: 2px;
-            background-color: $color-white;
+            background-color: $color_white;
         }
 
         &:after {
@@ -194,7 +194,7 @@ $menu_height: $base_size_unit * 1.5;
             left: 10px;
             width: calc(100% - 20px);
             height: 1px;
-            background-color: $color-gray-lighten-2;
+            background-color: $color_gray_lighten_2;
             opacity: 0.25;
         }
 
@@ -211,11 +211,11 @@ $menu_height: $base_size_unit * 1.5;
 
         &-position {
             font-size: 12px;
-            color: $color-gray-darken-1;
+            color: $color_gray_darken_1;
         }
 
         &-divider {
-            border-bottom: 1px solid transparentize($color-gray-lighten-2, 0.5);
+            border-bottom: 1px solid transparentize($color_gray_lighten_2, 0.5);
             margin: 5px 0 3px;
         }
 
@@ -225,7 +225,7 @@ $menu_height: $base_size_unit * 1.5;
 
         &-description {
             font-size: 12px;
-            color: $color-gray-darken-1;
+            color: $color_gray_darken_1;
         }
 
         &-actions {
@@ -239,10 +239,11 @@ $menu_height: $base_size_unit * 1.5;
                 height: 22px;
                 cursor: pointer;
                 transition: color $animation $animation_time;
-                color: $color-text-black;
+                color: $color_text_black;
+                text-decoration: none;
 
                 &:hover {
-                    color: $color-default-lighten-1;
+                    color: $color_default_lighten_1;
                 }
 
                 & > svg {

@@ -4,14 +4,14 @@ namespace App\Traits;
 
 use App\Models\Model;
 use App\Models\Permissions\Permission;
-use App\Models\Permissions\Role;
+use App\Models\Permissions\PermissionRole;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 /**
  * @mixin  Model
  */
-class HasPermissions
+trait HasPermissions
 {
     /** @var array|null Permissions cache. */
     private ?array $permissionsCache = null;
@@ -43,7 +43,7 @@ class HasPermissions
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(
-            Role::class,
+            PermissionRole::class,
             $this->getName('rolePivotTable', '_has_role'),
             $this->getName('rolePivotColumn', '_id'),
             'role_id'
@@ -81,12 +81,12 @@ class HasPermissions
 
         $this->permissionsCache = [];
 
-        if ($this->roles()->whereIn('id', [Role::super])->count() > 0) {
+        if ($this->roles()->whereIn('id', [PermissionRole::super])->count() > 0) {
             $permissions = Permission::query()->get();
         } else {
             $roles = $this->roles()->with('permissions')->get();
             foreach ($roles as $role) {
-                /** @var Role $role */
+                /** @var PermissionRole $role */
                 foreach ($role->permissions as $permission) {
                     /** @var Permission $permission */
                     $this->permissionsCache[$permission->id] = $permission->key;
@@ -117,7 +117,7 @@ class HasPermissions
             return true;
         }
 
-        if ($this->roles()->whereIn('id', [Role::super])->count() > 0) {
+        if ($this->roles()->whereIn('id', [PermissionRole::super])->count() > 0) {
             return true;
         }
 

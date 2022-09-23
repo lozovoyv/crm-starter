@@ -1,33 +1,33 @@
 @use "sass:math";
 @import "@/variables";
 
-$dialog_background: $color-white !default;
+$dialog_background: $color_white !default;
 
-$dialog_default_color: $color-default !default;
+$dialog_default_color: $color_default !default;
 $dialog_success_color: $color-success !default;
 $dialog_info_color: $color-info !default;
 $dialog_error_color: $color-error !default;
 
-$dialog_button_default_color: $color-white !default;
-$dialog_button_default_hover_color: $color-white !default;
-$dialog_button_default_text_color: $color-text-black !default;
-$dialog_button_primary_color: $color-default !default;
-$dialog_button_primary_hover_color: lighten($color-default, 5%) !default;
-$dialog_button_primary_text_color: $color-white !default;
+$dialog_button_default_color: $color_white !default;
+$dialog_button_default_hover_color: $color_white !default;
+$dialog_button_default_text_color: $color_text_black !default;
+$dialog_button_primary_color: $color_default !default;
+$dialog_button_primary_hover_color: lighten($color_default, 5%) !default;
+$dialog_button_primary_text_color: $color_white !default;
 $dialog_button_success_color: $color-success-darken-1 !default;
 $dialog_button_success_hover_color: lighten($color-success-darken-1, 5%) !default;
-$dialog_button_success_text_color: $color-white !default;
+$dialog_button_success_text_color: $color_white !default;
 $dialog_button_info_color: $color-info-darken-1 !default;
 $dialog_button_info_hover_color: lighten($color-info-darken-1, 5%) !default;
-$dialog_button_info_text_color: $color-white !default;
+$dialog_button_info_text_color: $color_white !default;
 $dialog_button_error_color: $color-error-darken-1 !default;
 $dialog_button_error_hover_color: lighten($color-error-darken-1, 5%) !default;
-$dialog_button_error_text_color: $color-white !default;
+$dialog_button_error_text_color: $color_white !default;
 
-$dialog_divider_color: transparentize($color-gray-lighten-2, 0.5) !default;
+$dialog_divider_color: transparentize($color_gray_lighten_2, 0.5) !default;
 
-$dialog_scroll_thumb_color: $color-gray-darken-1 !default;
-$dialog_scroll_track_color: $color-white !default;
+$dialog_scroll_thumb_color: $color_gray_darken_1 !default;
+$dialog_scroll_track_color: $color_white !default;
 
 .dialog {
     &__overlay {
@@ -77,7 +77,7 @@ $dialog_scroll_track_color: $color-white !default;
     &__window {
         text-align: left;
         display: inline-block;
-        background-color: $color-white;
+        background-color: $color_white;
         border-radius: 2px;
         box-sizing: border-box;
         padding: 20px;

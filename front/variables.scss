@@ -1,8 +1,8 @@
-$color-default-lighten-2: #6DA6DD; //#4B7DDF;
-$color-default-lighten-1: #3581CB; //#1359E4;
-$color-default: #0c6dcb; //#0540B4;
-$color-default-darken-1: #0b57a1; //#042F84;
-$color-default-darken-2: #032C52; //#021E55;
+$color_default_lighten_2: #6DA6DD; //#4B7DDF;
+$color_default_lighten_1: #3581CB; //#1359E4;
+$color_default: #0c6dcb; //#0540B4;
+$color_default_darken_1: #0b57a1; //#042F84;
+$color_default_darken_2: #032C52; //#021E55;
 
 $color-success-lighten-2: #3EDF49;
 $color-success-lighten-1: #00E20F;
@@ -22,15 +22,15 @@ $color-error: #FF1E00;
 $color-error-darken-1: #C91700;
 $color-error-darken-2: #6B0C00;
 
-$color-gray-lighten-2: #d7d7d7;
-$color-gray-lighten-1: #bdbdbd;
-$color-gray: #858585;
-$color-gray-darken-1: #656565;
-$color-gray-darken-2: #444444;
+$color_gray_lighten_2: #d7d7d7;
+$color_gray_lighten_1: #bdbdbd;
+$color_gray: #858585;
+$color_gray_darken_1: #656565;
+$color_gray_darken_2: #444444;
 
-$color-white: #FFFFFF;
-$color-black: #101010;
-$color-text-black: #2f2f2f;
+$color_white: #FFFFFF;
+$color_black: #101010;
+$color_text_black: #2f2f2f;
 
 @import "./assets/fonts/source-sans-pro";
 $project_font: 'Source Sans Pro';

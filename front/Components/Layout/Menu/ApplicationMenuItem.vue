@@ -83,14 +83,14 @@ function clicked(): void {
         font-family: $project_font;
         font-size: 14px;
         position: relative;
-        color: $color-text-black;
+        color: $color_text_black;
         transition: color $animation $animation_time, background-color $animation $animation_time;
         display: flex;
         align-items: center;
 
         &-link {
             text-decoration: none;
-            color: $color-text-black;
+            color: $color_text_black;
             box-sizing: border-box;
             cursor: pointer;
             white-space: nowrap;
@@ -124,11 +124,11 @@ function clicked(): void {
         }
 
         &-link:hover {
-            color: $color-default-lighten-1;
+            color: $color_default_lighten_1;
         }
 
         &-link.router-link-exact-active {
-            color: $color-default;
+            color: $color_default;
         }
     }
 
@@ -140,7 +140,7 @@ function clicked(): void {
         top: 0;
         right: 3px;
         transform: translateX(100%);
-        background-color: $color-white;
+        background-color: $color_white;
         box-sizing: border-box;
         padding: 0;
         box-shadow: $shadow_1;

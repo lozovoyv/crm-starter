@@ -11,9 +11,9 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     protected array $seeders = [
-        UserStatusesSeeder::class,
-        RolesSeeder::class,
         PermissionsSeeder::class,
+        RolesSeeder::class,
+        UserStatusesSeeder::class,
     ];
 
     /**
