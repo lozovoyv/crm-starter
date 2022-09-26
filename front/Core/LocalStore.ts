@@ -2,7 +2,6 @@ class LocalStore {
 
     static get(key: string): string | null {
         let value: string | null = localStorage.getItem(key);
-        console.log(key, value);
         return value === '' ? null : value;
     }
 

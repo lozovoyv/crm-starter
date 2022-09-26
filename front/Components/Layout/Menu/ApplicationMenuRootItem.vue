@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import {MenuItem} from "@/Core/Types/Menu";
-import {computed, defineEmits, defineProps, nextTick, ref, watch} from "vue";
+import {computed, nextTick, ref, watch} from "vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 import ApplicationMenuItem from "@/Components/Layout/Menu/ApplicationMenuItem.vue";
 

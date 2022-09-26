@@ -108,7 +108,6 @@ export class List<Type> {
             }
             if (this.listOptions.remember.filters) {
                 let json: string | null = LocalStore.get(prefix + '::filters');
-                console.log(json);
                 if (json !== null) {
                     let filters: { [index: string]: any } = JSON.parse(json);
                     Object.keys(filters).map((key: string) => {

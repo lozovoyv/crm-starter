@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import {MenuItem} from "@/Core/Types/Menu";
-import {computed, defineEmits, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 
 const props = defineProps<{

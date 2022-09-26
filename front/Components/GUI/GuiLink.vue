@@ -1,15 +1,21 @@
 <template>
-    <router-link v-if="route" class="route-link" :to="route">{{ name }}</router-link>
-    <span v-else class="route-link">{{ name }}</span>
+    <router-link v-if="route" class="route-link" :class="{'route-link__underline': underline}" :to="route">
+        <slot v-if="$slots.default"/>
+        <template v-else>{{ name }}</template>
+    </router-link>
+    <span v-else class="route-link" :class="{'route-link__underline': underline}">
+        <slot v-if="$slots.default"/>
+        <template v-else>{{ name }}</template>
+    </span>
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
 import {RouteRecordRaw} from "vue-router";
 
 const props = defineProps<{
     name?: string,
-    route?: RouteRecordRaw
+    route?: RouteRecordRaw,
+    underline?: boolean,
 }>();
 </script>
 
@@ -24,6 +30,10 @@ const props = defineProps<{
     text-decoration: none;
     cursor: pointer;
     transition: color $animation $animation_time;
+
+    &__underline {
+        text-decoration: underline;
+    }
 
     &:hover {
         color: $color_default_lighten_1;

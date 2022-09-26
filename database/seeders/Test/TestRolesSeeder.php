@@ -9,7 +9,8 @@ class TestRolesSeeder extends GenericSeeder
 {
     public function run(): void
     {
-        foreach (range(1, 30) as $index) {
+        $i = 90;
+        foreach (range(101 + $i, 110 + $i) as $index) {
             $role = new PermissionRole;
             $role->name = 'Роль №'.$index;
             $role->save();

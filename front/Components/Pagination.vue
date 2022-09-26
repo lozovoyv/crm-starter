@@ -1,34 +1,31 @@
 <template>
     <div class="pagination" v-if="pagination">
-
-        <span class="pagination__shown">Показано {{ shown }} из {{ pagination.total }}</span>
-
-        <div class="pagination__per-page">
-            <div class="pagination__per-page-select">
-<!--                <InputDropDown-->
-<!--                    :options="options"-->
-<!--                    v-model="perPage"-->
-<!--                    :original="10"-->
-<!--                    :top="true"-->
-<!--                    :small="true"-->
-<!--                />-->
-                {{ perPage }}
+        <div class="pagination__info">
+            <span class="pagination__info-shown">Показано: {{ shown }} из {{ pagination.total }},</span>
+            <div class="pagination__info-per-page">
+                <div class="pagination__info-per-page-select">
+                    <GuiLink :underline="true" @click="toggle">{{ perPage }}</GuiLink>
+                    <div class="pagination__info-per-page-select-options" :class="{'pagination__info-per-page-select-options-shown': showOptions}">
+                        <div class="pagination__info-per-page-select-options-option" v-for="option in optionsList"
+                             :class="{'pagination__info-per-page-select-options-option-selected': option === perPage}"
+                             @click="perPage = option"
+                        >{{ option }}
+                        </div>
+                    </div>
+                </div>
+                <span class="pagination__info-per-page-text">на страницу</span>
             </div>
-            <span class="pagination__per-page-text">на страницу</span>
         </div>
 
         <div class="pagination__links">
-
-            <span class="pagination__links-button pagination__links-button-icon"
-                  :class="{'pagination__links-button-link' : pagination.current_page !== 1}"
-                  @click="setPage(1, pagination.per_page)"><IconBackwardFast/></span>
-
             <span class="pagination__links-button pagination__links-button-icon"
                   :class="{'pagination__links-button-link' : pagination.current_page !== 1}"
                   @click="setPage(pagination.current_page - 1, pagination.per_page)"><IconBackward/></span>
-
-            <span class="pagination__links-spacer"><span v-if="hasBefore">...</span></span>
-
+            <span class="pagination__links-button" v-if="pagination.last_page > 1 && isLong"
+                  :class="{'pagination__links-button-link-active': pagination.current_page === 1, 'pagination__links-button-link': pagination.last_page > 1}"
+                  @click="setPage(1, pagination.per_page)"
+            >{{ 1 }}</span>
+            <span class="pagination__links-spacer" v-if="hasBefore"><span>...</span></span>
             <span class="pagination__links-button" v-for="page in pages"
                   :class="{
                     'pagination__links-button-link-active': page === pagination.current_page && pagination.last_page > 1,
@@ -37,40 +34,61 @@
                   :key="page"
                   @click="setPage(page, pagination.per_page)"
             >{{ page }}</span>
-
-            <span class="pagination__links-spacer"><span v-if="hasAfter">...</span></span>
-
+            <span class="pagination__links-spacer" v-if="hasAfter"><span>...</span></span>
+            <span class="pagination__links-button pagination__links-button-link" v-if="pagination.last_page > 1 && isLong"
+                  :class="{'pagination__links-button-link-active': pagination.current_page === pagination.last_page}"
+                  @click="setPage(pagination.last_page, pagination.per_page)"
+            >{{ pagination.last_page }}</span>
             <span class="pagination__links-button pagination__links-button-icon"
                   :class="{'pagination__links-button-link' : pagination.current_page !== pagination.last_page}"
                   @click="setPage(pagination.current_page + 1, pagination.per_page)"><IconForward/></span>
-
-            <span class="pagination__links-button pagination__links-button-icon"
-                  :class="{'pagination__links-button-link' : pagination.current_page !== pagination.last_page}"
-                  @click="setPage(pagination.last_page, pagination.per_page)"><IconForwardFast/></span>
         </div>
-
     </div>
 </template>
 
 <script setup lang="ts">
 import {ListPagination} from "@/Core/List";
-import {computed} from "vue";
-import IconBackwardFast from "@/Icons/IconBackwardFast.vue";
+import {computed, ref} from "vue";
 import IconBackward from "@/Icons/IconBackward.vue";
 import IconForward from "@/Icons/IconForward.vue";
-import IconForwardFast from "@/Icons/IconForwardFast.vue";
-
+import GuiLink from "@/Components/GUI/GuiLink.vue";
 
 const props = defineProps<{
     pagination?: ListPagination,
-    options?: Array<Number>,
+    options?: Array<number>,
 }>();
 
 const emit = defineEmits<{
     (e: 'pagination', page: Number, perPage: Number): void,
 }>()
 
-const max_links: number = 7;
+const optionsList = computed((): Array<number> => {
+    if (typeof props.options !== "undefined") return props.options;
+    return [10, 25, 50, 100, 250];
+});
+
+const showOptions = ref<boolean>(false);
+
+function toggle() {
+    if (showOptions.value === true) {
+        showOptions.value = false;
+        setTimeout(() => {
+            window.removeEventListener('click', close);
+        }, 100);
+    } else {
+        showOptions.value = true;
+        setTimeout(() => {
+            window.addEventListener('click', close);
+        }, 100);
+    }
+}
+
+function close() {
+    window.removeEventListener('click', close);
+    showOptions.value = false;
+}
+
+const max_links: number = 6;
 
 const shown = computed((): string => {
     if (typeof props.pagination === "undefined") return '—';
@@ -81,32 +99,36 @@ const pages = computed((): Array<number> => {
     let pages: Array<number> = [];
     if (typeof props.pagination === "undefined") return pages;
 
-    if (props.pagination.last_page <= max_links) {
+    if (props.pagination.last_page - 2 <= max_links) {
         for (let i: number = 1; i <= props.pagination.last_page; i++) {
             pages.push(i);
         }
     } else {
-        let start: number = props.pagination.current_page - Math.floor(max_links / 2);
-        if (start < 1) {
-            start = 1;
+        let start: number = props.pagination.current_page - Math.floor(max_links / 2) + 1;
+        if (start < 2) {
+            start = 2;
         }
         if (start + max_links > props.pagination.last_page) {
             start = props.pagination.last_page - max_links + 1;
         }
-        for (let i: number = start; i < start + max_links; i++) {
+        for (let i: number = start; i < start + max_links - 1; i++) {
             pages.push(i);
         }
     }
     return pages;
 })
 
+const isLong = computed((): boolean => {
+    return typeof props.pagination !== "undefined" && props.pagination.last_page - 2 > max_links;
+});
+
 const hasBefore = computed((): boolean => {
-    return typeof props.pagination !== 'undefined' && (props.pagination.last_page > max_links) && (props.pagination.current_page - Math.floor(max_links / 2) > 1);
+    return typeof props.pagination !== 'undefined' && (props.pagination.last_page - 2 > max_links) && (props.pagination.current_page - Math.floor(max_links / 2) > 1);
 });
 
 
 const hasAfter = computed((): boolean => {
-    return typeof props.pagination !== 'undefined' && (props.pagination.last_page > max_links) && (props.pagination.current_page - Math.floor(max_links / 2) + max_links - 1 < props.pagination.last_page);
+    return typeof props.pagination !== 'undefined' && (props.pagination.last_page - 2 > max_links) && (props.pagination.current_page - Math.floor(max_links / 2) + max_links < props.pagination.last_page);
 });
 
 const perPage = computed({
@@ -133,51 +155,96 @@ function setPage(page: number, perPage: number): void {
 @use "sass:math";
 @import "@/variables.scss";
 
-$project_font: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !default;
-$animation_time: 150ms !default;
-$animation: cubic-bezier(0.24, 0.19, 0.28, 1.29) !default;
-$base_size_unit: 35px !default;
-$base_white_color: #ffffff !default;
-$base_primary_color: #0D74D7 !default;
-$base_primary_hover_color: lighten(#0D74D7, 10%) !default;
-$base_black_color: #1e1e1e !default;
-$base_gray_color: #8f8f8f !default;
-$base_light_gray_color: #e5e5e5 !default;
-$base_lightest_gray_color: #f7f7f7 !default;
-
 .pagination {
     display: flex;
-    flex-direction: row;
-    height: $base_size_unit;
+    flex-direction: column;
     margin-top: 20px;
     @include no_selection;
 
-    &__shown, &__per-page {
-        flex-grow: 0;
-        flex-shrink: 0;
-        font-family: $project_font;
-        line-height: $base_size_unit;
-        font-size: 14px;
-        padding-right: 15px;
-    }
-
-    &__per-page {
+    &__info {
         display: flex;
-        flex-direction: row;
+        justify-content: center;
+        box-sizing: border-box;
+        margin: 8px 0;
 
-        &-select {
-            margin-right: 10px;
+        &-shown, &-per-page {
+            flex-grow: 0;
+            flex-shrink: 0;
+            font-family: $project_font;
+            font-size: 14px;
         }
 
-        &-text {
+        &-shown {
+            padding-right: 5px;
+        }
 
+        &-per-page {
+            display: flex;
+            flex-direction: row;
+
+            &-select {
+                margin-right: 5px;
+                position: relative;
+
+                &-options {
+                    position: absolute;
+                    left: 50%;
+                    top: -5px;
+                    transform: translate(-50%, -100%);
+                    display: flex;
+                    flex-direction: column-reverse;
+                    box-shadow: $shadow_1;
+                    border-radius: 2px;
+                    background-color: $color_white;
+                    box-sizing: border-box;
+                    padding: 6px 12px;
+                    transition: opacity $animation $animation_time, visibility $animation $animation_time;
+                    opacity: 0;
+                    visibility: hidden;
+
+                    &:before {
+                        content: '';
+                        display: block;
+                        background-color: $color_white;
+                        width: 6px;
+                        height: 6px;
+                        position: absolute;
+                        left: 50%;
+                        bottom: -4px;
+                        transform: translate(-50%, 0) rotate(45deg);
+                        border-color: #e9e9e9;
+                        border-style: solid;
+                        border-width: 0 1px 1px 0;
+                    }
+
+                    &-shown {
+                        opacity: 1;
+                        visibility: visible;
+                    }
+
+                    &-option {
+                        text-align: center;
+                        cursor: pointer;
+                        transition: color $animation $animation_time;
+                        line-height: 20px;
+
+                        &:hover, &-selected {
+                            color: $color_default;
+                        }
+                    }
+                }
+            }
+
+            &-text {
+
+            }
         }
     }
 
     &__links {
         flex-grow: 1;
         display: flex;
-        justify-content: right;
+        justify-content: center;
         line-height: $base_size_unit;
         font-family: $project_font;
 
@@ -187,7 +254,7 @@ $base_lightest_gray_color: #f7f7f7 !default;
             line-height: $base_size_unit;
             text-align: center;
             cursor: default;
-            color: $base_gray_color;
+            color: $color_gray;
             margin-right: 5px;
         }
 
@@ -198,8 +265,8 @@ $base_lightest_gray_color: #f7f7f7 !default;
             text-align: center;
             cursor: default;
             border-radius: 2px;
-            box-sizing: border-box;
-            color: $base_gray_color;
+            box-sizing: content-box;
+            color: $color_gray;
             border: 1px solid transparent;
             background-color: transparent;
 
@@ -209,19 +276,17 @@ $base_lightest_gray_color: #f7f7f7 !default;
 
             &-link {
                 cursor: pointer;
-                color: $base_black_color;
-                border: 1px solid $base_light_gray_color;
-                background-color: $base_lightest_gray_color;
-                transition: border-color $animation $animation_time;
+                color: $color_text_black;
+                border: 1px solid $color_gray_lighten_1;
 
                 &:not(&-active):hover {
-                    border-color: $base_primary_hover_color;
+                    border-color: $color_default_lighten_2;
                 }
 
                 &-active {
-                    color: $base_white_color !important;
-                    border-color: $base_primary_color !important;
-                    background-color: $base_primary_color !important;
+                    color: $color_white !important;
+                    border-color: $color_default_lighten_1 !important;
+                    background-color: $color_default_lighten_1 !important;
                     cursor: default;
                 }
             }

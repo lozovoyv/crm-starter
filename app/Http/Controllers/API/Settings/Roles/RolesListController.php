@@ -16,7 +16,9 @@ class RolesListController extends ApiController
 
     protected array $titles = [
         'id' => 'ID',
+        'state' => null,
         'name' => 'Название',
+        'count' => 'Права',
         'description' => 'Описание',
     ];
 
@@ -29,7 +31,8 @@ class RolesListController extends ApiController
      */
     public function list(APIListRequest $request): JsonResponse
     {
-        $query = PermissionRole::query();
+        $query = PermissionRole::query()
+            ->withCount(['permissions']);
 
         $filters = $request->filters($this->defaultFilters);
 
@@ -38,16 +41,6 @@ class RolesListController extends ApiController
         }
 
         $roles = $request->paginate($query);
-
-        $roles->transform(function (PermissionRole $role) {
-            return [
-                'id' => $role->id,
-                'name' => $role->name,
-                'description' => $role->description,
-                'active' => $role->active,
-                'locked' => $role->locked,
-            ];
-        });
 
         return APIResponse::list(
             $roles,

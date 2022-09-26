@@ -1,27 +1,17 @@
 <template>
-    <div class="actions-menu">
-        <div class="actions-menu__button" @click="toggle" :class="{'actions-menu__button-active':dropped}">
-            <IconBars v-if="right"/>
-            <span class="actions-menu__button-title" :class="{'actions-menu__button-title-right': right}" v-if="title">{{ title }}</span>
-            <IconBars v-if="!right"/>
+    <div class="list-actions-menu">
+        <div class="list-actions-menu__button" @click="toggle" :class="{'list-actions-menu__button-active':dropped}">
+            <IconEllipsisH/>
         </div>
-        <div class="actions-menu__actions" :class="{'actions-menu__actions-shown': dropped, 'actions-menu__actions-top': top, 'actions-menu__actions-right': right}">
+        <div class="list-actions-menu__actions" :class="{'list-actions-menu__actions-shown': dropped}">
             <slot/>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import IconBars from "@/Icons/IconBars.vue";
 import {ref} from "vue";
-
-const emit = defineEmits<{ (e: 'dropped'): void }>();
-
-const props = defineProps<{
-    title?: string,
-    top?: boolean,
-    right?: boolean,
-}>();
+import IconEllipsisH from "@/Icons/IconEllipsisH.vue";
 
 const dropped = ref<boolean>(false);
 
@@ -33,7 +23,6 @@ function toggle() {
         }, 100);
     } else {
         dropped.value = true;
-        emit('dropped');
         setTimeout(() => {
             window.addEventListener('click', close);
         }, 100);
@@ -47,49 +36,40 @@ function close() {
 </script>
 
 <style lang="scss">
+@use "sass:math";
 @import "@/variables.scss";
 
-.actions-menu {
+.list-actions-menu {
     display: inline-block;
     flex-grow: 0;
     flex-shrink: 0;
-    height: $base_size_unit;
-    line-height: $base_size_unit;
+    height: 16px;
+    line-height: 16px;
     box-sizing: border-box;
     position: relative;
     text-align: left;
 
     &__button {
-        border: 1px solid $color_default;
+        border: 1px solid transparent;
         box-sizing: content-box;
-        border-radius: 2px;
-        padding: 0 8px;
+        border-radius: 50%;
+        padding: 3px;
         display: inline-flex;
-        flex-direction: row;
         align-items: center;
+        justify-content: center;
         font-family: $project_font;
-        color: $color_default;
+        color: $color_gray_darken_2;
         font-size: 14px;
         cursor: pointer;
-        height: 100%;
+        width: 16px;
+        height: 16px;
         background-color: transparent;
         transition: color $animation $animation_time, background-color $animation $animation_time, border-color $animation $animation_time;
 
         &:hover, &-active {
             color: $color_white;
-            border-color: $color_default;
-            background-color: $color_default;
-        }
-
-        &-title {
-            margin: 0 8px 0 0;
-            @media screen and (max-width: 450px) {
-                display: none;
-            }
-
-            &-right {
-                margin: 0 0 0 8px;
-            }
+            border-color: $color_default_lighten_1;
+            background-color: $color_default_lighten_1;
         }
 
         & > svg {
@@ -100,8 +80,9 @@ function close() {
 
     &__actions {
         position: absolute;
-        right: 0;
-        top: $base_size_unit + 8px;
+        left: -8px;
+        top: 8px;
+        transform: translate(-100%, -50%);
         box-sizing: border-box;
         padding: 12px 20px;
         border-radius: 2px;
@@ -124,33 +105,12 @@ function close() {
             width: 6px;
             height: 6px;
             position: absolute;
-            right: 12px;
-            top: -4px;
+            right: -4px;
+            top: 50%;
             transform: rotate(45deg);
             border-color: #e9e9e9;
             border-style: solid;
-            border-width: 1px 0 0 1px;
-        }
-
-        &-top {
-            top: unset;
-            bottom: $base_size_unit + 6px;
-        }
-
-        &-top:before {
-            top: unset;
-            bottom: -4px;
-            border-width: 0 1px 1px 0;
-        }
-
-        &-right {
-            right: unset;
-            left: 0;
-        }
-
-        &-right:before {
-            right: unset;
-            left: 12px;
+            border-width: 1px 1px 0 0;
         }
 
         &-shown {

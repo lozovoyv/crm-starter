@@ -1,5 +1,5 @@
 <template>
-    <div class="layout-page">
+    <div class="layout-page" :class="{'layout-page__wide': wide}">
         <LoadingProgress :loading="isProcessing">
             <div class="layout-page__header">
                 <div class="layout-page__header-main">
@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import LoadingProgress from "@/Components/LoadingProgress.vue";
-import {computed, defineProps} from "vue";
+import {computed} from "vue";
 import {RouteRecordRaw} from "vue-router";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 
@@ -65,6 +65,7 @@ const props = defineProps<{
     link?: { name: string, route: Array<RouteRecordRaw> },
     breadcrumbs?: Array<{ name: string, route: Array<RouteRecordRaw> }>,
     title?: string,
+    wide?: boolean,
 }>();
 
 const canViewPage = computed((): boolean => {
@@ -91,6 +92,11 @@ const canViewPage = computed((): boolean => {
     border-radius: 2px;
     box-sizing: border-box;
     padding: 16px;
+    max-width: 1200px;
+
+    &__wide {
+        max-width: unset;
+    }
 
     &__divider {
         height: 1px;
