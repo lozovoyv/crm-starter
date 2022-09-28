@@ -43,7 +43,6 @@ class Kernel extends HttpKernel
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
-        TrimStrings::class,
         ConvertEmptyStringsToNull::class,
     ];
 
@@ -54,6 +53,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            TrimStrings::class,
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,

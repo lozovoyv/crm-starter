@@ -266,7 +266,7 @@ function setPage(page: number, perPage: number): void {
             cursor: default;
             border-radius: 2px;
             box-sizing: content-box;
-            color: $color_gray;
+            color: $color_gray_lighten_2;
             border: 1px solid transparent;
             background-color: transparent;
 
@@ -277,7 +277,7 @@ function setPage(page: number, perPage: number): void {
             &-link {
                 cursor: pointer;
                 color: $color_text_black;
-                border: 1px solid $color_gray_lighten_1;
+                border: 1px solid transparentize($color_gray_lighten_2, 0.5);
 
                 &:not(&-active):hover {
                     border-color: $color_default_lighten_2;

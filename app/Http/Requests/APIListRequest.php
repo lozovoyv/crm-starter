@@ -51,11 +51,17 @@ class APIListRequest extends FormRequest
     /**
      * Get search terms.
      *
-     * @return  array
+     * @param bool $raw
+     *
+     * @return  array|string|null
      */
-    public function search(): array
+    public function search(bool $raw = false)
     {
         $search = $this->input('search');
+
+        if ($raw) {
+            return $search;
+        }
 
         if (empty($search)) {
             return [];
@@ -69,27 +75,15 @@ class APIListRequest extends FormRequest
     }
 
     /**
-     * Get search fields.
-     *
-     * @param array $default
-     *
-     * @return  array
-     */
-    public function searchBy(array $default = []): array
-    {
-        return $this->input('search_by', $default);
-    }
-
-    /**
      * Get search terms.
      *
      * @param string $default
      *
-     * @return  string
+     * @return  string|null
      */
-    public function order(string $default = 'asc'): string
+    public function order(string $default = 'asc'): ?string
     {
-        $order = strtolower($this->input('$order'));
+        $order = strtolower($this->input('order'));
 
         return in_array($order, ['asc', 'desc']) ? $order : $default;
     }
@@ -101,9 +95,9 @@ class APIListRequest extends FormRequest
      *
      * @return  string|null
      */
-    public function order_by(?string $default = null): ?string
+    public function orderBy(?string $default = null): ?string
     {
-        return $this->input('order_by', $default);
+        return $this->input('order_by', $default) ?? $default;
     }
 
     /**

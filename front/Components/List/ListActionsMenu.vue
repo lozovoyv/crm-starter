@@ -81,13 +81,13 @@ function close() {
     &__actions {
         position: absolute;
         left: -8px;
-        top: 8px;
-        transform: translate(-100%, -50%);
+        top: 0;
+        transform: translate(-100%, 0);
         box-sizing: border-box;
         padding: 12px 20px;
         border-radius: 2px;
         min-width: 100%;
-        z-index: 50;
+        z-index: 9;
         background-color: $color_white;
         box-shadow: $shadow_1;
         display: flex;
@@ -106,7 +106,7 @@ function close() {
             height: 6px;
             position: absolute;
             right: -4px;
-            top: 50%;
+            top: 8px;
             transform: rotate(45deg);
             border-color: #e9e9e9;
             border-style: solid;

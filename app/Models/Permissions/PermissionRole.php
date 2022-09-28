@@ -78,6 +78,7 @@ class PermissionRole extends Model
             'active' => $this->active,
             'locked' => $this->locked,
             'hash' => $this->getHash(),
+            'updated_at' => $this->updated_at
         ];
     }
 }

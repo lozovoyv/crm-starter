@@ -6,7 +6,7 @@ function processEntry(title: string, question: string, button: DialogButton, url
     return new Promise((resolve) => {
         dialog.show(title, question, [button, dialog.button('cancel', 'Отмена')])
             .then(result => {
-                if (result !== 'cancel') {
+                if (result !== 'cancel' && result !== null) {
                     progress(true);
 
                     http.post(url, options)

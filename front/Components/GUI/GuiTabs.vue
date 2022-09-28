@@ -81,7 +81,7 @@ function setTab(newTab: string | number | symbol | null, initial: boolean = fals
     flex-direction: row;
     flex-wrap: wrap-reverse;
     box-sizing: border-box;
-    padding: 5px 3px;
+    padding: 0 3px 15px;
     @include no_selection();
 
     &__tab {

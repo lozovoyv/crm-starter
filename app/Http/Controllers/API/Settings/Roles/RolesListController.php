@@ -6,6 +6,7 @@ use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
 use App\Models\Permissions\PermissionRole;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 
 class RolesListController extends ApiController
@@ -20,7 +21,10 @@ class RolesListController extends ApiController
         'name' => 'Название',
         'count' => 'Права',
         'description' => 'Описание',
+        'updated_at' => 'Изменено',
     ];
+
+    protected array $ordering = ['id', 'state', 'name', 'count', 'updated_at'];
 
     /**
      * Get roles list.
@@ -34,10 +38,42 @@ class RolesListController extends ApiController
         $query = PermissionRole::query()
             ->withCount(['permissions']);
 
-        $filters = $request->filters($this->defaultFilters);
+        // apply order
+        $order = $request->order();
+        $orderBy = $request->orderBy('id');
+        switch ($orderBy) {
+            case 'state':
+                $query->orderBy('active', $order);
+                break;
+            case 'name':
+                $query->orderBy('name', $order);
+                break;
+            case 'count':
+                $query->orderBy('permissions_count', $order);
+                break;
+            case 'updated_at':
+                $query->orderBy('updated_at', $order);
+                break;
+            default:
+                $query->orderBy('id', $order);
+        }
 
+        // apply filters
+        $filters = $request->filters($this->defaultFilters);
         if (isset($filters['active'])) {
             $query->where('active', $filters['active']);
+        }
+
+        // apply search
+        $search = $request->search();
+        if (!empty($search)) {
+            $query->where(function (Builder $query) use ($search) {
+                foreach ($search as $term) {
+                    $query
+                        ->orWhere('id', 'like', "%$term%")
+                        ->orWhere('name', 'like', "%$term%");
+                }
+            });
         }
 
         $roles = $request->paginate($query);
@@ -46,7 +82,11 @@ class RolesListController extends ApiController
             $roles,
             $this->titles,
             $filters,
-            $this->defaultFilters
+            $this->defaultFilters,
+            $request->search(true),
+            $order,
+            $orderBy,
+            $this->ordering
         );
     }
 }

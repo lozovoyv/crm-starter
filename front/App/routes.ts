@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     {path: '/profile', name: 'profile', component: () => import("./Pages/ProfilePage.vue")},
 
     {path: '/settings/users', name: 'users', component: () => import("./Pages/Settings/Users.vue")},
-    {path: '/settings/roles', name: 'roles', component: () => import("./Pages/Settings/Roles.vue")},
+    {path: '/settings/roles', name: 'roles', component: () => import("./Pages/Settings/RolesPage.vue")},
     {path: '/settings/settings', name: 'settings', component: () => import("./Pages/Settings/Settings.vue")},
 
 ];

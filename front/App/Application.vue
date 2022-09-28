@@ -13,7 +13,10 @@
             <div class="application__header-widgets"></div>
             <div class="application__header-user-menu" v-if="user">
                 <UserMenu :user="user">
-                    <RouterLink :to="{name: 'profile'}"><IconUser/> Профиль</RouterLink>
+                    <RouterLink :to="{name: 'profile'}">
+                        <IconUser/>
+                        Профиль
+                    </RouterLink>
                     <span @click="logout"><IconExit/> Выход</span>
                 </UserMenu>
             </div>
@@ -76,10 +79,18 @@ function logout(): void {
 @import "@/variables.scss";
 
 $header_height: $base_size_unit * 1.5;
+html {
+    min-height: 100%;
+    display: flex;
+}
+
+body {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
 
 body, html {
     width: 100%;
-    height: 100%;
     min-width: 300px;
     margin: 0;
 }

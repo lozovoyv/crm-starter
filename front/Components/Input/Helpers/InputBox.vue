@@ -104,16 +104,18 @@ $input_clear_color: $color-error !default;
 
     &__clear {
         color: $input_disabled_color;
-        width: calc(#{math.div($base_size_unit, 2)} + 4px);
+        width: $base_size_unit;
         height: 100%;
         position: relative;
+        flex-grow: 0;
+        flex-shrink: 0;
 
         & > svg {
             position: absolute;
             top: math.div($base_size_unit, 2);
             left: 50%;
-            width: math.div($base_size_unit, 4);
-            height: math.div($base_size_unit, 4);
+            width: math.div($base_size_unit, 2);
+            height: math.div($base_size_unit, 2);
             transform: translate(-50%, -50%);
         }
 

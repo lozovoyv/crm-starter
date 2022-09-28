@@ -101,13 +101,14 @@ const canViewPage = computed((): boolean => {
     &__divider {
         height: 1px;
         background-color: transparentize($color_gray_lighten_2, 0.5);
-        margin: 16px 0;
+        margin: 8px 0;
     }
 
     &__header {
         box-sizing: content-box;
         display: flex;
         flex-direction: row;
+        margin: 0 0 16px 0;
 
         &-main {
             flex-grow: 1;
@@ -163,13 +164,14 @@ const canViewPage = computed((): boolean => {
 
     &__body {
         &-error {
-            text-align: center;
-            box-sizing: border-box;
-            padding: 40px 0;
             font-family: $project_font;
             font-size: 20px;
-            color: $color-error;
-            background-color: transparentize($color-error-lighten-2, 0.9);
+            font-weight: 300;
+            text-align: center;
+            padding: 40px 0;
+            border: 1px solid transparentize($color_error_lighten-2, 0.5);
+            color: $color_error;
+            border-radius: 2px;
         }
     }
 

@@ -113,7 +113,7 @@ class APIResponse
      *
      * @return  JsonResponse
      */
-    public static function response(mixed $data, mixed $payload = null, ?string $message = 'Успешно', ?Carbon $lastModified = null): JsonResponse
+    public static function response($data, $payload = null, ?string $message = 'Успешно', ?Carbon $lastModified = null): JsonResponse
     {
         return response()->json([
             'message' => $message,
@@ -151,6 +151,10 @@ class APIResponse
      * @param array|null $titles
      * @param array|null $filters
      * @param array|null $defaultFilters
+     * @param string|null $search
+     * @param string|null $order
+     * @param string|null $orderBy
+     * @param array|null $ordering
      * @param array|null $payload
      * @param Carbon|null $lastModified
      *
@@ -161,6 +165,10 @@ class APIResponse
         ?array $titles = null,
         ?array $filters = null,
         ?array $defaultFilters = null,
+        ?string $search = null,
+        ?string $order = null,
+        ?string $orderBy = null,
+        ?array $ordering = null,
         ?array $payload = null,
         ?Carbon $lastModified = null
     ): JsonResponse
@@ -171,6 +179,10 @@ class APIResponse
             'filters' => $filters,
             'default_filters' => $defaultFilters,
             'titles' => $titles,
+            'search' => $search,
+            'order' => $order,
+            'order_by' => $orderBy,
+            'ordering' => $ordering,
             'payload' => $payload,
             'pagination' => [
                 'current_page' => $list->currentPage(),

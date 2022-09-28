@@ -29,6 +29,10 @@ type ListResponse = {
     filters: { [index: string]: string },
     default_filters: { [index: string]: string },
     titles: { [index: string]: string },
+    search: string | null,
+    order: string | null,
+    order_by: string | null,
+    ordering: null | { [index: string]: any },
     payload: { [index: string]: any },
     pagination: ListPagination,
 }
@@ -51,16 +55,17 @@ export class List<Type> {
     default_filters: { [index: string]: any } = {};
 
     search: string | null = null;
-    search_by: null | { [index: string]: any } = null;
 
     order_by: string | null = null;
     order: 'asc' | 'desc' | null = null;
+    ordering: null | { [index: string]: any } = null;
 
     listOptions: ListOptions = null;
 
     is_loading: boolean = false;
     is_loaded: boolean = false;
     is_forbidden: boolean = false;
+    is_not_found: boolean = false;
 
     use_toaster: boolean = true;
 
@@ -152,7 +157,6 @@ export class List<Type> {
 
             options['filters'] = this.filters;
             options['search'] = this.search;
-            options['search_by'] = this.search_by;
             options['order'] = this.order;
             options['order_by'] = this.order_by;
             options['page'] = page;
@@ -188,10 +192,15 @@ export class List<Type> {
                     this.pagination = typeof response.data.pagination !== "undefined" ? response.data.pagination : null;
                     this.filters = typeof response.data.filters !== "undefined" && response.data.filters !== null && Object.keys(response.data.filters).length > 0 ? response.data.filters : {};
                     this.default_filters = typeof response.data.default_filters !== "undefined" && response.data.default_filters !== null ? response.data.default_filters : {};
+                    this.search = typeof response.data.payload !== "undefined" ? response.data.search : null;
+                    this.order_by = typeof response.data.payload !== "undefined" ? response.data.order_by : null;
+                    this.order = typeof response.data.payload !== "undefined" ? (response.data.order === 'desc' ? 'desc' : 'asc') : null;
+                    this.ordering = typeof response.data.payload !== "undefined" ? response.data.ordering : null;
                     this.payload = typeof response.data.payload !== "undefined" ? response.data.payload : {};
 
                     this.is_loaded = true;
                     this.is_forbidden = false;
+                    this.is_not_found = false;
 
                     if (typeof this.loaded_callback === "function") {
                         this.loaded_callback(this.list, this.titles, this.payload);
@@ -199,10 +208,11 @@ export class List<Type> {
                     resolve({list: this.list, titles: this.titles, payload: this.payload});
                 })
                 .catch((error: ErrorResponse) => {
-                    if (error.status !== 500) {
+                    this.is_forbidden = error.status === 403;
+                    this.is_not_found = error.status === 404;
+                    if ([403, 404, 500].indexOf(error.status) === -1) {
                         this.notify(error.data.message, 0, 'error');
                     }
-                    this.is_forbidden = error.status === 403;
                     if (typeof this.load_failed_callback === "function") {
                         this.load_failed_callback(error.status, error.data.message, error);
                     }
