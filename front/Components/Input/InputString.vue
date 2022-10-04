@@ -41,7 +41,7 @@ const emit = defineEmits<{
 const input = ref<HTMLInputElement | null>(null);
 
 const isDirty = computed((): boolean => {
-    return props.modelValue !== undefined && props.modelValue !== props.original;
+    return props.original !== undefined && props.modelValue !== undefined && props.modelValue !== props.original;
 });
 
 function clear() {
