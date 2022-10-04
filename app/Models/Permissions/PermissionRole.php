@@ -2,8 +2,10 @@
 
 namespace App\Models\Permissions;
 
+use App\Models\History\HistoryScope;
 use App\Models\Model;
 use App\Traits\HashCheck;
+use App\Traits\HasHistory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class PermissionRole extends Model
 {
-    use HashCheck;
+    use HashCheck, HasHistory;
 
     /** @var int Id for super-admin role */
     public const super = 1;
@@ -38,6 +40,16 @@ class PermissionRole extends Model
         'locked' => false,
         'active' => true,
     ];
+
+    /**
+     * History entry name.
+     *
+     * @return  string
+     */
+    protected function historyEntryName(): string
+    {
+        return HistoryScope::role;
+    }
 
     /**
      * Role's permissions.
@@ -78,7 +90,7 @@ class PermissionRole extends Model
             'active' => $this->active,
             'locked' => $this->locked,
             'hash' => $this->getHash(),
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
         ];
     }
 }

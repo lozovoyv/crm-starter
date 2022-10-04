@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\Dictionary;
 
-use App\Foundation\Dictionaries\AbstractDictionary;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;

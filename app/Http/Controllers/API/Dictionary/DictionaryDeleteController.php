@@ -47,7 +47,7 @@ class DictionaryDeleteController extends ApiController
 
         try {
             $class::query()->where('id', $id)->delete();
-        } catch (QueryException $exception) {
+        } catch (QueryException) {
             return APIResponse::error("Невозможно удалить запись \"$name\" в словаре \"$title\". Есть блокирующие связи.");
         } catch (Exception $exception) {
             return APIResponse::error($exception->getMessage());

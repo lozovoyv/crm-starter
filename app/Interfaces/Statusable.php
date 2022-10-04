@@ -2,8 +2,8 @@
 
 namespace App\Interfaces;
 
-use App\Exceptions\WrongStatusException;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use InvalidArgumentException;
 
 interface Statusable
 {
@@ -22,7 +22,7 @@ interface Statusable
      *
      * @return  void
      *
-     * @throws WrongStatusException
+     * @throws InvalidArgumentException
      */
     public function setStatus(int $status, bool $save = false): void;
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API\Settings\Roles;
 
+use App\Current;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Models\History\HistoryAction;
 use App\Models\Permissions\PermissionRole;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -30,6 +32,9 @@ class RolesController extends ApiController
         $role->active = false;
         $role->save();
 
+        $current = Current::get($request);
+        $role->addHistory(HistoryAction::permission_role_deactivated, $current->positionId());
+
         return APIResponse::response($role, null, 'Роль отключена');
     }
 
@@ -51,6 +56,9 @@ class RolesController extends ApiController
         $role->active = true;
         $role->save();
 
+        $current = Current::get($request);
+        $role->addHistory(HistoryAction::permission_role_activated, $current->positionId());
+
         return APIResponse::response($role, null, 'Роль включена');
     }
 
@@ -71,9 +79,12 @@ class RolesController extends ApiController
 
         try {
             $role->delete();
-        } catch (QueryException $exception) {
+        } catch (QueryException) {
             return APIResponse::error('Невозможно удалить эту роль.');
         }
+        
+        $current = Current::get($request);
+        $role->addHistory(HistoryAction::permission_role_deleted, $current->positionId());
 
         return APIResponse::success('Роль удалена');
     }

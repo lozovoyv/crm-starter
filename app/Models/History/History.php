@@ -36,6 +36,17 @@ class History extends Model
         'timestamp' => 'datetime',
     ];
 
+    /** @var array Fillable attributes */
+    protected $fillable = [
+        'action_id',
+        'history_line_id',
+        'entry_name',
+        'entry_id',
+        'description',
+        'position_id',
+        'timestamp',
+    ];
+
     /** @var string[] Eager load relation */
     protected $with = ['action', 'comments', 'links', 'changes',];
 

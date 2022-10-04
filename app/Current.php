@@ -74,6 +74,11 @@ class Current
         return isset($this->user) ? $this->user->info->email : null;
     }
 
+    public function positionId(): ?int
+    {
+        return 1;
+    }
+
     /**
      * Get current user permissions.
      *
@@ -110,12 +115,12 @@ class Current
     /**
      * Check current user permission.
      *
-     * @param string|int $role
+     * @param int|string $role
      * @param bool $fresh
      *
      * @return  bool
      */
-    public function hasRole($role, bool $fresh = false): bool
+    public function hasRole(int|string $role, bool $fresh = false): bool
     {
         return true;
     }

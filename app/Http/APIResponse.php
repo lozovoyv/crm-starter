@@ -113,7 +113,7 @@ class APIResponse
      *
      * @return  JsonResponse
      */
-    public static function response($data, $payload = null, ?string $message = 'Успешно', ?Carbon $lastModified = null): JsonResponse
+    public static function response(mixed $data, mixed $payload = null, ?string $message = 'Успешно', ?Carbon $lastModified = null): JsonResponse
     {
         return response()->json([
             'message' => $message,
