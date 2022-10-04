@@ -8,19 +8,29 @@
                 <slot name="search"/>
             </div>
         </div>
-        <template v-if="list.is_loaded && list.list.length > 0">
-            <table class="list-table">
-                <slot name="header" v-if="$slots.header"/>
-                <ListTableHeader v-else :list="list" :actions="actions"/>
-                <tbody class="list-table__body">
-                <slot/>
-                </tbody>
-            </table>
-            <ListPagination :list="list"/>
-        </template>
-        <div v-else class="list-table-container__message" :class="{'list-table-container__message-error': error}">
-            {{ notification }}
-        </div>
+        <LoadingProgress :loading="list.is_loading">
+            <template v-if="list.is_loaded && list.list.length > 0">
+                <table class="list-table">
+                    <slot name="header" v-if="$slots.header"/>
+                    <ListTableHeader v-else :list="list" :actions="actions"/>
+                    <tbody class="list-table__body">
+                    <slot/>
+                    </tbody>
+                </table>
+                <ListPagination :list="list"/>
+            </template>
+            <div v-else class="list-table-container__message" :class="{'list-table-container__message-error': error}">
+                <template v-if="notification">
+                    {{ notification }}
+                </template>
+                <template v-else-if="$slots.empty">
+                    <slot name="empty"/>
+                </template>
+                <template v-else>
+                    Ничего не найдено
+                </template>
+            </div>
+        </LoadingProgress>
     </div>
 </template>
 
@@ -29,6 +39,7 @@ import ListTableHeader from "@/Components/List/ListTableHeader.vue";
 import {List} from "@/Core/List";
 import ListPagination from "@/Components/List/ListPagination.vue";
 import {computed} from "vue";
+import LoadingProgress from "@/Components/LoadingProgress.vue";
 
 const props = defineProps<{
     actions?: boolean,
@@ -47,10 +58,9 @@ const notification = computed((): string | null => {
         return 'У Вас недостаточно прав для просмотра этой страницы';
     } else if (props.list.is_not_found) {
         return 'Страница не найдена';
-    } else if (props.message) {
-        return props.message;
     }
-    return 'Список пуст';
+
+    return null;
 })
 </script>
 
@@ -82,7 +92,7 @@ const notification = computed((): string | null => {
         border: 1px solid transparentize($color_gray_lighten_2, 0.5);
         border-radius: 2px;
 
-        &-error{
+        &-error {
             color: $color-error;
             border: 1px solid transparentize($color_error_lighten-2, 0.5);
         }
