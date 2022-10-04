@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Dictionaries;
+namespace App\Foundation\Dictionaries;
 
 use App\Models\Model;
 use Carbon\Carbon;

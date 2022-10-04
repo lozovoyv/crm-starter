@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API\Dictionary;
 
+use App\Foundation\Dictionaries\AbstractDictionary;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
-use App\Models\Dictionaries\AbstractDictionary;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;

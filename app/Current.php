@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Models\User\User;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 
 class Current
@@ -115,7 +115,7 @@ class Current
      *
      * @return  bool
      */
-    public function hasRole(string | int $role, bool $fresh = false): bool
+    public function hasRole($role, bool $fresh = false): bool
     {
         return true;
     }

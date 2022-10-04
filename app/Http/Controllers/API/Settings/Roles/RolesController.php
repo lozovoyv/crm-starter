@@ -97,7 +97,7 @@ class RolesController extends ApiController
         if (!$role->isHash($request->input('role_hash'))) {
             throw new Exception('Роль была изменена в другом месте.');
         }
-        if ($role->id === PermissionRole::super) {
+        if ($role->locked) {
             throw new Exception('Эту роль нельзя изменить или удалить');
         }
 

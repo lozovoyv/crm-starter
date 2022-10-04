@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Dictionaries\Interfaces;
+namespace App\Foundation\Dictionaries\Interfaces;
 
 use Illuminate\Database\Eloquent\Builder;
 

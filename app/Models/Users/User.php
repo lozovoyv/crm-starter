@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models\User;
+namespace App\Models\Users;
 
-use App\Exceptions\User\WrongUserStatusException;
 use App\Interfaces\Statusable;
-use App\Models\Dictionaries\UserStatus;
+use App\Models\Positions\Position;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -65,12 +65,20 @@ class User extends Authenticatable implements Statusable
      * @param bool $save
      *
      * @return  void
-     *
-     * @throws WrongUserStatusException
      */
     public function setStatus(int $status, bool $save = false): void
     {
-        $this->checkAndSetStatus(UserStatus::class, $status, WrongUserStatusException::class, $save);
+        $this->checkAndSetStatus(UserStatus::class, $status, 'status_id', $save);
+    }
+
+    /**
+     * Positions of user.
+     *
+     * @return  HasMany
+     */
+    public function positions(): HasMany
+    {
+        return $this->hasMany(Position::class, 'user_id', 'id');
     }
 
     /**

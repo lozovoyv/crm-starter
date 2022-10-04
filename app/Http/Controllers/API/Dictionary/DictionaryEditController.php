@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API\Dictionary;
 
+use App\Foundation\Dictionaries\AbstractDictionary;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
-use App\Models\Dictionaries\AbstractDictionary;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -39,7 +39,7 @@ class DictionaryEditController extends ApiController
             return APIResponse::notFound("Словарь $name не найден.");
         }
 
-        /** @var AbstractDictionary $class */
+        /** @var \App\Foundation\Dictionaries\AbstractDictionary $class */
         $class = $this->dictionaries[$name]['class'];
 
         $all = $class::query()->orderBy('order')->orderBy('name')->get();
@@ -70,7 +70,7 @@ class DictionaryEditController extends ApiController
             return APIResponse::notFound("Словарь $name не найден.");
         }
 
-        /** @var AbstractDictionary $class */
+        /** @var \App\Foundation\Dictionaries\AbstractDictionary $class */
         $class = $this->dictionaries[$name]['class'];
 
         $data = $this->data($request);
@@ -97,7 +97,7 @@ class DictionaryEditController extends ApiController
             return APIResponse::notFound("Словарь $name не найден.");
         }
 
-        /** @var AbstractDictionary $class */
+        /** @var \App\Foundation\Dictionaries\AbstractDictionary $class */
         $class = $this->dictionaries[$name]['class'];
         $title = $this->dictionaries[$name]['name'];
 
@@ -112,7 +112,7 @@ class DictionaryEditController extends ApiController
             return APIResponse::validationError($errors);
         }
 
-        /** @var AbstractDictionary $item */
+        /** @var \App\Foundation\Dictionaries\AbstractDictionary $item */
         $item = $this->firstOrNew($class, $request->input('id'));
 
         if ($item === null) {

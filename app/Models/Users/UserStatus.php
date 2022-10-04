@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Dictionaries;
+namespace App\Models\Users;
 
+use App\Foundation\Dictionaries\AbstractDictionary;
 use Carbon\Carbon;
 
 /**
@@ -19,7 +20,4 @@ class UserStatus extends AbstractDictionary
     public const blocked = 2;
 
     public const default = self::active;
-
-    /** @var string Referenced table name. */
-    protected $table = 'dictionary_user_statuses';
 }

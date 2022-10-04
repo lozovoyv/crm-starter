@@ -42,17 +42,13 @@ class RolesListController extends ApiController
         $order = $request->order();
         $orderBy = $request->orderBy('id');
         switch ($orderBy) {
-            case 'state':
-                $query->orderBy('active', $order);
-                break;
+            case 'active':
+            case 'updated_at':
             case 'name':
-                $query->orderBy('name', $order);
+                $query->orderBy($orderBy, $order);
                 break;
             case 'count':
                 $query->orderBy('permissions_count', $order);
-                break;
-            case 'updated_at':
-                $query->orderBy('updated_at', $order);
                 break;
             default:
                 $query->orderBy('id', $order);

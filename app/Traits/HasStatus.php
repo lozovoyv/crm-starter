@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\Dictionaries\AbstractDictionary;
+use App\Foundation\Dictionaries\AbstractDictionary;
 use InvalidArgumentException;
 
 trait HasStatus
@@ -16,7 +16,6 @@ trait HasStatus
      * @param string $name
      *
      * @return  void
-     *
      */
     protected function checkAndSetStatus(string $class, int $status, string $name = 'status_id', bool $save = false): void
     {
@@ -42,7 +41,7 @@ trait HasStatus
      *
      * @return  bool
      */
-    public function hasStatus(int|array $status, string $name = 'status_id'): bool
+    public function hasStatus($status, string $name = 'status_id'): bool
     {
         if(is_array($status)) {
             return in_array($this->getAttribute($name), $status, true);

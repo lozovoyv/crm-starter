@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API\Dictionary;
 
+use App\Foundation\Dictionaries\AbstractDictionary;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
-use App\Models\Dictionaries\AbstractDictionary;
+use App\Models\Users\UserStatus;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\Dictionaries\UserStatus;
 
 class DictionaryController extends ApiController
 {
