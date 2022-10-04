@@ -1,5 +1,5 @@
 <template>
-    <ListTable :list="roles" :actions="true" message="Нет ролей">
+    <ListTable :list="roles" :actions="true">
         <template v-slot:search>
             <ListSearch :list="roles" placeholder="ID, название"/>
         </template>
@@ -10,7 +10,7 @@
                 <GuiIndicator v-else :active="role.active" style="margin-right: 0"/>
             </ListTableCell>
             <ListTableCell v-html="highlight(role.name, roles.search)"/>
-            <ListTableCell>{{ role.count ? role.count : '—' }}</ListTableCell>
+            <ListTableCell style="text-align: center">{{ role.count ? role.count : '—' }}</ListTableCell>
             <ListTableCell style="width: 100%;">{{ role.description }}</ListTableCell>
             <ListTableCell style="white-space: nowrap">{{ DateTime.toDatetime(role.updated_at, true) }}</ListTableCell>
             <ListTableCell :action="true">
@@ -22,6 +22,9 @@
                 </ListActionsMenu>
             </ListTableCell>
         </ListTableRow>
+        <template v-slot:empty>
+            Пока не добавлено ни одной роли
+        </template>
     </ListTable>
 </template>
 
