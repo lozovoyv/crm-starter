@@ -13,15 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_modules', static function (Blueprint $table) {
-
-            $table->unsignedSmallInteger('id', true);
-
-            $table->string('module')->unique();
-
+        Schema::create('user_statuses', static function (Blueprint $table) {
+            $table->unsignedTinyInteger('id', true);
             $table->string('name');
-
-            $table->unsignedSmallInteger('order')->nullable()->default(0);
+            $table->boolean('enabled')->nullable()->default(true);
+            $table->boolean('lock')->nullable()->default(false);
+            $table->unsignedTinyInteger('order')->nullable()->default(0);
 
             $table->timestamps();
         });
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_modules');
+        Schema::dropIfExists('user_statuses');
     }
 };

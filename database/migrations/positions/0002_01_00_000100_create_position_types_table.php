@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDictionaryUserStatusesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateDictionaryUserStatusesTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('dictionary_user_statuses', static function (Blueprint $table) {
+        Schema::create('position_types', static function (Blueprint $table) {
             $table->unsignedTinyInteger('id', true);
             $table->string('name');
             $table->boolean('enabled')->nullable()->default(true);
-            $table->boolean('lock')->nullable()->default(false);
             $table->unsignedTinyInteger('order')->nullable()->default(0);
 
             $table->timestamps();
@@ -31,6 +30,6 @@ class CreateDictionaryUserStatusesTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dictionary_user_statuses');
+        Schema::dropIfExists('position_types');
     }
-}
+};

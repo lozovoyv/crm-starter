@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Dictionaries\UserStatus;
+use App\Models\Users\UserStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('status_id')->references('id')->on('dictionary_user_statuses')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreign('status_id')->references('id')->on('user_statuses')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -40,4 +40,4 @@ class CreateUsersTable extends Migration
     {
         Schema::dropIfExists('users');
     }
-}
+};

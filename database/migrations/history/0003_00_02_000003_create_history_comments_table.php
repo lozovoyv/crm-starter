@@ -13,17 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_modules', static function (Blueprint $table) {
+        Schema::create('history_comments', static function (Blueprint $table) {
+            $table->unsignedBigInteger('id', true);
+            $table->unsignedBigInteger('history_id');
+            $table->text('comment');
 
-            $table->unsignedSmallInteger('id', true);
-
-            $table->string('module')->unique();
-
-            $table->string('name');
-
-            $table->unsignedSmallInteger('order')->nullable()->default(0);
-
-            $table->timestamps();
+            $table->foreign('history_id')->references('id')->on('histories')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -34,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_modules');
+        Schema::dropIfExists('history_comments');
     }
 };

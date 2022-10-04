@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Seeders\HistoryActionsSeeder;
 use Database\Seeders\Seeders\PermissionsSeeder;
 use Database\Seeders\Seeders\RolesSeeder;
 use Database\Seeders\Seeders\UserStatusesSeeder;
@@ -13,6 +14,7 @@ class DatabaseSeeder extends Seeder
     protected array $seeders = [
         PermissionsSeeder::class,
         RolesSeeder::class,
+        HistoryActionsSeeder::class,
         UserStatusesSeeder::class,
     ];
 

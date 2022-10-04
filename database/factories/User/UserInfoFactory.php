@@ -2,7 +2,7 @@
 
 namespace Database\Factories\User;
 
-use App\Models\User\UserInfo;
+use App\Models\Users\UserInfo;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

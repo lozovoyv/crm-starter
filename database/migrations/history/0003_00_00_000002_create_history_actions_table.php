@@ -13,15 +13,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_modules', static function (Blueprint $table) {
-
+        Schema::create('history_actions', static function (Blueprint $table) {
             $table->unsignedSmallInteger('id', true);
-
-            $table->string('module')->unique();
-
             $table->string('name');
-
-            $table->unsignedSmallInteger('order')->nullable()->default(0);
 
             $table->timestamps();
         });
@@ -34,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_modules');
+        Schema::dropIfExists('history_actions');
     }
 };
