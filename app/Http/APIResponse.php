@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -147,7 +148,7 @@ class APIResponse
     /**
      * Make list response.
      *
-     * @param LengthAwarePaginator $list
+     * @param LengthAwarePaginator|Collection $list
      * @param array|null $titles
      * @param array|null $filters
      * @param array|null $defaultFilters
@@ -161,7 +162,7 @@ class APIResponse
      * @return  JsonResponse
      */
     public static function list(
-        LengthAwarePaginator $list,
+        LengthAwarePaginator|Collection $list,
         ?array $titles = null,
         ?array $filters = null,
         ?array $defaultFilters = null,
@@ -173,9 +174,12 @@ class APIResponse
         ?Carbon $lastModified = null
     ): JsonResponse
     {
+        $isCollection = $list instanceof Collection;
+        $count = $isCollection ? $list->count() : null;
+
         return response()->json([
             'message' => 'OK',
-            'list' => $list->items(),
+            'list' => $isCollection ? $list : $list->items(),
             'filters' => $filters,
             'default_filters' => $defaultFilters,
             'titles' => $titles,
@@ -185,12 +189,12 @@ class APIResponse
             'ordering' => $ordering,
             'payload' => $payload,
             'pagination' => [
-                'current_page' => $list->currentPage(),
-                'last_page' => $list->lastPage(),
-                'from' => $list->firstItem() ?? 0,
-                'to' => $list->lastItem() ?? 0,
-                'total' => $list->total(),
-                'per_page' => $list->perPage(),
+                'current_page' => $isCollection ? 1 : $list->currentPage(),
+                'last_page' => $isCollection ? 1 : $list->lastPage(),
+                'from' => $isCollection ? 1 : $list->firstItem(),
+                'to' => $isCollection ? $count : $list->lastItem(),
+                'total' => $isCollection ? $count : $list->total(),
+                'per_page' => $isCollection ? $count : $list->perPage(),
             ],
         ], self::CODE_OK, self::lastModHeaders($lastModified));
     }

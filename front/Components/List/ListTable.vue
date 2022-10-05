@@ -17,7 +17,7 @@
                     <slot/>
                     </tbody>
                 </table>
-                <ListPagination :list="list"/>
+                <ListPagination :list="list" v-if="!list.listOptions.without_pagination"/>
             </template>
             <div v-else class="list-table-container__message" :class="{'list-table-container__message-error': error}">
                 <template v-if="notification">

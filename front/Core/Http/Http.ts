@@ -110,7 +110,6 @@ class Http {
             return Promise.reject<R>(response);
         }
         const error: ErrorResponse = {status: response.status, data: <any>response.data};
-
         switch (error.status) {
             case StatusCode.Unauthorized: {
                 window.location.reload();

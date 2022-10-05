@@ -46,7 +46,7 @@ const items = computed((): Array<HeaderItem> => {
         return {
             key: key,
             title: typeof props.list.titles !== 'undefined' && typeof props.list.titles[key] !== 'undefined' ? props.list.titles[key] : null,
-            ordering: props.list.ordering?.indexOf(key) !== -1,
+            ordering: props.list.ordering ? props.list.ordering.indexOf(key) !== -1 : false,
             order: props.list.order,
             ordered: props.list.order_by === key,
         };

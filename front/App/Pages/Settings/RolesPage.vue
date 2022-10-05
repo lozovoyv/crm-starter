@@ -9,6 +9,8 @@
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
         <Roles v-if="tab === 'roles'"/>
+        <Permissions v-if="tab === 'permissions'"/>
+        <RolesHistory v-if="tab === 'history'"/>
 
     </LayoutPage>
 </template>
@@ -20,6 +22,8 @@ import GuiLink from "@/Components/GUI/GuiLink.vue";
 import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 import {computed, ref} from "vue";
 import Roles from "@/App/Pages/Settings/Roles.vue";
+import RolesHistory from "@/App/Pages/Settings/RolesHistory.vue";
+import Permissions from "@/App/Pages/Settings/Permissions.vue";
 
 const tab = ref<string | null>(null);
 

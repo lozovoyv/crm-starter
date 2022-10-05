@@ -87,6 +87,7 @@ class PermissionsSeeder extends Seeder
                         $permission->module = $module;
                         $permission->name = $data['name'];
                         $permission->order = $data['order'];
+                        $permission->description = $data['description'];
                         $permission->save();
                         $processed[] = $permission->id;
                     }

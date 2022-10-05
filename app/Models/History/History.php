@@ -48,7 +48,7 @@ class History extends Model
     ];
 
     /** @var string[] Eager load relation */
-    protected $with = ['action', 'comments', 'links', 'changes',];
+    protected $with = ['action', 'comments', 'links', 'changes', 'position'];
 
     /**
      * History record action.
@@ -117,14 +117,15 @@ class History extends Model
     /**
      * Add history link.
      *
-     * @param string $entryName
+     * @param string $entryTitle
+     * @param string|null $entryName
      * @param int|null $entryId
      *
      * @return  $this
      */
-    public function addLink(string $entryName, ?int $entryId): self
+    public function addLink(string $entryTitle, ?string $entryName = null, ?int $entryId = null): self
     {
-        $this->links()->create(['entry_name' => $entryName, 'entry_id' => $entryId]);
+        $this->links()->create(['entry_title' => $entryTitle, 'entry_name' => $entryName, 'entry_id' => $entryId]);
 
         return $this;
     }
@@ -156,7 +157,7 @@ class History extends Model
      *
      * @return  array
      */
-    public function format(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->id,
@@ -166,6 +167,9 @@ class History extends Model
 
             'action' => $this->action->name,
             'description' => $this->description,
+
+            'position_id' => $this->position_id,
+            'position' => $this->position?->user->info->compactName,
 
             'links' => $this->links,
             'changes' => $this->changes,

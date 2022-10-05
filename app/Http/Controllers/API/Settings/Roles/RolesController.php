@@ -33,7 +33,9 @@ class RolesController extends ApiController
         $role->save();
 
         $current = Current::get($request);
-        $role->addHistory(HistoryAction::permission_role_deactivated, $current->positionId());
+        $role
+            ->addHistory(HistoryAction::permission_role_deactivated, $current->positionId())
+            ->addLink($role->name);
 
         return APIResponse::response($role, null, 'Роль отключена');
     }
@@ -57,7 +59,9 @@ class RolesController extends ApiController
         $role->save();
 
         $current = Current::get($request);
-        $role->addHistory(HistoryAction::permission_role_activated, $current->positionId());
+        $role
+            ->addHistory(HistoryAction::permission_role_activated, $current->positionId())
+            ->addLink($role->name);
 
         return APIResponse::response($role, null, 'Роль включена');
     }
@@ -82,9 +86,11 @@ class RolesController extends ApiController
         } catch (QueryException) {
             return APIResponse::error('Невозможно удалить эту роль.');
         }
-        
+
         $current = Current::get($request);
-        $role->addHistory(HistoryAction::permission_role_deleted, $current->positionId());
+        $role
+            ->addHistory(HistoryAction::permission_role_deleted, $current->positionId())
+            ->addLink($role->name);
 
         return APIResponse::success('Роль удалена');
     }

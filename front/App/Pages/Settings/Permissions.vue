@@ -1,0 +1,37 @@
+<template>
+    <ListTable :list="permissions">
+        <template v-slot:search>
+            <ListSearch :list="permissions" placeholder="Ключ, название"/>
+        </template>
+        <ListTableRow v-for="permission in permissions.list">
+            <ListTableCell style="white-space: nowrap" v-html="highlight(permission.key, permissions.search)"/>
+            <ListTableCell v-html="highlight(permission.name, permissions.search)"/>
+            <ListTableCell>{{ permission.description }}</ListTableCell>
+            <ListTableCell>{{ permission.module }}</ListTableCell>
+        </ListTableRow>
+        <template v-slot:empty>
+            В системе нет прав
+        </template>
+    </ListTable>
+</template>
+
+<script setup lang="ts">
+import {ref} from "vue";
+import {List} from "@/Core/List";
+import ListTable from "@/Components/List/ListTable.vue";
+import ListTableRow from "@/Components/List/ListTableRow.vue";
+import ListTableCell from "@/Components/List/ListTableCell.vue";
+import ListSearch from "@/Components/List/ListSearch.vue";
+import {highlight} from "@/Core/Highlight/highlight";
+
+type Permission = {
+    key: string,
+    module: string,
+    name: string,
+    description: string | null,
+};
+
+const permissions = ref<List<Permission>>(new List<Permission>('/api/settings/roles/permissions', {}, {without_pagination: true}));
+
+permissions.value.initial();
+</script>

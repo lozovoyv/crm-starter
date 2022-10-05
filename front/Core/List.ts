@@ -13,7 +13,7 @@ export type ListPagination = {
 }
 
 export type ListOptions = null | {
-    prefix: string,
+    prefix?: string,
     without_pagination?: boolean,
     without_toaster?: boolean,
     remember?: {

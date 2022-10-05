@@ -17,7 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id', true);
             $table->unsignedBigInteger('history_id');
 
-            $table->string('entry_name', 40);
+            $table->string('entry_title');
+            $table->string('entry_name', 40)->nullable();
             $table->unsignedBigInteger('entry_id')->nullable();
 
             $table->foreign('history_id')->references('id')->on('histories')->cascadeOnDelete()->cascadeOnUpdate();

@@ -12,7 +12,7 @@
             <ListTableCell v-html="highlight(role.name, roles.search)"/>
             <ListTableCell style="text-align: center">{{ role.count ? role.count : '—' }}</ListTableCell>
             <ListTableCell style="width: 100%;">{{ role.description }}</ListTableCell>
-            <ListTableCell style="white-space: nowrap">{{ DateTime.toDatetime(role.updated_at, true) }}</ListTableCell>
+            <ListTableCell style="white-space: nowrap">{{ toDatetime(role.updated_at, true) }}</ListTableCell>
             <ListTableCell :action="true">
                 <ListActionsMenu v-if="!role.locked">
                     <GuiLink @click="edit(role)">Редактировать</GuiLink>
@@ -40,7 +40,7 @@ import GuiIndicator from "@/Components/GUI/GuiIndicator.vue";
 import ListActionsMenu from "@/Components/List/ListActionsMenu.vue";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
-import {DateTime} from "@/Core/Helpers/DateTime";
+import {toDatetime} from "@/Core/Helpers/DateTime";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
 
