@@ -23,7 +23,7 @@
             </ListTableCell>
         </ListTableRow>
         <template v-slot:empty>
-            Пока не добавлено ни одной роли
+            Роли не найдены
         </template>
     </ListTable>
 </template>

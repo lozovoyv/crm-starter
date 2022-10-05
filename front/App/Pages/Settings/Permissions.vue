@@ -10,7 +10,7 @@
             <ListTableCell>{{ permission.module }}</ListTableCell>
         </ListTableRow>
         <template v-slot:empty>
-            В системе нет прав
+            Права не найдены
         </template>
     </ListTable>
 </template>

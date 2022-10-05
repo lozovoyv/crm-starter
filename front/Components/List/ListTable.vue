@@ -9,26 +9,24 @@
             </div>
         </div>
         <LoadingProgress :loading="list.is_loading">
-            <template v-if="list.is_loaded && list.list.length > 0">
-                <table class="list-table">
+            <template v-if="!notification">
+                <table class="list-table" v-if="list.list && list.list.length > 0">
                     <slot name="header" v-if="$slots.header"/>
                     <ListTableHeader v-else :list="list" :actions="actions"/>
                     <tbody class="list-table__body">
                     <slot/>
                     </tbody>
                 </table>
+                <div v-else-if="$slots.empty" class="list-table-container__message">
+                    <slot name="empty"/>
+                </div>
+                <div v-else class="list-table-container__message">
+                    Ничего не найдено
+                </div>
                 <ListPagination :list="list" v-if="!list.listOptions.without_pagination"/>
             </template>
             <div v-else class="list-table-container__message" :class="{'list-table-container__message-error': error}">
-                <template v-if="notification">
-                    {{ notification }}
-                </template>
-                <template v-else-if="$slots.empty">
-                    <slot name="empty"/>
-                </template>
-                <template v-else>
-                    Ничего не найдено
-                </template>
+                {{ notification }}
             </div>
         </LoadingProgress>
     </div>
@@ -52,9 +50,7 @@ const error = computed((): boolean => {
 });
 
 const notification = computed((): string | null => {
-    if (props.list.is_loading) {
-        return 'Загрузка...';
-    } else if (props.list.is_forbidden) {
+    if (props.list.is_forbidden) {
         return 'У Вас недостаточно прав для просмотра этой страницы';
     } else if (props.list.is_not_found) {
         return 'Страница не найдена';
