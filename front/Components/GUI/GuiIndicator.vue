@@ -38,15 +38,15 @@ const stateClass = computed((): string | null => {
     top: -1px;
 
     &__waiting {
-        background-color: $color-info;
+        background-color: $color_info;
     }
 
     &__active {
-        background-color: $color-success;
+        background-color: $color_success;
     }
 
     &__inactive {
-        background-color: $color-error;
+        background-color: $color_error;
     }
 }
 </style>

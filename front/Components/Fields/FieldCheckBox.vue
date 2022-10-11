@@ -16,7 +16,6 @@
             :disabled="disabled"
             :value="value"
             :label="label"
-            :small="small"
             @change="change"
             ref="input"
         />
@@ -35,7 +34,6 @@ const props = defineProps<{
     original?: boolean | number | string | Array<number | string>,
     disabled?: boolean,
     hasErrors?: boolean,
-    small?: boolean,
     // field props
     title?: string,
     required?: boolean,

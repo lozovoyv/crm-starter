@@ -6,7 +6,6 @@
                   :has-errors="hasErrors"
                   :label="label"
                   :disabled="disabled"
-                  :small="small"
                   :dirty="isDirty"
         >
             <slot/>
@@ -25,7 +24,6 @@ const props = defineProps<{
     original?: boolean | number | string | number[] | string[],
     disabled?: boolean,
     hasErrors?: boolean,
-    small?: boolean,
     // checkbox props
     label?: string,
     value?: number | string,
@@ -47,6 +45,9 @@ const proxyValue = computed({
 });
 
 const isDirty = computed((): boolean => {
+    if(props.original === undefined) {
+        return false;
+    }
     if (typeof props.modelValue === "object") {
         const val: Array<string | number> = props.modelValue;
         const orig: boolean | number | string | Array<string | number> = props.original || false;

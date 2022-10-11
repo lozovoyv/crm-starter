@@ -2,7 +2,6 @@
     <InputBox class="input-string" :label="true" :dirty="isDirty" :disabled="disabled" :has-errors="hasErrors" :is-empty="!modelValue" :clearable="clearable" @clear="clear">
         <input
             class="input-string__input"
-            :class="{'input-string__input-small': small}"
             :value="modelValue"
             :type="type || 'text'"
             :disabled="disabled"
@@ -26,7 +25,6 @@ const props = defineProps<{
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
-    small?: boolean,
     // string props
     type?: string,
     autocomplete?: string,
@@ -72,9 +70,7 @@ defineExpose({
 </script>
 
 <style lang="scss">
-@import "@/variables";
-
-$input_placeholder_color: #757575 !default;
+@import "@/variables.scss";
 
 .input-string {
     height: $base_size_unit + 2px;
@@ -97,21 +93,17 @@ $input_placeholder_color: #757575 !default;
         display: block;
         cursor: inherit;
 
-        &-small {
-            font-size: 14px;
-        }
-
         &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-            color: $input_placeholder_color;
+            color: $color_gray;
             opacity: 1; /* Firefox */
         }
 
         &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-            color: $input_placeholder_color;
+            color: $color_gray;
         }
 
         &::-ms-input-placeholder { /* Microsoft Edge */
-            color: $input_placeholder_color;
+            color: $color_gray;
         }
 
         &:-webkit-autofill,

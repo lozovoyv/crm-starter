@@ -4,9 +4,9 @@
 $dialog_background: $color_white !default;
 
 $dialog_default_color: $color_default !default;
-$dialog_success_color: $color-success !default;
-$dialog_info_color: $color-info !default;
-$dialog_error_color: $color-error !default;
+$dialog_success_color: $color_success !default;
+$dialog_info_color: $color_info !default;
+$dialog_error_color: $color_error !default;
 
 $dialog_button_default_color: $color_white !default;
 $dialog_button_default_hover_color: $color_white !default;
@@ -14,14 +14,14 @@ $dialog_button_default_text_color: $color_text_black !default;
 $dialog_button_primary_color: $color_default !default;
 $dialog_button_primary_hover_color: lighten($color_default, 5%) !default;
 $dialog_button_primary_text_color: $color_white !default;
-$dialog_button_success_color: $color-success-darken-1 !default;
-$dialog_button_success_hover_color: lighten($color-success-darken-1, 5%) !default;
+$dialog_button_success_color: $color_success_darken_1 !default;
+$dialog_button_success_hover_color: lighten($color_success_darken_1, 5%) !default;
 $dialog_button_success_text_color: $color_white !default;
-$dialog_button_info_color: $color-info-darken-1 !default;
-$dialog_button_info_hover_color: lighten($color-info-darken-1, 5%) !default;
+$dialog_button_info_color: $color_info_darken_1 !default;
+$dialog_button_info_hover_color: lighten($color_info_darken_1, 5%) !default;
 $dialog_button_info_text_color: $color_white !default;
-$dialog_button_error_color: $color-error-darken-1 !default;
-$dialog_button_error_hover_color: lighten($color-error-darken-1, 5%) !default;
+$dialog_button_error_color: $color_error_darken_1 !default;
+$dialog_button_error_hover_color: lighten($color_error_darken_1, 5%) !default;
 $dialog_button_error_text_color: $color_white !default;
 
 $dialog_divider_color: transparentize($color_gray_lighten_2, 0.5) !default;
@@ -136,7 +136,7 @@ $dialog_scroll_track_color: $color_white !default;
                 box-sizing: border-box;
                 padding: 4px 0 0;
                 cursor: pointer;
-                color: $color-error;
+                color: $color_error;
                 position: relative;
 
                 & > svg {

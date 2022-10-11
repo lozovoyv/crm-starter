@@ -30,8 +30,8 @@ const props = defineProps<{
 @import "@/variables";
 
 $field_title_color: $color_text_black !default;
-$field_required_color: $color-error !default;
-$field_error_color: $color-error !default;
+$field_required_color: $color_error !default;
+$field_error_color: $color_error !default;
 
 .input-field {
     display: inline-flex;

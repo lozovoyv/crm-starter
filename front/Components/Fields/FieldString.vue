@@ -15,7 +15,6 @@
             :disabled="disabled"
             :has-errors="hasErrors"
             :clearable="clearable"
-            :small="small"
             :type="type"
             :autocomplete="autocomplete"
             :placeholder="placeholder"
@@ -38,7 +37,6 @@ const props = defineProps<{
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
-    small?: boolean,
     // field props
     title?: string,
     required?: boolean,

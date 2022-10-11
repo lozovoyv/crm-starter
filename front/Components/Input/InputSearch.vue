@@ -5,7 +5,6 @@
         </div>
         <input
             class="input-search__input"
-            :class="{'input-search__input-small': small}"
             :value="modelValue"
             :disabled="disabled"
             :placeholder="placeholder"
@@ -29,7 +28,6 @@ const props = defineProps<{
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
-    small?: boolean,
     // string props
     placeholder?: string,
 }>();
@@ -96,10 +94,6 @@ defineExpose({
         background-color: transparent;
         display: block;
         cursor: inherit;
-
-        &-small {
-            font-size: 14px;
-        }
 
         &-icon {
             color: $color_gray_lighten_1;

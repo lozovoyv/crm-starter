@@ -8,8 +8,8 @@
         <span class="checkbox__check" :class="{'checkbox__check-dirty': dirty}">
             <IconCheck class="checkbox__check-checked"/>
         </span>
-        <span class="checkbox__label" v-if="!label" :class="{'checkbox__label-small': small}"><slot/></span>
-        <span class="checkbox__label" v-else :class="{'checkbox__label-small': small}">{{ label }}</span>
+        <span class="checkbox__label" v-if="!label"><slot/></span>
+        <span class="checkbox__label" v-else>{{ label }}</span>
     </label>
 </template>
 
@@ -23,7 +23,6 @@ const props = defineProps<{
     dirty?: boolean,
     disabled?: boolean,
     hasErrors?: boolean,
-    small?: boolean,
     label?: string,
 }>();
 
@@ -43,15 +42,6 @@ const proxyValue = computed({
 
 <style lang="scss">
 @import "@/variables";
-
-$input_color: $color_text_black !default;
-$input_disabled_color: $color_gray !default;
-$input_active_color: $color_default !default;
-$input_background_color: $color_white !default;
-$input_hover_color: $color_default_lighten_2 !default;
-$input_error_color: $color-error !default;
-$input_border_color: $color_gray_lighten_1 !default;
-$input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
 
 .checkbox {
     height: 100%;
@@ -75,7 +65,7 @@ $input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
     &__check {
         width: 16px;
         height: 16px;
-        border: 1px solid $input_border_color;
+        border: 1px solid $color_gray_lighten_1;
         border-radius: 2px;
         display: flex;
         align-items: center;
@@ -83,7 +73,7 @@ $input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
         flex-shrink: 0;
 
         &:hover {
-            border-color: $input_hover_color;
+            border-color: $color_default_lighten_2;
         }
 
         &-checked {
@@ -94,22 +84,22 @@ $input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
         }
 
         &-dirty {
-            background-color: $input_dirty_color;
+            background-color: transparentize($color_default_lighten_2, 0.9);
         }
     }
 
     &__error:not(&__disabled) &__check {
-        border-color: $input_error_color !important;
+        border-color: $color_error !important;
     }
 
     &__disabled &__check {
-        border-color: transparentize($input_disabled_color, 0.5) !important;
-        color: $input_disabled_color !important;
-        background-color: transparentize($input_disabled_color, 0.75) !important;
+        border-color: transparentize($color_gray, 0.5) !important;
+        color: $color_gray !important;
+        background-color: transparentize($color_gray, 0.75) !important;
     }
 
     &__input:checked + &__check {
-        color: $input_active_color;
+        color: $color_default;
     }
 
     &__input:checked + &__check > &__check-checked {
@@ -121,17 +111,13 @@ $input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
         font-size: 15px;
         font-family: $project_font;
         display: inline-block;
-        color: $input_color;
+        color: $color_text_black;
         position: relative;
         @include no_selection;
-
-        &-small {
-            font-size: 14px;
-        }
     }
 
     &__disabled &__label {
-        color: $input_disabled_color;
+        color: $color_gray;
     }
 }
 </style>

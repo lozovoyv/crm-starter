@@ -6,7 +6,6 @@
         :disabled="disabled"
         :has-errors="!valid"
         :clearable="clearable"
-        :small="small"
         :title="title"
         :required="required"
         :errors="errors"
@@ -30,7 +29,6 @@ const props = defineProps<{
     name: string,
     disabled?: boolean,
     clearable?: boolean,
-    small?: boolean,
     // field props
     hideTitle?: boolean,
     vertical?: boolean,

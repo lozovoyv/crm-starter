@@ -2,7 +2,6 @@
     <InputBox class="input-password" :label="true" :dirty="isDirty" :disabled="disabled" :has-errors="hasErrors" :is-empty="!modelValue" :clearable="clearable" @clear="clear">
         <input
             class="input-password__input"
-            :class="{'input-password__input-small': small}"
             :value="modelValue"
             :type="show ? 'text' : 'password'"
             :disabled="disabled"
@@ -32,7 +31,6 @@ const props = defineProps<{
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
-    small?: boolean,
     // password props
     autocomplete?: string,
     placeholder?: string,
@@ -47,7 +45,7 @@ const show = ref<boolean>(false);
 const input = ref<HTMLInputElement | null>(null);
 
 const isDirty = computed((): boolean => {
-    return props.modelValue !== undefined && props.modelValue !== props.original;
+    return props.original !== undefined && props.modelValue !== undefined && props.modelValue !== props.original;
 });
 
 function clear() {
@@ -81,10 +79,6 @@ defineExpose({
 @use "sass:math";
 @import "@/variables";
 
-$input_placeholder_color: $color_gray !default;
-$input_inner_button_color: $color_gray !default;
-$input_inner_button_hover_color: $color_default_lighten_1 !default;
-
 .input-password {
     height: $base_size_unit + 2px;
     box-sizing: content-box;
@@ -106,21 +100,17 @@ $input_inner_button_hover_color: $color_default_lighten_1 !default;
         display: block;
         cursor: inherit;
 
-        &-small {
-            font-size: 14px;
-        }
-
         &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-            color: $input_placeholder_color;
+            color: $color_gray;
             opacity: 1; /* Firefox */
         }
 
         &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-            color: $input_placeholder_color;
+            color: $color_gray;
         }
 
         &::-ms-input-placeholder { /* Microsoft Edge */
-            color: $input_placeholder_color;
+            color: $color_gray;
         }
 
         &:-webkit-autofill,
@@ -138,12 +128,12 @@ $input_inner_button_hover_color: $color_default_lighten_1 !default;
         height: 100%;
         position: relative;
         cursor: pointer;
-        color: $input_inner_button_color;
+        color: $color_gray;
         flex-grow: 0;
         flex-shrink: 0;
 
         &:hover {
-            color: $input_inner_button_hover_color;
+            color: $color_default_lighten_1;
         }
 
         & > svg {

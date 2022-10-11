@@ -17,6 +17,9 @@
                     <slot/>
                     </tbody>
                 </table>
+                <div v-else-if="list.is_loading" class="list-table-container__message">
+                    Загрузка
+                </div>
                 <div v-else-if="$slots.empty" class="list-table-container__message">
                     <slot name="empty"/>
                 </div>
@@ -89,7 +92,7 @@ const notification = computed((): string | null => {
         border-radius: 2px;
 
         &-error {
-            color: $color-error;
+            color: $color_error;
             border: 1px solid transparentize($color_error_lighten-2, 0.5);
         }
     }

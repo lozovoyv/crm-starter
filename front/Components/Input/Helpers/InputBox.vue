@@ -2,15 +2,21 @@
     <div class="input-box">
         <label class="input-box__border" v-if="label" :class="classList">
             <slot/>
+            <span class="input-box__clear" v-if="clearable && !disabled" :class="{'input-box__clear-disabled': disabled || isEmpty}" @click="clear">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
+                    <polygon fill="currentColor"
+                             points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
+                </svg>
+            </span>
         </label>
         <div class="input-box__border" v-else :class="classList">
             <slot/>
-        </div>
-        <div class="input-box__clear" v-if="clearable" :class="{'input-box__clear-disabled': disabled || isEmpty}" @click="clear">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
-                <polygon fill="currentColor"
-                         points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
-            </svg>
+            <span class="input-box__clear" v-if="clearable && !disabled" :class="{'input-box__clear-disabled': disabled || isEmpty}" @click="clear">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
+                    <polygon fill="currentColor"
+                             points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
+                </svg>
+            </span>
         </div>
     </div>
 </template>
@@ -48,62 +54,52 @@ function clear() {
 @use "sass:math";
 @import "@/variables.scss";
 
-$input_color: $color_text_black !default;
-$input_hover_color: $color_default_lighten_2 !default;
-$input_active_color: $color_default_lighten_1 !default;
-$input_background_color: $color_white !default;
-$input_error_color: $color-error !default;
-$input_border_color: $color_gray_lighten_1 !default;
-$input_dirty_color: transparentize($color_default_lighten_2, 0.9) !default;
-$input_disabled_color: $color_gray !default;
-$input_disabled_background_color: transparentize($color_gray, 0.9) !default;
-$input_clear_color: $color-error !default;
-
 .input-box {
     min-height: $base_size_unit;
     display: flex;
     box-sizing: content-box;
     width: 100%;
+    cursor: text;
 
     &__border {
-        background-color: $input_background_color;
+        background-color: $color_white;
         border-radius: 2px;
-        border: 1px solid $input_border_color;
+        border: 1px solid $color_gray_lighten_1;
         box-sizing: content-box;
-        color: $input_color;
-        cursor: text;
+        color: $color_text_black;
         display: flex;
         font-family: $project_font;
         position: relative;
+        cursor: inherit;
         transition: border-color $animation $animation_time;
         width: 100%;
         flex-grow: 1;
 
         &:not(&-disabled):hover {
-            border-color: $input_hover_color;
+            border-color: $color_default_lighten_2;
         }
 
         &:not(&-disabled):focus-within, &-focus:not(&-disabled) {
-            border-color: $input_active_color !important;
+            border-color: $color_default_lighten_1 !important;
         }
 
         &-dirty {
-            background-color: $input_dirty_color;
+            background-color: transparentize($color_default_lighten_2, 0.9);
         }
 
         &-error {
-            border-color: $input_error_color;
+            border-color: $color_error;
         }
 
         &-disabled {
-            background-color: $input_disabled_background_color;
-            color: $input_disabled_color;
+            background-color: transparentize($color_gray, 0.9);
+            color: $color_gray;
             cursor: not-allowed;
         }
     }
 
     &__clear {
-        color: $input_disabled_color;
+        color: $color_gray;
         width: $base_size_unit;
         height: 100%;
         position: relative;
@@ -112,7 +108,7 @@ $input_clear_color: $color-error !default;
 
         & > svg {
             position: absolute;
-            top: math.div($base_size_unit, 2);
+            top: 50%;
             left: 50%;
             width: math.div($base_size_unit, 2);
             height: math.div($base_size_unit, 2);
@@ -120,7 +116,7 @@ $input_clear_color: $color-error !default;
         }
 
         &:not(&-disabled) {
-            color: $input_clear_color;
+            color: $color_error;
             cursor: pointer;
 
             & > svg {
