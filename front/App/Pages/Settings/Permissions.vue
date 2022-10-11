@@ -18,9 +18,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {List} from "@/Core/List";
-import ListTable from "@/Components/List/ListTable.vue";
-import ListTableRow from "@/Components/List/ListTableRow.vue";
-import ListTableCell from "@/Components/List/ListTableCell.vue";
+import ListTable from "@/Components/List/List.vue";
+import ListTableRow from "@/Components/List/ListRow.vue";
+import ListTableCell from "@/Components/List/ListCell.vue";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
 

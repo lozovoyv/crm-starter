@@ -1,7 +1,10 @@
 <template>
     <ListTable :list="roles" :actions="true">
+        <template v-slot:filters>
+            <ListFilterDropdown :list="roles" title="Статус" name="active" :options="{enabled: 'Включенные', disabled: 'Отключенные'}" :has-null="true" placeholder="Все"/>
+        </template>
         <template v-slot:search>
-            <ListSearch :list="roles" placeholder="ID, название"/>
+            <ListSearch :list="roles" title="Поиск" placeholder="ID, название"/>
         </template>
         <ListTableRow v-for="role in roles.list">
             <ListTableCell v-html="highlight(role.id, roles.search)"/>
@@ -32,17 +35,18 @@
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import {ref} from "vue";
 import {List} from "@/Core/List";
-import ListTable from "@/Components/List/ListTable.vue";
-import ListTableRow from "@/Components/List/ListTableRow.vue";
-import ListTableCell from "@/Components/List/ListTableCell.vue";
+import ListTable from "@/Components/List/List.vue";
+import ListTableRow from "@/Components/List/ListRow.vue";
+import ListTableCell from "@/Components/List/ListCell.vue";
 import IconLock from "@/Icons/IconLock.vue";
 import GuiIndicator from "@/Components/GUI/GuiIndicator.vue";
-import ListActionsMenu from "@/Components/List/ListActionsMenu.vue";
+import ListActionsMenu from "@/Components/List/ListActions.vue";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
 import {toDatetime} from "@/Core/Helpers/DateTime";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
+import ListFilterDropdown from "@/Components/List/ListFilterDropdown.vue";
 
 type Role = {
     id: number,

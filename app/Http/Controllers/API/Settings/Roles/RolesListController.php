@@ -57,7 +57,7 @@ class RolesListController extends ApiController
         // apply filters
         $filters = $request->filters($this->defaultFilters);
         if (isset($filters['active'])) {
-            $query->where('active', $filters['active']);
+            $query->where('active', $filters['active'] === 'enabled');
         }
 
         // apply search

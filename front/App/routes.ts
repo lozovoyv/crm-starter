@@ -10,6 +10,7 @@ const routes: Array<RouteRecordRaw> = [
     {path: '/settings/roles', name: 'roles', component: () => import("./Pages/Settings/RolesPage.vue")},
     {path: '/settings/settings', name: 'settings', component: () => import("./Pages/Settings/Settings.vue")},
 
+    {path: '/test', name: 'test', component: () => import("./Pages/TestPage.vue")},
 ];
 
 export default routes;

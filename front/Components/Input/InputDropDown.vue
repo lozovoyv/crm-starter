@@ -51,19 +51,13 @@ import {computed, nextTick, ref} from "vue";
 import InputSearch from "@/Components/Input/InputSearch.vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 import {highlight} from "@/Core/Highlight/highlight";
-
-type DropDownOption = number | string | { [index: string | number]: any };
-type DropDownOptions = { [index: number | string]: DropDownOption } | Array<DropDownOption>;
-type DropDownDisplayOption = { key: number | string, caption: string, hint?: string, enabled: boolean };
-type DropDownDisplayOptions = Array<DropDownDisplayOption>;
-
-type ValueType = string | number | Array<string | number>;
+import {DropDownDisplayOption, DropDownDisplayOptions, DropDownOption, DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/InputTypes";
 
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: ValueType,
-    original?: ValueType,
+    modelValue?: DropDownValueType,
+    original?: DropDownValueType,
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
@@ -399,7 +393,7 @@ function updateHeight(): void {
         width: 100%;
         position: absolute;
         transform: translateY(100%);
-        z-index: 10;
+        z-index: 20;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
         opacity: 0;
         visibility: hidden;

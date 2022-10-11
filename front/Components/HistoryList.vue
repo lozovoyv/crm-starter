@@ -25,9 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import ListTable from "@/Components/List/ListTable.vue";
-import ListTableRow from "@/Components/List/ListTableRow.vue";
-import ListTableCell from "@/Components/List/ListTableCell.vue";
+import ListTable from "@/Components/List/List.vue";
+import ListTableRow from "@/Components/List/ListRow.vue";
+import ListTableCell from "@/Components/List/ListCell.vue";
 import {ref} from "vue";
 import {List} from "@/Core/List";
 import {toDatetime} from "@/Core/Helpers/DateTime";

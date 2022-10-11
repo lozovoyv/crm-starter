@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import ListTableHeader from "@/Components/List/ListTableHeader.vue";
+import ListTableHeader from "@/Components/List/ListHeader.vue";
 import {List} from "@/Core/List";
 import ListPagination from "@/Components/List/ListPagination.vue";
 import {computed} from "vue";

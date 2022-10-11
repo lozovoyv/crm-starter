@@ -111,17 +111,17 @@ defineExpose({
         &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
             color: $color_gray;
             opacity: 1; /* Firefox */
-            font-size: 14px;
+            font-size: 16px;
         }
 
         &:-ms-input-placeholder { /* Internet Explorer 10-11 */
             color: $color_gray;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         &::-ms-input-placeholder { /* Microsoft Edge */
             color: $color_gray;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         &:-webkit-autofill,

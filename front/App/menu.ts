@@ -8,6 +8,7 @@ const menu: Menu = [
             {title: 'Настройки системы', route: {name: 'settings'}},
         ]
     },
+    {title: 'Test', route: {name: 'test'}},
 ];
 
 export default menu;
