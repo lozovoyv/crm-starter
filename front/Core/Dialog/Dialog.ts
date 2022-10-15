@@ -9,11 +9,19 @@ export type DialogWidth = {
     max?: string,
 }
 
+export type DialogButtonsAlign = 'left' | 'center' | 'right' | null;
+
+export type DialogButtonType = 'success' | 'info' | 'error' | 'default' | null;
+
 export type DialogButton = {
-    result: string,
     caption: string,
-    type: 'success' | 'info' | 'error' | 'default' | null,
+    result: string,
+    type: DialogButtonType,
 }
+
+export type DialogButtons = Array<DialogButton>;
+
+export type DialogResolveFunction = (result: string | null) => boolean;
 
 class Dialog {
 
@@ -40,15 +48,15 @@ class Dialog {
         return this.instance || (this.instance = new Dialog());
     };
 
-    public button(result: string, caption: string, type: 'success' | 'info' | 'error' | 'default' | null = null): DialogButton {
+    public button(result: string, caption: string, type: DialogButtonType = null): DialogButton {
         return {
-            result: result,
             caption: caption,
+            result: result,
             type: type,
         };
     }
 
-    show(title: string | null, message: string | null, buttons: DialogButton[], type: DialogType = null, align: 'left' | 'center' | 'right' | null = null, width: DialogWidth | null = null, blockOverlayClose: boolean = false) {
+    show(title: string | null, message: string | null, buttons: DialogButtons, type: DialogType = null, align: DialogButtonsAlign = null, width: DialogWidth | null = null, blockOverlayClose: boolean = false) {
         const index = ++this.index;
         let window = new DialogWindow(
             index,

@@ -1,7 +1,25 @@
 <template>
-    <HistoryList url="/api/settings/roles/history" prefix="settings_roles_history"/>
+    <HistoryList
+        url="/api/settings/roles/history"
+        commentsUrl="/api/settings/roles/history/comments"
+        changesUrl="/api/settings/roles/history/changes"
+        prefix="settings_roles_history"
+        empty-message="Нет истории изменения ролей"
+        ref="history"
+    />
 </template>
 
 <script setup lang="ts">
-import HistoryList from "@/Components/HistoryList.vue";
+import HistoryList from "@/Components/History/HistoryList.vue";
+import {ref} from "vue";
+
+const history = ref<InstanceType<typeof HistoryList>>(null);
+
+function reload(): void {
+    history.value.reload();
+}
+
+defineExpose({
+    reload,
+})
 </script>

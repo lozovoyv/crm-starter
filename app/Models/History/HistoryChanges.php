@@ -2,7 +2,10 @@
 
 namespace App\Models\History;
 
+use App\Foundation\Casting;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use JsonException;
 
 /**
  * @property int $id
@@ -19,4 +22,82 @@ class HistoryChanges extends Model
 
     /** @var string[] Fillable attributes. */
     protected $fillable = ['parameter', 'type', 'old', 'new'];
+
+    /**
+     * Convert old value from store value to real type.
+     *
+     * @param string|null $value
+     *
+     * @return  string|array|bool|int|Carbon|null
+     */
+    public function getOldAttribute(?string $value): string|array|bool|int|null|Carbon
+    {
+        try {
+            return $value !== null ? Casting::castTo($value, $this->type) : null;
+        } catch (JsonException) {
+            return null;
+        }
+    }
+
+    /**
+     * Convert old value to store value.
+     *
+     * @param string|array|bool|int|Carbon|null $value
+     *
+     * @return  void
+     */
+    public function setOldAttribute(string|array|bool|int|null|Carbon $value): void
+    {
+        try {
+            $this->attributes['old'] = $value !== null ? Casting::castFrom($value, $this->type) : null;
+        } catch (JsonException) {
+            return;
+        }
+    }
+
+    /**
+     * Convert new value from store value to real type.
+     *
+     * @param string|null $value
+     *
+     * @return  string|array|bool|int|Carbon|null
+     */
+    public function getNewAttribute(?string $value): string|array|bool|int|null|Carbon
+    {
+        try {
+            return $value !== null ? Casting::castTo($value, $this->type) : null;
+        } catch (JsonException) {
+            return null;
+        }
+    }
+
+    /**
+     * Convert new value to store value.
+     *
+     * @param string|array|bool|int|Carbon|null $value
+     *
+     * @return  void
+     */
+    public function setNewAttribute(string|array|bool|int|null|Carbon $value): void
+    {
+        try {
+            $this->attributes['new'] = $value !== null ? Casting::castFrom($value, $this->type) : null;
+        } catch (JsonException) {
+            return;
+        }
+    }
+
+    /**
+     * Cast to array.
+     *
+     * @return string[]
+     */
+    public function toArray(): array
+    {
+        return [
+            'parameter' => $this->parameter,
+            'old' => $this->old,
+            'new' => $this->new,
+        ];
+    }
 }

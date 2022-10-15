@@ -43,23 +43,13 @@ class ApiHistoryController extends BaseController
                 $query->orderBy('id', $this->order);
         }
 
+        $query->withCount(['comments', 'links', 'changes']);
+
         // apply filters
         $this->filters = $request->filters($this->defaultFilters);
         if (isset($this->filters['action_ids'])) {
             $query->whereIn('action_id', $this->filters['action_ids']);
         }
-
-        // apply search
-        $search = $request->search();
-//        if (!empty($search)) {
-//            $query->where(function (Builder $query) use ($search) {
-//                foreach ($search as $term) {
-//                    $query
-//                        ->orWhere('id', 'like', "%$term%")
-//                        ->orWhere('name', 'like', "%$term%");
-//                }
-//            });
-//        }
 
         return $request->paginate($query);
     }

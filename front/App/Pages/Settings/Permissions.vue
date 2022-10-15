@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {List} from "@/Core/List";
-import ListTable from "@/Components/List/List.vue";
+import ListTable from "@/Components/List/ListComponent.vue";
 import ListTableRow from "@/Components/List/ListRow.vue";
 import ListTableCell from "@/Components/List/ListCell.vue";
 import ListSearch from "@/Components/List/ListSearch.vue";

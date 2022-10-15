@@ -24,7 +24,7 @@ class RolesListController extends ApiController
         'updated_at' => 'Изменено',
     ];
 
-    protected array $ordering = ['id', 'state', 'name', 'count', 'updated_at'];
+    protected array $ordering = ['id', 'state', 'name', 'updated_at'];
 
     /**
      * Get roles list.
@@ -47,9 +47,6 @@ class RolesListController extends ApiController
             case 'name':
                 $query->orderBy($orderBy, $order);
                 break;
-            case 'count':
-                $query->orderBy('permissions_count', $order);
-                break;
             default:
                 $query->orderBy('id', $order);
         }
@@ -57,7 +54,7 @@ class RolesListController extends ApiController
         // apply filters
         $filters = $request->filters($this->defaultFilters);
         if (isset($filters['active'])) {
-            $query->where('active', $filters['active'] === 'enabled');
+            $query->where('active', $filters['active']);
         }
 
         // apply search

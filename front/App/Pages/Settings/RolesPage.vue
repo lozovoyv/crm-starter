@@ -8,10 +8,11 @@
 
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
-        <Roles v-if="tab === 'roles'"/>
+        <Roles v-if="tab === 'roles'" ref="list"/>
         <Permissions v-if="tab === 'permissions'"/>
-        <RolesHistory v-if="tab === 'history'"/>
+        <RolesHistory v-if="tab === 'history'" ref="history"/>
 
+        <RoleEditForm ref="form"/>
     </LayoutPage>
 </template>
 
@@ -24,6 +25,7 @@ import {computed, ref} from "vue";
 import Roles from "@/App/Pages/Settings/Roles.vue";
 import RolesHistory from "@/App/Pages/Settings/RolesHistory.vue";
 import Permissions from "@/App/Pages/Settings/Permissions.vue";
+import RoleEditForm from "@/App/Pages/Settings/RoleEditForm.vue";
 
 const tab = ref<string | null>(null);
 
@@ -31,7 +33,21 @@ const tabs = computed((): { [index: string]: string } => {
     return {roles: 'Роли', permissions: 'Права', history: 'История'};
 });
 
+const form = ref<InstanceType<typeof RoleEditForm> | null>(null);
+const list = ref<InstanceType<typeof Roles> | null>(null);
+const history = ref<InstanceType<typeof RolesHistory> | null>(null);
+
 function create(): void {
-    console.log('create role');
+    if (form.value !== null) {
+        form.value.show(0)
+            .then(() => {
+                if (tab.value === 'roles' && list.value !== null) {
+                    list.value.reload();
+                }
+                if (tab.value === 'history' && history.value !== null) {
+                    history.value.reload();
+                }
+            });
+    }
 }
 </script>

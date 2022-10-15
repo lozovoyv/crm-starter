@@ -40,10 +40,10 @@ $loader_animation_time: 2s;
     &__wrapper {
         position: absolute;
         z-index: 9;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
+        width: calc(100% + 3px);
+        height: calc(100% + 3px);
+        top: -3px;
+        left: -3px;
         display: flex;
         justify-content: center;
         align-items: center;

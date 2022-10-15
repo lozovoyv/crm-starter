@@ -1,4 +1,4 @@
-import {DialogButton, DialogType, DialogWidth} from "./Dialog";
+import {DialogButtons, DialogButtonsAlign, DialogType, DialogWidth} from "./Dialog";
 
 export class DialogWindow {
     id: number;
@@ -8,7 +8,7 @@ export class DialogWindow {
     promise: Promise<string | null>;
     resolve: ((result: string | null) => void) | undefined = undefined;
 
-    constructor(id: number, title: string | null, message: string | null, type: DialogType, buttons: DialogButton[], align: 'left' | 'center' | 'right', width: DialogWidth | null, blockOverlayClose: boolean = false, unset: () => void) {
+    constructor(id: number, title: string | null, message: string | null, type: DialogType, buttons: DialogButtons, align: DialogButtonsAlign, width: DialogWidth | null, blockOverlayClose: boolean = false, unset: () => void) {
         this.id = id;
         this.unset = unset;
         this.blockOverlayClose = blockOverlayClose;
@@ -43,7 +43,9 @@ export class DialogWindow {
         if (buttons.length > 0) {
             const buttonsContainer = document.createElement("div");
             buttonsContainer.className = "dialog__window-buttons";
-            buttonsContainer.classList.add("dialog__window-buttons-" + align);
+            if (align !== null) {
+                buttonsContainer.classList.add("dialog__window-buttons-" + align);
+            }
             buttons.map(button => {
                 const windowButton = document.createElement("span");
                 windowButton.className = 'dialog__window-buttons-button';

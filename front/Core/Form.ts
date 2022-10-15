@@ -22,6 +22,7 @@ export class Form {
 
     values: { [index: string]: any } = {};
     originals: { [index: string]: any } = {};
+    hash: string|null = null;
     titles: { [index: string]: string } = {};
     rules: { [index: string]: FieldRules } = {};
     payload: { [index: string]: any } = {};
@@ -74,7 +75,7 @@ export class Form {
      *
      * @param options Options to pass to load request. Overrides form default options if not null.
      */
-    load(options = null) {
+    load(options: { [index: string]: any } | null = null) {
         return new Promise((resolve: ((obj: { values: { [index: string]: any }, payload: { [index: string]: any } }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
             if (this.load_url === null || this.load_url === '') {
                 this.is_loaded = true;
@@ -93,6 +94,8 @@ export class Form {
                 .then(response => {
                     this.values = response.data.values;
                     this.originals = clone(this.values);
+                    this.hash = response.data.hash ? response.data.hash : null;
+                    this.title = response.data.title ? response.data.title : this.title;
                     this.titles = response.data.titles;
                     this.rules = {};
                     Object.keys(response.data.rules).map(key => {
@@ -149,6 +152,7 @@ export class Form {
             this.is_saving = true;
 
             let _options = clone(options !== null ? options : this.options);
+            _options['hash'] = this.hash;
             _options['data'] = this.values;
 
             http.post(this.save_url, _options)

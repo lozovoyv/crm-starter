@@ -47,7 +47,7 @@ $field_error_color: $color_error !default;
     &__title {
         font-family: $project_font;
         font-size: 15px;
-        width: 200px;
+        width: 150px;
         box-sizing: border-box;
         flex-shrink: 0;
         line-height: 15px;

@@ -3,7 +3,9 @@
 namespace App\Models\Permissions;
 
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $order
  *
  * @property PermissionModule $permissionModule
+ * @property Collection $roles
  */
 class Permission extends Model
 {
@@ -28,6 +31,16 @@ class Permission extends Model
     }
 
     /**
+     * Roles this permission attached to.
+     *
+     * @return  BelongsToMany
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(PermissionRole::class, 'permission_in_role', 'permission_id', 'role_id');
+    }
+
+    /**
      * Cast permission as array.
      *
      * @return  array
@@ -35,6 +48,7 @@ class Permission extends Model
     public function toArray(): array
     {
         return [
+            'id' => $this->id,
             'key' => $this->key,
             'module' => $this->permissionModule->name,
             'name' => $this->name,

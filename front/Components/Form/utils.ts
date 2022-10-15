@@ -2,13 +2,13 @@ import {Form} from "@/Core/Form";
 
 export function getFromForm(form: Form, scope: 'titles' | 'values' | 'originals' | 'valid' | 'errors' | 'rules', name: string, defaults: any = null): any {
     if (!form.is_loaded) {
-        return null;
+        return defaults;
     }
     return typeof form[scope][name] !== "undefined" ? form[scope][name] : defaults;
 }
 
 export function getTitle(form: Form, name: string): string | null {
-    return getFromForm(form, 'titles', name);
+    return getFromForm(form, 'titles', name, '...');
 }
 
 export function getValue(form: Form, name: string, defaults: any | null = null): any | null {

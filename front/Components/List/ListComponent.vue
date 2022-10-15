@@ -101,5 +101,6 @@ const notification = computed((): string | null => {
 .list-table {
     border-collapse: collapse;
     min-width: 100%;
+    margin-bottom: 10px;
 }
 </style>

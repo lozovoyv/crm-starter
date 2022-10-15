@@ -202,19 +202,23 @@ class APIResponse
     /**
      * Make 200 form response with data and payload.
      *
+     * @param string|null $title
      * @param array $values
+     * @param string|null $hash
      * @param array $rules
      * @param array $titles
      * @param mixed $payload
      *
      * @return  JsonResponse
      */
-    public static function form(array $values, array $rules, array $titles, array $payload = []): JsonResponse
+    public static function form(?string $title, array $values, ?string $hash, array $rules, array $titles, array $payload = []): JsonResponse
     {
         return response()->json([
             'message' => 'OK',
             'values' => $values,
+            'hash' => $hash,
             'rules' => $rules,
+            'title' => $title,
             'titles' => $titles,
             'payload' => $payload,
         ], self::CODE_OK);

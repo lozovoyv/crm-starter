@@ -46,15 +46,16 @@ class ApiController extends BaseController
      * @param Model $model
      * @param string $key
      * @param mixed $value
+     * @param int $type
      * @param array $changes
      *
      * @return  void
      */
-    protected function set(Model $model, string $key, mixed $value, array &$changes): void
+    protected function set(Model $model, string $key, mixed $value, int $type, array &$changes): void
     {
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($model->getAttribute($key) != $value) {
-            $changes[$key] = ['old' => $model->getAttribute($key), 'new' => $value];
+            $changes[] = ['parameter' => $key, 'type' => $type, 'old' => $model->getAttribute($key), 'new' => $value];
             $model->setAttribute($key, $value);
         }
     }

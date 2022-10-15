@@ -16,4 +16,14 @@ class HistoryComment extends Model
 
     /** @var string[] Fillable attributes. */
     protected $fillable = ['comment'];
+
+    /**
+     * Cast to array.
+     *
+     * @return string[]
+     */
+    public function toArray(): array
+    {
+        return ['comment' => $this->comment];
+    }
 }

@@ -133,21 +133,25 @@ class History extends Model
     /**
      * Add history changes.
      *
-     * @param string $parameter
-     * @param int $type
-     * @param $old
-     * @param $new
+     * @param string|array $parameter
+     * @param int|null $type
+     * @param mixed|null $old
+     * @param mixed|null $new
      *
      * @return  $this
      */
-    public function addChanges(string $parameter, int $type, $old, $new): self
+    public function addChanges(string|array $parameter, int $type = null, mixed $old = null, mixed $new = null): self
     {
-        $this->changes()->create([
-            'parameter' => $parameter,
-            'type' => $type,
-            'old' => $old,
-            'new' => $new,
-        ]);
+        if (is_array($parameter)) {
+            $this->changes()->createMany($parameter);
+        } else {
+            $this->changes()->create([
+                'parameter' => $parameter,
+                'type' => $type,
+                'old' => $old,
+                'new' => $new,
+            ]);
+        }
 
         return $this;
     }
@@ -172,8 +176,11 @@ class History extends Model
             'position' => $this->position?->user->info->compactName,
 
             'links' => $this->links,
+            'links_count' => $this->getAttribute('links_count') ?? $this->comments()->count(),
             'changes' => $this->changes,
+            'changes_count' => $this->getAttribute('changes_count') ?? $this->links()->count(),
             'comments' => $this->comments,
+            'comments_count' => $this->getAttribute('comments_count') ?? $this->changes()->count(),
         ];
     }
 }

@@ -1,7 +1,8 @@
 <template>
     <ListTable :list="roles" :actions="true">
         <template v-slot:filters>
-            <ListFilterDropdown :list="roles" title="Статус" name="active" :options="{enabled: 'Включенные', disabled: 'Отключенные'}" :has-null="true" placeholder="Все"/>
+            <ListFilterDropdown :list="roles" title="Статус" name="active" :options="[{id: true,name: 'Включенные'}, {id: false,name: 'Отключенные'}]" :has-null="true"
+                                placeholder="Все"/>
         </template>
         <template v-slot:search>
             <ListSearch :list="roles" title="Поиск" placeholder="ID, название"/>
@@ -12,7 +13,7 @@
                 <span v-if="role.locked" style="width: 10px; display: inline-block;" title="Системная роль"><IconLock/></span>
                 <GuiIndicator v-else :active="role.active" style="margin-right: 0"/>
             </ListTableCell>
-            <ListTableCell v-html="highlight(role.name, roles.search)"/>
+            <ListTableCell style="white-space: nowrap" v-html="highlight(role.name, roles.search)"/>
             <ListTableCell style="text-align: center">{{ role.count ? role.count : '—' }}</ListTableCell>
             <ListTableCell style="width: 100%;">{{ role.description }}</ListTableCell>
             <ListTableCell style="white-space: nowrap">{{ toDatetime(role.updated_at, true) }}</ListTableCell>
@@ -29,13 +30,16 @@
             Роли не найдены
         </template>
     </ListTable>
+
+    <RoleEditForm ref="form"/>
+
 </template>
 
 <script setup lang="ts">
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import {ref} from "vue";
 import {List} from "@/Core/List";
-import ListTable from "@/Components/List/List.vue";
+import ListTable from "@/Components/List/ListComponent.vue";
 import ListTableRow from "@/Components/List/ListRow.vue";
 import ListTableCell from "@/Components/List/ListCell.vue";
 import IconLock from "@/Icons/IconLock.vue";
@@ -47,6 +51,9 @@ import {toDatetime} from "@/Core/Helpers/DateTime";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
 import ListFilterDropdown from "@/Components/List/ListFilterDropdown.vue";
+import RoleEditForm from "@/App/Pages/Settings/RoleEditForm.vue";
+
+const form = ref<InstanceType<typeof RoleEditForm> | null>(null);
 
 type Role = {
     id: number,
@@ -65,8 +72,13 @@ const roles = ref<List<Role>>(new List<Role>('/api/settings/roles', {}, {
 
 roles.value.initial();
 
-function edit(role: Role | null): void {
-    console.log(role);
+function edit(role: Role): void {
+    if (form.value !== null) {
+        form.value.show(role.id)
+            .then(() => {
+                reload();
+            });
+    }
 }
 
 const processing = ref<boolean>(false);
@@ -76,7 +88,7 @@ function deactivate(role: Role): void {
         '/api/settings/roles/deactivate', {role_id: role.id, role_hash: role.hash},
         p => processing.value = p
     ).then(() => {
-        roles.value.reload();
+        reload();
     });
 }
 
@@ -85,7 +97,7 @@ function activate(role: Role): void {
         '/api/settings/roles/activate', {role_id: role.id, role_hash: role.hash},
         p => processing.value = p
     ).then(() => {
-        roles.value.reload();
+        reload();
     });
 }
 
@@ -94,7 +106,15 @@ function remove(role: Role): void {
         '/api/settings/roles/remove', {role_id: role.id, role_hash: role.hash},
         p => processing.value = p
     ).then(() => {
-        roles.value.reload();
+        reload();
     });
 }
+
+function reload(): void {
+    roles.value.reload();
+}
+
+defineExpose({
+    reload,
+})
 </script>

@@ -81,8 +81,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | number | null | Array<string | number>): void,
-    (e: 'change', value: string | number | null | Array<string | number>, name: string | undefined): void,
+    (e: 'update:modelValue', value: string | number | boolean | null | Array<string | number>): void,
+    (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string | undefined): void,
     (e: 'dropped'): void,
 }>()
 
