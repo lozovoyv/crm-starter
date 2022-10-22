@@ -9,7 +9,7 @@ use RuntimeException;
 
 class Settings
 {
-    /** @var string[] Settings store. */
+    /** @var string[] System store. */
     protected static array $settings;
 
     /** @var bool Loaded state. */
@@ -79,7 +79,7 @@ class Settings
     public static function save(): void
     {
         if (self::$loaded === false) {
-            throw new RuntimeException('Settings must be loaded before saving.');
+            throw new RuntimeException('System must be loaded before saving.');
         }
         $values = [];
         foreach (self::$settings as $key => $value) {

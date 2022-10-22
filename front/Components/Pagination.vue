@@ -201,6 +201,7 @@ function setPage(page: number, perPage: number): void {
                     transition: opacity $animation $animation_time, visibility $animation $animation_time;
                     opacity: 0;
                     visibility: hidden;
+                    z-index: 20;
 
                     &:before {
                         content: '';

@@ -2,10 +2,11 @@ import {Menu} from "@/Core/Types/Menu";
 
 const menu: Menu = [
     {
-        title: 'Настройки', items: [
-            {title: 'Пользователи', route: {name: 'users'}},
+        title: 'Система', items: [
+            {title: 'Сотрудники', route: {name: 'staff'}},
             {title: 'Роли и права', route: {name: 'roles'}},
-            {title: 'Настройки системы', route: {name: 'settings'}},
+            {title: 'Настройки', route: {name: 'settings'}},
+            {title: 'Журнал операций', route: {name: 'history'}},
         ]
     },
     {title: 'Test', route: {name: 'test'}},

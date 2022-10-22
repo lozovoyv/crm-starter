@@ -19,9 +19,10 @@
             <ListTableCell style="white-space: nowrap">{{ toDatetime(role.updated_at, true) }}</ListTableCell>
             <ListTableCell :action="true">
                 <ListActionsMenu v-if="!role.locked">
-                    <GuiLink @click="edit(role)">Редактировать</GuiLink>
+                    <GuiLink @click="edit(null, role)">Создать копию</GuiLink>
                     <GuiLink @click="deactivate(role)" v-if="role.active">Отключить</GuiLink>
                     <GuiLink @click="activate(role)" v-if="!role.active">Включить</GuiLink>
+                    <GuiLink @click="edit(role)">Редактировать</GuiLink>
                     <GuiLink @click="remove(role)">Удалить</GuiLink>
                 </ListActionsMenu>
             </ListTableCell>
@@ -51,7 +52,7 @@ import {toDatetime} from "@/Core/Helpers/DateTime";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
 import ListFilterDropdown from "@/Components/List/ListFilterDropdown.vue";
-import RoleEditForm from "@/App/Pages/Settings/RoleEditForm.vue";
+import RoleEditForm from "@/App/Pages/System/RoleEditForm.vue";
 
 const form = ref<InstanceType<typeof RoleEditForm> | null>(null);
 
@@ -66,15 +67,15 @@ type Role = {
     updated_at: string,
 };
 
-const roles = ref<List<Role>>(new List<Role>('/api/settings/roles', {}, {
-    prefix: 'settings_roles', remember: {filters: ['active'], pagination: true, order: true}
+const roles = ref<List<Role>>(new List<Role>('/api/system/roles', {}, {
+    prefix: 'system_roles', remember: {filters: ['active'], pagination: true, order: true}
 }));
 
 roles.value.initial();
 
-function edit(role: Role): void {
+function edit(role: Role | null, fromRole: Role | null = null): void {
     if (form.value !== null) {
-        form.value.show(role.id)
+        form.value.show(role ? role.id : 0, fromRole ? fromRole.id : null)
             .then(() => {
                 reload();
             });
@@ -85,7 +86,7 @@ const processing = ref<boolean>(false);
 
 function deactivate(role: Role): void {
     processEntry('Отключение', `Отключить роль "${role.name}"?`, dialog.button('yes', 'Отключить', 'default'),
-        '/api/settings/roles/deactivate', {role_id: role.id, role_hash: role.hash},
+        '/api/system/roles/deactivate', {role_id: role.id, role_hash: role.hash},
         p => processing.value = p
     ).then(() => {
         reload();
@@ -94,7 +95,7 @@ function deactivate(role: Role): void {
 
 function activate(role: Role): void {
     processEntry('Включение', `Включить роль "${role.name}"?`, dialog.button('yes', 'Включить', 'default'),
-        '/api/settings/roles/activate', {role_id: role.id, role_hash: role.hash},
+        '/api/system/roles/activate', {role_id: role.id, role_hash: role.hash},
         p => processing.value = p
     ).then(() => {
         reload();
@@ -103,7 +104,7 @@ function activate(role: Role): void {
 
 function remove(role: Role): void {
     processEntry('Удаление', `Удалить роль "${role.name}"?`, dialog.button('yes', 'Удалить', 'error'),
-        '/api/settings/roles/remove', {role_id: role.id, role_hash: role.hash},
+        '/api/system/roles/remove', {role_id: role.id, role_hash: role.hash},
         p => processing.value = p
     ).then(() => {
         reload();

@@ -3,7 +3,7 @@
 
         <div class="input-dropdown__value" @click="toggle">
             <span class="input-dropdown__value-placeholder" v-if="isEmpty">{{ placeholder }}</span>
-            <span class="input-dropdown__value-single" v-else-if="!multi" :title="selected[0].caption">{{ selected[0].caption }}</span>
+            <span class="input-dropdown__value-single" v-else-if="!multi && selected.length !== 0" :title="selected[0].caption">{{ selected[0].caption }}</span>
             <div class="input-dropdown__value-multi" v-else-if="multi">
                 <span class="input-dropdown__value-multi-item" :class="{'input-dropdown__value-multi-item-disabled': disabled}" v-for="item in selected">
                     {{ item.caption }}
@@ -136,9 +136,9 @@ const filteredOptions = computed((): DropDownDisplayOptions => {
     });
 });
 
-const selected = computed((): DropDownDisplayOptions | null => {
+const selected = computed((): DropDownDisplayOptions => {
     if (isEmpty.value) {
-        return null;
+        return [];
     }
     let selected: DropDownDisplayOptions = [];
     allFormattedOptions.value.map((option: DropDownDisplayOption) => {

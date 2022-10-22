@@ -142,7 +142,7 @@ class Http {
     }
 
     private static handleServerError(error: ErrorResponse) {
-        let message = '<b>' + error.data.message + '</b>';
+        let message = '<b>' + (error.data.message !== undefined ? error.data.message : 'Server error') + '</b>';
         if (error.data.exception) message += '</br></br>Exception: <b>' + error.data.exception + '</b>';
         if (error.data.file) message += '</br></br>File: <b>' + error.data.file + '</b>';
         if (error.data.line) message += '</br>Line: <b>' + error.data.line + '</b>';

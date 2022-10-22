@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Settings\Roles;
+namespace App\Http\Controllers\API\System\Roles;
 
 use App\Current;
 use App\Foundation\Casting;

@@ -22,7 +22,7 @@ export class Form {
 
     values: { [index: string]: any } = {};
     originals: { [index: string]: any } = {};
-    hash: string|null = null;
+    hash: string | null = null;
     titles: { [index: string]: string } = {};
     rules: { [index: string]: FieldRules } = {};
     payload: { [index: string]: any } = {};
@@ -102,6 +102,8 @@ export class Form {
                         this.rules[key] = ParseFieldRules(response.data.rules[key]);
                     });
                     this.payload = !empty(response.data.payload) ? response.data.payload : {};
+                    this.valid = {};
+                    this.errors = {};
 
                     this.is_loaded = true;
                     this.is_forbidden = false;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Settings\Roles;
+namespace App\Http\Controllers\API\System\Roles;
 
 use App\Current;
 use App\Foundation\Casting;
@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 class RolesEditController extends ApiController
 {
@@ -40,7 +42,7 @@ class RolesEditController extends ApiController
     public function get(Request $request): JsonResponse
     {
         try {
-            $role = $this->getRole($request, false);
+            $role = $this->getRole($request, false, $request->input('from_role_id'));
         } catch (Exception $exception) {
             return APIResponse::error($exception->getMessage());
         }
@@ -92,6 +94,11 @@ class RolesEditController extends ApiController
         }
 
         $data = $this->data($request);
+
+        $this->rules['name'] = [
+            'required',
+            Rule::unique('permission_roles', 'name')->ignore($role->id),
+        ];
 
         if ($errors = $this->validate($data, $this->rules, $this->titles)) {
             return APIResponse::validationError($errors);
@@ -150,21 +157,33 @@ class RolesEditController extends ApiController
      *
      * @param Request $request
      * @param bool $check
+     * @param int|null $overrideId
      *
      * @return PermissionRole
      * @throws Exception
      */
-    protected function getRole(Request $request, bool $check): PermissionRole
+    protected function getRole(Request $request, bool $check, ?int $overrideId = null): PermissionRole
     {
         $roleId = $request->input('role_id');
 
         /** @var PermissionRole|null $role */
-        $role = $roleId === 0 ? new PermissionRole() : PermissionRole::query()->where('id', $request->input('role_id'))->first();
+        if ($roleId === 0) {
+            if ($overrideId !== null) {
+                $role = PermissionRole::query()->where('id', $overrideId)->first();
+                if ($role) {
+                    $role->exists = false;
+                }
+            } else {
+                $role = new PermissionRole();
+            }
+        } else {
+            $role = PermissionRole::query()->where('id', $request->input('role_id'))->first();
+        }
 
         if ($role === null) {
             throw new Exception('Роль не найдена');
         }
-        if ($check && !$role->isHash($request->input('hash'))) {
+        if ($check && $role->exists && !$role->isHash($request->input('hash'))) {
             throw new Exception('Роль была изменена в другом месте.');
         }
         if ($role->locked) {

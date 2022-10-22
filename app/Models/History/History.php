@@ -157,6 +157,20 @@ class History extends Model
     }
 
     /**
+     * Get formatted changes.
+     *
+     * @return  \Illuminate\Support\Collection
+     */
+    public function getChanges(): \Illuminate\Support\Collection
+    {
+        $this->loadMissing('changes');
+
+        return $this->getRelation('changes')->map(function (HistoryChanges $change) {
+            return $change->toArray($this->entry_name);
+        });
+    }
+
+    /**
      * Format history record as array.
      *
      * @return  array
@@ -177,9 +191,7 @@ class History extends Model
 
             'links' => $this->links,
             'links_count' => $this->getAttribute('links_count') ?? $this->comments()->count(),
-            'changes' => $this->changes,
             'changes_count' => $this->getAttribute('changes_count') ?? $this->links()->count(),
-            'comments' => $this->comments,
             'comments_count' => $this->getAttribute('comments_count') ?? $this->changes()->count(),
         ];
     }

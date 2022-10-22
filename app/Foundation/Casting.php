@@ -28,7 +28,7 @@ class Casting
             case self::int:
                 return $value !== null ? (int)$value : null;
             case self::bool:
-                return (bool)$value;
+                return $value !== null ? (bool)$value : null;
             case self::datetime:
                 return $value !== null ? Carbon::parse($value) : null;
             case self::array:

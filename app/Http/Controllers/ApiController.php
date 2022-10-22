@@ -54,8 +54,8 @@ class ApiController extends BaseController
     protected function set(Model $model, string $key, mixed $value, int $type, array &$changes): void
     {
         /** @noinspection TypeUnsafeComparisonInspection */
-        if ($model->getAttribute($key) != $value) {
-            $changes[] = ['parameter' => $key, 'type' => $type, 'old' => $model->getAttribute($key), 'new' => $value];
+        if ($model->getAttribute($key) != $value || !$model->exists) {
+            $changes[] = ['parameter' => $key, 'type' => $type, 'old' => $model->exists ? $model->getAttribute($key) : null, 'new' => $value];
             $model->setAttribute($key, $value);
         }
     }

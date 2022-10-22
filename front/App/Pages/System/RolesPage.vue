@@ -8,7 +8,7 @@
 
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
-        <Roles v-if="tab === 'roles'" ref="list"/>
+        <RolesList v-if="tab === 'roles'" ref="list"/>
         <Permissions v-if="tab === 'permissions'"/>
         <RolesHistory v-if="tab === 'history'" ref="history"/>
 
@@ -22,10 +22,10 @@ import GuiActionsMenu from "@/Components/GUI/GuiActionsMenu.vue";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 import {computed, ref} from "vue";
-import Roles from "@/App/Pages/Settings/Roles.vue";
-import RolesHistory from "@/App/Pages/Settings/RolesHistory.vue";
-import Permissions from "@/App/Pages/Settings/Permissions.vue";
-import RoleEditForm from "@/App/Pages/Settings/RoleEditForm.vue";
+import RolesList from "@/App/Pages/System/RolesList.vue";
+import RolesHistory from "@/App/Pages/System/RolesHistory.vue";
+import Permissions from "@/App/Pages/System/Permissions.vue";
+import RoleEditForm from "@/App/Pages/System/RoleEditForm.vue";
 
 const tab = ref<string | null>(null);
 
@@ -34,7 +34,7 @@ const tabs = computed((): { [index: string]: string } => {
 });
 
 const form = ref<InstanceType<typeof RoleEditForm> | null>(null);
-const list = ref<InstanceType<typeof Roles> | null>(null);
+const list = ref<InstanceType<typeof RolesList> | null>(null);
 const history = ref<InstanceType<typeof RolesHistory> | null>(null);
 
 function create(): void {

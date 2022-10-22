@@ -24,17 +24,17 @@ import GuiHeading from "@/Components/GUI/GuiHeading.vue";
 
 const popup = ref<InstanceType<typeof PopUpForm> | null>(null);
 
-const form = ref<Form>(new Form(null, '/api/settings/roles/get', '/api/settings/roles/update'));
+const form = ref<Form>(new Form(null, '/api/system/roles/get', '/api/system/roles/update'));
 
 const emit = defineEmits<{
     (e: 'update'): void,
 }>()
 
-function show(roleId: number) {
+function show(roleId: number, fromRoleId: number | null = null) {
     if (!popup.value) {
         return;
     }
-    return popup.value.show({role_id: roleId});
+    return popup.value.show({role_id: roleId, from_role_id: fromRoleId});
 }
 
 defineExpose({

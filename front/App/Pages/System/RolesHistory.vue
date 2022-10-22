@@ -1,9 +1,9 @@
 <template>
     <HistoryList
-        url="/api/settings/roles/history"
-        commentsUrl="/api/settings/roles/history/comments"
-        changesUrl="/api/settings/roles/history/changes"
-        prefix="settings_roles_history"
+        url="/api/system/roles/history"
+        commentsUrl="/api/system/roles/history/comments"
+        changesUrl="/api/system/roles/history/changes"
+        prefix="system_roles_history"
         empty-message="Нет истории изменения ролей"
         ref="history"
     />

@@ -31,7 +31,7 @@ type Permission = {
     description: string | null,
 };
 
-const permissions = ref<List<Permission>>(new List<Permission>('/api/settings/roles/permissions', {}, {without_pagination: true}));
+const permissions = ref<List<Permission>>(new List<Permission>('/api/system/roles/permissions', {}, {without_pagination: true}));
 
 permissions.value.initial();
 </script>

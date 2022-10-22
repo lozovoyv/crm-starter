@@ -3,6 +3,8 @@
 namespace App\Models\History;
 
 use App\Foundation\Casting;
+use App\Models\History\Formatters\FormatterInterface;
+use App\Models\History\Formatters\PermissionRoleChangesFormatter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use JsonException;
@@ -22,6 +24,10 @@ class HistoryChanges extends Model
 
     /** @var string[] Fillable attributes. */
     protected $fillable = ['parameter', 'type', 'old', 'new'];
+
+    protected array $formatters = [
+        HistoryScope::role => PermissionRoleChangesFormatter::class,
+    ];
 
     /**
      * Convert old value from store value to real type.
@@ -88,16 +94,25 @@ class HistoryChanges extends Model
     }
 
     /**
-     * Cast to array.
+     * Cast to array using formatter.
      *
-     * @return string[]
+     * @param string|null $forScope
+     *
+     * @return array
      */
-    public function toArray(): array
+    public function toArray(?string $forScope = null): array
     {
-        return [
-            'parameter' => $this->parameter,
-            'old' => $this->old,
-            'new' => $this->new,
-        ];
+        if ($forScope === null || !isset($this->formatters[$forScope])) {
+            return [
+                'parameter' => $this->parameter,
+                'old' => $this->old,
+                'new' => $this->new,
+            ];
+        }
+
+        /** @var FormatterInterface $formatter */
+        $formatter = $this->formatters[$forScope];
+
+        return $formatter::format($this);
     }
 }
