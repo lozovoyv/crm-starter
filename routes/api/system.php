@@ -6,6 +6,7 @@ use App\Http\Controllers\API\System\Roles\RolesController;
 use App\Http\Controllers\API\System\Roles\RolesEditController;
 use App\Http\Controllers\API\System\Roles\RolesHistoryController;
 use App\Http\Controllers\API\System\Roles\RolesListController;
+use App\Http\Controllers\API\System\Users\UsersListController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/api/system/roles', [RolesListController::class, 'list'])->middleware(['position:staff', 'permission:system.roles']);
@@ -18,6 +19,8 @@ Route::post('/api/system/roles/history', [RolesHistoryController::class, 'list']
 Route::post('/api/system/roles/history/comments', [RolesHistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.roles']);
 Route::post('/api/system/roles/history/changes', [RolesHistoryController::class, 'changes'])->middleware(['position:staff', 'permission:system.roles']);
 Route::post('/api/system/roles/permissions', [PermissionsListController::class, 'list'])->middleware(['position:staff', 'permission:system.roles']);
+
+Route::post('/api/system/users', [UsersListController::class, 'list'])->middleware(['position:staff', 'permission:system.users']);
 
 Route::post('/api/system/history', [HistoryController::class, 'list'])->middleware(['position:staff', 'permission:system.history']);
 Route::post('/api/system/history/comments', [HistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.history']);

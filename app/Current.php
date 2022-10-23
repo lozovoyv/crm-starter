@@ -2,13 +2,16 @@
 
 namespace App;
 
+use App\Models\Positions\Position;
 use App\Models\Users\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class Current
 {
-    /** @var User|null This helper for. */
     protected ?User $user;
+
+    protected ?Position $position;
 
     /**
      * Factory.
@@ -19,19 +22,19 @@ class Current
      */
     public static function get(Request $request): Current
     {
-        return new Current($request->user());
+        return new Current($request);
     }
 
     /**
      * Create user current state.
      *
-     * @param User|null $user
-     *
-     * @return  void
+     * @param Request $request
      */
-    public function __construct(?User $user)
+    public function __construct(Request $request)
     {
-        $this->user = $user;
+        $this->user = $request->user();
+        $positionId = $request->session()->get('position_id');
+        $this->position = $this->user ? $this->user->positions()->where('id', $positionId)->first() : null;
     }
 
     /**
@@ -61,7 +64,7 @@ class Current
      */
     public function userName(): ?string
     {
-        return isset($this->user) ? $this->user->info->compactName : null;
+        return isset($this->user) ? $this->user->compactName : null;
     }
 
     /**
@@ -71,12 +74,12 @@ class Current
      */
     public function email(): ?string
     {
-        return isset($this->user) ? $this->user->info->email : null;
+        return isset($this->user) ? $this->user->email : null;
     }
 
     public function positionId(): ?int
     {
-        return 1;
+        return $this->position ? $this->position->id : null;
     }
 
     /**
@@ -86,7 +89,7 @@ class Current
      */
     public function permissions(): array
     {
-        return [];
+        return $this->position ? $this->position->getPermissionsList() : [];
     }
 
     /**
@@ -99,17 +102,17 @@ class Current
      */
     public function can(?string $key, bool $fresh = false): bool
     {
-        return true;
+        return $this->position ? $this->position->can($key, $fresh) : false;
     }
 
     /**
      * Get current user permissions.
      *
-     * @return  array
+     * @return Collection|null
      */
-    public function roles(): array
+    public function roles(): ?Collection
     {
-        return [];
+        return $this->position ? $this->position->roles : null;
     }
 
     /**
@@ -122,6 +125,18 @@ class Current
      */
     public function hasRole(int|string $role, bool $fresh = false): bool
     {
-        return true;
+        return $this->position ? $this->position->hasRole($role, $fresh) : false;
+    }
+
+    /**
+     * Check current user position matches the given type.
+     *
+     * @param int $positionType
+     *
+     * @return  bool
+     */
+    public function hasPositionType(int $positionType): bool
+    {
+        return $this->position && $this->position->type_id === $positionType;
     }
 }

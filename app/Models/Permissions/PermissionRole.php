@@ -52,7 +52,7 @@ class PermissionRole extends Model
     }
 
     /**
-     * Role's permissions.
+     * CheckRole's permissions.
      *
      * @return  BelongsToMany
      */
@@ -69,6 +69,24 @@ class PermissionRole extends Model
     protected function hash(): ?string
     {
         return $this->updated_at;
+    }
+
+    /**
+     * Check this role matches given.
+     *
+     * @param int|string $role
+     *
+     * @return  bool
+     */
+    public function matches(int|string $role): bool
+    {
+        if (is_string($role)) {
+            $roleId = constant('self::' . $role);
+        } else {
+            $roleId = $role;
+        }
+
+        return $this->id === $roleId;
     }
 
     /**

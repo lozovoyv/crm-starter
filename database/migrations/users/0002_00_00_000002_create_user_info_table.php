@@ -17,16 +17,8 @@ return new class extends Migration
 
             $table->unsignedInteger('user_id')->unique()->primary();
 
-            $table->string('lastname');
-            $table->string('firstname');
-            $table->string('patronymic')->nullable();
-
             $table->enum('gender', ['male', 'female']);
-
             $table->date('birthdate')->nullable();
-
-            $table->string('mobile_phone')->nullable();
-            $table->string('email')->nullable();
 
             $table->text('notes')->nullable();
 

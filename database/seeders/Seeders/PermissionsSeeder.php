@@ -10,17 +10,21 @@ class PermissionsSeeder extends Seeder
 {
     protected array $permissions = [];
 
-    protected array $modules = [
-        'system' => 'Система',
-    ];
+    protected array $modules = [];
+
+    protected function loadDefinitions(): void
+    {
+        $data = require base_path('/app/permissions.php');
+        $this->modules = $data['modules'];
+        $permissions = $data['permissions'];
+
+        foreach ($permissions as $permission) {
+            $this->add($permission[0], $permission[1], $permission[2] ?? null);
+        }
+    }
 
     protected function permissions(): array
     {
-        $this->add('system.settings', 'Изменение настроек системы', 'Пользователь, обладающий этим правом может менять системные настройки.');
-        $this->add('system.dictionaries', 'Редактирование справочников', 'Пользователь, обладающий этим правом может создавать, редактировать, удалять записи в системных справочниках.');
-        $this->add('system.roles', 'Редактирование ролей', 'Пользователь, обладающий этим правом может создавать, редактировать, удалять и настраивать роли.');
-        $this->add('system.history', 'Просмотр журнала операций', 'Пользователь, обладающий этим правом может просматривать журнал всех.');
-
         return $this->permissions;
     }
 
@@ -55,6 +59,8 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->loadDefinitions();
+
         foreach ($this->modules as $moduleKey => $moduleName) {
             /** @var PermissionModule|null $module */
             $module = PermissionModule::query()->where('module', $moduleKey)->first();

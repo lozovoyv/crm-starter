@@ -7,7 +7,7 @@ use App\Http\APIResponse;
 use Closure;
 use Illuminate\Http\Request;
 
-class Position
+class CheckPosition
 {
     /**
      * Check access ability.

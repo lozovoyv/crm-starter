@@ -36,26 +36,29 @@ import {useStore} from "vuex";
 import {computed} from "vue";
 import {User} from "@/Core/Types/User";
 import Logo from "@/App/Logo.vue";
-import menuSrc from "@/App/menu";
+import menuRaw from "@/App/menu";
 import ApplicationMenu from "@/Components/Layout/Menu/ApplicationMenu.vue";
-import {Menu} from "@/Core/Types/Menu";
+import {Menu, MenuItem} from "@/Core/Types/Menu";
 import UserMenu from "@/Components/Layout/UserMenu.vue";
 import IconUser from "@/Icons/IconUser.vue";
 import IconExit from "@/Icons/IconExit.vue";
 import dialog from "@/Core/Dialog/Dialog";
 import {http} from "@/Core/Http/Http";
 import toaster from "@/Core/Toaster/Toaster";
+import {can} from "@/Core/Can";
 
 const store = useStore();
+
 const user = computed((): User | null => {
     return store.getters['user/user'];
 });
+
 const organization = computed((): string | null | undefined => {
     return user.value?.organization;
 });
+
 const menu = computed((): Menu => {
-//     todo add menu filtering
-    return menuSrc;
+    return filterMenu(menuRaw);
 })
 
 function logout(): void {
@@ -71,6 +74,37 @@ function logout(): void {
                     });
             }
         })
+}
+
+function filterMenu(items: Menu): Menu {
+    let filtered: Menu = [];
+    items.map((item: MenuItem) => {
+        let filteredItem: MenuItem | null = filterMenuItem(item);
+        if (filteredItem !== null) {
+            filtered.push(filteredItem);
+        }
+    });
+
+    return filtered;
+}
+
+function filterMenuItem(item: MenuItem): MenuItem | null {
+    if (item.permission !== undefined && !can(item.permission)) {
+        return null;
+    }
+    let subMenu: Menu | undefined = undefined;
+    if (item.items !== undefined) {
+        subMenu = filterMenu(item.items);
+    }
+    if (subMenu !== undefined && subMenu.length === 0) {
+        return null;
+    }
+    return {
+        title: item.title,
+        items: subMenu,
+        route: item.route,
+        permission: item.permission,
+    };
 }
 </script>
 

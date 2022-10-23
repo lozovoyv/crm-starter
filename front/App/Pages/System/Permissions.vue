@@ -4,10 +4,10 @@
             <ListSearch :list="permissions" placeholder="Ключ, название"/>
         </template>
         <ListTableRow v-for="permission in permissions.list">
-            <ListTableCell style="white-space: nowrap" v-html="highlight(permission.key, permissions.search)"/>
+            <ListTableCell>{{ permission.module }}</ListTableCell>
             <ListTableCell v-html="highlight(permission.name, permissions.search)"/>
             <ListTableCell>{{ permission.description }}</ListTableCell>
-            <ListTableCell>{{ permission.module }}</ListTableCell>
+            <ListTableCell style="white-space: nowrap" v-html="highlight(permission.key, permissions.search)"/>
         </ListTableRow>
         <template v-slot:empty>
             Права не найдены

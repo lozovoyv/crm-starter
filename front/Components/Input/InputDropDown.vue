@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import InputBox from "@/Components/Input/Helpers/InputBox.vue";
-import {computed, nextTick, ref} from "vue";
+import {computed, nextTick, ref, watch} from "vue";
 import InputSearch from "@/Components/Input/InputSearch.vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 import {highlight} from "@/Core/Highlight/highlight";
@@ -134,6 +134,10 @@ const filteredOptions = computed((): DropDownDisplayOptions => {
             && (terms.value === null || option.caption.toLowerCase().indexOf(terms.value.toLowerCase()) !== -1)
             && (!props.multi || !Array.isArray(props.modelValue) || props.modelValue.indexOf(option.key) === -1);
     });
+});
+
+watch(filteredOptions, () => {
+    updateHeight();
 });
 
 const selected = computed((): DropDownDisplayOptions => {

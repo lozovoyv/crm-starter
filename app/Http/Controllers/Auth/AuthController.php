@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Current;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Models\Positions\Position;
+use App\Models\Positions\PositionType;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
 use Illuminate\Auth\Events\Lockout;
@@ -76,7 +78,29 @@ class AuthController extends ApiController
             $user->createToken('base_token');
         }
 
-        $request->session()->regenerate();
+        $session = $request->session();
+
+        $session->regenerate();
+
+        // Check user can have position stored in session
+        if ($session->has('position_id')) {
+            /** @var Position|null $position */
+            $position = $user->positions()->where('id', $session->get('position_id'))->where('type_id', PositionType::staff)->first();
+            if ($position === null) {
+                $session->remove('position_id');
+            }
+        }
+
+        if (!$session->has('position_id')) {
+            $positions = $user->positions()->where('type_id', PositionType::staff)->get();
+            if ($positions->count() === 1) {
+                /** @var Position $position */
+                $position = $positions->first();
+                $session->put('position_id', $position->id);
+            } else {
+                // TODO make position select response
+            }
+        }
 
         return APIResponse::success('OK');
     }
@@ -149,7 +173,7 @@ class AuthController extends ApiController
      */
     protected function remember(Request $request): bool
     {
-        return $request->boolean('remember');
+        return $request->boolean('data.remember');
     }
 
     /**

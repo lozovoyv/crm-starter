@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\User;
+namespace Database\Factories\Users;
 
 use App\Models\Users\UserInfo;
 use Exception;
@@ -21,13 +21,8 @@ class UserInfoFactory extends Factory
         $gender = ['male', 'female'][random_int(0, 1)];
 
         return [
-            'lastname' => $this->faker->lastName($gender),
-            'firstname' => $this->faker->firstName($gender),
-            'patronymic' => $this->faker->middleName($gender),
             'gender' => $gender,
             'birthdate' => $this->faker->date('Y-m-d', '-20 years'),
-            'mobile_phone' => $this->faker->numerify('+7 (###) ###-##-##'),
-            'email' => $this->faker->email,
             'notes' => $this->faker->text,
         ];
     }

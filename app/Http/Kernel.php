@@ -3,8 +3,10 @@
 namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\CheckPosition;
+use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\Permission;
+use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
@@ -84,10 +86,12 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
-        'permission' => Permission::class,
-        'position' => Permission::class,
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
+
+        'permission' => CheckPermission::class,
+        'position' => CheckPosition::class,
+        'role' => CheckRole::class,
     ];
 }

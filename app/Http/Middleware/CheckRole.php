@@ -7,7 +7,7 @@ use App\Http\APIResponse;
 use Closure;
 use Illuminate\Http\Request;
 
-class Role
+class CheckRole
 {
     /**
      * Check role ability.

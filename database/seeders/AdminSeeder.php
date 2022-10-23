@@ -26,9 +26,11 @@ class AdminSeeder extends Seeder
         if ($admin === null) {
             $admin = new User();
             $admin->username = 'admin';
+            $admin->lastname = 'Администратор';
+            $admin->email = 'admin@admin.admin';
             $admin->password = Hash::make('admin');
             $admin->save();
-            $admin->info()->create(['lastname' => 'Администратор', 'gender' => 'male', 'email' => 'admin@admin.admin']);
+
             /** @var Position $position */
             $position = $admin->positions()->create([
                 'status_id' => PositionStatus::active,

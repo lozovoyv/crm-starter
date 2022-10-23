@@ -9,6 +9,7 @@ use App\Models\Permissions\PermissionRole;
 use App\Models\Users\User;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property PositionType $type
  * @property PositionStatus $status
  * @property User $user
+ * @property Collection $roles
+ * @property Collection $permissions
  */
 class Position extends Model implements Statusable
 {
@@ -73,7 +76,7 @@ class Position extends Model implements Statusable
     }
 
     /**
-     * Role's permissions.
+     * CheckRole's permissions.
      *
      * @return  BelongsToMany
      */
@@ -83,7 +86,7 @@ class Position extends Model implements Statusable
     }
 
     /**
-     * Role's permissions.
+     * CheckRole's permissions.
      *
      * @return  BelongsToMany
      */
@@ -106,10 +109,6 @@ class Position extends Model implements Statusable
             return true;
         }
 
-        if ($this->roles()->whereIn('id', [PermissionRole::super])->count() > 0) {
-            return true;
-        }
-
         return in_array($key, $this->getPermissionsList($fresh), true);
     }
 
@@ -128,7 +127,6 @@ class Position extends Model implements Statusable
             if ($this->roles()->whereIn('id', [PermissionRole::super])->count() > 0) {
                 $permissions = Permission::query()->get();
             } else {
-
                 $roles = $this->roles()->with('permissions')->get();
                 foreach ($roles as $role) {
                     /** @var PermissionRole $role */
@@ -137,7 +135,6 @@ class Position extends Model implements Statusable
                         $this->permissionsCache[$permission->id] = $permission->key;
                     }
                 }
-
                 $permissions = $this->permissions()->get();
             }
 
@@ -160,13 +157,29 @@ class Position extends Model implements Statusable
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-//    /**
-//     * Position info.
-//     *
-//     * @return  HasOne
-//     */
-//    public function info(): HasOne
-//    {
-//        return $this->hasOne(PositionInfo::class, 'position_id', 'id')->withDefault();
-//    }
+    /**
+     * Check if position has given role.
+     *
+     * @param int|string $role
+     * @param bool $fresh
+     *
+     * @return  bool
+     */
+    public function hasRole(int|string $role, bool $fresh = false): bool
+    {
+        if($fresh) {
+            $roles = $this->roles()->get();
+        } else {
+            $roles = $this->roles;
+        }
+
+        foreach ($roles as $role) {
+            /** @var PermissionRole $role */
+            if ($role->matches($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

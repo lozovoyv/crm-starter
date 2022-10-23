@@ -7,7 +7,7 @@ use App\Http\APIResponse;
 use Closure;
 use Illuminate\Http\Request;
 
-class Permission
+class CheckPermission
 {
     /**
      * Check access ability.

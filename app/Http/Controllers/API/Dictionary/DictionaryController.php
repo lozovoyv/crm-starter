@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\API\Dictionary;
 
+use App\Current;
 use App\Foundation\Dictionaries\AbstractDictionary;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
-use App\Models\Users\UserStatus;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DictionaryController extends ApiController
 {
-    protected array $dictionaries = [
-        'user_statuses' => ['class' => UserStatus::class, 'allow' => null],
-    ];
+    protected array $dictionaries;
 
     /**
      * Get dictionary.
@@ -25,6 +23,8 @@ class DictionaryController extends ApiController
      */
     public function getDictionary(Request $request): JsonResponse
     {
+        $this->dictionaries = require base_path('/app/dictionaries.php');
+
         $name = $request->input('dictionary');
 
         if ($name === null || !array_key_exists($name, $this->dictionaries)) {
@@ -33,7 +33,9 @@ class DictionaryController extends ApiController
 
         $dictionary = $this->dictionaries[$name];
 
-        if (array_key_exists('allow', $dictionary) && !$this->isAllowed($dictionary['allow'])) {
+        $current = Current::get($request);
+
+        if (array_key_exists('allow', $dictionary) && !$this->isAllowed($dictionary['allow'], $current)) {
             return APIResponse::forbidden("Нет прав на просмотр справочника $name");
         }
 
@@ -46,9 +48,10 @@ class DictionaryController extends ApiController
             $query = $class::query();
         }
 
+        $actual = $query->clone()->latest('updated_at')->value('updated_at');
+        $actual = Carbon::parse($actual)->setTimezone('GMT');
+
         if ($request->hasHeader('If-Modified-Since')) {
-            $actual = $query->clone()->latest('updated_at')->value('updated_at');
-            $actual = Carbon::parse($actual)->setTimezone('GMT');
             $requested = Carbon::createFromFormat('D\, d M Y H:i:s \G\M\T', $request->header('If-Modified-Since'), 'GMT');
             if ($requested >= $actual) {
                 return APIResponse::notModified();
@@ -63,17 +66,27 @@ class DictionaryController extends ApiController
     /**
      * Check ability to view dictionary.
      *
-     * @param string|null $abilities
+     * @param array|null $allow
+     * @param Current $current
      *
      * @return  bool
      */
-    public function isAllowed(?string $abilities): bool
+    public function isAllowed(?array $allow, Current $current): bool
     {
-        if (empty($abilities)) {
+        if (empty($allow)) {
             return true;
         }
 
-        // TODO check proper rights
+        foreach ($allow as $position => $permissions) {
+            if (!$current->hasPositionType($position)) {
+                continue;
+            }
+            foreach ($permissions as $permission) {
+                if ($current->can($permission)) {
+                    return true;
+                }
+            }
+        }
 
         return false;
     }

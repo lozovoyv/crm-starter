@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import menu from "@/App/menu";
 import {Menu, MenuItem} from "@/Core/Types/Menu";
 import {computed, onMounted, ref} from "vue";
 import ApplicationMenuRootItem from "@/Components/Layout/Menu/ApplicationMenuRootItem.vue";
@@ -98,11 +97,11 @@ function handleSizeChange(newSize: number): void {
 }
 
 const visibleMenuItems = computed<Menu | null>((): Menu | null => {
-    return visibleItems.value === null ? menu : menu.slice(0, visibleItems.value);
+    return visibleItems.value === null ? props.menu : props.menu.slice(0, visibleItems.value);
 });
 
 const hiddenMenu = computed<MenuItem | null>((): MenuItem | null => {
-    return (visibleItems.value === null || visibleItems.value === props.menu.length) ? null : {title: null, items: menu.slice(visibleItems.value)};
+    return (visibleItems.value === null || visibleItems.value === props.menu.length) ? null : {title: null, items: props.menu.slice(visibleItems.value)};
 });
 
 function expand(expanded: boolean): void {

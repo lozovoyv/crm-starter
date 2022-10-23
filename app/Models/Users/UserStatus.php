@@ -20,4 +20,18 @@ class UserStatus extends AbstractDictionary
     public const blocked = 2;
 
     public const default = self::active;
+
+    /**
+     * Cast to array.
+     *
+     * @return  array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'enabled' => $this->enabled,
+        ];
+    }
 }

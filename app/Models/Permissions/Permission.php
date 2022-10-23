@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Permission extends Model
 {
     /**
-     * Permission's module.
+     * CheckPermission's module.
      *
      * @return  BelongsTo
      */

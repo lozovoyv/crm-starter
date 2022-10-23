@@ -15,6 +15,8 @@ class PermissionsListController extends ApiController
     /**
      * Permissions list.
      *
+     * @param APIListRequest $request
+     *
      * @return  JsonResponse
      */
     public function list(APIListRequest $request): JsonResponse
@@ -38,6 +40,6 @@ class PermissionsListController extends ApiController
 
         $permissions = $query->get();
 
-        return APIResponse::list($permissions, ['Ключ', 'Название', 'Описание', 'Модуль'], null, null, $request->search(true));
+        return APIResponse::list($permissions, ['Модуль', 'Название', 'Описание', 'Ключ'], null, null, $request->search(true));
     }
 }

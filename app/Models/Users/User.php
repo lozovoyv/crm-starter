@@ -4,6 +4,7 @@ namespace App\Models\Users;
 
 use App\Interfaces\Statusable;
 use App\Models\Positions\Position;
+use App\Traits\HashCheck;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,26 +16,53 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property int $id
  * @property int $status_id
- * @property string $username
+ *
+ * @property string $email
+ * @property string|null $username
+ * @property string|null $phone
  * @property string $password
- * @property string $remember_token
+ *
+ * @property string|null $lastname
+ * @property string|null $firstname
+ * @property string|null $patronymic
+ *
+ * @property Carbon $email_verified_at
+ * @property Carbon $phone_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
+ * @property string $remember_token
+ *
  * @property UserStatus $status
  * @property UserInfo $info
+ *
+ * @property-read string|null $fullName
+ * @property-read string|null $compactName
  */
 class User extends Authenticatable implements Statusable
 {
-    use HasApiTokens, HasFactory, HasStatus;
+    use HasApiTokens, HasFactory, HasStatus, HashCheck;
 
     /** @var string Referenced table. */
     protected $table = 'users';
 
+    /** @var string[] Attribute casting. */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     /** @var string[] The attributes that are mass assignable. */
     protected $fillable = [
+        'email',
         'username',
+        'phone',
         'password',
+        'lastname',
+        'firstname',
+        'patronymic',
     ];
 
     /** @var array The attributes that should be hidden for serialization. */
@@ -47,6 +75,9 @@ class User extends Authenticatable implements Statusable
     protected $attributes = [
         'status_id' => UserStatus::default,
     ];
+
+    /** @var array The accessors to append to the model's array. */
+    protected $appends = ['fullName', 'compactName'];
 
     /**
      * User's status.
@@ -89,5 +120,132 @@ class User extends Authenticatable implements Statusable
     public function info(): HasOne
     {
         return $this->hasOne(UserInfo::class, 'user_id', 'id')->withDefault();
+    }
+
+    /**
+     * Accessor for full name generation.
+     *
+     * @return  string|null
+     */
+    public function getFullNameAttribute(): ?string
+    {
+        return $this->getFullName();
+    }
+
+    /**
+     * Accessor for compact name generation.
+     *
+     * @return  string|null
+     */
+    public function getCompactNameAttribute(): ?string
+    {
+        return $this->getCompactName();
+    }
+
+    /**
+     * Return lastname.
+     *
+     * @return  string|null
+     */
+    public function getLastName(): ?string
+    {
+        return $this->format('lastname', true);
+    }
+
+    /**
+     * Return firstname in full or short mode.
+     *
+     * @param bool $full
+     *
+     * @return  string|null
+     */
+    public function getFirstName(bool $full = true): ?string
+    {
+        return $this->format('firstname', $full);
+    }
+
+    /**
+     * Return patronymic in full or short mode.
+     *
+     * @param bool $full
+     *
+     * @return  string|null
+     */
+    public function getPatronymic(bool $full = true): ?string
+    {
+        return $this->format('patronymic', $full);
+    }
+
+    /**
+     * Return fathers name in full or short mode.
+     *
+     * @return  string|null
+     */
+    public function getFullName(): ?string
+    {
+        $value = trim(implode(' ', [$this->getLastName(), $this->getFirstName(), $this->getPatronymic()]));
+
+        return empty($value) ? null : $value;
+    }
+
+    /**
+     * Return fathers name in full or short mode.
+     *
+     * @return  string|null
+     */
+    public function getCompactName(): ?string
+    {
+        $value = trim(sprintf('%s %s%s', $this->getLastName(), $this->getFirstName(false), $this->getPatronymic(false)));
+
+        return empty($value) ? null : $value;
+    }
+
+    /**
+     * Format string in full or short mode.
+     *
+     * @param bool $full
+     * @param string|null $attribute
+     *
+     * @return  string|null
+     */
+    protected function format(?string $attribute, bool $full): ?string
+    {
+        $value = $this->getAttribute($attribute);
+        if (empty($value)) {
+            return null;
+        }
+
+        return $full ? mb_strtoupper(mb_substr($value, 0, 1)) . mb_strtolower(mb_substr($value, 1)) : mb_strtoupper(mb_substr($value, 0, 1)) . '.';
+    }
+
+    /**
+     * Instance hash.
+     *
+     * @return  string|null
+     */
+    protected function hash(): ?string
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Cast to array.
+     *
+     * @return  array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'lastname' => $this->lastname,
+            'firstname' => $this->firstname,
+            'patronymic' => $this->patronymic,
+            'username' => $this->username,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'hash' => $this->getHash(),
+        ];
     }
 }
