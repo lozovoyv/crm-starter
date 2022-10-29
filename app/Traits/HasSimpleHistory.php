@@ -7,7 +7,7 @@ use BadMethodCallException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-trait HasHistory
+trait HasSimpleHistory
 {
     /**
      * Related history.
@@ -37,8 +37,9 @@ trait HasHistory
         /** @var History $record */
         $record = $this->history()->create([
             'action_id' => $actionId,
-            'history_line_id' => $this->history_line_id ?? null,
+            'entry_title' => $this->historyEntryTitle(),
             'entry_name' => $this->historyEntryName(),
+            'entry_type' => $this->historyEntryType(),
             'entry_id' => $this->id,
             'description' => $description,
             'position_id' => $positionId,

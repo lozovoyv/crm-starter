@@ -6,6 +6,7 @@ use App\Current;
 use App\Foundation\Dictionaries\AbstractDictionary;
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Models\Model;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,14 +40,10 @@ class DictionaryController extends ApiController
             return APIResponse::forbidden("Нет прав на просмотр справочника $name");
         }
 
-        /** @var AbstractDictionary $class */
+        /** @var Model $class */
         $class = $dictionary['class'];
 
-        if (method_exists($class, 'asDictionary')) {
-            $query = $class::asDictionary();
-        } else {
-            $query = $class::query();
-        }
+        $query = $class::query();
 
         $actual = $query->clone()->latest('updated_at')->value('updated_at');
         $actual = Carbon::parse($actual)->setTimezone('GMT');

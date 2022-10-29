@@ -1,4 +1,4 @@
-export type FieldRules = { [index: string]: null | string }
+export type FieldRules = { [index: string]: null | string[] }
 
 /**
  * Parse validation rules from string to rule object.
@@ -16,7 +16,7 @@ export function ParseFieldRules(rules: string | null): FieldRules {
     let _rules: FieldRules = {};
     _rule_set.map((rule: string) => {
         let attributes = rule.split(':');
-        _rules[attributes[0]] = typeof attributes[1] !== "undefined" ? attributes[1] : null;
+        _rules[attributes[0]] = typeof attributes[1] !== "undefined" ? attributes[1].split(',') : null;
     });
 
     return _rules;

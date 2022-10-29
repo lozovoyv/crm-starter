@@ -5,6 +5,8 @@ namespace App\Models\History;
 use App\Foundation\Casting;
 use App\Models\History\Formatters\FormatterInterface;
 use App\Models\History\Formatters\PermissionRoleChangesFormatter;
+use App\Models\History\Formatters\PositionChangesFormatter;
+use App\Models\History\Formatters\UserChangesFormatter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use JsonException;
@@ -27,6 +29,8 @@ class HistoryChanges extends Model
 
     protected array $formatters = [
         HistoryScope::role => PermissionRoleChangesFormatter::class,
+        HistoryScope::position => PositionChangesFormatter::class,
+        HistoryScope::user => UserChangesFormatter::class,
     ];
 
     /**

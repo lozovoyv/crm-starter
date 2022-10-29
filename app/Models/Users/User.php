@@ -2,9 +2,14 @@
 
 namespace App\Models\Users;
 
+use App\Foundation\Dictionaries\Interfaces\AsDictionary;
+use App\Interfaces\HashCheckable;
+use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
+use App\Models\History\HistoryScope;
 use App\Models\Positions\Position;
 use App\Traits\HashCheck;
+use App\Traits\HasHistoryLine;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,15 +38,17 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @property string $remember_token
  *
+ * @property int|null $history_line_id
+ *
  * @property UserStatus $status
  * @property UserInfo $info
  *
  * @property-read string|null $fullName
  * @property-read string|null $compactName
  */
-class User extends Authenticatable implements Statusable
+class User extends Authenticatable implements Statusable, Historical
 {
-    use HasApiTokens, HasFactory, HasStatus, HashCheck;
+    use HasApiTokens, HasFactory, HasStatus, HashCheck, HasHistoryLine;
 
     /** @var string Referenced table. */
     protected $table = 'users';
@@ -223,9 +230,39 @@ class User extends Authenticatable implements Statusable
      *
      * @return  string|null
      */
-    protected function hash(): ?string
+    public function hash(): ?string
     {
         return $this->updated_at;
+    }
+
+    /**
+     * History entry title.
+     *
+     * @return  string
+     */
+    public function historyEntryTitle(): string
+    {
+        return $this->compactName;
+    }
+
+    /**
+     * History entry name.
+     *
+     * @return  string
+     */
+    public function historyEntryName(): string
+    {
+        return HistoryScope::user;
+    }
+
+    /**
+     * History entry name.
+     *
+     * @return  string|null
+     */
+    public function historyEntryType(): ?string
+    {
+        return null;
     }
 
     /**

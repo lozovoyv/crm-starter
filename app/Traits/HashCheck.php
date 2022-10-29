@@ -5,7 +5,7 @@ namespace App\Traits;
 use BadMethodCallException;
 
 /**
- * @method string hash()
+ * @method string|null hash()
  */
 trait HashCheck
 {

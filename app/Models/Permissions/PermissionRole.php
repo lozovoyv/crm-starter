@@ -2,10 +2,12 @@
 
 namespace App\Models\Permissions;
 
+use App\Interfaces\HashCheckable;
+use App\Interfaces\Historical;
 use App\Models\History\HistoryScope;
 use App\Models\Model;
 use App\Traits\HashCheck;
-use App\Traits\HasHistory;
+use App\Traits\HasSimpleHistory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,9 +22,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class PermissionRole extends Model
+class PermissionRole extends Model implements HashCheckable, Historical
 {
-    use HashCheck, HasHistory;
+    use HashCheck, HasSimpleHistory;
 
     /** @var int Id for super-admin role */
     public const super = 1;
@@ -42,13 +44,33 @@ class PermissionRole extends Model
     ];
 
     /**
+     * History entry title.
+     *
+     * @return  string
+     */
+    public function historyEntryTitle(): string
+    {
+        return $this->name;
+    }
+
+    /**
      * History entry name.
      *
      * @return  string
      */
-    protected function historyEntryName(): string
+    public function historyEntryName(): string
     {
         return HistoryScope::role;
+    }
+
+    /**
+     * History entry name.
+     *
+     * @return  string|null
+     */
+    public function historyEntryType(): ?string
+    {
+        return null;
     }
 
     /**
@@ -66,7 +88,7 @@ class PermissionRole extends Model
      *
      * @return  string|null
      */
-    protected function hash(): ?string
+    public function hash(): ?string
     {
         return $this->updated_at;
     }

@@ -1,6 +1,7 @@
 import {http} from "@/Core/Http/Http";
 import {ActionTree, GetterTree, MutationTree} from "vuex";
 import {AxiosResponse} from "axios";
+import toaster from "@/Core/Toaster/Toaster";
 
 const dictionariesUrl = '/api/dictionaries';
 
@@ -57,7 +58,8 @@ const actions = <ActionTree<State, any>>{
                         resolve( state.dictionaries[dictionary] !== undefined ? state.dictionaries[dictionary] : null);
                         return;
                     }
-                    reject(error.response.status);
+                    toaster.error(error.data.message);
+                    reject(error.status);
                 });
         });
     },

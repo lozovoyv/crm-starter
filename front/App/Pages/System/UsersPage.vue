@@ -1,5 +1,5 @@
 <template>
-    <LayoutPage title="Все пользователи">
+    <LayoutPage title="Учётные записи">
 
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
@@ -18,7 +18,7 @@ import UsersHistory from "@/App/Pages/System/UsersHistory.vue";
 const tab = ref<string | null>(null);
 
 const tabs = computed((): { [index: string]: string } => {
-    return {users: 'Пользователи', history: 'История'};
+    return {users: 'Учётные записи', history: 'История'};
 });
 
 const list = ref<InstanceType<typeof UsersList> | null>(null);

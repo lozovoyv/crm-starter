@@ -62,7 +62,7 @@ const store = useStore();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: DropDownValueType): void,
-    (e: 'change', value: DropDownValueType, name: string | undefined): void,
+    (e: 'change', value: DropDownValueType, name: string | undefined, payload: any): void,
 }>()
 
 const input = ref<InstanceType<typeof InputDropDown> | null>(null);
@@ -90,8 +90,8 @@ const options = computed((): DropDownOptions => {
     return store.getters['dictionaries/dictionary'](props.dictionary);
 });
 
-function change(value: DropDownValueType, name: string | undefined): void {
-    emit('change', value, name);
+function change(value: DropDownValueType, name: string | undefined, payload: any): void {
+    emit('change', value, name, payload);
 }
 
 const loaded = ref<boolean>(false);

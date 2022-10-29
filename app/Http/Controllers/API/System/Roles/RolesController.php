@@ -36,8 +36,7 @@ class RolesController extends ApiController
 
         $current = Current::get($request);
         $role
-            ->addHistory(HistoryAction::permission_role_deactivated, $current->positionId())
-            ->addLink($role->name);
+            ->addHistory(HistoryAction::permission_role_deactivated, $current->positionId());
 
         return APIResponse::response($role, null, 'Роль отключена');
     }
@@ -62,8 +61,7 @@ class RolesController extends ApiController
 
         $current = Current::get($request);
         $role
-            ->addHistory(HistoryAction::permission_role_activated, $current->positionId())
-            ->addLink($role->name);
+            ->addHistory(HistoryAction::permission_role_activated, $current->positionId());
 
         return APIResponse::response($role, null, 'Роль включена');
     }
@@ -96,7 +94,6 @@ class RolesController extends ApiController
             DB::transaction(function () use ($role, $changes, $current) {
                 $role
                     ->addHistory(HistoryAction::permission_role_deleted, $current->positionId())
-                    ->addLink($role->name)
                     ->addChanges($changes);
 
                 $role->delete();

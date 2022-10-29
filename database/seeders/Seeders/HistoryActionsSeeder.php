@@ -10,11 +10,15 @@ class HistoryActionsSeeder extends GenericSeeder
     protected array $data = [
         HistoryAction::class => [
             /** PERMISSIONS ADN ROLES */
-            HistoryAction::permission_role_created => ['name' => 'Роль создана'],
-            HistoryAction::permission_role_edited => ['name' => 'Роль изменена'],
-            HistoryAction::permission_role_deleted => ['name' => 'Роль удалена'],
-            HistoryAction::permission_role_activated => ['name' => 'Роль включена'],
-            HistoryAction::permission_role_deactivated => ['name' => 'Роль отключена'],
+            HistoryAction::permission_role_created => ['name' => 'Роль ":entry" создана'],
+            HistoryAction::permission_role_edited => ['name' => 'Роль ":entry" изменена'],
+            HistoryAction::permission_role_deleted => ['name' => 'Роль ":entry" удалена'],
+            HistoryAction::permission_role_activated => ['name' => 'Роль ":entry" включена'],
+            HistoryAction::permission_role_deactivated => ['name' => 'Роль ":entry" отключена'],
+
+            HistoryAction::user_created => ['name' => 'Добавлена учётная запись :entry'],
+
+            HistoryAction::staff_position_created => ['name' => 'Добавлен сотрудник :entry'],
         ],
     ];
 }

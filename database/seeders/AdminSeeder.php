@@ -35,6 +35,7 @@ class AdminSeeder extends Seeder
             $position = $admin->positions()->create([
                 'status_id' => PositionStatus::active,
                 'type_id' => PositionType::staff,
+                'locked' => true,
             ]);
             $position->roles()->attach(PermissionRole::super);
         }

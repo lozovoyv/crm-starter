@@ -34,7 +34,7 @@
                 <div v-for="value in filteredOptions" class="input-dropdown__list-items-item" :class="{'input-dropdown__list-items-item-current': isCurrent(value)}"
                      @click="setValue(value)">
                     <span class="input-dropdown__list-items-item-caption" v-html="highlight(value.caption, terms)"/>
-                    <span class="input-dropdown__list-items-item-hint" v-if="value.hint">{{ value.hint }}</span>
+                    <span class="input-dropdown__list-items-item-hint" v-if="value.hint" v-html="value.hint"/>
                 </div>
                 <div class="input-dropdown__list-empty" v-if="filteredOptions.length === 0">
                     {{ emptyCaption ? emptyCaption : 'Элементов не найдено' }}
@@ -82,7 +82,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | number | boolean | null | Array<string | number>): void,
-    (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string | undefined): void,
+    (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string | undefined, payload: any): void,
     (e: 'dropped'): void,
 }>()
 
@@ -104,7 +104,7 @@ const isEmpty = computed((): boolean => {
 
 function clear(): void {
     emit('update:modelValue', null);
-    emit('change', null, props.name);
+    emit('change', null, props.name, null);
 }
 
 const allFormattedOptions = computed((): DropDownDisplayOptions => {
@@ -119,10 +119,10 @@ const allFormattedOptions = computed((): DropDownDisplayOptions => {
             const filterKey: string = props.filterKey !== undefined ? props.filterKey : 'enabled';
             const enabled: boolean = option[filterKey] === undefined || Boolean(option[filterKey]);
 
-            options.push({key: key, caption: caption, hint: hint, enabled: enabled});
+            options.push({key: key, caption: caption, hint: hint, enabled: enabled, payload: option});
         } else {
             const key: number | typeof NaN = Number(index);
-            options.push({key: !isNaN(key) ? key : index, caption: String(option), hint: undefined, enabled: true});
+            options.push({key: !isNaN(key) ? key : index, caption: String(option), hint: undefined, enabled: true, payload: option});
         }
     });
     return options;
@@ -167,7 +167,11 @@ function isCurrent(option: DropDownDisplayOption): boolean {
 function setValue(value: DropDownDisplayOption | null): void {
     if (!props.multi) {
         emit('update:modelValue', value === null ? null : value.key);
-        emit('change', value === null ? null : value.key, props.name);
+        if(value === null)
+        emit('change',   null , props.name, null);
+        else {
+            emit('change', value.key, props.name, value.payload);
+        }
     } else {
         let values: Array<string | number> = [];
         selected.value?.map(option => {
@@ -178,7 +182,7 @@ function setValue(value: DropDownDisplayOption | null): void {
         }
         values = values.sort().filter(val => values.indexOf(val) !== -1);
         emit('update:modelValue', values);
-        emit('change', values, props.name);
+        emit('change', values, props.name, values);
     }
 }
 
@@ -195,10 +199,10 @@ function removeValue(value: DropDownDisplayOption): void {
     });
     if (values.length === 0) {
         emit('update:modelValue', null);
-        emit('change', null, props.name);
+        emit('change', null, props.name, null);
     } else {
         emit('update:modelValue', values);
-        emit('change', values, props.name);
+        emit('change', values, props.name, values);
     }
     updateHeight();
 }
@@ -312,7 +316,7 @@ function updateHeight(): void {
                 font-size: 16px;
                 font-family: $project_font;
                 color: inherit;
-                border: 1px solid $color_default;
+                border: 1px solid transparentize($color_default, 0.5);
                 background-color: $color_white;
                 height: 22px;
                 line-height: 22px;
@@ -343,15 +347,14 @@ function updateHeight(): void {
                         display: block;
                         width: 10px;
                         height: 10px;
-                        transition: width $animation $animation_time, height $animation $animation_time;
+                        transition: transform $animation $animation_time;
                     }
 
                     &:hover {
                         opacity: 1;
 
                         & > svg {
-                            width: 14px;
-                            height: 14px;
+                            transform: scale(1.1);
                         }
                     }
                 }
@@ -463,11 +466,12 @@ function updateHeight(): void {
 
                 &-hint {
                     margin-top: 2px;
-                    color: $color_gray_darken_2;
+                    color: $color_text_black;
                     font-size: 14px;
                     line-height: 16px;
-                    font-style: italic;
                     display: block;
+                    font-family: $project_font;
+                    font-weight: 300;
                 }
 
                 &-current, &:hover {

@@ -2,11 +2,16 @@
 
 namespace App\Models\Positions;
 
+use App\Interfaces\HashCheckable;
+use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
+use App\Models\History\HistoryScope;
 use App\Models\Model;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionRole;
 use App\Models\Users\User;
+use App\Traits\HashCheck;
+use App\Traits\HasHistoryLine;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,8 +24,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $user_id
  * @property int $status_id
  * @property int $type_id
+ * @property bool $locked
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @property int|null $history_line_id
  *
  * @property PositionType $type
  * @property PositionStatus $status
@@ -28,11 +36,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Collection $roles
  * @property Collection $permissions
  */
-class Position extends Model implements Statusable
+class Position extends Model implements Statusable, HashCheckable, Historical
 {
-    use HasStatus, HasFactory;
+    use HasStatus, HasFactory, HashCheck, HasHistoryLine;
 
-    protected $fillable = ['status_id', 'type_id'];
+    /** @var array Attribute casting. */
+    protected $casts = [
+        'locked' => 'bool',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     /** @var array Default attributes. */
     protected $attributes = [
@@ -76,6 +89,16 @@ class Position extends Model implements Statusable
     }
 
     /**
+     * Position related user.
+     *
+     * @return  HasOne
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id')->withDefault();
+    }
+
+    /**
      * CheckRole's permissions.
      *
      * @return  BelongsToMany
@@ -93,6 +116,16 @@ class Position extends Model implements Statusable
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'position_has_permission', 'position_id', 'permission_id');
+    }
+
+    /**
+     * Instance hash.
+     *
+     * @return  string|null
+     */
+    public function hash(): ?string
+    {
+        return $this->updated_at;
     }
 
     /**
@@ -148,16 +181,6 @@ class Position extends Model implements Statusable
     }
 
     /**
-     * Position related user.
-     *
-     * @return  HasOne
-     */
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
-
-    /**
      * Check if position has given role.
      *
      * @param int|string $role
@@ -167,19 +190,51 @@ class Position extends Model implements Statusable
      */
     public function hasRole(int|string $role, bool $fresh = false): bool
     {
-        if($fresh) {
+        if ($fresh) {
             $roles = $this->roles()->get();
         } else {
             $roles = $this->roles;
         }
 
-        foreach ($roles as $role) {
-            /** @var PermissionRole $role */
-            if ($role->matches($role)) {
+        foreach ($roles as $checkingRole) {
+            /** @var PermissionRole $checkingRole */
+            if ($checkingRole->matches($role)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * History entry title.
+     *
+     * @return  string
+     */
+    public function historyEntryTitle(): string
+    {
+        $this->loadMissing('user');
+
+        return $this->user->compactName;
+    }
+
+    /**
+     * History entry name.
+     *
+     * @return  string
+     */
+    public function historyEntryName(): string
+    {
+        return HistoryScope::position;
+    }
+
+    /**
+     * History entry name.
+     *
+     * @return  string|null
+     */
+    public function historyEntryType(): ?string
+    {
+        return PositionType::typeToString($this->type_id);
     }
 }

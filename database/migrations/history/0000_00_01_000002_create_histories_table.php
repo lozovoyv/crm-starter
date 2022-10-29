@@ -18,8 +18,11 @@ return new class extends Migration
             $table->unsignedSmallInteger('action_id');
             $table->unsignedBigInteger('history_line_id')->nullable();
 
+            $table->string('entry_title')->nullable();
             $table->string('entry_name', 40);
+            $table->string('entry_type', 40)->nullable();
             $table->unsignedBigInteger('entry_id')->nullable();
+
             $table->string('description')->nullable();
 
             $table->unsignedInteger('position_id')->nullable();
@@ -28,7 +31,6 @@ return new class extends Migration
 
             $table->foreign('history_line_id')->references('id')->on('history_lines')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreign('action_id')->references('id')->on('history_actions')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreign('position_id')->references('id')->on('positions')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 

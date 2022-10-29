@@ -30,11 +30,12 @@ export class Form {
     valid: { [index: string]: boolean } = {};
     errors: { [index: string]: string[] } = {};
 
-    is_loaded: boolean = false
     is_loading: boolean = false
+    is_loaded: boolean = false
     is_saving: boolean = false
     is_saved: boolean = false
     is_forbidden: boolean = false
+    is_not_found: boolean = false;
 
     use_toaster: boolean = true;
 
@@ -89,6 +90,7 @@ export class Form {
             this.is_loaded = false;
             this.is_loading = true;
             this.is_saving = false;
+            this.is_not_found = false;
 
             http.post(this.load_url, options !== null ? options : this.options)
                 .then(response => {
@@ -107,6 +109,7 @@ export class Form {
 
                     this.is_loaded = true;
                     this.is_forbidden = false;
+                    this.is_not_found = false;
 
                     if (typeof this.loaded_callback === "function") {
                         this.loaded_callback(this.values, this.payload);
@@ -119,6 +122,7 @@ export class Form {
                         this.notify(error.data.message, 0, 'error');
                     }
                     this.is_forbidden = error.status === 403;
+                    this.is_not_found = error.status === 404;
 
                     if (typeof this.load_failed_callback === "function") {
                         this.load_failed_callback(error.status, error.data.message, error);
@@ -315,7 +319,7 @@ export class Form {
     /**
      * Reset form changes to originals.
      */
-    reset() {
+    clear() {
         Object.keys(this.originals).map(key => {
             this.update(key, this.originals[key]);
         });
@@ -324,7 +328,7 @@ export class Form {
     /**
      * Unset all form fields and data.
      */
-    clear() {
+    reset() {
         this.payload = {};
         this.values = {};
         this.originals = {};

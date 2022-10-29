@@ -9,5 +9,7 @@ namespace App\Models\History;
  */
 class HistoryScope
 {
+    public const user = 'user';
+    public const position = 'position';
     public const role = 'role';
 }

@@ -157,11 +157,18 @@ class AuthController extends ApiController
      */
     protected function credentials(Request $request): array
     {
-        return [
-            'username' => $request->input('data.username'),
+        $credentials = [
             'password' => $request->input('data.password'),
             'status_id' => UserStatus::active,
         ];
+
+        $login = $request->input('data.username');
+
+        $type = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $credentials[$type] = $login;
+
+        return $credentials;
     }
 
     /**

@@ -14,7 +14,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property int $action_id
  * @property int|null $history_line_id
- * @property string $entry_name
+ * @property string|null $entry_title
+ * @property string|null $entry_name
+ * @property string|null $entry_type
  * @property int|null $entry_id
  * @property string|null $description
  * @property int|null $position_id
@@ -40,7 +42,9 @@ class History extends Model
     protected $fillable = [
         'action_id',
         'history_line_id',
+        'entry_title',
         'entry_name',
+        'entry_type',
         'entry_id',
         'description',
         'position_id',
@@ -180,14 +184,17 @@ class History extends Model
         return [
             'id' => $this->id,
             'timestamp' => $this->timestamp,
+
+            'entry_title' => $this->entry_title,
             'entry_name' => $this->entry_name,
+            'entry_type' => $this->entry_type,
             'entry_id' => $this->entry_id,
 
             'action' => $this->action->name,
             'description' => $this->description,
 
             'position_id' => $this->position_id,
-            'position' => $this->position?->user->info->compactName,
+            'position' => $this->position?->user->compactName,
 
             'links' => $this->links,
             'links_count' => $this->getAttribute('links_count') ?? $this->comments()->count(),

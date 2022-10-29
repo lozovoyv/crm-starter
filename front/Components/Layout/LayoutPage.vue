@@ -39,7 +39,10 @@
                     У Вас недостаточно прав для просмотра этой страницы
                 </div>
                 <div v-else-if="isNotFound" class="layout-page__body-error">
-                    Страница не найдена
+                    <slot name="notFound" v-if="$slots.notFound"/>
+                    <template v-else>
+                        Страница не найдена
+                    </template>
                 </div>
             </div>
 

@@ -6,8 +6,9 @@ const routes: Array<RouteRecordRaw> = [
 
     {path: '/profile', name: 'profile', component: () => import("./Pages/ProfilePage.vue")},
 
-    {path: '/system/staff', name: 'staff', component: () => import("./Pages/System/StaffPage.vue")},
+    {path: '/system/staff', name: 'staff', component: () => import("./Pages/System/StaffListPage.vue")},
     {path: '/system/staff/create', name: 'staff_create', component: () => import("./Pages/System/StaffCreatePage.vue")},
+    {path: '/system/staff/:id', name: 'staff_view', component: () => import("./Pages/System/StaffPage.vue")},
     {path: '/system/users', name: 'users', component: () => import("./Pages/System/UsersPage.vue")},
     {path: '/system/roles', name: 'roles', component: () => import("./Pages/System/RolesPage.vue")},
     {path: '/system/settings', name: 'settings', component: () => import("./Pages/System/Settings.vue")},

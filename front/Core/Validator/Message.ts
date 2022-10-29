@@ -11,8 +11,12 @@ import Localization from "./Localization";
  * @param replace
  * @return {*}
  */
-function replacePart(message: string, search: string, replace: string) {
-    return message.replaceAll(search, replace);
+function replacePart(message: string, search: string, replace: string | null) {
+    return message.replaceAll(search, replace ? replace : '');
+}
+
+function getAttr(attributes: null | string[], index: number): string | null{
+    return attributes ? attributes[index] : null;
 }
 
 /**
@@ -48,9 +52,9 @@ const messageFormatters = [
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules) => {
             if (empty(field_rules[failed_rule])) return message;
-            let attributes = String(field_rules[failed_rule]).split(',');
-            message = replacePart(message, ':min', attributes[0]);
-            message = replacePart(message, ':max', attributes[1]);
+            let attributes = field_rules[failed_rule];
+            message = replacePart(message, ':min', getAttr(attributes, 0));
+            message = replacePart(message, ':max', getAttr(attributes, 1));
             return message;
         },
     },
@@ -59,7 +63,7 @@ const messageFormatters = [
             'max',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules) => {
-            return replacePart(message, ':max', String(field_rules[failed_rule]));
+            return replacePart(message, ':max', getAttr(field_rules[failed_rule], 0));
         }
     },
     { // :attribute :min
@@ -67,7 +71,7 @@ const messageFormatters = [
             'min',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules) => {
-            return replacePart(message, ':min', String(field_rules[failed_rule]));
+            return replacePart(message, ':min', getAttr(field_rules[failed_rule], 0));
         }
     },
     { // :attribute :date
@@ -75,15 +79,15 @@ const messageFormatters = [
             'after', 'after_or_equal', 'before', 'before_or_equal', 'date_equals',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules, titles: { [index: string]: string }, values: { [index: string]: any }) => {
-            let attributes = field_rules[failed_rule];
-            if (attributes === null) {
+            let attribute = getAttr(field_rules[failed_rule], 0);
+            if (attribute === null) {
                 return message;
             }
-            if (!!values[attributes]) {
-                return replacePart(message, ':date', '"' + [values[attributes]] + '"');
+            if (!!values[attribute]) {
+                return replacePart(message, ':date', '"' + [values[attribute]] + '"');
             }
             // todo probably format the date
-            return replacePart(message, ':date', attributes);
+            return replacePart(message, ':date', attribute);
         }
     },
     { // :attribute :format
@@ -91,7 +95,7 @@ const messageFormatters = [
             'date_format',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules) => {
-            return replacePart(message, ':format', String(field_rules[failed_rule]));
+            return replacePart(message, ':format', getAttr(field_rules[failed_rule], 0));
         }
     },
     { // :attribute :size
@@ -99,7 +103,7 @@ const messageFormatters = [
             'size',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules) => {
-            return replacePart(message, ':size', String(field_rules[failed_rule]));
+            return replacePart(message, ':size', getAttr(field_rules[failed_rule], 0));
         }
     },
     { // :attribute :digits
@@ -107,7 +111,7 @@ const messageFormatters = [
             'digits',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules) => {
-            return replacePart(message, ':digits', String(field_rules[failed_rule]));
+            return replacePart(message, ':digits', getAttr(field_rules[failed_rule], 0));
         }
     },
     { // :attribute :other
@@ -115,11 +119,11 @@ const messageFormatters = [
             'different', 'in_array', 'prohibits', 'same',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules, titles: { [index: string]: string }) => {
-            let attributes = field_rules[failed_rule];
-            if (attributes === null) {
+            const attribute = getAttr(field_rules[failed_rule], 0);
+            if (attribute === null) {
                 return message;
             }
-            let other = titles[attributes];
+            let other = titles[attribute];
             return replacePart(message, ':other', other);
         }
     },
@@ -128,14 +132,14 @@ const messageFormatters = [
             'gt', 'gte', 'lt', 'lte', 'multiple_of',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules, titles: { [index: string]: string }, values: { [index: string]: any }) => {
-            let attributes = field_rules[failed_rule];
-            if (attributes === null) {
+            let attribute = getAttr(field_rules[failed_rule], 0);
+            if (attribute === null) {
                 return message;
             }
-            if (!!values[attributes]) {
-                return replacePart(message, ':date', '"' + values[attributes] + '"');
+            if (!!values[attribute]) {
+                return replacePart(message, ':date', '"' + values[attribute] + '"');
             }
-            return replacePart(message, ':date', attributes);
+            return replacePart(message, ':date', attribute);
         }
     },
     { // :attribute :values
@@ -152,7 +156,7 @@ const messageFormatters = [
                 return message;
             }
             let others: string[] = [];
-            attributes.split(',').map((name) => {
+            attributes.map((name) => {
                 others.push('"' + titles[name] + '"');
             });
 
@@ -167,15 +171,12 @@ const messageFormatters = [
             'required_if',
         ],
         formatter: (message: string, name: string, failed_rule: string, field_rules: FieldRules, titles: { [index: string]: string }, values: { [index: string]: any }) => {
-            const attributes = field_rules[failed_rule];
-            if (attributes === null) {
+            if (field_rules[failed_rule] === null) {
                 return message;
             }
-            let heap = attributes.split(',');
-            let other = heap.splice(0, 1)[0];
-            const val = values[other];
-            other = titles[other];
-            message = replacePart(message, ':other', other);
+            let other = getAttr(field_rules[failed_rule], 0);
+            const val = other ? values[other] : null;
+            message = replacePart(message, ':other', other ? titles[other] : null);
             message = replacePart(message, ':value', val);
 
             return message;
@@ -191,10 +192,9 @@ const messageFormatters = [
             if (attributes === null) {
                 return message;
             }
-            let heap = attributes.split(',');
-            let other = titles[heap[0]];
-            message = replacePart(message, ':other', other);
-            message = replacePart(message, ':values', heap.splice(0, 1).join(', '));
+            let other = getAttr(field_rules[failed_rule], 0);
+            message = replacePart(message, ':other', other ? titles[other] : null);
+            message = replacePart(message, ':values', attributes ? attributes.slice(1).join(', ') : null);
 
             return message;
         }

@@ -139,7 +139,6 @@ class RolesEditController extends ApiController
             if (!empty($changes)) {
                 $role
                     ->addHistory($role->wasRecentlyCreated ? HistoryAction::permission_role_created : HistoryAction::permission_role_edited, $current->positionId())
-                    ->addLink($role->name)
                     ->addChanges($changes);
                 $hasChanges = true;
             }

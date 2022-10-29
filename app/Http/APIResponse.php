@@ -17,6 +17,7 @@ class APIResponse
     protected const CODE_TOKEN_MISMATCH = 419;
     protected const CODE_OK = 200;
     protected const CODE_VALIDATION_ERROR = 422;
+    protected const CODE_SERVER_ERROR = 500;
 
     /**
      * Make 301 redirect response.
@@ -86,6 +87,22 @@ class APIResponse
             'message' => $message,
             'payload' => $payload,
         ], self::CODE_ERROR);
+    }
+
+    /**
+     * Make error response.
+     *
+     * @param string $message
+     * @param array|null $payload
+     *
+     * @return  JsonResponse
+     */
+    public static function serverError(string $message = 'Ошибка', ?array $payload = null): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'payload' => $payload,
+        ], self::CODE_SERVER_ERROR);
     }
 
     /**

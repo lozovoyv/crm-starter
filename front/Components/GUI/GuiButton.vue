@@ -8,9 +8,9 @@
 import {computed} from "vue";
 
 const props = defineProps<{
-    identifier?: 'success' | 'info' | 'error' | 'default',
+    identifier?: string,
     disabled?: boolean,
-    type?: string,
+    type?: 'success' | 'info' | 'error' | 'default',
 }>();
 
 const emit = defineEmits<{ (e: 'clicked', identifier: string | null): void }>()

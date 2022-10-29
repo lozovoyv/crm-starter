@@ -51,7 +51,7 @@ class ApiHistoryController extends BaseController
             case 'timestamp':
             default:
                 $this->orderBy = 'timestamp';
-                $query->orderBy('timestamp', $this->order);
+                $query->orderBy('timestamp', $this->order)->orderBy('id', $this->order);
         }
 
         $query->withCount(['comments', 'links', 'changes']);

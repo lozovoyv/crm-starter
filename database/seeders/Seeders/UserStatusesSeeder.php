@@ -9,8 +9,8 @@ class UserStatusesSeeder extends GenericSeeder
 {
     protected array $data = [
         UserStatus::class => [
-            UserStatus::active => ['name' => 'Активный', 'lock' => true, 'order' => 1],
-            UserStatus::blocked => ['name' => 'Заблокирован', 'lock' => true, 'order' => 2],
+            UserStatus::active => ['name' => 'Активная', 'lock' => true, 'order' => 1],
+            UserStatus::blocked => ['name' => 'Заблокирована', 'lock' => true, 'order' => 2],
         ],
     ];
 }

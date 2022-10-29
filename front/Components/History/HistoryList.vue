@@ -3,7 +3,7 @@
         <ListTableRow v-for="record in history.list">
             <ListTableCell style="white-space: nowrap">{{ toDatetime(record.timestamp, true) }}</ListTableCell>
             <ListTableCell style="width: 100%;">
-                {{ record.action }}
+                <span v-html="formatAction(record)"/>
                 <span v-if="record.description"> ({{ record.description }})</span>
             </ListTableCell>
             <ListTableCell>
@@ -58,7 +58,8 @@ type HistoryLink = {
 type History = {
     id: number,
     timestamp: string,
-    entry_name: string,
+    entry_title: string | null,
+    entry_name: string | null,
     entry_id: number | null,
     action: string,
     description: string | null,
@@ -84,13 +85,24 @@ function reload(): void {
     history.value.reload();
 }
 
+function formatAction(history: History): string {
+    let entry: string | null;
+    if (history.entry_name && history.entry_id) {
+        // todo make link
+        entry = history.entry_title;
+    } else {
+        entry = history.entry_title;
+    }
+    return history.action.replace(':entry', entry ? entry : '');
+}
+
 function showComments(record: History): void {
     console.log(record.id, toDatetime(record.timestamp));
 }
 
 function showChanges(record: History): void {
     if (changes.value !== null) {
-        changes.value.show(record.id, record.action + ' — ' + toDatetime(record.timestamp));
+        changes.value.show(record.id, formatAction(record) + ' — ' + toDatetime(record.timestamp));
     }
 }
 

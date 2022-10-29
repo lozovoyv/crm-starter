@@ -74,7 +74,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | number | boolean | null | Array<string | number>): void,
-    (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string | undefined): void,
+    (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string | undefined, payload: any): void,
 }>()
 
 const input = ref<InstanceType<typeof InputDictionary> | null>(null);
@@ -88,8 +88,8 @@ const proxyValue = computed({
     }
 });
 
-function change(value: string | number | boolean | null | Array<string | number>, name: string | undefined): void {
-    emit('change', value, name);
+function change(value: string | number | boolean | null | Array<string | number>, name: string | undefined, payload: any): void {
+    emit('change', value, name, payload);
 }
 
 defineExpose({
