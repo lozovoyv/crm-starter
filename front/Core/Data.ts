@@ -3,14 +3,19 @@ import clone from "./Helpers/Clone";
 import toaster from "./Toaster/Toaster";
 import {http} from "./Http/Http";
 
-export class Data {
+type DataType = {[index: string]: any};
+
+export class Data<Type extends DataType> {
+
+
     /** Url to load form data */
     load_url: string | null = null;
 
     /** Default options to pass to request */
     options: { [index: string]: any } = {};
 
-    data: { [index: string]: any } = {};
+    // @ts-ignore
+    data: Type = {};
     payload: { [index: string]: any } = {};
 
     is_loading: boolean = false;
@@ -21,7 +26,7 @@ export class Data {
     use_toaster: boolean = true;
 
     /** Callbacks */
-    loaded_callback: ((data: object, payload: object) => void) | null = null;
+    loaded_callback: ((data: Type, payload: object) => void) | null = null;
     load_failed_callback: ((code: number, message: string, response: AxiosResponse) => void) | null = null;
 
     constructor(load_url: string | null, options: object = {}, use_toaster: boolean = true) {
@@ -110,6 +115,7 @@ export class Data {
     }
 
     clear() {
+        // @ts-ignore
         this.data = {};
         this.payload = {};
         this.is_loading = false;
