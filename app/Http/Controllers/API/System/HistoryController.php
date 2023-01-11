@@ -6,7 +6,7 @@ use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Models\History\History;
-use App\Models\History\HistoryScope;
+use App\Models\EntryScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -40,7 +40,7 @@ class HistoryController extends ApiHistoryController
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
-            ->where('entry_name', HistoryScope::role)
+            ->where('entry_name', EntryScope::role)
             ->where('id', $request->input('id'))
             ->first();
 

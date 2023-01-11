@@ -24,6 +24,9 @@ class UserChangesFormatter implements FormatterInterface
             case 'patronymic':
                 $result['parameter'] = 'Отчество';
                 break;
+            case 'display_name':
+                $result['parameter'] = 'Отображаемое имя';
+                break;
             case 'email':
                 $result['parameter'] = 'Email';
                 break;

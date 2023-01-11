@@ -39,6 +39,7 @@ import {List} from "@/Core/List";
 import {toDatetime} from "@/Core/Helpers/DateTime";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import HistoryChanges from "@/Components/History/HistoryChanges.vue";
+import {useRouter} from "vue-router";
 
 const props = defineProps<{
     url: string,
@@ -61,6 +62,7 @@ type History = {
     entry_title: string | null,
     entry_name: string | null,
     entry_id: number | null,
+    has_entry: boolean,
     action: string,
     description: string | null,
     position_id: number | null,
@@ -72,6 +74,8 @@ type History = {
     changes_count: number,
     comments_count: number,
 };
+
+const router = useRouter();
 
 const history = ref<List<History>>(new List<History>(props.url, props.options ? props.options : {}, {
     prefix: props.prefix ? props.prefix : undefined, remember: {filters: ['active'], pagination: true, order: true}
@@ -86,13 +90,26 @@ function reload(): void {
 }
 
 function formatAction(history: History): string {
-    let entry: string | null;
-    if (history.entry_name && history.entry_id) {
-        // todo make link
-        entry = history.entry_title;
-    } else {
+    let entry: string | null = null;
+
+    if (history.has_entry) {
+        let link;
+        switch (history.entry_name) {
+            case 'user':
+                link = router.resolve({name: 'user_view', params: {id: history.entry_id}}).href;
+                entry = '<a class="history-link" href="' + link + '">' + history.entry_title + '</a>';
+                break;
+            case 'position':
+                link = router.resolve({name: 'staff_view', params: {id: history.entry_id}}).href;
+                entry = '<a class="history-link" href="' + link + '">' + history.entry_title + '</a>';
+                break;
+        }
+    }
+
+    if (entry === null) {
         entry = history.entry_title;
     }
+
     return history.action.replace(':entry', entry ? entry : '');
 }
 
@@ -102,7 +119,7 @@ function showComments(record: History): void {
 
 function showChanges(record: History): void {
     if (changes.value !== null) {
-        changes.value.show(record.id, formatAction(record) + ' — ' + toDatetime(record.timestamp));
+        changes.value.show(record.id, record.action.replace(':entry', record.entry_title ? record.entry_title : '') + ' — ' + toDatetime(record.timestamp));
     }
 }
 
@@ -110,3 +127,21 @@ defineExpose({
     reload,
 });
 </script>
+
+<style lang="scss">
+@import "@/variables.scss";
+
+.history-link {
+    font-family: $project_font;
+    font-weight: normal;
+    font-size: 1em;
+    color: $color_default;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color $animation $animation_time;
+
+    &__underline {
+        text-decoration: underline;
+    }
+}
+</style>

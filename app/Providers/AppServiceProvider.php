@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\EntryScope;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        EntryScope::enforceMorphMap();
+
         if ($this->app->runningInConsole()) {
             // Load migrations from all subdirectories of `database/migrations`
             $directories = array_filter(glob(database_path('migrations') . '/*'), 'is_dir');

@@ -6,6 +6,7 @@ use App\Models\History\History;
 use BadMethodCallException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasSimpleHistory
 {
@@ -21,6 +22,16 @@ trait HasSimpleHistory
         }
 
         return $this->hasMany(History::class, 'entry_id', 'id')->where('entry_name', $this->historyEntryName());
+    }
+
+    /**
+     * Related history.
+     *
+     * @return  MorphMany
+     */
+    public function entries(): MorphMany
+    {
+        return $this->morphMany(History::class, 'entry');
     }
 
     /**

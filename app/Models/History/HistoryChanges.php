@@ -7,6 +7,7 @@ use App\Models\History\Formatters\FormatterInterface;
 use App\Models\History\Formatters\PermissionRoleChangesFormatter;
 use App\Models\History\Formatters\PositionChangesFormatter;
 use App\Models\History\Formatters\UserChangesFormatter;
+use App\Models\EntryScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use JsonException;
@@ -28,9 +29,9 @@ class HistoryChanges extends Model
     protected $fillable = ['parameter', 'type', 'old', 'new'];
 
     protected array $formatters = [
-        HistoryScope::role => PermissionRoleChangesFormatter::class,
-        HistoryScope::position => PositionChangesFormatter::class,
-        HistoryScope::user => UserChangesFormatter::class,
+        EntryScope::role => PermissionRoleChangesFormatter::class,
+        EntryScope::position => PositionChangesFormatter::class,
+        EntryScope::user => UserChangesFormatter::class,
     ];
 
     /**

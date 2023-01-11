@@ -2,13 +2,14 @@
 
 namespace App\Models\History;
 
+use App\Models\Model;
 use App\Models\Positions\Position;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int $id
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Carbon $timestamp
  *
  * @property Position $position
+ * @property Model $entry
  * @property HistoryAction $action
  * @property Collection|null $comments
  * @property Collection|null $links
@@ -52,7 +54,7 @@ class History extends Model
     ];
 
     /** @var string[] Eager load relation */
-    protected $with = ['action', 'comments', 'links', 'changes', 'position'];
+    protected $with = ['action', 'comments', 'links', 'changes', 'position', 'entry'];
 
     /**
      * History record action.
@@ -72,6 +74,16 @@ class History extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class, 'position_id', 'id');
+    }
+
+    /**
+     * Get the related entry model.
+     *
+     * @return  MorphTo
+     */
+    public function entry(): MorphTo
+    {
+        return $this->morphTo(__FUNCTION__, 'entry_name', 'entry_id');
     }
 
     /**
@@ -184,6 +196,7 @@ class History extends Model
         return [
             'id' => $this->id,
             'timestamp' => $this->timestamp,
+            'has_entry' => !empty($this->entry),
 
             'entry_title' => $this->entry_title,
             'entry_name' => $this->entry_name,
