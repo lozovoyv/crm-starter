@@ -157,7 +157,7 @@ const messageFormatters = [
             }
             let others: string[] = [];
             attributes.map((name) => {
-                others.push('"' + titles[name] + '"');
+                others.push('"' + titles[name].toLowerCase() + '"');
             });
 
             return replacePart(message, ':values', others.join(', '));

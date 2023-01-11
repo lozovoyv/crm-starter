@@ -19,12 +19,12 @@ export function validate(field_name: string, value: any, validation_rules: Field
 
     let rule_to_check = Object.keys(validation_rules);
 
-    let bail = Object.keys(rule_to_check).indexOf('bail');
+    let bail = rule_to_check.indexOf('bail');
     if (bail !== -1) {
         rule_to_check.splice(bail, 1);
     }
 
-    let nullable = Object.keys(rule_to_check).indexOf('nullable');
+    let nullable = rule_to_check.indexOf('nullable');
     if (nullable !== -1) {
         rule_to_check.splice(nullable, 1);
     }
@@ -42,7 +42,7 @@ export function validate(field_name: string, value: any, validation_rules: Field
         if (typeof rules[rule_to_check[i]] === 'function') {
             let ruleCheck = null;
             try {
-                if (!(is_nullable && !empty(value))) {
+                if (!is_nullable || !empty(value)) {
                     // @ts-ignore
                     ruleCheck = rules[rule_to_check[i]](value, attributes, field_name, fields);
                 }
