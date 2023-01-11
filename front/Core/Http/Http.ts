@@ -152,7 +152,7 @@ class Http {
                 message += '<br/>' + item.file + ':' + item.line;
             })
         }
-        dialog.show('Ошибка сервера', message, [dialog.button('close', 'Закрыть', 'default'), dialog.button('copy', 'Скопировать и закрыть')], 'error')
+        dialog.show('Ошибка сервера', message, [dialog.button('copy', 'Скопировать и закрыть'), dialog.button('close', 'Закрыть', 'default')], 'error')
             .then(result => {
                 if (result === 'copy') {
                     let message = error.data.message + '\n';
