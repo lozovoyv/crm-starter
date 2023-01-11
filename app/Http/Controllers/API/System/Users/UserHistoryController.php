@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\API\System\Staff;
+namespace App\Http\Controllers\API\System\Users;
 
 use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Models\History\History;
 use App\Models\EntryScope;
-use App\Models\Positions\PositionType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class StaffHistoryController extends ApiHistoryController
+class UserHistoryController extends ApiHistoryController
 {
     /**
-     * Get staff history list.
+     * Get user history list.
      *
      * @param APIListRequest $request
      * @param int $id
@@ -24,9 +23,8 @@ class StaffHistoryController extends ApiHistoryController
     public function list(APIListRequest $request, int $id): JsonResponse
     {
         $query = History::query()
-            ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
-            ->where('entry_type', PositionType::typeToString(PositionType::staff));
+            ->where('entry_name', EntryScope::user)
+            ->where('entry_id', $id);
 
         $history = $this->retrieveHistory($query, $request);
 
@@ -34,7 +32,7 @@ class StaffHistoryController extends ApiHistoryController
     }
 
     /**
-     * Get staff history record comments
+     * Get user history record comments
      *
      * @param Request $request
      * @param int $id
@@ -48,9 +46,8 @@ class StaffHistoryController extends ApiHistoryController
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
-            ->where('entry_name', EntryScope::position)
+            ->where('entry_name', EntryScope::user)
             ->where('entry_id', $id)
-            ->where('entry_type', PositionType::typeToString(PositionType::staff))
             ->where('id', $request->input('id'))
             ->first();
 
@@ -62,7 +59,7 @@ class StaffHistoryController extends ApiHistoryController
     }
 
     /**
-     * Get staff history record changes
+     * Get user history record changes
      *
      * @param Request $request
      * @param int $id
@@ -72,9 +69,8 @@ class StaffHistoryController extends ApiHistoryController
     public function changes(Request $request, int $id): JsonResponse
     {
         $query = History::query()
-            ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
-            ->where('entry_type', PositionType::typeToString(PositionType::staff));
+            ->where('entry_name', EntryScope::user)
+            ->where('entry_id', $id);
 
         /** @var History|null $record */
         $record = $this->retrieveRecord($query, $request);

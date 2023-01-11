@@ -19,14 +19,15 @@ class UsersListController extends ApiController
         'id' => 'ID',
         'active' => null,
         'name' => 'ФИО',
-        'username' => 'Пользователь',
+        'display_name' => 'Отображаемое имя',
+        'username' => 'Логин',
         'email' => 'Email',
         'phone' => 'Телефон',
-        'created_at' => 'Создан',
-        'updated_at' => 'Изменён',
+        'created_at' => 'Создана',
+        'updated_at' => 'Изменена',
     ];
 
-    protected array $ordering = ['id', 'name', 'username', 'email', 'phone', 'created_at', 'updated_at'];
+    protected array $ordering = ['id', 'name', 'display_name', 'username', 'email', 'phone', 'created_at', 'updated_at'];
 
     /**
      * Get users list.
@@ -45,6 +46,7 @@ class UsersListController extends ApiController
         switch ($orderBy) {
             case 'id':
             case 'username':
+            case 'display_name':
             case 'email':
             case 'phone':
             case 'created_at':
@@ -72,6 +74,7 @@ class UsersListController extends ApiController
                         ->orWhere('lastname', 'like', "%$term%")
                         ->orWhere('firstname', 'like', "%$term%")
                         ->orWhere('patronymic', 'like', "%$term%")
+                        ->orWhere('display_name', 'like', "%$term%")
                         ->orWhere('username', 'like', "%$term%")
                         ->orWhere('email', 'like', "%$term%")
                         ->orWhere('phone', 'like', "%$term%");

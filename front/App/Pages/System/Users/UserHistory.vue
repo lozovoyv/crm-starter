@@ -1,10 +1,10 @@
 <template>
     <HistoryList
-        url="/api/system/users/history"
-        commentsUrl="/api/system/users/history/comments"
-        changesUrl="/api/system/users/history/changes"
+        :url="'/api/system/users/' + userId + '/history'"
+        :commentsUrl="'/api/system/users/' + userId + '/history/comments'"
+        :changesUrl="'/api/system/users/' + userId + '/history/changes'"
         prefix="system_users_history"
-        empty-message="Нет истории изменения ролей"
+        empty-message="Нет истории изменения учётной записи"
         ref="history"
     />
 </template>
@@ -12,6 +12,10 @@
 <script setup lang="ts">
 import HistoryList from "@/Components/History/HistoryList.vue";
 import {ref} from "vue";
+
+const props = defineProps<{
+    userId: number,
+}>();
 
 const history = ref<InstanceType<typeof HistoryList>>(null);
 

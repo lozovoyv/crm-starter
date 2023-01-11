@@ -13,8 +13,8 @@
                 </div>
                 <div class="login__divider"></div>
                 <div class="login__form">
-                    <FormString :form="form" name="username" autocomplete="username" @keyup.enter="enter" ref="login_input"/>
-                    <FormPassword :form="form" name="password" autocomplete="current-password" @keyup.enter="enter" ref="password_input"/>
+                    <FormString :form="form" name="username" autocomplete="username" :clearable="true" @keyup.enter="enter" ref="login_input"/>
+                    <FormPassword :form="form" name="password" autocomplete="current-password" :clearable="true" @keyup.enter="enter" ref="password_input"/>
                     <FormCheckBox :form="form" :name="'remember'"/>
                 </div>
                 <div class="login__actions">
@@ -48,7 +48,7 @@ const login_input = ref<FormString | null>(null);
 const password_input = ref<FormPassword | null>(null);
 const form = ref<Form>(new Form(null, null, '/api/login'));
 
-form.value.set('username', null, 'required', 'Имя пользователя', true);
+form.value.set('username', null, 'required', 'Email / логин', true);
 form.value.set('password', null, 'required', 'Пароль', true);
 form.value.set('remember', null, null, 'Запомнить меня', true);
 form.value.load();

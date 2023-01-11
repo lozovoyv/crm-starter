@@ -18,13 +18,13 @@
             <ListTableCell style="width: 100%;">{{ role.description }}</ListTableCell>
             <ListTableCell style="white-space: nowrap">{{ toDatetime(role.updated_at, true) }}</ListTableCell>
             <ListTableCell :action="true">
-                <ListActionsMenu v-if="!role.locked">
+                <ListActions v-if="!role.locked">
+                    <GuiLink @click="edit(role)">Редактировать</GuiLink>
                     <GuiLink @click="edit(null, role)">Создать копию</GuiLink>
                     <GuiLink @click="deactivate(role)" v-if="role.active">Отключить</GuiLink>
                     <GuiLink @click="activate(role)" v-if="!role.active">Включить</GuiLink>
-                    <GuiLink @click="edit(role)">Редактировать</GuiLink>
                     <GuiLink @click="remove(role)">Удалить</GuiLink>
-                </ListActionsMenu>
+                </ListActions>
             </ListTableCell>
         </ListTableRow>
         <template v-slot:empty>
@@ -45,14 +45,14 @@ import ListTableRow from "@/Components/List/ListRow.vue";
 import ListTableCell from "@/Components/List/ListCell.vue";
 import IconLock from "@/Icons/IconLock.vue";
 import GuiIndicator from "@/Components/GUI/GuiIndicator.vue";
-import ListActionsMenu from "@/Components/List/ListActions.vue";
+import ListActions from "@/Components/List/ListActions.vue";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
 import {toDatetime} from "@/Core/Helpers/DateTime";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
 import ListFilterDropdown from "@/Components/List/ListFilterDropdown.vue";
-import RoleEditForm from "@/App/Pages/System/RoleEditForm.vue";
+import RoleEditForm from "@/App/Pages/System/Roles/RoleEditForm.vue";
 
 const form = ref<InstanceType<typeof RoleEditForm> | null>(null);
 

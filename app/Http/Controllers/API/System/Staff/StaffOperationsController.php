@@ -6,12 +6,10 @@ use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Models\History\History;
-use App\Models\EntryScope;
-use App\Models\Positions\PositionType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class StaffHistoryController extends ApiHistoryController
+class StaffOperationsController extends ApiHistoryController
 {
     /**
      * Get staff history list.
@@ -24,9 +22,7 @@ class StaffHistoryController extends ApiHistoryController
     public function list(APIListRequest $request, int $id): JsonResponse
     {
         $query = History::query()
-            ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
-            ->where('entry_type', PositionType::typeToString(PositionType::staff));
+            ->where('position_id', $id);
 
         $history = $this->retrieveHistory($query, $request);
 
@@ -48,9 +44,7 @@ class StaffHistoryController extends ApiHistoryController
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
-            ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
-            ->where('entry_type', PositionType::typeToString(PositionType::staff))
+            ->where('position_id', $id)
             ->where('id', $request->input('id'))
             ->first();
 
@@ -72,9 +66,7 @@ class StaffHistoryController extends ApiHistoryController
     public function changes(Request $request, int $id): JsonResponse
     {
         $query = History::query()
-            ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
-            ->where('entry_type', PositionType::typeToString(PositionType::staff));
+            ->where('position_id', $id);
 
         /** @var History|null $record */
         $record = $this->retrieveRecord($query, $request);

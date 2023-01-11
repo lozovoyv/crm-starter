@@ -6,7 +6,7 @@ use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Models\History\History;
-use App\Models\History\HistoryScope;
+use App\Models\EntryScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -21,7 +21,7 @@ class UsersHistoryController extends ApiHistoryController
      */
     public function list(APIListRequest $request): JsonResponse
     {
-        $query = History::query()->where('entry_name', HistoryScope::user);
+        $query = History::query()->where('entry_name', EntryScope::user);
 
         $history = $this->retrieveHistory($query, $request);
 
@@ -42,7 +42,7 @@ class UsersHistoryController extends ApiHistoryController
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
-            ->where('entry_name', HistoryScope::user)
+            ->where('entry_name', EntryScope::user)
             ->where('id', $request->input('id'))
             ->first();
 
@@ -63,7 +63,7 @@ class UsersHistoryController extends ApiHistoryController
     public function changes(Request $request): JsonResponse
     {
         /** @var History|null $record */
-        $record = $this->retrieveRecord(History::query()->where('entry_name', HistoryScope::user), $request);
+        $record = $this->retrieveRecord(History::query()->where('entry_name', EntryScope::user), $request);
 
         if ($record === null) {
             return APIResponse::error('Запись не найдена');

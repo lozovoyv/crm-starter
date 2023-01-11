@@ -1,5 +1,5 @@
 <template>
-    <LayoutPage title="Роли и права">
+    <LayoutPage title="Роли и права" :breadcrumbs="[{name: 'Роли и права'}]">
         <template v-slot:actions>
             <GuiActionsMenu title="Действия">
                 <GuiLink name="Добавить роль" @click="create()"/>
@@ -22,10 +22,10 @@ import GuiActionsMenu from "@/Components/GUI/GuiActionsMenu.vue";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 import {computed, ref} from "vue";
-import RolesList from "@/App/Pages/System/RolesList.vue";
-import RolesHistory from "@/App/Pages/System/RolesHistory.vue";
-import Permissions from "@/App/Pages/System/Permissions.vue";
-import RoleEditForm from "@/App/Pages/System/RoleEditForm.vue";
+import RolesList from "@/App/Pages/System/Roles/RolesList.vue";
+import RolesHistory from "@/App/Pages/System/Roles/RolesHistory.vue";
+import Permissions from "@/App/Pages/System/Roles/Permissions.vue";
+import RoleEditForm from "@/App/Pages/System/Roles/RoleEditForm.vue";
 
 const tab = ref<string | null>(null);
 

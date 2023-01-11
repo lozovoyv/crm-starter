@@ -24,9 +24,10 @@ class StaffCreateController extends ApiController
         'lastname' => 'Фамилия',
         'firstname' => 'Имя',
         'patronymic' => 'Отчество',
+        'display_name' => 'Отображаемое имя',
         'email' => 'Email',
         'phone' => 'Телефон',
-        'username' => 'Имя пользователя',
+        'username' => 'Логин',
         'password' => 'Пароль',
         'status_id' => 'Статус',
         'roles' => 'Роли',
@@ -37,10 +38,11 @@ class StaffCreateController extends ApiController
         'lastname' => 'required_without:user_id',
         'firstname' => 'required_without:user_id',
         'patronymic' => 'required_without:user_id',
+        'display_name' => 'nullable',
         'email' => 'required_without_all:user_id,username',
         'phone' => 'nullable',
         'username' => 'required_without_all:user_id,email',
-        'password' => 'required_without:user_id|min:6',
+        'password' => 'required_without:user_id',
         'status_id' => 'required',
         'roles' => 'nullable',
     ];
@@ -70,6 +72,7 @@ class StaffCreateController extends ApiController
                 'lastname' => null,
                 'firstname' => null,
                 'patronymic' => null,
+                'display_name' => null,
                 'email' => null,
                 'phone' => null,
                 'username' => null,
@@ -108,10 +111,11 @@ class StaffCreateController extends ApiController
                     'Выбранный пользователь уже зарегистрирован как сотрудник');
             }
         } else {
-            // upgrade rules th check user can be created
+            // upgrade rules to check user can be created
             $this->rules['email'] = 'required_without_all:user_id,username|unique:users';
             $this->rules['phone'] = 'nullable|unique:users';
             $this->rules['username'] = 'required_without_all:user_id,email|unique:users';
+            $this->rules['password'] = 'required|min:6';
         }
 
         if ($errors = $this->validate($data, $this->rules, $this->titles, $this->messages)) {
@@ -133,6 +137,7 @@ class StaffCreateController extends ApiController
             $this->set($user, 'lastname', $data['lastname'], Casting::string, $userChanges);
             $this->set($user, 'firstname', $data['firstname'], Casting::string, $userChanges);
             $this->set($user, 'patronymic', $data['patronymic'], Casting::string, $userChanges);
+            $this->set($user, 'display_name', $data['display_name'], Casting::string, $userChanges);
             $this->set($user, 'email', $data['email'], Casting::string, $userChanges);
             $this->set($user, 'phone', $data['phone'], Casting::string, $userChanges);
             $this->set($user, 'username', $data['username'], Casting::string, $userChanges);

@@ -16,10 +16,10 @@ return [
     'user_statuses' => [
         'class' => UserStatus::class,
         'allow' => [
-            PositionType::staff => ['system.users'],
+            PositionType::staff => ['system.users.change'],
         ]
     ],
-    'position_status' => [
+    'position_statuses' => [
         'class' => PositionStatus::class,
         'allow' => [
             PositionType::staff => ['system.staff.change'],

@@ -33,8 +33,24 @@ class Current
     public function __construct(Request $request)
     {
         $this->user = $request->user();
-        $positionId = $request->session()->get('position_id');
-        $this->position = $this->user ? $this->user->positions()->where('id', $positionId)->first() : null;
+        if ($this->user) {
+            $positionId = $request->session()->get('position_id');
+            if ($positionId !== null) {
+                // todo add cookie position handling
+                // todo improve position checkin and overriding (by permission or role)
+                $this->position = $this->user->positions()->where('id', $positionId)->first();
+                $request->session()->put('position_id', $this->position->id);
+            } else {
+                if ($this->user->positions()->count() === 1) {
+                    $this->position = $this->user->positions()->first();
+                } else {
+                    // todo throw `need position select` exception
+                    $this->position = $this->user->positions()->first();
+                }
+            }
+        } else {
+            $this->position = null;
+        }
     }
 
     /**

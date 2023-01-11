@@ -20,7 +20,7 @@ import {Data} from "@/Core/Data";
 import {ref} from "vue";
 import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 
-const data = ref<Data>(new Data('/api/profile'));
+const data = ref<Data<{}>>(new Data<{}>('/api/profile'));
 
 const tab = ref<string | null>(null);
 

@@ -49,16 +49,19 @@ class RolesEditController extends ApiController
 
         $permissions = [];
         $permissionsIds = [];
+        $permissionsDescriptions = [];
 
         Permission::query()
             ->with(['permissionModule', 'roles' => function (BelongsToMany $query) use ($role) {
                 $query->where('id', $role->id);
             }])
+            ->orderBy('order')
             ->get()
-            ->map(function (Permission $permission) use (&$permissions, &$permissionsIds) {
+            ->map(function (Permission $permission) use (&$permissions, &$permissionsIds, &$permissionsDescriptions) {
                 $this->titles['permission.' . $permission->id] = $permission->permissionModule->name . ' — ' . $permission->name;
                 $permissions['permission.' . $permission->id] = $permission->roles->count() !== 0;
                 $permissionsIds[] = $permission->id;
+                $permissionsDescriptions[$permission->id] = $permission->description;
             });
 
         return APIResponse::form(
@@ -74,6 +77,7 @@ class RolesEditController extends ApiController
             $this->titles,
             [
                 'permissions' => $permissionsIds,
+                'descriptions' => $permissionsDescriptions,
             ]
         );
     }

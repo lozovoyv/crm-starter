@@ -11,21 +11,19 @@ use App\Models\Positions\PositionType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class StaffHistoryController extends ApiHistoryController
+class StaffAllHistoryController extends ApiHistoryController
 {
     /**
      * Get staff history list.
      *
      * @param APIListRequest $request
-     * @param int $id
      *
      * @return  JsonResponse
      */
-    public function list(APIListRequest $request, int $id): JsonResponse
+    public function list(APIListRequest $request): JsonResponse
     {
         $query = History::query()
             ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
             ->where('entry_type', PositionType::typeToString(PositionType::staff));
 
         $history = $this->retrieveHistory($query, $request);
@@ -37,11 +35,10 @@ class StaffHistoryController extends ApiHistoryController
      * Get staff history record comments
      *
      * @param Request $request
-     * @param int $id
      *
      * @return JsonResponse
      */
-    public function comments(Request $request, int $id): JsonResponse
+    public function comments(Request $request): JsonResponse
     {
         // TODO refactor on need !!!
 
@@ -49,7 +46,6 @@ class StaffHistoryController extends ApiHistoryController
         $record = History::query()
             ->with('comments')
             ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
             ->where('entry_type', PositionType::typeToString(PositionType::staff))
             ->where('id', $request->input('id'))
             ->first();
@@ -65,15 +61,13 @@ class StaffHistoryController extends ApiHistoryController
      * Get staff history record changes
      *
      * @param Request $request
-     * @param int $id
      *
      * @return JsonResponse
      */
-    public function changes(Request $request, int $id): JsonResponse
+    public function changes(Request $request): JsonResponse
     {
         $query = History::query()
             ->where('entry_name', EntryScope::position)
-            ->where('entry_id', $id)
             ->where('entry_type', PositionType::typeToString(PositionType::staff));
 
         /** @var History|null $record */

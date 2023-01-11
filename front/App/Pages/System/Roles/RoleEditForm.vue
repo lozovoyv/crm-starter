@@ -7,6 +7,9 @@
         <div class="roles-permissions-edit">
             <template v-for="permissionId in form.payload['permissions']">
                 <FormCheckBox :form="form" :name="'permission.' + permissionId" :hide-title="true"/>
+                <GuiHint v-if="form.payload['descriptions'][permissionId]" style="padding: 0 0 3px 25px;">
+                    {{ form.payload['descriptions'][permissionId] }}
+                </GuiHint>
             </template>
         </div>
     </PopUpForm>
@@ -21,6 +24,7 @@ import FormDropdown from "@/Components/Form/FormDropdown.vue";
 import FormText from "@/Components/Form/FormText.vue";
 import FormCheckBox from "@/Components/Form/FormCheckBox.vue";
 import GuiHeading from "@/Components/GUI/GuiHeading.vue";
+import GuiHint from "@/Components/GUI/GuiHint.vue";
 
 const popup = ref<InstanceType<typeof PopUpForm> | null>(null);
 

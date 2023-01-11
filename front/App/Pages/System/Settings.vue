@@ -1,5 +1,7 @@
 <template>
-    <LayoutPage title="Настройки системы"></LayoutPage>
+    <LayoutPage title="Настройки системы" :breadcrumbs="[{name: 'Настройки системы'}]">
+
+    </LayoutPage>
 </template>
 
 <script setup lang="ts">

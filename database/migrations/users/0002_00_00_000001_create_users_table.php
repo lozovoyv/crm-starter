@@ -19,7 +19,7 @@ return new class extends Migration {
 
             $table->unsignedTinyInteger('status_id')->default(UserStatus::default);
 
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('username', 50)->unique()->nullable();
             $table->string('phone', 20)->unique()->nullable();
 
@@ -28,6 +28,8 @@ return new class extends Migration {
             $table->string('lastname')->nullable();
             $table->string('firstname')->nullable();
             $table->string('patronymic')->nullable();
+
+            $table->string('display_name')->nullable();
 
             $table->unsignedBigInteger('history_line_id')->nullable();
 
