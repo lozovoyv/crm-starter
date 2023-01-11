@@ -1,57 +1,55 @@
 <template>
     <div class="layout-page" :class="{'layout-page__wide': wide}">
-        <LoadingProgress :loading="isProcessing">
-            <div class="layout-page__header">
-                <div class="layout-page__header-main">
-                    <h1 class="layout-page__header-main-title">{{ title }}</h1>
-                    <!--
-                        <slot name="header" v-if="$slots.header"/>
-                        <template v-else>
-                            <div class="layout-page__header-main">
-                                <div class="layout-page__header-main-breadcrumbs" v-if="breadcrumbs" :class="{'layout-page__header-main-breadcrumbs-small':titleNewLine}">
-                                    <template v-for="link in breadcrumbs">
-                                        <router-link v-if="link['to']" class="layout-page__header-main-breadcrumbs-link" :to="link['to']">{{ link['caption'] }}</router-link>
-                                        <span v-else class="layout-page__header-main-breadcrumbs-link">{{ link['caption'] }}</span>
-                                        <span class="layout-page__header-main-breadcrumbs-divider">{{ divider }}</span>
+
+        <Breadcrumbs :breadcrumbs="breadcrumbs"/>
+
+        <div class="layout-page__wrapper">
+            <LoadingProgress :loading="isProcessing">
+                <div class="layout-page__header">
+                    <div class="layout-page__header-main">
+                        <h1 class="layout-page__header-main-title">{{ title }}</h1>
+                        <!--
+                            <slot name="header" v-if="$slots.header"/>
+                            <template v-else>
+                                <div class="layout-page__header-main">
+                                    <template v-if="!titleNewLine">
+                                        <router-link v-if="titleLink" :to="titleLink" class="layout-page__header-main-title-link">{{ title }}</router-link>
                                     </template>
                                 </div>
-                                <template v-if="!titleNewLine">
-                                    <router-link v-if="titleLink" :to="titleLink" class="layout-page__header-main-title-link">{{ title }}</router-link>
-                                </template>
-                            </div>
-                        </template>
-                    -->
-                </div>
-                <div class="layout-page__header-actions" v-if="canViewPage && ($slots.actions)">
-                    <div class="layout-page__header-actions-link" v-if="link">
-                        <GuiLink :route="link.route" :name="link.name"/>
+                            </template>
+                        -->
                     </div>
-                    <slot name="actions" v-if="$slots.actions"/>
+                    <div class="layout-page__header-actions" v-if="canViewPage && ($slots.actions)">
+                        <div class="layout-page__header-actions-link" v-if="link">
+                            <GuiLink :route="link.route" :name="link.name"/>
+                        </div>
+                        <slot name="actions" v-if="$slots.actions"/>
+                    </div>
                 </div>
-            </div>
-            <div class="layout-page__prologue" v-if="canViewPage && $slots.header">
-                <slot name="header"/>
-            </div>
-            <div class="layout-page__divider"></div>
-            <div class="layout-page__body">
-                <slot v-if="canViewPage"/>
-                <div v-else-if="isForbidden" class="layout-page__body-error">
-                    У Вас недостаточно прав для просмотра этой страницы
+                <div class="layout-page__prologue" v-if="canViewPage && $slots.header">
+                    <slot name="header"/>
                 </div>
-                <div v-else-if="isNotFound" class="layout-page__body-error">
-                    <slot name="notFound" v-if="$slots.notFound"/>
-                    <template v-else>
-                        Страница не найдена
-                    </template>
+                <div class="layout-page__divider"></div>
+                <div class="layout-page__body">
+                    <slot v-if="canViewPage"/>
+                    <div v-else-if="isForbidden" class="layout-page__body-error">
+                        У Вас недостаточно прав для просмотра этой страницы
+                    </div>
+                    <div v-else-if="isNotFound" class="layout-page__body-error">
+                        <slot name="notFound" v-if="$slots.notFound"/>
+                        <template v-else>
+                            Страница не найдена
+                        </template>
+                    </div>
                 </div>
-            </div>
 
-            <div class="layout-page__divider" v-if="$slots.footer"></div>
+                <div class="layout-page__divider" v-if="$slots.footer"></div>
 
-            <div class="layout-page__footer" v-if="$slots.footer">
-                <slot name="footer"/>
-            </div>
-        </LoadingProgress>
+                <div class="layout-page__footer" v-if="$slots.footer">
+                    <slot name="footer"/>
+                </div>
+            </LoadingProgress>
+        </div>
     </div>
 </template>
 
@@ -60,13 +58,14 @@ import LoadingProgress from "@/Components/LoadingProgress.vue";
 import {computed} from "vue";
 import {RouteRecordRaw} from "vue-router";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
+import Breadcrumbs from "@/Components/Layout/Breadcrumbs.vue";
 
 const props = defineProps<{
     isProcessing?: boolean,
     isForbidden?: boolean,
     isNotFound?: boolean,
     link?: { name: string, route: Array<RouteRecordRaw> },
-    breadcrumbs?: Array<{ name: string, route: Array<RouteRecordRaw> }>,
+    breadcrumbs?: Array<{ name: string, route: RouteRecordRaw }>,
     title?: string,
     wide?: boolean,
 }>();
@@ -89,13 +88,17 @@ const canViewPage = computed((): boolean => {
 
 .layout-page {
     width: calc(100% - 20px);
-    margin: 10px auto 30px;
-    background-color: $color_white;
-    box-shadow: $shadow_1;
-    border-radius: 2px;
-    box-sizing: border-box;
-    padding: 16px;
     max-width: 1200px;
+    margin: 0 auto;
+
+    &__wrapper {
+        background-color: $color_white;
+        box-shadow: $shadow_1;
+        border-radius: 2px;
+        box-sizing: border-box;
+        padding: 16px;
+        margin: 10px auto 30px;
+    }
 
     &__wide {
         max-width: unset;
@@ -139,30 +142,6 @@ const canViewPage = computed((): boolean => {
                 margin-right: 10px;
             }
         }
-
-        /**
-                    &-breadcrumbs {
-                        &-small {
-                            font-size: 16px;
-                        }
-
-                        &-link {
-                            color: $base_primary_color;
-                            text-decoration: none;
-                            font-weight: bold;
-                            white-space: nowrap;
-
-                            &:hover {
-                                color: $base_primary_hover_color
-                            }
-                        }
-
-                        &-divider {
-                            margin: 0 5px;
-                            color: $base_gray_color;
-                        }
-                    }
-         */
     }
 
     &__body {

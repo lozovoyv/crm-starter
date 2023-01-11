@@ -7,9 +7,9 @@
             </div>
         </LoadingProgress>
         <div class="form__actions">
-            <GuiButton type="success" @clicked="save" :disabled="disabled">Сохранить</GuiButton>
-            <GuiButton type="default" @clicked="cancel">Отмена</GuiButton>
+            <GuiButton type="default" @clicked="save" :disabled="disabled">Сохранить</GuiButton>
             <GuiButton @clicked="clear" :disabled="disabled">Сбросить</GuiButton>
+            <GuiButton @clicked="cancel">Отмена</GuiButton>
         </div>
     </div>
 </template>
@@ -23,6 +23,11 @@ import LoadingProgress from "@/Components/LoadingProgress.vue";
 const props = defineProps<{
     form: Form,
 }>();
+
+const emit = defineEmits<{
+    (e: 'save', response: { values: object, payload: object }): void,
+    (e: 'cancel'): void,
+}>()
 
 const disabled = computed((): boolean => {
     return !props.form.is_loaded || props.form.is_loading || props.form.is_saving || props.form.is_forbidden;
@@ -42,11 +47,14 @@ function save() {
     if (!props.form.validate()) {
         return;
     }
-    props.form.save();
+    props.form.save()
+        .then(response => {
+            emit('save', response);
+        });
 }
 
 function cancel() {
-
+    emit('cancel');
 }
 
 function clear() {
@@ -71,7 +79,7 @@ function clear() {
             line-height: $base_size_unit;
             margin: 0 0 5px;
             border: 1px solid transparentize($color_error, 0.9);
-            background-color: transparentize($color_error, 0.95);
+            background-color: transparentize($color_error, 0.85);
             color: $color_text_black;
             border-radius: 2px;
             font-size: 14px;
@@ -80,6 +88,7 @@ function clear() {
 
     &__actions {
         margin-top: 20px;
+        text-align: right;
     }
 }
 </style>

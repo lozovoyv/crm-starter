@@ -4,7 +4,7 @@
             <div class="application__user-menu-button-avatar">
                 <div class="application__user-menu-button-avatar-wrapper">
                     <img v-if="user.avatar" :src="user.avatar" alt="avatar"/>
-                    <IconUser v-else/>
+                    <IconUserCircle v-else/>
                 </div>
             </div>
             <div class="application__user-menu-button-name">
@@ -33,9 +33,9 @@
 
 <script setup lang="ts">
 import {User} from "@/Core/Types/User";
-import IconUser from "@/Icons/IconUser.vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 import {nextTick, ref} from "vue";
+import IconUserCircle from "@/Icons/IconUserCircle.vue";
 
 const props = defineProps<{
     user: User,

@@ -5,10 +5,10 @@
             <div class="list-table__header-cell-inner" :class="{'list-table__header-cell-inner-ordered': item.ordering}" @click="changeOrder(item)">
                 <span class="list-table__header-cell-inner-title">{{ item.title }}</span>
                 <span class="list-table__header-cell-inner-order" v-if="item.ordering">
-                <span class="list-table__header-cell-inner-order-desc" :class="{'list-table__header-cell-inner-order-desc-active':item.ordered && item.order === 'desc'}">
+                <span class="list-table__header-cell-inner-order-desc" :class="{'list-table__header-cell-inner-order-desc-active':item.ordered && item.order === 'asc'}">
                     <IconSortUp/>
                 </span>
-                <span class="list-table__header-cell-inner-order-asc" :class="{'list-table__header-cell-inner-order-asc-active':item.ordered && item.order === 'asc'}">
+                <span class="list-table__header-cell-inner-order-asc" :class="{'list-table__header-cell-inner-order-asc-active':item.ordered && item.order === 'desc'}">
                     <IconSortDown/>
                 </span>
             </span>
@@ -124,11 +124,12 @@ function changeOrder(item: HeaderItem): void {
                 width: 10px;
                 height: 12px;
                 margin-left: 5px;
+                padding-top: 3px;
 
                 &-desc, &-asc {
                     display: block;
                     width: 8px;
-                    height: 6px;
+                    height: 5px;
                     color: $color_gray_lighten_2;
                     position: relative;
 

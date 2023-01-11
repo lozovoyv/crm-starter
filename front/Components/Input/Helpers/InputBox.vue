@@ -110,8 +110,8 @@ function clear() {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: math.div($base_size_unit, 2);
-            height: math.div($base_size_unit, 2);
+            width: math.div($base_size_unit, 3);
+            height: math.div($base_size_unit, 3);
             transform: translate(-50%, -50%);
         }
 
