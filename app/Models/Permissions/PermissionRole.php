@@ -4,7 +4,7 @@ namespace App\Models\Permissions;
 
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
-use App\Models\History\HistoryScope;
+use App\Models\EntryScope;
 use App\Models\Model;
 use App\Traits\HashCheck;
 use App\Traits\HasSimpleHistory;
@@ -60,7 +60,7 @@ class PermissionRole extends Model implements HashCheckable, Historical
      */
     public function historyEntryName(): string
     {
-        return HistoryScope::role;
+        return EntryScope::role;
     }
 
     /**

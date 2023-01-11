@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * @property string $original_filename
  * @property string $mime
  * @property int $size
- * @property string $tags
  *
  * @property-read  string $url
  */

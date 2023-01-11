@@ -5,7 +5,7 @@ namespace App\Models\Positions;
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
-use App\Models\History\HistoryScope;
+use App\Models\EntryScope;
 use App\Models\Model;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionRole;
@@ -225,7 +225,7 @@ class Position extends Model implements Statusable, HashCheckable, Historical
      */
     public function historyEntryName(): string
     {
-        return HistoryScope::position;
+        return EntryScope::position;
     }
 
     /**
@@ -236,5 +236,22 @@ class Position extends Model implements Statusable, HashCheckable, Historical
     public function historyEntryType(): ?string
     {
         return PositionType::typeToString($this->type_id);
+    }
+
+    /**
+     * Cast as array.
+     *
+     * @return  array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'active' => $this->hasStatus(PositionStatus::active),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'hash' => $this->getHash(),
+            'user' => $this->user,
+        ];
     }
 }

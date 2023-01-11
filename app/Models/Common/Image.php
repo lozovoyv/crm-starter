@@ -15,7 +15,14 @@ use Illuminate\Support\Facades\Storage;
  * @property string $original_filename
  * @property string $mime
  * @property int $size
- * @property string $tags
+ *
+ * @property int $width
+ * @property int $height
+ *
+ * @property int $top
+ * @property int $left
+ * @property int $bottom
+ * @property int $right
  *
  * @property-read  string $url
  */
@@ -53,12 +60,14 @@ class Image extends Model
         if (!isset($attributes['content'])) {
             return null;
         }
-        // Otherwise, try to search by existing image by hash
+
+        // Otherwise, try to search by existing image by hash on specified disk
         $hash = md5($attributes['content']) . $attributes['size'];
-        if (($image = self::query()->where('hash', $hash)->first()) !== null) {
+        if (($image = self::query()->where('hash', $hash)->where('disk', $disk)->first()) !== null) {
             /** @var Image $image */
             return $image;
         }
+
         // Finally, store file and create new image
         $extension = pathinfo($attributes['name'], PATHINFO_EXTENSION);
         $parts = explode(';base64,', $attributes['content']);
@@ -72,6 +81,12 @@ class Image extends Model
         $image->setAttribute('original_filename', $attributes['name']);
         $image->setAttribute('mime', $attributes['type']);
         $image->setAttribute('size', $attributes['size']);
+        $image->setAttribute('width', $attributes['width'] ?? null);
+        $image->setAttribute('height', $attributes['height'] ?? null);
+        $image->setAttribute('top', $attributes['top'] ?? null);
+        $image->setAttribute('left', $attributes['left'] ?? null);
+        $image->setAttribute('bottom', $attributes['bottom'] ?? null);
+        $image->setAttribute('right', $attributes['right'] ?? null);
         $image->save();
 
         return $image;

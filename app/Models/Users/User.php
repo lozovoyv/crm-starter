@@ -2,11 +2,9 @@
 
 namespace App\Models\Users;
 
-use App\Foundation\Dictionaries\Interfaces\AsDictionary;
-use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
-use App\Models\History\HistoryScope;
+use App\Models\EntryScope;
 use App\Models\Positions\Position;
 use App\Traits\HashCheck;
 use App\Traits\HasHistoryLine;
@@ -30,6 +28,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $lastname
  * @property string|null $firstname
  * @property string|null $patronymic
+ *
+ * @property string|null $display_name
  *
  * @property Carbon $email_verified_at
  * @property Carbon $phone_verified_at
@@ -252,7 +252,7 @@ class User extends Authenticatable implements Statusable, Historical
      */
     public function historyEntryName(): string
     {
-        return HistoryScope::user;
+        return EntryScope::user;
     }
 
     /**
@@ -274,9 +274,12 @@ class User extends Authenticatable implements Statusable, Historical
     {
         return [
             'id' => $this->id,
+            'is_active' => $this->hasStatus(UserStatus::active),
+            'status' => $this->status->name,
             'lastname' => $this->lastname,
             'firstname' => $this->firstname,
             'patronymic' => $this->patronymic,
+            'display_name' => $this->display_name,
             'username' => $this->username,
             'email' => $this->email,
             'phone' => $this->phone,
