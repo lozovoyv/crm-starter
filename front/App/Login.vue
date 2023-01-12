@@ -48,7 +48,7 @@ const login_input = ref<FormString | null>(null);
 const password_input = ref<FormPassword | null>(null);
 const form = ref<Form>(new Form(null, null, '/api/login'));
 
-form.value.set('username', null, 'required', 'Email / логин', true);
+form.value.set('username', null, 'required', 'Адрес электронной почты / логин', true);
 form.value.set('password', null, 'required', 'Пароль', true);
 form.value.set('remember', null, null, 'Запомнить меня', true);
 form.value.load();

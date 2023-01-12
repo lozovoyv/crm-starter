@@ -282,6 +282,7 @@ class User extends Authenticatable implements Statusable, Historical
             'display_name' => $this->display_name,
             'username' => $this->username,
             'email' => $this->email,
+            'has_password' => !empty($this->password),
             'phone' => $this->phone,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

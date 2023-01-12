@@ -1,16 +1,13 @@
 <template>
-    <IconUserSlash class="access-indicator access-indicator__locked" v-if="locked"/>
-    <IconUser class="access-indicator access-indicator__unlocked" v-else/>
+    <IconUser class="access-indicator" :class="{'access-indicator__locked': locked, 'access-indicator__unlocked': !locked}" />
 </template>
 
 <script>
-import IconUserSlash from "@/Icons/IconUserSlash";
 import IconUser from "@/Icons/IconUser";
 
 export default {
     components: {
         IconUser,
-        IconUserSlash,
     },
     props: {
         locked: {type: Boolean, default: true}

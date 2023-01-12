@@ -49,7 +49,7 @@ export default {
 
     &__value {
         flex-grow: 1;
-        font-size: 14px;
+        font-size: 16px;
         color: $color_text_black;
     }
 }

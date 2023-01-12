@@ -21,7 +21,7 @@ class StaffListController extends ApiController
         'active' => null,
         'name' => 'ФИО',
         'username' => 'Пользователь',
-        'email' => 'Email',
+        'email' => 'Адрес электронной почты',
         'phone' => 'Телефон',
         'created_at' => 'Создан',
         'updated_at' => 'Изменён',

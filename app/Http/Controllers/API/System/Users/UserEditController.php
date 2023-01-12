@@ -11,6 +11,7 @@ use App\Models\Users\User;
 use App\Models\Users\UserStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserEditController extends ApiController
@@ -25,6 +26,7 @@ class UserEditController extends ApiController
         'email' => 'required_without:lastname',
         'email_confirmation_need' => 'nullable',
         'new_password' => 'nullable|min:6',
+        'clear_password' => 'nullable',
         'phone' => 'required_without:lastname',
     ];
 
@@ -35,9 +37,10 @@ class UserEditController extends ApiController
         'display_name' => 'Отображаемое имя',
         'status_id' => 'Статус учётной записи',
         'username' => 'Логин',
-        'email' => 'Email',
+        'email' => 'Адрес электронной почты',
         'email_confirmation_need' => 'Запросить подтверждение адреса электронной почты',
         'new_password' => 'Новый пароль',
+        'clear_password' => 'Удалить пароль',
         'phone' => 'Телефон',
     ];
 
@@ -69,11 +72,15 @@ class UserEditController extends ApiController
                 'email' => $user->email,
                 'email_confirmation_need' => true,
                 'new_password' => null,
+                'clear_password' => false,
                 'phone' => $user->phone,
             ],
             $user->getHash(),
             $this->rules,
             $this->titles,
+            [
+                'has_password' => !empty($user->password),
+            ]
         );
     }
 
@@ -96,15 +103,21 @@ class UserEditController extends ApiController
         $data = $this->data($request);
 
         $this->rules['email'] = [
+            'bail',
+            'email',
             Rule::unique('users', 'email')->ignore($user),
         ];
         $this->rules['phone'] = [
             Rule::unique('users', 'phone')->ignore($user),
         ];
+        $this->rules['username'] = [
+            Rule::unique('users', 'username')->ignore($user),
+        ];
 
         if ($errors = $this->validate($data, $this->rules, $this->titles, [
             'email.unique' => 'Данный адрес электронной почты уже используется',
             'phone.unique' => 'Данный телефон уже используется',
+            'username.unique' => 'Данный логин уже занят',
         ])) {
             return APIResponse::validationError($errors);
         }
@@ -119,9 +132,11 @@ class UserEditController extends ApiController
         $this->set($user, 'email', $data['email'], Casting::string, $changes);
         $this->set($user, 'username', $data['username'], Casting::string, $changes);
         $this->set($user, 'phone', $data['phone'], Casting::string, $changes);
+        $oldUserStatus = $user->status_id;
+        $user->setStatus($data['status_id']);
+        $user->save();
 
-        if ($user->status_id !== $data['status_id']) {
-            $user->setStatus($data['status_id']);
+        if ($oldUserStatus !== $user->status_id) {
             if ($user->hasStatus(UserStatus::active)) {
                 $user->addHistory(HistoryAction::user_activated, $current->positionId());
             } else {
@@ -129,8 +144,22 @@ class UserEditController extends ApiController
             }
         }
 
-        $this->set($user, 'status_id', $data['status_id'], Casting::string, $changes);
-        $user->save();
+        if ($data['clear_password']) {
+            if (!empty($user->password)) {
+                $user->password = null;
+                $user->save();
+                $user->addHistory(HistoryAction::user_password_cleared, $current->positionId());
+            }
+        } else if (!empty($data['new_password'])) {
+            $hadPassword = !empty($user->password);
+            $user->password = Hash::make($data['new_password']);
+            $user->save();
+            if ($hadPassword) {
+                $user->addHistory(HistoryAction::user_password_changed, $current->positionId());
+            } else {
+                $user->addHistory(HistoryAction::user_password_set, $current->positionId());
+            }
+        }
 
         if (!empty($changes)) {
             $user

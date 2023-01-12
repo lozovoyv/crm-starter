@@ -1,6 +1,7 @@
 export type User = {
     id: number,
     is_active: boolean,
+    has_password: boolean,
     lastname: string,
     firstname: string,
     patronymic: string,
@@ -16,6 +17,7 @@ export type User = {
 export type UserInfo = {
     id: number,
     is_active: boolean,
+    has_password: boolean,
     status: string,
     name: string,
     lastname: string,

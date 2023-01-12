@@ -25,7 +25,7 @@ class StaffCreateController extends ApiController
         'firstname' => 'Имя',
         'patronymic' => 'Отчество',
         'display_name' => 'Отображаемое имя',
-        'email' => 'Email',
+        'email' => 'Адрес электронной почты',
         'phone' => 'Телефон',
         'username' => 'Логин',
         'password' => 'Пароль',

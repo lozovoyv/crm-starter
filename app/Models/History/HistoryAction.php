@@ -25,6 +25,9 @@ class HistoryAction extends Model
     /** USERS (301-400) */
     public const user_created = 301;
     public const user_edited = 311;
+    public const user_password_set = 312;
+    public const user_password_changed = 313;
+    public const user_password_cleared = 314;
     public const user_deleted = 321;
     public const user_activated = 331;
     public const user_deactivated = 341;

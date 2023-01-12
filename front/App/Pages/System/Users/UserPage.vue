@@ -17,7 +17,7 @@
 
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
-        <UserView v-if="tab === 'staff'" :user-id="userID" :user-data="user.data"/>
+        <UserView v-if="tab === 'user'" :user-id="userID" :user-data="user.data" @update="update"/>
         <UserHistory v-if="tab === 'history'" :user-id="userID" ref="history"/>
     </LayoutPage>
 </template>
@@ -47,7 +47,7 @@ const userID = computed((): number => {
 const tab = ref<string | null>(null);
 
 const tabs = computed((): { [index: string]: string } => {
-    return {staff: 'Учётная запись', history: 'История'};
+    return {user: 'Учётная запись', history: 'История'};
 });
 
 const user = ref<Data<UserInfo>>(new Data<UserInfo>('/api/system/users/view', {id: userID.value}));
@@ -62,6 +62,10 @@ const history = ref<InstanceType<typeof UserView> | null>(null);
 const operations = ref<InstanceType<typeof UserHistory> | null>(null);
 
 const processing = ref<boolean>(false);
+
+function update(): void {
+    user.value.load();
+}
 
 function remove(): void {
     let name = String([user.value.data.lastname, user.value.data.firstname, user.value.data.patronymic].join(' ')).trim();

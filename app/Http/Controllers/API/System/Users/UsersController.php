@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends ApiController
 {
@@ -42,7 +43,7 @@ class UsersController extends ApiController
 
         $user->addHistory(HistoryAction::user_deactivated, $current->positionId());
 
-        return APIResponse::response($user, null, 'Учётная запись заблокирована');
+        return APIResponse::success('Учётная запись заблокирована');
     }
 
     /**
@@ -65,7 +66,45 @@ class UsersController extends ApiController
         $current = Current::get($request);
         $user->addHistory(HistoryAction::user_activated, $current->positionId());
 
-        return APIResponse::response($user, null, 'Учётная запись активирована');
+        return APIResponse::success('Учётная запись активирована');
+    }
+
+    /**
+     * Change user password.
+     *
+     * @param Request $request
+     *
+     * @return  JsonResponse
+     */
+    public function password(Request $request): JsonResponse
+    {
+        try {
+            $user = $this->getUser($request);
+        } catch (Exception $exception) {
+            return APIResponse::error($exception->getMessage());
+        }
+
+        $data = $this->data($request);
+
+        if ($errors = $this->validate($data, ['password' => 'nullable|min:6'], ['password' => 'Пароль'])) {
+            return APIResponse::validationError($errors);
+        }
+
+        $hadPassword = !empty($user->password);
+        $hasPassword = !empty($data['password']);
+
+        $user->password = empty($data['password']) ? null : Hash::make($data['password']);
+        $user->save();
+
+        $current = Current::get($request);
+
+        if ($hadPassword) {
+            $user->addHistory($hasPassword ? HistoryAction::user_password_changed : HistoryAction::user_password_cleared, $current->positionId());
+        } else if ($hasPassword) {
+            $user->addHistory(HistoryAction::user_password_set, $current->positionId());
+        }
+
+        return APIResponse::success($hasPassword !== $hadPassword ? 'Пароль изменён' : 'Нет изменений');
     }
 
     /**

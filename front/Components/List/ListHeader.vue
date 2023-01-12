@@ -88,7 +88,7 @@ function changeOrder(item: HeaderItem): void {
 
     &-cell {
         color: $color_text_black;
-        vertical-align: middle;
+        vertical-align: top;
         font-family: $project_font;
         font-size: 14px;
         text-transform: uppercase;
@@ -109,7 +109,7 @@ function changeOrder(item: HeaderItem): void {
             position: relative;
             box-sizing: border-box;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
 
             &-ordered {
                 cursor: pointer;
@@ -124,7 +124,7 @@ function changeOrder(item: HeaderItem): void {
                 width: 10px;
                 height: 12px;
                 margin-left: 5px;
-                padding-top: 3px;
+                padding-top: 5px;
 
                 &-desc, &-asc {
                     display: block;

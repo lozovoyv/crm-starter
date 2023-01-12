@@ -1,8 +1,8 @@
 <template>
     <div class="group-box" :style="style">
-        <div class="group-box__box"></div>
         <div class="group-box__title" v-if="title">{{ title }}</div>
         <slot/>
+        <div class="group-box__box"></div>
     </div>
 </template>
 
@@ -40,6 +40,7 @@ const style = computed((): object => {
     margin: 10px 0 15px;
     display: inline-block;
     vertical-align: top;
+    z-index: 0;
 
     &__box {
         position: absolute;
@@ -48,6 +49,7 @@ const style = computed((): object => {
         width: calc(100% - 8px);
         height: 100%;
         border: 1px solid transparentize($color_gray_lighten_2, 0.5);
+        z-index: -1;
     }
 
     &__title {

@@ -40,6 +40,7 @@ Route::post('/api/system/users/get', [UserEditController::class, 'get'])->middle
 Route::post('/api/system/users/update', [UserEditController::class, 'update'])->middleware(['position:staff', 'permission:system.users.change']);
 Route::post('/api/system/users/activate', [UsersController::class, 'activate'])->middleware(['position:staff', 'permission:system.users.change']);
 Route::post('/api/system/users/deactivate', [UsersController::class, 'deactivate'])->middleware(['position:staff', 'permission:system.users.change']);
+Route::post('/api/system/users/password', [UsersController::class, 'password'])->middleware(['position:staff', 'permission:system.users.change']);
 Route::post('/api/system/users/remove', [UsersController::class, 'remove'])->middleware(['position:staff', 'permission:system.users.change']);
 Route::post('/api/system/users/history', [UsersHistoryController::class, 'list'])->middleware(['position:staff', 'permission:system.users,system.users.change']);
 Route::post('/api/system/users/history/comments', [UsersHistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.users,system.users.change']);

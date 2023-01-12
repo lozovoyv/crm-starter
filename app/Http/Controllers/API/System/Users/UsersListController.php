@@ -21,7 +21,7 @@ class UsersListController extends ApiController
         'name' => 'ФИО',
         'display_name' => 'Отображаемое имя',
         'username' => 'Логин',
-        'email' => 'Email',
+        'email' => 'Адрес электронной почты',
         'phone' => 'Телефон',
         'created_at' => 'Создана',
         'updated_at' => 'Изменена',

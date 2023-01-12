@@ -19,6 +19,9 @@ class HistoryActionsSeeder extends GenericSeeder
             /** USERS */
             HistoryAction::user_created => ['name' => 'Учётная запись :entry создана'],
             HistoryAction::user_edited => ['name' => 'Учётная запись :entry изменена'],
+            HistoryAction::user_password_set => ['name' => 'Пароль учётной записи :entry задан'],
+            HistoryAction::user_password_changed => ['name' => 'Пароль учётной записи :entry изменён'],
+            HistoryAction::user_password_cleared => ['name' => 'Пароль учётной записи :entry удалён'],
             HistoryAction::user_deleted => ['name' => 'Учётная запись :entry удалена'],
             HistoryAction::user_activated => ['name' => 'Учётная запись :entry активирована'],
             HistoryAction::user_deactivated => ['name' => 'Учётная запись :entry заблокирована'],
