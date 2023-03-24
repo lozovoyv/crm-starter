@@ -22,13 +22,12 @@ class ApiResponseCommon extends ApiResponse
      */
     public function toResponse($request): JsonResponse
     {
-        $response = array_merge(
-            ['data' => $this->data ?? null],
-            $this->message ? ['message' => $this->message] : [],
-            $this->payload ? ['payload' => $this->payload] : [],
+        return new JsonResponse(
+            static::combine(['data' => $this->data ?? null], [
+                'message' => $this->message,
+                'payload' => $this->payload,
+            ]), $this->statusCode, $this->getHeaders()
         );
-
-        return new JsonResponse($response, $this->statusCode, $this->getHeaders());
     }
 
     /**
