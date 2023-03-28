@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,8 +18,8 @@ return new class extends Migration
 
             $table->unsignedSmallInteger('id', true)->from(100);
 
-            $table->boolean('active')->default(true)->nullable();
-            $table->boolean('locked')->default(false)->nullable();
+            $table->boolean('active')->default(true);
+            $table->boolean('locked')->default(false);
 
             $table->string('name')->unique();
             $table->string('description')->nullable();

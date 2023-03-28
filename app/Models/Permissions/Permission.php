@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Permissions;
 
@@ -21,9 +22,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Permission extends Model
 {
     /**
-     * CheckPermission's module.
+     * Permission's module.
      *
      * @return  BelongsTo
+     * @noinspection PhpUnused
      */
     public function permissionModule(): BelongsTo
     {
@@ -41,7 +43,7 @@ class Permission extends Model
     }
 
     /**
-     * Cast permission as array.
+     * Default representation permission as array.
      *
      * @return  array
      */

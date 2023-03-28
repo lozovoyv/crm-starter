@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Permissions;
 
@@ -15,10 +16,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @property int $id
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property bool $active
  * @property bool $locked
- * @property Collection $permissions
+ * @property Collection<Permission> $permissions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -90,7 +91,7 @@ class PermissionRole extends Model implements HashCheckable, Historical
      */
     public function hash(): ?string
     {
-        return $this->updated_at;
+        return $this->updated_at?->toString();
     }
 
     /**
@@ -112,13 +113,13 @@ class PermissionRole extends Model implements HashCheckable, Historical
     }
 
     /**
-     * Cast role as array.
+     * Default representation role as array.
      *
      * @return  array
      */
     public function toArray(): array
     {
-        $permissionsCount = $this->id === PermissionRole::super
+        $permissionsCount = $this->id === self::super
             ? Permission::query()->count()
             : $this->getAttribute('permissions_count') ?? $this->permissions()->count();
 

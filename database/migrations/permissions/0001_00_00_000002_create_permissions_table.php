@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,11 +19,11 @@ return new class extends Migration
             $table->unsignedSmallInteger('id', true);
 
             $table->string('key')->unique();
-            $table->string('module')->nullable();
-            $table->string('name')->nullable();
+            $table->string('module');
+            $table->string('name');
             $table->string('description')->nullable();
 
-            $table->unsignedSmallInteger('order')->nullable()->default(0);
+            $table->unsignedSmallInteger('order')->default(0);
 
             $table->timestamps();
 
