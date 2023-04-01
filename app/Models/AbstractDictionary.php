@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Foundation\Dictionaries;
+namespace App\Models;
 
-use App\Models\Model;
 use Carbon\Carbon;
 
 /**
@@ -23,6 +23,11 @@ abstract class AbstractDictionary extends Model
         'order' => 'int',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+    ];
+
+    /** @var array Default attributes */
+    protected $attributes = [
+        'enabled' => true,
     ];
 
     /**
