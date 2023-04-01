@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Users;
 
-use App\Foundation\Dictionaries\AbstractDictionary;
+use App\Models\AbstractDictionary;
 use Carbon\Carbon;
 
 /**
@@ -21,17 +22,13 @@ class UserStatus extends AbstractDictionary
 
     public const default = self::active;
 
-    /**
-     * Cast to array.
-     *
-     * @return  array
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'enabled' => $this->enabled,
-        ];
-    }
+    /** @var array Attributes casting. */
+    protected $casts = [
+        'order' => 'int',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /** @var array Default attributes */
+    protected $attributes = [];
 }

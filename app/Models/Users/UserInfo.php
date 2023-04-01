@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Users;
 
@@ -8,13 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string $lastname
- * @property string $firstname
- * @property string $patronymic
+ * @property int $user_id
  * @property string $gender
  * @property Carbon $birthdate
- * @property string $mobile_phone
- * @property string $email
  * @property string $notes
  *
  * @property User $user
@@ -39,13 +36,8 @@ class UserInfo extends Model
 
     /** @var string[] Fillable attributes. */
     protected $fillable = [
-        'lastname',
-        'firstname',
-        'patronymic',
         'birthdate',
         'gender',
-        'mobile_phone',
-        'email',
         'notes',
     ];
 
@@ -53,6 +45,7 @@ class UserInfo extends Model
      * User this info belongs to.
      *
      * @return  BelongsTo
+     * @noinspection PhpUnused
      */
     public function user(): BelongsTo
     {

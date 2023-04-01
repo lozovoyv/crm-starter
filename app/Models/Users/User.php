@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Users;
 
+use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
 use App\Models\EntryScope;
@@ -10,6 +12,7 @@ use App\Traits\HashCheck;
 use App\Traits\HasHistoryLine;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -42,11 +45,12 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @property UserStatus $status
  * @property UserInfo $info
+ * @property Collection<Position> $positions
  *
  * @property-read string|null $fullName
  * @property-read string|null $compactName
  */
-class User extends Authenticatable implements Statusable, Historical
+class User extends Authenticatable implements Statusable, Historical, HashCheckable
 {
     use HasApiTokens, HasFactory, HasStatus, HashCheck, HasHistoryLine;
 
@@ -90,6 +94,7 @@ class User extends Authenticatable implements Statusable, Historical
      * User's status.
      *
      * @return  HasOne
+     * @noinspection PhpUnused
      */
     public function status(): HasOne
     {
@@ -123,6 +128,7 @@ class User extends Authenticatable implements Statusable, Historical
      * User's profile.
      *
      * @return  HasOne
+     * @noinspection PhpUnused
      */
     public function info(): HasOne
     {
@@ -133,6 +139,7 @@ class User extends Authenticatable implements Statusable, Historical
      * Accessor for full name generation.
      *
      * @return  string|null
+     * @noinspection PhpUnused
      */
     public function getFullNameAttribute(): ?string
     {
@@ -143,6 +150,7 @@ class User extends Authenticatable implements Statusable, Historical
      * Accessor for compact name generation.
      *
      * @return  string|null
+     * @noinspection PhpUnused
      */
     public function getCompactNameAttribute(): ?string
     {
@@ -232,7 +240,7 @@ class User extends Authenticatable implements Statusable, Historical
      */
     public function hash(): ?string
     {
-        return $this->updated_at;
+        return $this->updated_at?->toString();
     }
 
     /**

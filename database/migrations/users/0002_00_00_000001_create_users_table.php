@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use App\Models\Users\UserStatus;
 use Illuminate\Database\Migrations\Migration;
