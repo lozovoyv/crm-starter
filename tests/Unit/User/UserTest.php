@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Feature\Users;
+namespace Tests\Unit\User;
 
 use App\Models\EntryScope;
 use App\Models\Users\UserStatus;

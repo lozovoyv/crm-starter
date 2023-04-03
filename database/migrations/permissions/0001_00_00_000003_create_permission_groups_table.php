@@ -14,15 +14,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_modules', static function (Blueprint $table) {
+        Schema::create('permission_groups', static function (Blueprint $table) {
 
-            $table->unsignedSmallInteger('id', true);
+            $table->unsignedSmallInteger('id', true)->from(100);
 
-            $table->string('module')->unique();
+            $table->boolean('active')->default(true);
+            $table->boolean('locked')->default(false);
 
-            $table->string('name');
-
-            $table->unsignedSmallInteger('order')->default(0);
+            $table->string('name')->unique();
+            $table->string('description')->nullable();
 
             $table->timestamps();
         });
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_modules');
+        Schema::dropIfExists('permission_groups');
     }
 };

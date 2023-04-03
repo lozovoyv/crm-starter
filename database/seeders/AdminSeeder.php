@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Permissions\PermissionRole;
+use App\Models\Permissions\PermissionGroup;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionStatus;
 use App\Models\Positions\PositionType;
@@ -32,12 +33,11 @@ class AdminSeeder extends Seeder
             $admin->save();
 
             /** @var Position $position */
-            $position = $admin->positions()->create([
+            $admin->positions()->create([
                 'status_id' => PositionStatus::active,
-                'type_id' => PositionType::staff,
+                'type_id' => PositionType::admin,
                 'locked' => true,
             ]);
-            $position->roles()->attach(PermissionRole::super);
         }
     }
 }

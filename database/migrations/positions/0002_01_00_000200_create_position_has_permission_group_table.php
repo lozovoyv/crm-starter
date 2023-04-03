@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,13 +14,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('position_has_role', static function (Blueprint $table) {
+        Schema::create('position_has_permission_group', static function (Blueprint $table) {
 
             $table->unsignedInteger('position_id');
-            $table->unsignedSmallInteger('role_id');
+            $table->unsignedSmallInteger('group_id');
 
             $table->foreign('position_id')->references('id')->on('positions')->cascadeOnDelete()->cascadeOnDelete();
-            $table->foreign('role_id')->references('id')->on('permission_roles')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('group_id')->references('id')->on('permission_groups')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

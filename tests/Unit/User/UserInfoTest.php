@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Feature\Users;
+namespace Tests\Unit\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\HelperTraits\CreatesUser;

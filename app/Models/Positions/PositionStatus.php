@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Positions;
 
-use App\Foundation\Dictionaries\AbstractDictionary;
+use App\Models\AbstractDictionary;
 
 /**
  * @property int $id

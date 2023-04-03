@@ -1,21 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Positions;
 
-use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
 use App\Models\EntryScope;
 use App\Models\Model;
 use App\Models\Permissions\Permission;
-use App\Models\Permissions\PermissionRole;
+use App\Models\Permissions\PermissionGroup;
 use App\Models\Users\User;
-use App\Traits\HashCheck;
 use App\Traits\HasHistoryLine;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -33,12 +31,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property PositionType $type
  * @property PositionStatus $status
  * @property User $user
- * @property Collection $roles
- * @property Collection $permissions
+ * @property Collection<PermissionGroup> $permissionGroups
+ * @property Collection<Permission> $permissions
  */
-class Position extends Model implements Statusable, HashCheckable, Historical
+class Position extends Model implements Statusable, Historical
 {
-    use HasStatus, HasFactory, HashCheck, HasHistoryLine;
+    use HasStatus, HasHistoryLine;
 
     /** @var array Attribute casting. */
     protected $casts = [
@@ -73,7 +71,7 @@ class Position extends Model implements Statusable, HashCheckable, Historical
      *
      * @return  void
      */
-    public function setStatus(int $status, bool $save = true): void
+    public function setStatus(int $status, bool $save = false): void
     {
         $this->checkAndSetStatus(PositionStatus::class, $status, 'status_id', $save);
     }
@@ -99,33 +97,25 @@ class Position extends Model implements Statusable, HashCheckable, Historical
     }
 
     /**
-     * CheckRole's permissions.
+     * Role attached permission groups.
      *
      * @return  BelongsToMany
      */
-    public function roles(): BelongsToMany
+    public function permissionGroups(): BelongsToMany
     {
-        return $this->belongsToMany(PermissionRole::class, 'position_has_role', 'position_id', 'role_id')->where('active', true);
+        return $this
+            ->belongsToMany(PermissionGroup::class, 'position_has_permission_group', 'position_id', 'group_id')
+            ->where('active', true);
     }
 
     /**
-     * CheckRole's permissions.
+     * Role attached permissions.
      *
      * @return  BelongsToMany
      */
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'position_has_permission', 'position_id', 'permission_id');
-    }
-
-    /**
-     * Instance hash.
-     *
-     * @return  string|null
-     */
-    public function hash(): ?string
-    {
-        return $this->updated_at;
     }
 
     /**
@@ -157,13 +147,13 @@ class Position extends Model implements Statusable, HashCheckable, Historical
         if ($this->permissionsCache === null || $fresh) {
             $this->permissionsCache = [];
 
-            if ($this->roles()->whereIn('id', [PermissionRole::super])->count() > 0) {
+            if ($this->type_id === PositionType::admin) {
                 $permissions = Permission::query()->get();
             } else {
-                $roles = $this->roles()->with('permissions')->get();
-                foreach ($roles as $role) {
-                    /** @var PermissionRole $role */
-                    foreach ($role->permissions as $permission) {
+                $groups = $this->permissionGroups()->with('permissions')->get();
+                foreach ($groups as $group) {
+                    /** @var PermissionGroup $group */
+                    foreach ($group->permissions as $permission) {
                         /** @var Permission $permission */
                         $this->permissionsCache[$permission->id] = $permission->key;
                     }
@@ -183,27 +173,17 @@ class Position extends Model implements Statusable, HashCheckable, Historical
     /**
      * Check if position has given role.
      *
-     * @param int|string $role
-     * @param bool $fresh
+     * @param int|string $type
      *
      * @return  bool
      */
-    public function hasRole(int|string $role, bool $fresh = false): bool
+    public function hasType(int|string $type): bool
     {
-        if ($fresh) {
-            $roles = $this->roles()->get();
-        } else {
-            $roles = $this->roles;
+        if (is_int($type)) {
+            return $this->type_id === $type;
         }
 
-        foreach ($roles as $checkingRole) {
-            /** @var PermissionRole $checkingRole */
-            if ($checkingRole->matches($role)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $type === PositionType::typeToString($this->type_id);
     }
 
     /**
@@ -251,7 +231,7 @@ class Position extends Model implements Statusable, HashCheckable, Historical
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'hash' => $this->getHash(),
-            'user' => $this->user,
+            'user' => $this->user->toArray(),
         ];
     }
 }

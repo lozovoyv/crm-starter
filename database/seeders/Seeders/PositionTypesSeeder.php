@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Database\Seeders\Seeders;
 
@@ -9,7 +10,8 @@ class PositionTypesSeeder extends GenericSeeder
 {
     protected array $data = [
         PositionType::class => [
-            PositionType::staff => ['name' => 'Сотрудник', 'order' => 1],
+            PositionType::admin => ['name' => 'Администратор', 'order' => 1],
+            PositionType::staff => ['name' => 'Сотрудник', 'order' => 2],
         ],
     ];
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('id', true);
 
             $table->string('key')->unique();
-            $table->string('module');
+            $table->string('scope_name');
             $table->string('name');
             $table->string('description')->nullable();
 
@@ -27,7 +27,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('module')->references('module')->on('permission_modules')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('scope_name')->references('scope_name')->on('permission_scopes')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

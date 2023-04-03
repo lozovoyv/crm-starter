@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Database\Seeders\Seeders;
 
@@ -9,8 +10,8 @@ class UserStatusesSeeder extends GenericSeeder
 {
     protected array $data = [
         UserStatus::class => [
-            UserStatus::active => ['name' => 'Активная', 'lock' => true, 'order' => 1],
-            UserStatus::blocked => ['name' => 'Заблокирована', 'lock' => true, 'order' => 2],
+            UserStatus::active => ['name' => 'Активная', 'order' => 1],
+            UserStatus::blocked => ['name' => 'Заблокирована', 'order' => 2],
         ],
     ];
 }

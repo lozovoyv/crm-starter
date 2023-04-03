@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Positions;
 
-use App\Foundation\Dictionaries\AbstractDictionary;
+use App\Models\AbstractDictionary;
+use Database\Seeders\Seeders\PositionTypesSeeder;
 use InvalidArgumentException;
 
 /**
@@ -10,17 +12,24 @@ use InvalidArgumentException;
  * @property string $name
  * @property bool $enabled
  * @property int $order
+ *
+ * @see PositionTypesSeeder
  */
 class PositionType extends AbstractDictionary
 {
     /** @var int The id of staff position type */
-    public const staff = 1;
+    public const admin = 1;
+
+    /** @var int The id of staff position type */
+    public const staff = 2;
 
     public static function typeToString(int $type): string
     {
-        switch ($type) {
-            case 1:
-                return 'staff';
+        if ($type === self::admin) {
+            return 'admin';
+        }
+        if ($type === self::staff) {
+            return 'staff';
         }
 
         throw new InvalidArgumentException('Wrong position type');

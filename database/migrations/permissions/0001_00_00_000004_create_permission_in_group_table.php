@@ -14,13 +14,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_in_role', static function (Blueprint $table) {
+        Schema::create('permission_in_group', static function (Blueprint $table) {
 
             $table->unsignedSmallInteger('permission_id');
-            $table->unsignedSmallInteger('role_id');
+            $table->unsignedSmallInteger('group_id');
 
             $table->foreign('permission_id')->references('id')->on('permissions')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('role_id')->references('id')->on('permission_roles')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('group_id')->references('id')->on('permission_groups')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_in_role');
+        Schema::dropIfExists('permission_in_group');
     }
 };

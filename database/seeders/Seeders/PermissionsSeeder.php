@@ -1,21 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Database\Seeders\Seeders;
 
 use App\Models\Permissions\Permission;
-use App\Models\Permissions\PermissionModule;
+use App\Models\Permissions\PermissionScope;
 use Illuminate\Database\Seeder;
 
 class PermissionsSeeder extends Seeder
 {
     protected array $permissions = [];
 
-    protected array $modules = [];
+    protected array $scopes = [];
 
     protected function loadDefinitions(): void
     {
         $data = require base_path('/app/permissions.php');
-        $this->modules = $data['modules'];
+        $this->scopes = $data['scopes'];
         $permissions = $data['permissions'];
 
         foreach ($permissions as $permission) {
@@ -39,16 +40,16 @@ class PermissionsSeeder extends Seeder
      */
     protected function add(string $key, string $name, string $description): void
     {
-        $module = explode('.', $key, 2)[0];
-        if (!isset($this->permissions[$module])) {
-            $this->permissions[$module] = [];
+        $scopes = explode('.', $key, 2)[0];
+        if (!isset($this->permissions[$scopes])) {
+            $this->permissions[$scopes] = [];
         }
-        $this->permissions[$module][$key] = [
+        $this->permissions[$scopes][$key] = [
             'key' => $key,
-            'module' => $module,
+            'scopes' => $scopes,
             'name' => $name,
             'description' => $description,
-            'order' => count($this->permissions[$module]) + 1,
+            'order' => count($this->permissions[$scopes]) + 1,
         ];
     }
 
@@ -61,16 +62,16 @@ class PermissionsSeeder extends Seeder
     {
         $this->loadDefinitions();
 
-        foreach ($this->modules as $moduleKey => $moduleName) {
-            /** @var PermissionModule|null $module */
-            $module = PermissionModule::query()->where('module', $moduleKey)->first();
-            if ($module === null) {
-                $module = new PermissionModule();
+        foreach ($this->scopes as $scopeKey => $scopeName) {
+            /** @var PermissionScope|null $module */
+            $scope = PermissionScope::query()->where('scope_name', $scopeKey)->first();
+            if ($scope === null) {
+                $scope = new PermissionScope();
             }
-            $module->name = $moduleName;
-            $module->module = $moduleKey;
-            $module->order = array_flip(array_keys($this->modules))[$moduleKey];
-            $module->save();
+            $scope->name = $scopeName;
+            $scope->scope_name = $scopeKey;
+            $scope->order = array_flip(array_keys($this->scopes))[$scopeKey];
+            $scope->save();
         }
 
         $permissionModules = $this->permissions();
@@ -81,9 +82,9 @@ class PermissionsSeeder extends Seeder
         } else {
             $processed = [];
 
-            foreach ($permissionModules as $module => $permissions) {
+            foreach ($permissionModules as $scope => $permissions) {
                 if (empty($permissions)) {
-                    Permission::query()->where('module', $module)->delete();
+                    Permission::query()->where('scope_name', $scope)->delete();
                 } else {
                     foreach ($permissions as $key => $data) {
                         $permission = Permission::query()->where('key', $key)->first();
@@ -91,7 +92,7 @@ class PermissionsSeeder extends Seeder
                             $permission = new Permission();
                             $permission->key = $key;
                         }
-                        $permission->module = $module;
+                        $permission->scope_name = $scope;
                         $permission->name = $data['name'];
                         $permission->order = $data['order'];
                         $permission->description = $data['description'];

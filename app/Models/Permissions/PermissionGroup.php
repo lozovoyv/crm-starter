@@ -17,16 +17,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $description
  * @property bool $active
  * @property bool $locked
- * @property Collection<Permission> $permissions
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @property Collection<Permission> $permissions
  */
-class PermissionRole extends Model implements Historical
+class PermissionGroup extends Model implements Historical
 {
     use HasSimpleHistory;
-
-    /** @var int Id for super-admin role */
-    public const super = 1;
 
     /** @var array Attributes casting. */
     protected $casts = [
@@ -79,25 +77,7 @@ class PermissionRole extends Model implements Historical
      */
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'permission_in_role', 'role_id', 'permission_id');
-    }
-
-    /**
-     * Check this role matches given.
-     *
-     * @param int|string $role
-     *
-     * @return  bool
-     */
-    public function matches(int|string $role): bool
-    {
-        if (is_string($role)) {
-            $roleId = constant('self::' . $role);
-        } else {
-            $roleId = $role;
-        }
-
-        return $this->id === $roleId;
+        return $this->belongsToMany(Permission::class, 'permission_in_group', 'group_id', 'permission_id');
     }
 
     /**
@@ -107,9 +87,7 @@ class PermissionRole extends Model implements Historical
      */
     public function toArray(): array
     {
-        $permissionsCount = $this->id === self::super
-            ? Permission::query()->count()
-            : $this->getAttribute('permissions_count') ?? $this->permissions()->count();
+        $permissionsCount = $this->getAttribute('permissions_count') ?? $this->permissions()->count();
 
         return [
             'id' => $this->id,

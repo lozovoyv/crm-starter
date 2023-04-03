@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
- * @property string $module
+ * @property string $scope_name
  * @property string $name
  * @property int $order
  *
  * @property Collection<Permission> $permissions
  */
-class PermissionModule extends Model
+class PermissionScope extends Model
 {
     /**
      * Module's permissions.
@@ -24,6 +24,6 @@ class PermissionModule extends Model
      */
     public function permissions(): HasMany
     {
-        return $this->hasMany(Permission::class, 'module', 'module');
+        return $this->hasMany(Permission::class, 'scope_name', 'scope_name');
     }
 }

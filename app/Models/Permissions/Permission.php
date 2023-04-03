@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @property int $id
  * @property string $key
- * @property string $module
+ * @property string $scope_name
  * @property string $name
  * @property string|null $description
  * @property int $order
  *
- * @property PermissionModule $permissionModule
- * @property Collection $roles
+ * @property PermissionScope $scope
+ * @property Collection<PermissionGroup> $groups
  */
 class Permission extends Model
 {
@@ -27,9 +27,9 @@ class Permission extends Model
      * @return  BelongsTo
      * @noinspection PhpUnused
      */
-    public function permissionModule(): BelongsTo
+    public function scope(): BelongsTo
     {
-        return $this->belongsTo(PermissionModule::class, 'module', 'module');
+        return $this->belongsTo(PermissionScope::class, 'scope_name', 'scope_name');
     }
 
     /**
@@ -37,9 +37,9 @@ class Permission extends Model
      *
      * @return  BelongsToMany
      */
-    public function roles(): BelongsToMany
+    public function groups(): BelongsToMany
     {
-        return $this->belongsToMany(PermissionRole::class, 'permission_in_role', 'permission_id', 'role_id');
+        return $this->belongsToMany(PermissionGroup::class, 'permission_in_group', 'permission_id', 'group_id');
     }
 
     /**
@@ -52,7 +52,7 @@ class Permission extends Model
         return [
             'id' => $this->id,
             'key' => $this->key,
-            'module' => $this->permissionModule->name,
+            'scope' => $this->scope->name,
             'name' => $this->name,
             'description' => $this->description,
         ];
