@@ -1,45 +1,44 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Http\Responses;
+namespace Tests\Unit\Responses;
 
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 
-class ApiResponseTokenMismatchTest extends TestCase
+class ApiResponseValidationErrorTest extends TestCase
 {
-    public function test_http_response_token_mismatch(): void
+    public function test_http_response_validation_error(): void
     {
         $request = new Request();
-        $response = ApiResponse::tokenMismatch('Test error');
+        $response = ApiResponse::validationError(['field' => 'error'], 'Error');
         $result = $response->toResponse($request);
 
-        $this->assertEquals(419, $result->status());
+        $this->assertEquals(422, $result->status());
 
         $this->assertJson($result->content());
 
         $this->assertJsonStringEqualsJsonString(
             $result->content(), json_encode([
-                'message' => 'Test error',
+                'errors' => ['field' => 'error'],
+                'message' => 'Error',
             ], JSON_THROW_ON_ERROR)
         );
     }
-
-    public function test_http_response_token_mismatch_payload(): void
+    public function test_http_response_validation_error_no_message(): void
     {
         $request = new Request();
-        $response = ApiResponse::tokenMismatch('Test error')->payload(['test' => 123]);
+        $response = ApiResponse::validationError(['field' => 'error'], null);
         $result = $response->toResponse($request);
 
-        $this->assertEquals(419, $result->status());
+        $this->assertEquals(422, $result->status());
 
         $this->assertJson($result->content());
 
         $this->assertJsonStringEqualsJsonString(
             $result->content(), json_encode([
-                'message' => 'Test error',
-                'payload' => ['test' => 123],
+                'errors' => ['field' => 'error'],
             ], JSON_THROW_ON_ERROR)
         );
     }

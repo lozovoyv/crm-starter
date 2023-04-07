@@ -1,27 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Http\Responses;
+namespace Tests\Unit\Responses;
 
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 
-class ApiResponseUnauthenticatedTest extends TestCase
+class ApiResponseErrorTest extends TestCase
 {
     public function test_http_response_error(): void
     {
         $request = new Request();
-        $response = ApiResponse::unauthenticated('Test error');
+        $response = ApiResponse::error('Test error');
         $result = $response->toResponse($request);
 
-        $this->assertEquals(401, $result->status());
+        $this->assertEquals(400, $result->status());
 
         $this->assertJson($result->content());
 
         $this->assertJsonStringEqualsJsonString(
             $result->content(), json_encode([
-                'message' => 'Test error'
+                'message' => 'Test error',
             ], JSON_THROW_ON_ERROR)
         );
     }

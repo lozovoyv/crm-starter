@@ -1,44 +1,44 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Http\Responses;
+namespace Tests\Unit\Responses;
 
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 
-class ApiResponseNotFoundTest extends TestCase
+class ApiResponseSuccessTest extends TestCase
 {
-    public function test_http_response_not_found(): void
+    public function test_http_response_success(): void
     {
         $request = new Request();
-        $response = ApiResponse::notFound('Test error');
+        $response = ApiResponse::success('Test success');
         $result = $response->toResponse($request);
 
-        $this->assertEquals(404, $result->status());
+        $this->assertEquals(200, $result->status());
 
         $this->assertJson($result->content());
 
         $this->assertJsonStringEqualsJsonString(
             $result->content(), json_encode([
-                'message' => 'Test error',
+                'message' => 'Test success',
             ], JSON_THROW_ON_ERROR)
         );
     }
 
-    public function test_http_response_not_found_test(): void
+    public function test_http_response_success_payload(): void
     {
         $request = new Request();
-        $response = ApiResponse::notFound('Test error')->payload(['test' => 123]);
+        $response = ApiResponse::success('Test success')->payload(['test' => 123]);
         $result = $response->toResponse($request);
 
-        $this->assertEquals(404, $result->status());
+        $this->assertEquals(200, $result->status());
 
         $this->assertJson($result->content());
 
         $this->assertJsonStringEqualsJsonString(
             $result->content(), json_encode([
-                'message' => 'Test error',
+                'message' => 'Test success',
                 'payload' => ['test' => 123],
             ], JSON_THROW_ON_ERROR)
         );

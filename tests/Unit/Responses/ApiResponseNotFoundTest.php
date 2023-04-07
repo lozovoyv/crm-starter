@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Http\Responses;
+namespace Tests\Unit\Responses;
 
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 
-class ApiResponseForbiddenTest extends TestCase
+class ApiResponseNotFoundTest extends TestCase
 {
-    public function test_http_response_forbidden(): void
+    public function test_http_response_not_found(): void
     {
         $request = new Request();
-        $response = ApiResponse::forbidden('Test error');
+        $response = ApiResponse::notFound('Test error');
         $result = $response->toResponse($request);
 
-        $this->assertEquals(403, $result->status());
+        $this->assertEquals(404, $result->status());
 
         $this->assertJson($result->content());
 
@@ -26,13 +26,13 @@ class ApiResponseForbiddenTest extends TestCase
         );
     }
 
-    public function test_http_response_forbidden_payload(): void
+    public function test_http_response_not_found_test(): void
     {
         $request = new Request();
-        $response = ApiResponse::forbidden('Test error')->payload(['test' => 123]);
+        $response = ApiResponse::notFound('Test error')->payload(['test' => 123]);
         $result = $response->toResponse($request);
 
-        $this->assertEquals(403, $result->status());
+        $this->assertEquals(404, $result->status());
 
         $this->assertJson($result->content());
 
