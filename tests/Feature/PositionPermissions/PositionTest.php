@@ -6,7 +6,6 @@ namespace Tests\Feature\PositionPermissions;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
 use App\Models\Permissions\PermissionScope;
-use App\Models\Positions\Position;
 use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\HelperTraits\CreatesPosition;

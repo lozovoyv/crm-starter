@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
 
+use App\Exceptions\NoPositionSelectedException;
+use App\Exceptions\PositionMismatchException;
 use App\Models\Positions\Position;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,47 +12,73 @@ use Illuminate\Http\Request;
 
 class Current
 {
+    protected static self $instance;
+
     protected ?User $user;
 
     protected ?Position $position;
+    protected ?Position $proxyPosition;
 
     /**
-     * Factory.
+     * Factory with singleton binding.
      *
      * @param Request $request
+     * @param bool $refresh
      *
      * @return  Current
      */
-    public static function get(Request $request): Current
+    public static function init(Request $request, bool $refresh = false): Current
     {
-        return new Current($request);
+        if (!isset(static::$instance) || $refresh) {
+            static::$instance = new Current($request);
+        }
+
+        return static::$instance;
     }
 
     /**
      * Create user current state.
      *
      * @param Request $request
+     *
+     * @throws NoPositionSelectedException
      */
     public function __construct(Request $request)
     {
         $this->user = $request->user();
-        if ($this->user) {
-            $positionId = $request->session()->get('position_id');
-            if ($positionId !== null) {
-                // todo add cookie position handling
-                // todo improve position checkin and overriding (by permission or role)
-                $this->position = $this->user->positions()->where('id', $positionId)->first();
-                $request->session()->put('position_id', $this->position->id);
-            } else {
-                if ($this->user->positions()->count() === 1) {
-                    $this->position = $this->user->positions()->first();
-                } else {
-                    // todo throw `need position select` exception
-                    $this->position = $this->user->positions()->first();
-                }
-            }
-        } else {
+
+        if ($this->user === null) {
             $this->position = null;
+            return;
+        }
+
+        $positionId = $request->session()->get('position_id');
+
+        if ($positionId !== null) {
+            $this->position = $this->user->positions()->where('id', $positionId)->first();
+            $request->session()->put('position_id', $position->id ?? null);
+            if (!$this->position) {
+                throw new PositionMismatchException();
+            }
+
+        } else {
+            $positionsCount = $this->user->positions()->count();
+
+            if ($positionsCount === 1) {
+                $this->position = $this->user->positions()->first();
+                $request->session()->put('position_id', $this->position->id);
+
+            } else if ($positionsCount > 0) {
+                throw new NoPositionSelectedException();
+
+            } else {
+                $this->position = null;
+                $request->session()->forget('position_id');
+            }
+        }
+
+        if ($this->position && ($proxyId = $request->cookie('proxy_position')) && $this->position->can('system.act_as_other')) {
+            $this->proxyPosition = Position::query()->where('id', $proxyId)->first();
         }
     }
 
@@ -61,6 +90,26 @@ class Current
     public function isAuthenticated(): bool
     {
         return isset($this->user);
+    }
+
+    /**
+     * Get current user.
+     *
+     * @return User|null
+     */
+    public function user(): ?User
+    {
+        return $this->user ?? null;
+    }
+
+    /**
+     * Get current user position.
+     *
+     * @return Position|null
+     */
+    public function position(): ?Position
+    {
+        return $this->proxyPosition ?? $this->position ?? null;
     }
 
     /**
@@ -88,14 +137,14 @@ class Current
      *
      * @return  string|null
      */
-    public function email(): ?string
+    public function userEmail(): ?string
     {
-        return isset($this->user) ? $this->user->email : null;
+        return $this->user->email ?? null;
     }
 
     public function positionId(): ?int
     {
-        return $this->position ? $this->position->id : null;
+        return $this->position->id ?? null;
     }
 
     /**
@@ -128,7 +177,7 @@ class Current
      */
     public function roles(): ?Collection
     {
-        return $this->position ? $this->position->roles : null;
+        return $this->position->roles ?? null;
     }
 
     /**

@@ -22,6 +22,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Permission extends Model
 {
     /**
+     * Get permission by key.
+     *
+     * @param string $key
+     *
+     * @return Permission|null
+     */
+    public static function get(string $key): ?Permission
+    {
+        /** @var Permission|null $permission */
+        $permission = self::query()->where('key', $key)->first();
+
+        return $permission;
+    }
+
+    /**
      * Permission's module.
      *
      * @return  BelongsTo
