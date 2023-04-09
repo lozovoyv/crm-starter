@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
 
-use App\Foundation\Casting;
+use App\Exceptions\CastingException;
+use App\Utils\Casting;
 use Illuminate\Support\Facades\DB;
 use JsonException;
 use RuntimeException;
@@ -23,7 +25,8 @@ class Settings
      * @param int $type
      *
      * @return  mixed
-     * @throws JsonException
+     *
+     * @throws CastingException
      */
     public static function get(string $key, mixed $default = null, int $type = Casting::string): mixed
     {
@@ -31,7 +34,7 @@ class Settings
             self::load();
         }
 
-        return (self::$settings && array_key_exists($key, self::$settings)) ? Casting::castTo(self::$settings[$key], $type) : $default;
+        return (self::$settings && array_key_exists($key, self::$settings)) ? Casting::fromString(self::$settings[$key], $type) : $default;
     }
 
     /**
@@ -42,7 +45,8 @@ class Settings
      * @param int $type
      *
      * @return  void
-     * @throws JsonException
+     *
+     * @throws CastingException
      */
     public static function set(string $key, mixed $value, int $type = Casting::string): void
     {
@@ -50,7 +54,7 @@ class Settings
             self::load();
         }
 
-        self::$settings[$key] = Casting::castFrom($value, $type);
+        self::$settings[$key] = Casting::toString($value, $type);
     }
 
     /**
@@ -79,7 +83,7 @@ class Settings
     public static function save(): void
     {
         if (self::$loaded === false) {
-            throw new RuntimeException('System must be loaded before saving.');
+            throw new RuntimeException('System settings must be loaded before saving.');
         }
         $values = [];
         foreach (self::$settings as $key => $value) {
