@@ -9,19 +9,19 @@ use Throwable;
 
 abstract class ApiResponse implements Responsable
 {
-    protected const CODE_OK = 200;
+    public const CODE_OK = 200;
 
-    protected const CODE_REDIRECT = 301;
-    protected const CODE_NOT_MODIFIED = 304;
+    public const CODE_REDIRECT = 301;
+    public const CODE_NOT_MODIFIED = 304;
 
-    protected const CODE_ERROR = 400;
-    protected const CODE_UNAUTHENTICATED = 401;
-    protected const CODE_FORBIDDEN = 403;
-    protected const CODE_NOT_FOUND = 404;
-    protected const CODE_TOKEN_MISMATCH = 419;
-    protected const CODE_VALIDATION_ERROR = 422;
+    public const CODE_ERROR = 400;
+    public const CODE_UNAUTHENTICATED = 401;
+    public const CODE_FORBIDDEN = 403;
+    public const CODE_NOT_FOUND = 404;
+    public const CODE_TOKEN_MISMATCH = 419;
+    public const CODE_VALIDATION_ERROR = 422;
 
-    protected const CODE_SERVER_ERROR = 500;
+    public const CODE_SERVER_ERROR = 500;
 
     protected int $statusCode;
     protected array $headers;

@@ -25,14 +25,14 @@ type HistoryChange = {
 }
 
 const props = defineProps<{
-    url: string;
+    url?: string;
 }>();
 
-const popup = ref<InstanceType<typeof PopUp> | null>(null);
+const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
-const list = ref<List<HistoryChange>>(new List(props.url, {}, {without_pagination: true}));
+const list = ref<List<HistoryChange>>(new List(props.url ? props.url : null, {}, {without_pagination: true}));
 
-const popUpTitle = ref<string | null>(null);
+const popUpTitle = ref<string | undefined>(undefined);
 
 function show(recordId: number, title: string) {
     if (!popup.value) {

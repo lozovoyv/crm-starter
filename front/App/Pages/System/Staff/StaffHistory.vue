@@ -17,10 +17,10 @@ const props = defineProps<{
     staffId: number,
 }>();
 
-const history = ref<InstanceType<typeof HistoryList>>(null);
+const history = ref<InstanceType<typeof HistoryList> | undefined>(undefined);
 
 function reload(): void {
-    history.value.reload();
+    history.value?.reload();
 }
 
 defineExpose({

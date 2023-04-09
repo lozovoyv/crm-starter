@@ -9,7 +9,9 @@
            :width="width"
            ref="popup"
     >
-        <slot/>
+        <FormBox :form="form" :hide-buttons="true">
+            <slot/>
+        </FormBox>
     </PopUp>
 </template>
 
@@ -18,6 +20,7 @@ import dialog, {DialogButtons, DialogButtonsAlign, DialogButtonType, DialogResol
 import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import PopUp from "@/Components/PopUp/PopUp.vue";
+import FormBox from "@/Components/Form/FormBox.vue";
 
 const props = defineProps<{
     form: Form,
@@ -39,24 +42,22 @@ const popUpButtons = computed((): DialogButtons => {
     ];
 });
 
-const popup = ref<InstanceType<typeof PopUp> | null>(null);
+const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
-let internalResolveFunction: null | { (value: unknown): void } = null;
+let internalResolveFunction: undefined | { (value: unknown): void } = undefined;
 
 function show(options: { [index: string]: any } = {}) {
-    if (popup.value === null) {
+    if (!popup.value) {
         console.error('Popup instance not set');
         return;
     }
-    popup.value.show();
-    popup.value.process(true);
+    popup.value?.show();
     props.form.options = options;
     props.form.load()
         .catch(() => {
-            popup.value.hide();
+            popup.value?.hide();
         })
         .finally(() => {
-            popup.value.process(false);
         });
     return new Promise(resolve => {
         internalResolveFunction = resolve;
@@ -64,14 +65,18 @@ function show(options: { [index: string]: any } = {}) {
 }
 
 function hide() {
-    if (popup.value === null) {
+    if (!popup.value) {
         console.error('Popup instance not set');
         return;
     }
-    popup.value.hide();
+    popup.value?.hide();
 }
 
-function resolved(result: string | null) {
+function resolved(result: string | null): boolean {
+    if (!popup.value) {
+        console.error('Popup instance not set');
+        return false;
+    }
     if (result !== 'save') {
         hide();
         return true;
@@ -79,20 +84,15 @@ function resolved(result: string | null) {
     if (!props.form.validate()) {
         return false;
     }
-    console.log(result);
-    popup.value.process(true);
 
     props.form.save()
         .then((payload) => {
-            popup.value.hide();
-            if (internalResolveFunction !== null) {
+            popup.value?.hide();
+            if (internalResolveFunction) {
                 internalResolveFunction(payload);
             }
             return true;
         })
-        .finally(() => {
-            popup.value.process(false);
-        });
     return false;
 }
 

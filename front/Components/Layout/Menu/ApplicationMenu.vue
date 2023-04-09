@@ -45,12 +45,12 @@ const toggle_state = ref<boolean>(false);
 const resize_state = ref<boolean>(false);
 let is_initiator: boolean = false;
 
-const menuContainer = ref<HTMLDivElement | null>(null);
+const menuContainer = ref<HTMLDivElement | undefined>(undefined);
 const menuWidth = ref<number>(0);
 const itemsWidths = ref<number[]>([]);
 
 let hiddenWidth: number = 0;
-const visibleItems = ref<number | null>(null);
+const visibleItems = ref<number | undefined>(undefined);
 
 onMounted(() => {
     if (menuContainer.value) {
@@ -97,11 +97,11 @@ function handleSizeChange(newSize: number): void {
 }
 
 const visibleMenuItems = computed<Menu | null>((): Menu | null => {
-    return visibleItems.value === null ? props.menu : props.menu.slice(0, visibleItems.value);
+    return visibleItems.value === undefined ? props.menu : props.menu.slice(0, visibleItems.value);
 });
 
 const hiddenMenu = computed<MenuItem | null>((): MenuItem | null => {
-    return (visibleItems.value === null || visibleItems.value === props.menu.length) ? null : {title: null, items: props.menu.slice(visibleItems.value)};
+    return (visibleItems.value === undefined || visibleItems.value === props.menu.length) ? null : {title: null, items: props.menu.slice(visibleItems.value)};
 });
 
 function expand(expanded: boolean): void {

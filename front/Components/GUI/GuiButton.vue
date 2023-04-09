@@ -45,7 +45,7 @@ $button_info_text_color: $color_white !default;
 $button_error_color: $color_error_darken_1 !default;
 $button_error_hover_color: lighten($color_error_darken_1, 5%) !default;
 $button_error_text_color: $color_white !default;
-$button_disabled_color: $color_gray_darken_1 !default;
+$button_disabled_color: $color_gray !default;
 $button_disabled_text_color: $color_white !default;
 
 .button {

@@ -41,7 +41,7 @@ const staffID = computed((): number => {
     return Number(route.params['id']);
 })
 
-const tab = ref<string | null>(null);
+const tab = ref<string | undefined>(undefined);
 
 const tabs = computed((): { [index: string]: string } => {
     return {staff: 'Сотрудник', operations: 'Журнал операций', history: 'История'};
@@ -55,6 +55,6 @@ const title = computed((): string => {
     return staff.value.is_loaded ? staff.value.data.name : '...';
 });
 
-const history = ref<InstanceType<typeof StaffHistory> | null>(null);
-const operations = ref<InstanceType<typeof StaffOperations> | null>(null);
+const history = ref<InstanceType<typeof StaffHistory> | undefined>(undefined);
+const operations = ref<InstanceType<typeof StaffOperations> | undefined>(undefined);
 </script>

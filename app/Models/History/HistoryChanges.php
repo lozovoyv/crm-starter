@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History;
 
-use App\Foundation\Casting;
+use App\Models\EntryScope;
 use App\Models\History\Formatters\FormatterInterface;
 use App\Models\History\Formatters\PermissionRoleChangesFormatter;
 use App\Models\History\Formatters\PositionChangesFormatter;
 use App\Models\History\Formatters\UserChangesFormatter;
-use App\Models\EntryScope;
+use App\Utils\Casting;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use JsonException;
@@ -40,11 +41,12 @@ class HistoryChanges extends Model
      * @param string|null $value
      *
      * @return  string|array|bool|int|Carbon|null
+     * @noinspection PhpUnused
      */
     public function getOldAttribute(?string $value): string|array|bool|int|null|Carbon
     {
         try {
-            return $value !== null ? Casting::castTo($value, $this->type) : null;
+            return $value !== null ? Casting::fromString($value, $this->type) : null;
         } catch (JsonException) {
             return null;
         }
@@ -56,11 +58,12 @@ class HistoryChanges extends Model
      * @param string|array|bool|int|Carbon|null $value
      *
      * @return  void
+     * @noinspection PhpUnused
      */
     public function setOldAttribute(string|array|bool|int|null|Carbon $value): void
     {
         try {
-            $this->attributes['old'] = $value !== null ? Casting::castFrom($value, $this->type) : null;
+            $this->attributes['old'] = $value !== null ? Casting::toString($value, $this->type) : null;
         } catch (JsonException) {
             return;
         }
@@ -72,11 +75,12 @@ class HistoryChanges extends Model
      * @param string|null $value
      *
      * @return  string|array|bool|int|Carbon|null
+     * @noinspection PhpUnused
      */
     public function getNewAttribute(?string $value): string|array|bool|int|null|Carbon
     {
         try {
-            return $value !== null ? Casting::castTo($value, $this->type) : null;
+            return $value !== null ? Casting::fromString($value, $this->type) : null;
         } catch (JsonException) {
             return null;
         }
@@ -88,11 +92,12 @@ class HistoryChanges extends Model
      * @param string|array|bool|int|Carbon|null $value
      *
      * @return  void
+     * @noinspection PhpUnused
      */
     public function setNewAttribute(string|array|bool|int|null|Carbon $value): void
     {
         try {
-            $this->attributes['new'] = $value !== null ? Casting::castFrom($value, $this->type) : null;
+            $this->attributes['new'] = $value !== null ? Casting::toString($value, $this->type) : null;
         } catch (JsonException) {
             return;
         }

@@ -1,22 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\APIResponse;
 use App\Http\Requests\APIListRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Routing\Controller;
 
-class ApiHistoryController extends BaseController
+class ApiHistoryController extends Controller
 {
-    protected array $defaultFilters = [
-        'action_ids' => null,
-    ];
-
     protected array $titles = [
         'timestamp' => 'Дата',
         'action' => 'Действие',
@@ -46,18 +42,14 @@ class ApiHistoryController extends BaseController
     {
         // apply order
         $this->order = $request->order();
-        $this->orderBy = $request->orderBy('created_at');
-        switch ($this->orderBy) {
-            case 'timestamp':
-            default:
-                $this->orderBy = 'timestamp';
-                $query->orderBy('timestamp', $this->order)->orderBy('id', $this->order);
-        }
+        // fixed ordering by timestamp only
+        $this->orderBy = 'timestamp';
+        $query->orderBy('timestamp', $this->order)->orderBy('id', $this->order);
 
         $query->withCount(['comments', 'links', 'changes']);
 
         // apply filters
-        $this->filters = $request->filters($this->defaultFilters);
+        $this->filters = $request->filters();
         if (isset($this->filters['action_ids'])) {
             $query->whereIn('action_id', $this->filters['action_ids']);
         }
@@ -71,20 +63,17 @@ class ApiHistoryController extends BaseController
      * @param APIListRequest $request
      * @param LengthAwarePaginator $history
      *
-     * @return JsonResponse
+     * @return APIResponse
      */
-    protected function listResponse(APIListRequest $request, LengthAwarePaginator $history): JsonResponse
+    protected function listResponse(APIListRequest $request, LengthAwarePaginator $history): APIResponse
     {
-        return APIResponse::list(
-            $history,
-            $this->titles,
-            $this->filters,
-            $this->defaultFilters,
-            $request->search(true),
-            $this->order,
-            $this->orderBy,
-            $this->ordering
-        );
+        return APIResponse::list()
+            ->items($history)
+            ->titles($this->titles)
+            ->filters($this->filters)
+            ->search($request->search(true))
+            ->order($this->orderBy, $this->order)
+            ->orderable($this->ordering);
     }
 
     /**
@@ -110,10 +99,12 @@ class ApiHistoryController extends BaseController
      *
      * @param History $record
      *
-     * @return JsonResponse
+     * @return ApiResponse
      */
-    protected function changesResponse(History $record): JsonResponse
+    protected function changesResponse(History $record): ApiResponse
     {
-        return APIResponse::list($record->getChanges(), ['Параметр', 'Старое значение', 'Новое значение']);
+        return ApiResponse::list()
+            ->items($record->getChanges())
+            ->titles(['Параметр', 'Старое значение', 'Новое значение']);
     }
 }

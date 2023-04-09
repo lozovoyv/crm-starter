@@ -1,12 +1,12 @@
 <template>
     <div>
-        <GuiGroupBox width="50%" min-width="400px">
+        <GuiGroupBox>
             <GuiValue dots title="Фамилия:">{{ userData.lastname }}</GuiValue>
             <GuiValue dots title="Имя:">{{ userData.firstname }}</GuiValue>
             <GuiValue dots title="Отчество:">{{ userData.patronymic }}</GuiValue>
-            <GuiValue dots title="Отображаемое имя:">{{ userData.display_name }}</GuiValue>
+            <GuiValue dots title="Отображаемое имя:">{{ userData.display_name ? userData.display_name : '—' }}</GuiValue>
         </GuiGroupBox>
-        <GuiGroupBox width="50%" min-width="400px">
+        <GuiGroupBox>
             <GuiValue dots title="Статус учётной записи:">
                 <GuiAccessIndicator :locked="!userData.is_active"/>
                 {{ userData.status }}
@@ -17,9 +17,9 @@
                 {{ userData.has_password ? '******' : 'не задан' }}
                 <GuiLink @click="changePassword" name="изменить пароль" style="font-size: 14px;"/>
             </GuiValue>
-            <GuiValue dots title="Логин:">{{ userData.username }}</GuiValue>
-            <GuiValue dots title="Адрес электронной почты:">{{ userData.email }}</GuiValue>
-            <GuiValue dots title="Телефон:">{{ userData.phone }}</GuiValue>
+            <GuiValue dots title="Логин:">{{ userData.username ? userData.username : '—' }}</GuiValue>
+            <GuiValue dots title="Адрес электронной почты:">{{ userData.email ? userData.email : '—' }}</GuiValue>
+            <GuiValue dots title="Телефон:">{{ formatPhone(userData.phone) }}</GuiValue>
         </GuiGroupBox>
 
         <PopUpForm :form="form_password" ref="ref_form_password" :width="{width: '300px'}">
@@ -40,6 +40,7 @@ import {ref} from "vue";
 import PopUpForm from "@/Components/PopUp/PopUpForm.vue";
 import {Form} from "@/Core/Form";
 import FormPassword from "@/Components/Form/FormPassword.vue";
+import {formatPhone} from "@/Core/Helpers/Phone";
 
 const props = defineProps<{
     userId: number,
@@ -54,7 +55,7 @@ const processing = ref<boolean>(false);
 
 const form_password = ref<Form>(new Form('Изменение пароля', null, '/api/system/users/password'));
 
-const ref_form_password = ref<InstanceType<typeof PopUpForm> | null>(null);
+const ref_form_password = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);
 
 function block(): void {
     let name = String([props.userData.lastname, props.userData.firstname, props.userData.patronymic].join(' ')).trim();
@@ -77,16 +78,15 @@ function activate(): void {
 }
 
 function changePassword(): void {
-    if (!ref_form_password.value) {
-        return;
+    if(ref_form_password.value !== undefined) {
+        form_password.value.reset();
+        form_password.value.set('password', null, 'nullable|min:6', 'новый пароль');
+        ref_form_password.value.show({
+            user_id: props.userId, user_hash: props.userData.hash
+        })
+            ?.then(() => {
+                emit('update');
+            });
     }
-    form_password.value.reset();
-    form_password.value.set('password', null, 'nullable|min:6', 'новый пароль');
-    ref_form_password.value.show({
-        user_id: props.userId, user_hash: props.userData.hash
-    })
-        .then(() => {
-            emit('update');
-        });
 }
 </script>

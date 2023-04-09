@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -19,6 +20,7 @@ return new class extends Migration
 
             $table->string('entry_title');
             $table->string('entry_name', 40)->nullable();
+            $table->string('entry_type', 40)->nullable();
             $table->unsignedBigInteger('entry_id')->nullable();
 
             $table->foreign('history_id')->references('id')->on('histories')->cascadeOnDelete()->cascadeOnUpdate();

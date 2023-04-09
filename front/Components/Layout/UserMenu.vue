@@ -3,13 +3,13 @@
         <div class="application__user-menu-button" @click="toggle">
             <div class="application__user-menu-button-avatar">
                 <div class="application__user-menu-button-avatar-wrapper">
-                    <img v-if="user.avatar" :src="user.avatar" alt="avatar"/>
+                    <img v-if="user?.avatar" :src="user.avatar" alt="avatar"/>
                     <IconUserCircle v-else/>
                 </div>
             </div>
             <div class="application__user-menu-button-name">
-                <div class="application__user-menu-button-name-title">{{ user.name }}</div>
-                <div v-if="user.position" class="application__user-menu-button-name-description">{{ user.position }}</div>
+                <div class="application__user-menu-button-name-title">{{ user?.name }}</div>
+                <div v-if="user?.position" class="application__user-menu-button-name-description">{{ user.position }}</div>
             </div>
             <div class="application__user-menu-button-toggle">
                 <IconDropdown class="application__user-menu-button-toggle-icon" :class="{'application__user-menu-button-toggle-icon-dropped': dropped}"/>
@@ -17,11 +17,11 @@
         </div>
         <div class="application__user-menu-content" :class="{'application__user-menu-content-shown': dropped}">
             <div @click.stop="false">
-                <div v-if="user.organization" class="application__user-menu-content-organization">{{ user.organization }}</div>
-                <div v-if="user.position" class="application__user-menu-content-position">{{ user.position }}</div>
-                <div v-if="user.organization || user.position" class="application__user-menu-content-divider"/>
-                <div v-if="user.name" class="application__user-menu-content-title">{{ user.name }}</div>
-                <div v-if="user.email" class="application__user-menu-content-description">{{ user.email }}</div>
+                <div v-if="user?.organization" class="application__user-menu-content-organization">{{ user.organization }}</div>
+                <div v-if="user?.position" class="application__user-menu-content-position">{{ user.position }}</div>
+                <div v-if="user?.organization || user?.position" class="application__user-menu-content-divider"/>
+                <div v-if="user?.name" class="application__user-menu-content-title">{{ user.name }}</div>
+                <div v-if="user?.email" class="application__user-menu-content-description">{{ user.email }}</div>
             </div>
             <div class="application__user-menu-content-divider"/>
             <div class="application__user-menu-content-actions">
@@ -38,7 +38,7 @@ import {nextTick, ref} from "vue";
 import IconUserCircle from "@/Icons/IconUserCircle.vue";
 
 const props = defineProps<{
-    user: User,
+    user: User | null,
 }>();
 
 const dropped = ref<boolean>(false);
@@ -120,7 +120,7 @@ $menu_height: $base_size_unit * 1.5;
             justify-content: center;
             box-sizing: border-box;
             flex-direction: column;
-            @media screen and(max-width: 768px) {
+            @media screen and (max-width: 768px) {
                 display: none;
             }
 

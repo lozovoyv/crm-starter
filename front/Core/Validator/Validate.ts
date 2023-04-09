@@ -1,4 +1,4 @@
-import Rules from "./rules"
+import {rules, excludeRules, implicitRules} from "./rules"
 import empty from "@/Core/Helpers/Empty";
 import {FieldRules} from "./ParseRules";
 
@@ -17,21 +17,25 @@ export function validate(field_name: string, value: any, validation_rules: Field
         return [];
     }
 
-    let rule_to_check = Object.keys(validation_rules);
+    let rule_to_check : Array<string> = Object.keys(validation_rules);
 
-    let bail = rule_to_check.indexOf('bail');
-    if (bail !== -1) {
-        rule_to_check.splice(bail, 1);
+    // unset bail rule
+    let bailIndex: number = rule_to_check.indexOf('bail');
+    if (bailIndex !== -1) {
+        rule_to_check.splice(bailIndex, 1);
     }
+    const is_bail = bailIndex !== -1;
 
-    let nullable = rule_to_check.indexOf('nullable');
-    if (nullable !== -1) {
-        rule_to_check.splice(nullable, 1);
+    // unset nullable rule
+    let nullableIndex:number = rule_to_check.indexOf('nullable');
+    if (nullableIndex !== -1) {
+        rule_to_check.splice(nullableIndex, 1);
     }
+    let is_nullable: boolean = nullableIndex !== -1;
 
-    let is_nullable: boolean = nullable !== -1;
+    // process exclude rules
 
-    const rules = Rules();
+    // process implicit rules
 
     let failedRules: string[] = [];
 
@@ -51,7 +55,7 @@ export function validate(field_name: string, value: any, validation_rules: Field
             }
             if (ruleCheck === false) {
                 failedRules.push(rule_to_check[i]);
-                if (bail !== -1) {
+                if (is_bail) {
                     return failedRules;
                 }
             }

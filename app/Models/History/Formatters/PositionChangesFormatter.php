@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History\Formatters;
 
 use App\Models\History\HistoryChanges;
-use App\Models\Permissions\PermissionRole;
+use App\Models\Permissions\PermissionGroup;
 use App\Models\Positions\PositionStatus;
 use App\Models\Users\User;
 
@@ -34,8 +35,8 @@ class PositionChangesFormatter implements FormatterInterface
                 break;
             case 'roles':
                 $result['parameter'] = 'Роли';
-                $result['old'] = $result['old'] === null ? null : PermissionRole::query()->whereIn('id', $result['old'])->pluck('name')->toArray();
-                $result['new'] = $result['new'] === null ? null : PermissionRole::query()->whereIn('id', $result['new'])->pluck('name')->toArray();
+                $result['old'] = $result['old'] === null ? null : PermissionGroup::query()->whereIn('id', $result['old'])->pluck('name')->toArray();
+                $result['new'] = $result['new'] === null ? null : PermissionGroup::query()->whereIn('id', $result['new'])->pluck('name')->toArray();
                 break;
         }
 

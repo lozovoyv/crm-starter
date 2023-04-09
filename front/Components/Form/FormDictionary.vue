@@ -10,6 +10,7 @@
         :required="required"
         :errors="errors"
         :hide-title="hideTitle"
+        :empty-title="emptyTitle"
         :vertical="vertical"
         :placeholder="placeholder"
         :has-null="hasNull"
@@ -31,7 +32,7 @@
 
 <script setup lang="ts">
 import {Form} from "@/Core/Form";
-import {computed, ref} from "vue";
+import {computed, ref, UnwrapRef} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
 import FieldDictionary from "@/Components/Fields/FieldDictionary.vue";
 
@@ -42,9 +43,10 @@ const props = defineProps<{
     clearable?: boolean,
     // field props
     hideTitle?: boolean,
+    emptyTitle?: boolean,
     vertical?: boolean,
     // form props
-    form: Form,
+    form: Form | UnwrapRef<Form>,
     defaultValue?: any,
     // string props
     placeholder?: string,
@@ -62,9 +64,9 @@ const props = defineProps<{
     search?: boolean,
 }>();
 
-const emit = defineEmits<{ (e: 'change', value: string | number | null | Array<string | number>, name: string, payload: any): void }>()
+const emit = defineEmits<{ (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string, payload: any): void }>()
 
-const input = ref<InstanceType<typeof FieldDictionary> | null>(null);
+const input = ref<InstanceType<typeof FieldDictionary> | undefined>(undefined);
 
 const title = computed(() => {
     return getTitle(props.form, props.name);
@@ -86,9 +88,11 @@ const required = computed((): boolean => {
     return isRequired(props.form, props.name)
 });
 
-function change(value: any, name: string, payload: any = null) {
-    props.form.update(name, value);
-    emit('change', value, name, payload);
+function change(value: string | number | boolean | null | Array<string | number>, name: string | undefined, payload: any) {
+    if(name) {
+        props.form.update(name, value);
+        emit('change', value, name, payload);
+    }
 }
 
 defineExpose({

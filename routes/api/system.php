@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 use App\Http\Controllers\API\System\HistoryController;
-use App\Http\Controllers\API\System\Roles\PermissionsListController;
-use App\Http\Controllers\API\System\Roles\RolesController;
-use App\Http\Controllers\API\System\Roles\RolesEditController;
-use App\Http\Controllers\API\System\Roles\RolesHistoryController;
-use App\Http\Controllers\API\System\Roles\RolesListController;
+use App\Http\Controllers\API\System\Permissions\PermissionsListController;
+use App\Http\Controllers\API\System\Permissions\RolesController;
+use App\Http\Controllers\API\System\Permissions\PermissionGroupEditController;
+use App\Http\Controllers\API\System\Permissions\RolesHistoryController;
+use App\Http\Controllers\API\System\Permissions\PermissionGroupsListController;
 use App\Http\Controllers\API\System\Staff\StaffCreateController;
 use App\Http\Controllers\API\System\Staff\StaffAllHistoryController;
 use App\Http\Controllers\API\System\Staff\StaffHistoryController;
@@ -49,16 +50,17 @@ Route::post('/api/system/users/{id}/history', [UserHistoryController::class, 'li
 Route::post('/api/system/users/{id}/history/comments', [UserHistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.users,system.users.change']);
 Route::post('/api/system/users/{id}/history/changes', [UserHistoryController::class, 'changes'])->middleware(['position:staff', 'permission:system.users,system.users.change']);
 
-Route::post('/api/system/roles', [RolesListController::class, 'list'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/get', [RolesEditController::class, 'get'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/update', [RolesEditController::class, 'update'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/activate', [RolesController::class, 'activate'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/deactivate', [RolesController::class, 'deactivate'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/remove', [RolesController::class, 'remove'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/history', [RolesHistoryController::class, 'list'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/history/comments', [RolesHistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/history/changes', [RolesHistoryController::class, 'changes'])->middleware(['position:staff', 'permission:system.roles']);
-Route::post('/api/system/roles/permissions', [PermissionsListController::class, 'list'])->middleware(['position:staff', 'permission:system.roles']);
+
+Route::get('/api/system/permissions/groups', [PermissionGroupsListController::class, 'list'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::get('/api/system/permissions/group/{?id}', [PermissionGroupEditController::class, 'get'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::put('/api/system/permissions/group/{?id}', [PermissionGroupEditController::class, 'update'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::delete('/api/system/permissions/group/{id}', [RolesController::class, 'remove'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::patch('/api/system/permissions/group/{id}/activate', [RolesController::class, 'activate'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::patch('/api/system/permissions/group/{id}/deactivate', [RolesController::class, 'deactivate'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::get('/api/system/permissions/permissions', [PermissionsListController::class, 'list'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::get('/api/system/permissions/history', [RolesHistoryController::class, 'list'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::get('/api/system/permissions/history/{id}/comments', [RolesHistoryController::class, 'comments'])->middleware(['position:admin,staff', 'permission:system.permissions']);
+Route::get('/api/system/permissions/history/{id}/changes', [RolesHistoryController::class, 'changes'])->middleware(['position:admin,staff', 'permission:system.permissions']);
 
 Route::post('/api/system/history', [HistoryController::class, 'list'])->middleware(['position:staff', 'permission:system.history']);
 Route::post('/api/system/history/comments', [HistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.history']);

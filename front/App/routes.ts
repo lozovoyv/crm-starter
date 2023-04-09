@@ -15,9 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     {path: '/system/users/:id', name: 'user_view', component: () => import("./Pages/System/Users/UserPage.vue")},
     {path: '/system/users/:id/edit', name: 'user_edit', component: () => import("./Pages/System/Users/UserEditPage.vue")},
 
-    {path: '/system/roles', name: 'roles', component: () => import("./Pages/System/Roles/RolesPage.vue")},
+    {path: '/system/permissions', name: 'permissions', component: () => import("./Pages/System/Permissions/PermissionsPage.vue")},
     {path: '/system/settings', name: 'settings', component: () => import("./Pages/System/Settings.vue")},
     {path: '/system/history', name: 'history', component: () => import("./Pages/System/HistoryPage.vue")},
+
+    {path: '/system/dictionaries', name: 'dictionaries', component: () => import("./Pages/System/Dictionaries/DictionariesPage.vue")},
 
     {path: '/test', name: 'test', component: () => import("./Pages/TestPage.vue")},
 ];

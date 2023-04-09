@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Routing\Controller;
 
-class ApiController extends BaseController
+class ApiController extends Controller
 {
     /**
      * Get data from request.
@@ -56,7 +57,7 @@ class ApiController extends BaseController
     protected function set(Model $model, string $key, mixed $value, int $type, array &$changes): void
     {
         /** @noinspection TypeUnsafeComparisonInspection */
-        if ($model->getAttribute($key) != $value || !$model->exists) {
+        if (!$model->exists || $model->getAttribute($key) != $value) {
             $changes[] = ['parameter' => $key, 'type' => $type, 'old' => $model->exists ? $model->getAttribute($key) : null, 'new' => $value];
             $model->setAttribute($key, $value);
         }

@@ -1,13 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
 use App\Models\EntryScope;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UsersHistoryController extends ApiHistoryController
@@ -17,9 +17,9 @@ class UsersHistoryController extends ApiHistoryController
      *
      * @param APIListRequest $request
      *
-     * @return  JsonResponse
+     * @return  APIResponse
      */
-    public function list(APIListRequest $request): JsonResponse
+    public function list(APIListRequest $request): APIResponse
     {
         $query = History::query()->where('entry_name', EntryScope::user);
 
@@ -33,9 +33,9 @@ class UsersHistoryController extends ApiHistoryController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return APIResponse
      */
-    public function comments(Request $request): JsonResponse
+    public function comments(Request $request): APIResponse
     {
         // TODO refactor on need !!!
 
@@ -50,7 +50,7 @@ class UsersHistoryController extends ApiHistoryController
             return APIResponse::error('Запись не найдена');
         }
 
-        return APIResponse::list($record->comments);
+        return ApiResponse::list()->items($record->comments);
     }
 
     /**
@@ -58,9 +58,9 @@ class UsersHistoryController extends ApiHistoryController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return  APIResponse
      */
-    public function changes(Request $request): JsonResponse
+    public function changes(Request $request): APIResponse
     {
         /** @var History|null $record */
         $record = $this->retrieveRecord(History::query()->where('entry_name', EntryScope::user), $request);

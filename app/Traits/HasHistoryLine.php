@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Traits;
 
@@ -16,6 +17,7 @@ trait HasHistoryLine
      * Related history line.
      *
      * @return  BelongsTo
+     * @noinspection PhpUnused
      */
     public function historyLine(): BelongsTo
     {
@@ -40,6 +42,7 @@ trait HasHistoryLine
      * Related history.
      *
      * @return  MorphMany
+     * @noinspection PhpUnused
      */
     public function entries(): MorphMany
     {

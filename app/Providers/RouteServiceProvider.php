@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -23,6 +24,7 @@ class RouteServiceProvider extends ServiceProvider
      * Define your route model bindings, pattern filters, and other route configuration.
      *
      * @return void
+     * @noinspection PhpUnused
      */
     public function boot(): void
     {

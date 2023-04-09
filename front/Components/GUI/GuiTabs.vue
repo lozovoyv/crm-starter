@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {Url} from "@/Core/Url";
 
@@ -30,22 +30,30 @@ const route = useRoute();
 const router = useRouter();
 
 const currentTab = ref<string | null>(null);
-let initialTab: string | null = null;
 
-if (props.tabKey) {
-    initialTab = typeof route.query[props.tabKey] === 'string' ? (new Url).getQueryParam(props.tabKey) : null;
-}
+initTabs();
 
-if (initialTab === null) {
+watch(() => props.tabs, () => {
+    initTabs(false);
+});
+
+function initTabs(initial: boolean = true): void {
+    let initialTab: string | null = null;
+
     initialTab = props.modelValue ? props.modelValue : null;
-}
 
-let tabKeys: Array<string> = Object.keys(props.tabs);
-if (initialTab === null || tabKeys.indexOf(initialTab) === -1) {
-    initialTab = tabKeys.length > 0 ? tabKeys[0] : null;
-}
+    if (!initialTab) {
+        if (props.tabKey) {
+            initialTab = typeof route.query[props.tabKey] === 'string' ? (new Url).getQueryParam(props.tabKey) : null;
+        }
+        let tabKeys: Array<string> = Object.keys(props.tabs);
+        if (initialTab === null || tabKeys.indexOf(initialTab) === -1) {
+            initialTab = tabKeys.length > 0 ? tabKeys[0] : null;
+        }
+    }
 
-setTab(initialTab, true);
+    setTab(initialTab, initial);
+}
 
 function setTab(newTab: string | number | symbol | null, initial: boolean = false): void {
     const newTabName: string | null = newTab === null ? null : String(newTab);

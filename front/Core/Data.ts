@@ -102,7 +102,7 @@ export class Data<Type extends DataType> {
      * @param delay
      * @param type
      */
-    protected notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null) {
+    notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null) {
         if (this.use_toaster) {
             toaster.show(message, delay, type);
         } else {

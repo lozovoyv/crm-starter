@@ -1,14 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Staff;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
 use App\Models\EntryScope;
 use App\Models\Positions\PositionType;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class StaffAllHistoryController extends ApiHistoryController
@@ -18,9 +18,9 @@ class StaffAllHistoryController extends ApiHistoryController
      *
      * @param APIListRequest $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function list(APIListRequest $request): JsonResponse
+    public function list(APIListRequest $request): ApiResponse
     {
         $query = History::query()
             ->where('entry_name', EntryScope::position)
@@ -36,9 +36,9 @@ class StaffAllHistoryController extends ApiHistoryController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return  ApiResponse
      */
-    public function comments(Request $request): JsonResponse
+    public function comments(Request $request): ApiResponse
     {
         // TODO refactor on need !!!
 
@@ -54,7 +54,7 @@ class StaffAllHistoryController extends ApiHistoryController
             return APIResponse::error('Запись не найдена');
         }
 
-        return APIResponse::list($record->comments);
+        return APIResponse::list()->items($record->comments);
     }
 
     /**
@@ -62,9 +62,9 @@ class StaffAllHistoryController extends ApiHistoryController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return  ApiResponse
      */
-    public function changes(Request $request): JsonResponse
+    public function changes(Request $request): ApiResponse
     {
         $query = History::query()
             ->where('entry_name', EntryScope::position)
@@ -74,7 +74,7 @@ class StaffAllHistoryController extends ApiHistoryController
         $record = $this->retrieveRecord($query, $request);
 
         if ($record === null) {
-            return APIResponse::error('Запись не найдена');
+            return ApiResponse::error('Запись не найдена');
         }
 
         return $this->changesResponse($record);

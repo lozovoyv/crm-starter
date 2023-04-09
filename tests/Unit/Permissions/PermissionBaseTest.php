@@ -34,6 +34,9 @@ class PermissionBaseTest extends TestCase
         $permission->save();
         $this->assertModelExists($permission);
 
+        $this->assertTrue(Permission::get('test.permission')->is($permission));
+        $this->assertNull(Permission::get('test.permission.not.existing'));
+
         $this->assertEquals([
             'id' => $permission->id,
             'key' => 'test.permission',

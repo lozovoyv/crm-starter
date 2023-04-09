@@ -13,10 +13,10 @@
 import HistoryList from "@/Components/History/HistoryList.vue";
 import {ref} from "vue";
 
-const history = ref<InstanceType<typeof HistoryList>>(null);
+const history = ref<InstanceType<typeof HistoryList> | undefined>(undefined);
 
 function reload(): void {
-    history.value.reload();
+    history.value?.reload();
 }
 
 defineExpose({

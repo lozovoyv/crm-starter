@@ -1,7 +1,7 @@
 <template>
     <div class="input-field" :class="{'input-field__required': required, 'input-field__vertical': vertical}">
         <span class="input-field__title" v-if="!hideTitle">
-            <span class="input-field__title-wrapper">{{ title }}</span>
+            <span class="input-field__title-wrapper" v-if="!emptyTitle">{{ title }}</span>
         </span>
         <div class="input-field__wrapper">
             <div class="input-field__input">
@@ -16,12 +16,13 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-    title?: string
+    title?: string | null,
+    hideTitle?: boolean,
+    emptyTitle?: boolean,
     required?: boolean,
     disabled?: boolean,
     hasErrors?: boolean,
     errors?: string[],
-    hideTitle?: boolean,
     vertical?: boolean,
 }>();
 </script>

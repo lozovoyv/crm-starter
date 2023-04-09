@@ -1,25 +1,43 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
+        "target": "ESNext",
+        "module": "esnext",
+        "moduleResolution": "Node",
         "lib": [
-            "ES6",
+            "ESNext",
             "ES2021.String",
             "ES2021.Promise",
-            "dom"
+            "DOM"
         ],
-        "moduleResolution": "node",
         "baseUrl": "./front",
         "strict": true,
         "sourceMap": true,
         "skipLibCheck": true,
         "noImplicitAny": true,
         "paths": {
-            "@/*": ["./*"],
-        }
+            "@/*": [
+                "./*"
+            ]
+        },
+        "useDefineForClassFields": true,
+        "jsx": "preserve",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "noEmit": true,
+        "allowJs": true,
+        "composite": true,
+        "allowSyntheticDefaultImports": true,
+        "strictNullChecks": true,
+        "importHelpers": true,
+        "forceConsistentCasingInFileNames": true
     },
+    "include": [
+        "vite.config.ts",
+        "front/**/*.*"
+    ],
     "exclude": [
         "node_modules",
-        "front_temp",
+        "front_temp"
     ]
 }

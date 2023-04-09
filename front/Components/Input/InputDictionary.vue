@@ -21,7 +21,18 @@
         @change="change"
         @dropped="refresh"
         ref="input"
-    />
+    >
+        <template #additional v-if="isEditable">
+            <GuiActionsMenu class="input-dictionary-additional">
+                <GuiLink name="Добавить запись" @click="add"/>
+                <GuiLink v-if="modelValue && !multi" name="Редактировать запись" @click="edit"/>
+                <GuiLink v-if="modelValue && !multi" name="Удалить запись" @click="remove"/>
+                <hr/>
+                <GuiLink :route="{name: 'dictionaries', query: {dictionary: dictionary}}" :new-tab="true" name="Редактировать справочник"/>
+            </GuiActionsMenu>
+            <DictionaryEditorForm ref="form" :dictionary="dictionary"/>
+        </template>
+    </InputDropDown>
 </template>
 
 <script setup lang="ts">
@@ -29,6 +40,11 @@ import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/Inp
 import InputDropDown from "@/Components/Input/InputDropDown.vue";
 import {computed, ref} from "vue";
 import {useStore} from "vuex";
+import GuiActionsMenu from "@/Components/GUI/GuiActionsMenu.vue";
+import GuiLink from "@/Components/GUI/GuiLink.vue";
+import DictionaryEditorForm from "@/Components/Dictionary/DictionaryEditorForm.vue";
+import {processEntry} from "@/Core/Helpers/ProcessEntry";
+import dialog from "@/Core/Dialog/Dialog";
 
 const props = defineProps<{
     // common props
@@ -40,7 +56,7 @@ const props = defineProps<{
     clearable?: boolean,
 
     // dropdown props
-    placeholder?: string,
+    placeholder?: string | null,
     hasNull?: boolean,
     nullCaption?: string,
     emptyCaption?: string,
@@ -52,6 +68,7 @@ const props = defineProps<{
     captionKey?: string,
     filterKey?: string,
     hintKey?: string,
+    editable?: boolean,
 
     multi?: boolean,
 
@@ -65,7 +82,8 @@ const emit = defineEmits<{
     (e: 'change', value: DropDownValueType, name: string | undefined, payload: any): void,
 }>()
 
-const input = ref<InstanceType<typeof InputDropDown> | null>(null);
+const input = ref<InstanceType<typeof InputDropDown> | undefined>(undefined);
+const form = ref<InstanceType<typeof DictionaryEditorForm> | undefined>(undefined);
 
 const proxyValue = computed({
     get: (): DropDownValueType => {
@@ -83,6 +101,10 @@ const ready = computed((): boolean => {
     return store.getters['dictionaries/ready'](props.dictionary);
 });
 
+const isEditable = computed((): boolean => {
+    return props.editable && store.getters['dictionaries/editable'](props.dictionary);
+});
+
 const options = computed((): DropDownOptions => {
     if (!loaded.value) {
         return [];
@@ -96,19 +118,79 @@ function change(value: DropDownValueType, name: string | undefined, payload: any
 
 const loaded = ref<boolean>(false);
 
-function refresh(): void {
-    if (loaded.value && props.freeze === true) {
-        return;
+function refresh(force: boolean = false): void {
+    if (force) {
+        store.dispatch('dictionaries/refreshForce', props.dictionary)
+            .then(() => {
+                loaded.value = true;
+            });
+    } else if (!loaded.value || props.freeze === false) {
+        store.dispatch('dictionaries/refresh', props.dictionary)
+            .then(() => {
+                loaded.value = true;
+            });
     }
-    store.dispatch('dictionaries/refresh', props.dictionary)
-        .then(() => {
-            loaded.value = true;
-        });
 }
 
 refresh();
 
-defineExpose({
+function add() {
+    if (form.value) {
+        form.value.show(null)
+            ?.then((result: any) => {
+                if (result['payload'] && result['payload']['id']) {
+                    if (!props.multi) {
+                        proxyValue.value = result['payload']['id'];
+                    } else {
+                        if (proxyValue.value instanceof Array) {
+                            proxyValue.value.push(result['payload']['id']);
+                        } else {
+                            proxyValue.value = [result['payload']['id']];
+                        }
+                    }
+                }
+                refresh(true);
+            });
+    }
+}
 
-});
+function edit() {
+    const id: DropDownValueType = (!props.multi && props.modelValue) ? props.modelValue : null;
+    if (id && form.value) {
+        form.value.show(id)
+            ?.then(() => {
+                refresh(true);
+            });
+    }
+}
+
+function remove() {
+    const id: DropDownValueType = (!props.multi && props.modelValue) ? props.modelValue : null;
+    if (id && typeof id !== "object") {
+
+        const item = store.getters['dictionaries/item'](props.dictionary, id);
+
+        if (item === undefined || item.hash === undefined) {
+            return;
+        }
+
+        processEntry('Удаление', `Удалить запись "${item.name}"?`, dialog.button('yes', 'Удалить', 'error'),
+            '/api/dictionaries/delete', {dictionary: props.dictionary, id: id, hash: item.hash},
+            p => {
+            }
+        ).then(() => {
+            proxyValue.value = null;
+            refresh(true);
+        });
+    }
+}
+
+defineExpose({});
 </script>
+
+<style lang="scss">
+.input-dictionary-additional > .actions-menu__button {
+    border: none !important;
+    border-radius: 0;
+}
+</style>

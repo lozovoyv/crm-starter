@@ -20,10 +20,10 @@
         <div class="pagination__links">
             <span class="pagination__links-button pagination__links-button-icon"
                   :class="{'pagination__links-button-link' : pagination.current_page !== 1}"
-                  @click="setPage(pagination.current_page - 1, pagination.per_page)"><IconBackward/></span>
+                  @click="setPreviousPage"><IconBackward/></span>
             <span class="pagination__links-button" v-if="pagination.last_page > 1 && isLong"
                   :class="{'pagination__links-button-link-active': pagination.current_page === 1, 'pagination__links-button-link': pagination.last_page > 1}"
-                  @click="setPage(1, pagination.per_page)"
+                  @click="setFirstPage"
             >{{ 1 }}</span>
             <span class="pagination__links-spacer" v-if="hasBefore"><span>...</span></span>
             <span class="pagination__links-button" v-for="page in pages"
@@ -32,16 +32,16 @@
                     'pagination__links-button-link': pagination.last_page > 1,
                   }"
                   :key="page"
-                  @click="setPage(page, pagination.per_page)"
+                  @click="setPage(page)"
             >{{ page }}</span>
             <span class="pagination__links-spacer" v-if="hasAfter"><span>...</span></span>
             <span class="pagination__links-button pagination__links-button-link" v-if="pagination.last_page > 1 && isLong"
                   :class="{'pagination__links-button-link-active': pagination.current_page === pagination.last_page}"
-                  @click="setPage(pagination.last_page, pagination.per_page)"
+                  @click="setLastPage"
             >{{ pagination.last_page }}</span>
             <span class="pagination__links-button pagination__links-button-icon"
                   :class="{'pagination__links-button-link' : pagination.current_page !== pagination.last_page}"
-                  @click="setPage(pagination.current_page + 1, pagination.per_page)"><IconForward/></span>
+                  @click="setNextPage"><IconForward/></span>
         </div>
     </div>
 </template>
@@ -59,7 +59,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'pagination', page: Number, perPage: Number): void,
+    (e: 'pagination', page: number, perPage: number): void,
 }>()
 
 const optionsList = computed((): Array<number> => {
@@ -133,16 +133,36 @@ const hasAfter = computed((): boolean => {
 
 const perPage = computed({
     get: (): number => {
-        return typeof props.pagination !== 'undefined' ? props.pagination.per_page : 10;
+        return props.pagination !== undefined ? props.pagination.per_page : 10;
     },
     set: (value: number): void => {
-        if (typeof props.pagination !== 'undefined' && props.pagination.per_page !== value) {
-            setPage(1, value);
+        if (props.pagination !== undefined && props.pagination.per_page !== value) {
+            updatePagination(1, value);
         }
     }
 });
 
-function setPage(page: number, perPage: number): void {
+function setFirstPage(): void {
+    updatePagination(1, perPage.value);
+}
+
+function setPreviousPage(): void {
+    updatePagination(props.pagination ? props.pagination.current_page - 1 : 1, perPage.value);
+}
+
+function setPage(page: number): void {
+    updatePagination(page, perPage.value);
+}
+
+function setNextPage(): void {
+    updatePagination(props.pagination ? props.pagination.current_page + 1 : 1, perPage.value);
+}
+
+function setLastPage(): void {
+    updatePagination(props.pagination ? props.pagination.last_page : 1, perPage.value);
+}
+
+function updatePagination(page: number, perPage: number): void {
     if (typeof props.pagination === 'undefined' || page < 1 || page > props.pagination.last_page || (page === props.pagination.current_page && perPage === props.pagination.per_page)) {
         return;
     }

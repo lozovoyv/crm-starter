@@ -44,9 +44,9 @@ const props = defineProps<{
 
 const router = useRouter();
 const route = useRoute();
-const login_input = ref<FormString | null>(null);
-const password_input = ref<FormPassword | null>(null);
-const form = ref<Form>(new Form(null, null, '/api/login'));
+const login_input = ref<InstanceType<typeof FormString> | undefined>(undefined);
+const password_input = ref<InstanceType<typeof FormPassword> | undefined>(undefined);
+const form = ref<Form>(new Form(undefined, null, '/api/login'));
 
 form.value.set('username', null, 'required', 'Адрес электронной почты / логин', true);
 form.value.set('password', null, 'required', 'Пароль', true);
@@ -54,14 +54,14 @@ form.value.set('remember', null, null, 'Запомнить меня', true);
 form.value.load();
 
 onMounted(() => {
-    login_input.value.focus();
+    login_input.value?.focus();
 })
 
 function enter() {
     if (form.value.values['username'] === null) {
-        login_input.value.focus();
+        login_input.value?.focus();
     } else if (form.value.values['password'] === null) {
-        password_input.value.focus();
+        password_input.value?.focus();
     } else {
         login();
     }

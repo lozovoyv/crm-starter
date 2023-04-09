@@ -3,7 +3,7 @@
     font-weight: 200;
     font-style: normal;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-ExtraLight.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-ExtraLight.woff2') format('woff2');
 }
 
 @font-face{
@@ -11,7 +11,7 @@
     font-weight: 200;
     font-style: italic;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-ExtraLightIt.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-ExtraLightIt.woff2') format('woff2');
 }
 
 @font-face{
@@ -19,7 +19,7 @@
     font-weight: 300;
     font-style: normal;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-Light.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-Light.woff2') format('woff2');
 }
 
 @font-face{
@@ -27,7 +27,7 @@
     font-weight: 300;
     font-style: italic;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-LightIt.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-LightIt.woff2') format('woff2');
 }
 
 @font-face{
@@ -35,7 +35,7 @@
     font-weight: 400;
     font-style: normal;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-Regular.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-Regular.woff2') format('woff2');
 }
 
 @font-face{
@@ -43,7 +43,7 @@
     font-weight: 400;
     font-style: italic;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-It.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-It.woff2') format('woff2');
 }
 
 @font-face{
@@ -51,7 +51,7 @@
     font-weight: 600;
     font-style: normal;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-Semibold.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-Semibold.woff2') format('woff2');
 }
 
 @font-face{
@@ -59,7 +59,7 @@
     font-weight: 600;
     font-style: italic;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-SemiboldIt.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-SemiboldIt.woff2') format('woff2');
 }
 
 @font-face{
@@ -67,7 +67,7 @@
     font-weight: 700;
     font-style: normal;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-Bold.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-Bold.woff2') format('woff2');
 }
 
 @font-face{
@@ -75,7 +75,7 @@
     font-weight: 700;
     font-style: italic;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-BoldIt.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-BoldIt.woff2') format('woff2');
 }
 
 @font-face{
@@ -83,7 +83,7 @@
     font-weight: 900;
     font-style: normal;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-Black.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-Black.woff2') format('woff2');
 }
 
 @font-face{
@@ -91,5 +91,5 @@
     font-weight: 900;
     font-style: italic;
     font-stretch: normal;
-    src: url('/fonts/SourceSansPro-BlackIt.woff2') format('woff2');
+    src: url('@/assets/fonts/source-sans-pro/SourceSansPro-BlackIt.woff2') format('woff2');
 }

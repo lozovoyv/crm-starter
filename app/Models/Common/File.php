@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Common;
 
@@ -28,6 +29,7 @@ class File extends Model
      * Accessor for url attribute.
      *
      * @return  string|null
+     * @noinspection PhpUnused
      */
     public function getUrlAttribute(): ?string
     {
@@ -78,7 +80,6 @@ class File extends Model
      * @param string $disk
      *
      * @return  File|null
-     * @noinspection DuplicatedCode
      */
     public static function createFrom(array $attributes, string $disk): ?File
     {
@@ -123,6 +124,7 @@ class File extends Model
      * @param string $disk
      *
      * @return  Collection
+     * @noinspection PhpUnused
      */
     public static function createFromMany(array $files, string $disk): Collection
     {

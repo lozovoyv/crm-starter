@@ -61,7 +61,7 @@ const props = defineProps<{
     width?: DialogWidth,
 }>();
 
-const overlay = ref<HTMLDivElement | null>(null);
+const overlay = ref<HTMLDivElement | undefined>(undefined);
 
 const shown = ref<boolean>(false);
 const hiding = ref<boolean>(false);
@@ -70,7 +70,7 @@ const processing = ref<boolean>(false);
 
 let internalResolveFunction: null | { (value: unknown): void } = null;
 
-const windowStyles = computed((): { [index: string]: string } | null => {
+const windowStyles = computed((): { [index: string]: string } | undefined => {
     if (props.width) {
         let styles: { [index: string]: string } = {};
         if (props.width.min) {
@@ -84,7 +84,7 @@ const windowStyles = computed((): { [index: string]: string } | null => {
         }
         return styles;
     }
-    return null;
+    return undefined;
 });
 
 function show() {
@@ -112,7 +112,7 @@ function process(isProcessing: boolean) {
     processing.value = isProcessing;
 }
 
-function popupClose(event: PointerEvent) {
+function popupClose(event: MouseEvent) {
     if (props.closeOnOverlay && <HTMLDivElement>event.target === overlay.value) {
         resolve(null);
     }

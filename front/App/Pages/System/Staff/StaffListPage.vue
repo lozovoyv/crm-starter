@@ -2,7 +2,7 @@
     <LayoutPage title="Сотрудники" :breadcrumbs="[{name: 'Сотрудники'}]">
         <template v-slot:actions>
             <GuiActionsMenu title="Действия">
-                <GuiLink name="Добавить сотрудника" :route="{name: 'staff_create'}"/>
+                <GuiLink name="Зарегистрировать сотрудника" :route="{name: 'staff_create'}"/>
             </GuiActionsMenu>
         </template>
 
@@ -22,7 +22,7 @@ import {computed, ref} from "vue";
 import StaffList from "@/App/Pages/System/Staff/StaffList.vue";
 import StaffAllHistory from "@/App/Pages/System/Staff/StaffAllHistory.vue";
 
-const tab = ref<string | null>(null);
+const tab = ref<string | undefined>(undefined);
 
 const tabs = computed((): { [index: string]: string } => {
     return {staff: 'Сотрудники', history: 'История'};

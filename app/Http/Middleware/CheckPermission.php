@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
 use App\Current;
-use App\Http\APIResponse;
+use App\Http\Responses\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -22,10 +23,10 @@ class CheckPermission
     public function handle(Request $request, Closure $next, ...$permissions): mixed
     {
         if (empty($permissions)) {
-            return APIResponse::forbidden();
+            return ApiResponse::forbidden();
         }
 
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         foreach ($permissions as $permission) {
             if ($current->can($permission)) {

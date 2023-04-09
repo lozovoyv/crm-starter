@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History;
 
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $entry_title
  * @property string|null $entry_name
  * @property int|null $entry_id
+ * @property string|null $entry_type
  */
 class HistoryLink extends Model
 {
@@ -17,7 +19,12 @@ class HistoryLink extends Model
     public $timestamps = false;
 
     /** @var string[] Fillable attributes. */
-    protected $fillable = ['entry_title', 'entry_name', 'entry_id'];
+    protected $fillable = [
+        'entry_title',
+        'entry_name',
+        'entry_type',
+        'entry_id',
+    ];
 
     /**
      * Format history link as array.
@@ -30,6 +37,7 @@ class HistoryLink extends Model
             'entry_title' => $this->entry_title,
             'entry_name' => $this->entry_name,
             'entry_id' => $this->entry_id,
+            'entry_type' => $this->entry_type,
         ];
     }
 

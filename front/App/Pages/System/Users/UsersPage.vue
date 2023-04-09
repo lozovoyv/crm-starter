@@ -22,13 +22,13 @@ import UsersHistory from "@/App/Pages/System/Users/UsersHistory.vue";
 import GuiActionsMenu from "@/Components/GUI/GuiActionsMenu.vue";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 
-const tab = ref<string | null>(null);
+const tab = ref<string | undefined>(undefined);
 
 const tabs = computed((): { [index: string]: string } => {
     return {users: 'Учётные записи', history: 'История'};
 });
 
-const list = ref<InstanceType<typeof UsersList> | null>(null);
-const history = ref<InstanceType<typeof UsersHistory> | null>(null);
+const list = ref<InstanceType<typeof UsersList> | undefined>(undefined);
+const history = ref<InstanceType<typeof UsersHistory> | undefined>(undefined);
 
 </script>

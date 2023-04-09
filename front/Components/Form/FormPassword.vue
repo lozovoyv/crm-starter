@@ -10,6 +10,7 @@
         :required="required"
         :errors="errors"
         :hide-title="hideTitle"
+        :empty-title="emptyTitle"
         :vertical="vertical"
         :autocomplete="autocomplete"
         :placeholder="title"
@@ -31,6 +32,7 @@ const props = defineProps<{
     clearable?: boolean,
     // field props
     hideTitle?: boolean,
+    emptyTitle?: boolean,
     vertical?: boolean,
     // form props
     form: Form,
@@ -41,7 +43,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
 
-const input = ref<InstanceType<typeof FieldPassword> | null>(null);
+const input = ref<InstanceType<typeof FieldPassword> | undefined>(undefined);
 
 const title = computed(() => {
     return getTitle(props.form, props.name);
@@ -63,9 +65,11 @@ const required = computed((): boolean => {
     return isRequired(props.form, props.name)
 });
 
-function change(value: any, name: string, payload: any = null) {
-    props.form.update(name, value);
-    emit('change', value, name, payload);
+function change(value: string | null, name: string | undefined) {
+    if(name) {
+        props.form.update(name, value);
+        emit('change', value, name, null);
+    }
 }
 
 function focus(): void {

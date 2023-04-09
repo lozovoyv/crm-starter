@@ -1,13 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 
 class UsersListController extends ApiController
 {
@@ -23,8 +23,8 @@ class UsersListController extends ApiController
         'username' => 'Логин',
         'email' => 'Адрес электронной почты',
         'phone' => 'Телефон',
-        'created_at' => 'Создана',
-        'updated_at' => 'Изменена',
+        'created_at' => 'Дата созданий',
+        'updated_at' => 'Последнее изменение',
     ];
 
     protected array $ordering = ['id', 'name', 'display_name', 'username', 'email', 'phone', 'created_at', 'updated_at'];
@@ -34,9 +34,9 @@ class UsersListController extends ApiController
      *
      * @param APIListRequest $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function list(APIListRequest $request): JsonResponse
+    public function list(APIListRequest $request): ApiResponse
     {
         $query = User::query();
 
@@ -84,15 +84,12 @@ class UsersListController extends ApiController
 
         $users = $request->paginate($query);
 
-        return APIResponse::list(
-            $users,
-            $this->titles,
-            $filters,
-            $this->defaultFilters,
-            $request->search(true),
-            $order,
-            $orderBy,
-            $this->ordering
-        );
+        return ApiResponse::list()
+            ->items($users)
+            ->titles($this->titles)
+            ->filters($filters, $this->defaultFilters)
+            ->search($request->search(true))
+            ->order($orderBy, $order)
+            ->orderable($this->ordering);
     }
 }

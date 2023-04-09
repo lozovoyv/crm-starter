@@ -1,5 +1,5 @@
 <template>
-    <router-link v-if="route" class="route-link" :class="{'route-link__underline': underline}" :to="route">
+    <router-link v-if="route" class="route-link" :class="{'route-link__underline': underline}" :to="route" :target="newTab ? '_blank' : '_self'">
         <slot v-if="$slots.default"/>
         <template v-else>{{ name }}</template>
     </router-link>
@@ -10,12 +10,12 @@
 </template>
 
 <script setup lang="ts">
-import {RouteRecordRaw} from "vue-router";
 
 const props = defineProps<{
     name?: string,
-    route?: RouteRecordRaw,
+    route?: { name: string, params?: { [index: string]: string | number }, query?: { [index: string]: string | number } },
     underline?: boolean,
+    newTab?: boolean,
 }>();
 </script>
 

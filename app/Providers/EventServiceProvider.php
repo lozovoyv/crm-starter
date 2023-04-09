@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -10,10 +11,11 @@ class EventServiceProvider extends ServiceProvider
      * The event to listener mappings for the application.
      *
      * @var array<class-string, array<int, class-string>>
+     * @noinspection PhpUnused
      */
     protected $listen = [
-        //Registered::class => [
-        //    SendEmailVerificationNotification::class,
+        //Event::class => [
+        //    Listener::class,
         //],
     ];
 
@@ -21,6 +23,7 @@ class EventServiceProvider extends ServiceProvider
      * Register any events for your application.
      *
      * @return void
+     * @noinspection PhpUnused
      */
     public function boot(): void
     {

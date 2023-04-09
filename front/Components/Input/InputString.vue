@@ -6,7 +6,7 @@
             :type="type || 'text'"
             :disabled="disabled"
             :autocomplete="autocomplete"
-            :placeholder="placeholder"
+            :placeholder="placeholder ? placeholder : undefined"
             @input="update"
             ref="input"
         />
@@ -20,15 +20,15 @@ import InputBox from "@/Components/Input/Helpers/InputBox.vue";
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: string,
-    original?: string,
+    modelValue?: string | null,
+    original?: string | null,
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
     // string props
     type?: string,
     autocomplete?: string,
-    placeholder?: string,
+    placeholder?: string | null,
 }>();
 
 const emit = defineEmits<{
@@ -36,7 +36,7 @@ const emit = defineEmits<{
     (e: 'change', value: string | null, name: string | undefined): void,
 }>()
 
-const input = ref<HTMLInputElement | null>(null);
+const input = ref<HTMLInputElement | undefined>(undefined);
 
 const isDirty = computed((): boolean => {
     return props.original !== undefined && props.modelValue !== undefined && props.modelValue !== props.original;
@@ -47,7 +47,7 @@ function clear() {
     emit('change', null, props.name);
 }
 
-function update(event: InputEvent) {
+function update(event: Event) {
     const target: HTMLInputElement = <HTMLInputElement>event.target;
     let value: string | null = String(target.value);
     if (value === '') {
@@ -58,7 +58,7 @@ function update(event: InputEvent) {
 }
 
 function focus(): void {
-    if (input.value !== null) {
+    if (input.value) {
         input.value.focus();
     }
 }

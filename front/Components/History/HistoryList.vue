@@ -7,9 +7,7 @@
                 <span v-if="record.description"> ({{ record.description }})</span>
             </ListTableCell>
             <ListTableCell>
-                <div v-for="link in record.links" style="white-space: nowrap">
-                    {{ link.entry_title }}
-                </div>
+                <div v-for="link in record.links" style="white-space: nowrap" v-html="formatLink(link, true)"/>
             </ListTableCell>
             <ListTableCell style="text-align: center">
                 <template v-if="record.comments_count === 0 || !commentsUrl">{{ record.comments_count ? record.comments_count : '—' }}</template>
@@ -51,9 +49,10 @@ const props = defineProps<{
 }>()
 
 type HistoryLink = {
-    entry_title: string,
-    entry_name?: string,
-    entry_id?: number,
+    entry_title: string | null,
+    entry_name: string | null,
+    entry_type: string | null,
+    entry_id: number | null,
 };
 
 type History = {
@@ -61,6 +60,7 @@ type History = {
     timestamp: string,
     entry_title: string | null,
     entry_name: string | null,
+    entry_type: string | null,
     entry_id: number | null,
     has_entry: boolean,
     action: string,
@@ -81,7 +81,7 @@ const history = ref<List<History>>(new List<History>(props.url, props.options ? 
     prefix: props.prefix ? props.prefix : undefined, remember: {filters: ['active'], pagination: true, order: true}
 }));
 
-const changes = ref<InstanceType<typeof HistoryChanges>>(null);
+const changes = ref<InstanceType<typeof HistoryChanges> | undefined>(undefined);
 
 history.value.initial();
 
@@ -93,17 +93,7 @@ function formatAction(history: History): string {
     let entry: string | null = null;
 
     if (history.has_entry) {
-        let link;
-        switch (history.entry_name) {
-            case 'user':
-                link = router.resolve({name: 'user_view', params: {id: history.entry_id}}).href;
-                entry = '<a class="history-link" href="' + link + '">' + history.entry_title + '</a>';
-                break;
-            case 'position':
-                link = router.resolve({name: 'staff_view', params: {id: history.entry_id}}).href;
-                entry = '<a class="history-link" href="' + link + '">' + history.entry_title + '</a>';
-                break;
-        }
+        entry = formatLink(history);
     }
 
     if (entry === null) {
@@ -113,14 +103,47 @@ function formatAction(history: History): string {
     return history.action.replace(':entry', entry ? entry : '');
 }
 
+function formatLink(entry: History | HistoryLink, withPrefix: boolean = false): string {
+    let link: string | null = null;
+    let title: string | undefined = undefined;
+    let prefix: string | undefined = undefined;
+
+    switch (entry.entry_name) {
+        case 'user':
+            link = entry.entry_id ? router.resolve({name: 'user_view', params: {id: entry.entry_id}}).href : null;
+            title = entry.entry_title ? entry.entry_title : entry.entry_name;
+            prefix = withPrefix ? 'Учётная запись' : undefined;
+            break;
+        case 'position':
+            switch (entry.entry_type) {
+                case 'staff':
+                    link = entry.entry_id ? router.resolve({name: 'staff_view', params: {id: entry.entry_id}}).href : null;
+                    title = entry.entry_title ? entry.entry_title : entry.entry_name;
+                    prefix = withPrefix ? 'Сотрудник' : undefined;
+                    break;
+            }
+            break;
+    }
+
+    if (title === undefined) {
+        if (entry.entry_title) {
+            title = entry.entry_title;
+        } else if (entry.entry_name) {
+            title = entry.entry_name + (entry.entry_id ? ' [' + entry.entry_id + ']' : '');
+        } else {
+            title = 'Ссылка не определена';
+        }
+    }
+
+    return (prefix ? prefix + ' ' : '') + (link ? ('<a class="history-link" href="' + link + '">' + title + '</a>') : title);
+}
+
 function showComments(record: History): void {
     console.log(record.id, toDatetime(record.timestamp));
 }
 
 function showChanges(record: History): void {
-    if (changes.value !== null) {
-        changes.value.show(record.id, record.action.replace(':entry', record.entry_title ? record.entry_title : '') + ' — ' + toDatetime(record.timestamp));
-    }
+    changes.value?.show(record.id, record.action.replace(':entry', record.entry_title ? record.entry_title : '') + ' — ' + toDatetime(record.timestamp));
 }
 
 defineExpose({

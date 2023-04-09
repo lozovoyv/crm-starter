@@ -8,16 +8,16 @@
                 <slot name="search"/>
             </div>
         </div>
-        <LoadingProgress :loading="list.is_loading">
+        <LoadingProgress :loading="list?.state.is_loading">
             <template v-if="!notification">
-                <table class="list-table" v-if="list.list && list.list.length > 0">
+                <table class="list-table" v-if="!list || list?.list && list?.list.length > 0">
                     <slot name="header" v-if="$slots.header"/>
-                    <ListTableHeader v-else :list="list" :actions="actions"/>
+                    <ListTableHeader v-else-if="list" :list="list" :actions="actions"/>
                     <tbody class="list-table__body">
                     <slot/>
                     </tbody>
                 </table>
-                <div v-else-if="list.is_loading" class="list-table-container__message">
+                <div v-else-if="list?.state.is_loading" class="list-table-container__message">
                     Загрузка
                 </div>
                 <div v-else-if="$slots.empty" class="list-table-container__message">
@@ -26,7 +26,7 @@
                 <div v-else class="list-table-container__message">
                     Ничего не найдено
                 </div>
-                <ListPagination :list="list" v-if="!list.listOptions.without_pagination"/>
+                <ListPagination :list="list" v-if="list && !list.config?.without_pagination"/>
             </template>
             <div v-else class="list-table-container__message" :class="{'list-table-container__message-error': error}">
                 {{ notification }}
@@ -44,18 +44,18 @@ import LoadingProgress from "@/Components/LoadingProgress.vue";
 
 const props = defineProps<{
     actions?: boolean,
-    list: List<any>,
+    list?: List<any>,
     message?: string,
 }>();
 
 const error = computed((): boolean => {
-    return props.list.is_forbidden || props.list.is_not_found;
+    return props.list?.state.is_forbidden || props.list?.state.is_not_found || false;
 });
 
 const notification = computed((): string | null => {
-    if (props.list.is_forbidden) {
+    if (props.list?.state.is_forbidden) {
         return 'У Вас недостаточно прав для просмотра этой страницы';
-    } else if (props.list.is_not_found) {
+    } else if (props.list?.state.is_not_found) {
         return 'Страница не найдена';
     }
 

@@ -20,25 +20,25 @@ import {computed} from "vue";
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: boolean | number | string | number[] | string[],
-    original?: boolean | number | string | number[] | string[],
+    modelValue: boolean | Array<number | string> | null,
+    original?: boolean | Array<number | string> | null,
     disabled?: boolean,
     hasErrors?: boolean,
     // checkbox props
-    label?: string,
+    label?: string | null,
     value?: number | string,
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: boolean | number | string | number[] | string[]): void,
-    (e: 'change', value: boolean | number | string | number[] | string[], name: string | undefined): void,
+    (e: 'update:modelValue', value: boolean | Array<number | string>): void,
+    (e: 'change', value: boolean | Array<number | string>, name: string | undefined): void,
 }>();
 
 const proxyValue = computed({
-    get: (): boolean | number | string | number[] | string[] => {
+    get: (): boolean | Array<number | string> => {
         return props.modelValue || false;
     },
-    set: (value: boolean | number | string | number[] | string[]) => {
+    set: (value: boolean | Array<number | string>) => {
         emit('update:modelValue', value);
         emit('change', value, props.name);
     }
@@ -48,17 +48,21 @@ const isDirty = computed((): boolean => {
     if(props.original === undefined) {
         return false;
     }
-    if (typeof props.modelValue === "object") {
-        const val: Array<string | number> = props.modelValue;
-        const orig: boolean | number | string | Array<string | number> = props.original || false;
-        if (typeof orig === "object") {
-            return typeof props.value !== "undefined" && orig.indexOf(props.value) !== val.indexOf(props.value);
-        } else {
-            return typeof props.value !== "undefined" && val.indexOf(props.value) !== -1;
-        }
+
+    let original: boolean;
+    let value: boolean;
+
+    if(typeof props.original === "object" && props.original !== null) {
+        original = (props.value !== undefined) ? props.original.indexOf(props.value) !== -1 : false;
     } else {
-        return props.modelValue === (props.original === null || props.original === false);
+        original = !!props.original;
     }
+    if(typeof props.modelValue === "object" && props.modelValue !== null) {
+        value = (props.value !== undefined) ? props.modelValue.indexOf(props.value) !== -1 : false;
+    } else {
+        value = !!props.modelValue;
+    }
+        return original === value;
 });
 </script>
 

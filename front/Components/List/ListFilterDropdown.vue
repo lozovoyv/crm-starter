@@ -59,7 +59,7 @@ const props = defineProps<{
     search?: boolean,
 }>();
 
-function changeFilter(value: string | null): void {
+function changeFilter(value: string | number | boolean | null | Array<string | number>): void {
     if (!props.manual) {
         props.list.filters[props.name] = value;
         props.list.load();

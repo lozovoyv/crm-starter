@@ -19,7 +19,7 @@
             <ListTableCell v-html="highlight(user.display_name, users.search)"/>
             <ListTableCell v-html="highlight(user.username, users.search)"/>
             <ListTableCell v-html="highlight(user.email, users.search)"/>
-            <ListTableCell v-html="highlight(user.phone, users.search)"/>
+            <ListTableCell v-html="highlight(formatPhone(user.phone), users.search)"/>
             <ListTableCell>{{ toDatetime(user.created_at) }}</ListTableCell>
             <ListTableCell>{{ toDatetime(user.updated_at) }}</ListTableCell>
             <ListTableCell :action="true" v-if="canChange">
@@ -51,6 +51,7 @@ import GuiLink from "@/Components/GUI/GuiLink.vue";
 import {can} from "@/Core/Can";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
+import {formatPhone} from "@/Core/Helpers/Phone";
 
 const users = ref<List<User>>(new List<User>('/api/system/users', {}, {
     prefix: 'system_users', remember: {filters: ['status_id'], pagination: true, order: true}

@@ -1,16 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
 use App\Current;
-use App\Http\APIResponse;
+use App\Http\Responses\ApiResponse;
 use App\Http\Controllers\ApiController;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionType;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -23,22 +23,22 @@ class AuthController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  APIResponse
      */
-    public function current(Request $request): JsonResponse
+    public function current(Request $request): APIResponse
     {
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         $user = !$current->isAuthenticated() ? null : [
             'id' => $current->userId(),
             'name' => $current->userName(),
-            'email' => $current->email(),
+            'email' => $current->userEmail(),
             'organization' => 'Opx Dev',
             'position' => 'Администратор',
             'avatar' => null,
         ];
 
-        return APIResponse::response([
+        return ApiResponse::common([
             'user' => $user,
             'permissions' => $current->permissions(),
         ]);
@@ -49,9 +49,9 @@ class AuthController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function login(Request $request): JsonResponse
+    public function login(Request $request): ApiResponse
     {
         $data = $this->data($request);
 
@@ -63,7 +63,7 @@ class AuthController extends ApiController
             'username' => 'Имя пользователя',
             'password' => 'Пароль',
         ])) {
-            return APIResponse::validationError($errors);
+            return ApiResponse::validationError($errors);
         }
 
         // authenticate
@@ -97,9 +97,10 @@ class AuthController extends ApiController
                 /** @var Position $position */
                 $position = $positions->first();
                 $session->put('position_id', $position->id);
-            } else {
-                // TODO make position select response
             }
+            // else {
+            // TODO make position select response
+            //}
         }
 
         return APIResponse::success('OK');
@@ -110,9 +111,9 @@ class AuthController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request): ApiResponse
     {
         Auth::guard('web')->logout();
 

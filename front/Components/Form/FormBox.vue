@@ -3,11 +3,11 @@
         <LoadingProgress :loading="form.is_loading || form.is_saving">
             <slot/>
             <div class="form__errors" v-if="errors.length > 0">
-                <div class="form__errors-error" v-for="error in errors">{{ error }}</div>
+                <div class="form__errors-error" v-for="error in errors">{{ error.text }}</div>
             </div>
         </LoadingProgress>
-        <div class="form__actions">
-            <GuiButton type="default" @clicked="save" :disabled="disabled">Сохранить</GuiButton>
+        <div class="form__actions" v-if="!hideButtons">
+            <GuiButton type="default" @clicked="save" :disabled="disabled">{{ saveButton ? saveButton : 'Сохранить' }}</GuiButton>
             <GuiButton @clicked="clear" :disabled="disabled">Сбросить</GuiButton>
             <GuiButton @clicked="cancel">Отмена</GuiButton>
         </div>
@@ -22,26 +22,38 @@ import LoadingProgress from "@/Components/LoadingProgress.vue";
 
 const props = defineProps<{
     form: Form,
+    saveButton?: string,
+    saveDisabled?: boolean,
+    hideButtons?:boolean,
 }>();
 
 const emit = defineEmits<{
-    (e: 'save', response: { values: object, payload: object }): void,
+    (e: 'save', response: { values: { [index: string]: any }, payload: { [index: string]: any } }): void,
+    (e: 'clear'): void,
     (e: 'cancel'): void,
 }>()
 
 const disabled = computed((): boolean => {
-    return !props.form.is_loaded || props.form.is_loading || props.form.is_saving || props.form.is_forbidden;
+    return props.saveDisabled || !props.form.is_loaded || props.form.is_loading || props.form.is_saving || props.form.is_forbidden;
 });
 
-const errors = computed((): Array<string> => {
-    let errors: Array<string> = [];
+const errors = computed((): Array<{ text: string, key: string, index: number }> => {
+    let errors: Array<{ text: string, key: string, index: number }> = [];
     Object.keys(props.form.errors).map((key: string) => {
         if (props.form.errors[key].length > 0) {
-            errors.push(...props.form.errors[key]);
+            props.form.errors[key].map((error, index) => {
+                errors.push({text: error, key: key, index: index});
+            })
         }
     })
     return errors;
 });
+
+function clearError(key: string, index: number): void {
+    if (props.form) {
+        props.form.errors[key].splice(index);
+    }
+}
 
 function save() {
     if (!props.form.validate()) {
@@ -59,6 +71,7 @@ function cancel() {
 
 function clear() {
     props.form.clear();
+    emit('clear');
 }
 </script>
 

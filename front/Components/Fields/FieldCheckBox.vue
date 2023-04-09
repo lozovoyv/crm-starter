@@ -6,6 +6,7 @@
         :required="required"
         :errors="errors"
         :hide-title="hideTitle"
+        :empty-title="emptyTitle"
         :vertical="vertical"
     >
         <InputCheckbox
@@ -18,7 +19,9 @@
             :label="label"
             @change="change"
             ref="input"
-        />
+        >
+            <slot/>
+        </InputCheckbox>
     </FieldWrapper>
 </template>
 
@@ -30,37 +33,38 @@ import {computed} from "vue";
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: boolean | number | string | Array<number | string>,
-    original?: boolean | number | string | Array<number | string>,
+    modelValue: boolean | Array<number | string> | null,
+    original?: boolean | Array<number | string> | null,
     disabled?: boolean,
     hasErrors?: boolean,
     // field props
-    title?: string,
+    title?: string | null,
     required?: boolean,
     errors?: string[],
     hideTitle?: boolean,
+    emptyTitle?: boolean,
     vertical?: boolean,
     // checkbox props
-    label?: string,
+    label?: string | null,
     value?: number | string,
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: boolean | number | string | Array<number | string>): void,
-    (e: 'change', value: boolean | number | string | Array<number | string>, name: string | undefined): void,
+    (e: 'update:modelValue', value: boolean | Array<number | string>): void,
+    (e: 'change', value: boolean | Array<number | string>, name: string | undefined): void,
 }>();
 
 const proxyValue = computed({
-    get: (): boolean | number | string | Array<number | string> => {
+    get: (): boolean | Array<number | string> => {
         return props.modelValue || false;
     },
-    set: (value: boolean | number | string | Array<number | string>) => {
+    set: (value: boolean | Array<number | string>) => {
         emit('update:modelValue', value);
         emit('change', value, props.name);
     }
 });
 
-function change(value: boolean | number | string | Array<number | string>, name: string | undefined): void {
+function change(value: boolean | Array<number | string>, name: string | undefined): void {
     emit('change', value, name);
 }
 </script>

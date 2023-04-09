@@ -1,18 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Staff;
 
 use App\Current;
-use App\Foundation\Casting;
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
+use App\Models\EntryScope;
 use App\Models\History\HistoryAction;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionType;
 use App\Models\Users\User;
-use Exception;
+use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 class StaffCreateController extends ApiController
 {
     protected array $titles = [
+        'mode' => 'Учётная запись',
         'user_id' => 'Учётная запись',
         'lastname' => 'Фамилия',
         'firstname' => 'Имя',
@@ -29,45 +30,53 @@ class StaffCreateController extends ApiController
         'phone' => 'Телефон',
         'username' => 'Логин',
         'password' => 'Пароль',
-        'status_id' => 'Статус',
+        'status_id' => 'Статус сотрудника',
         'roles' => 'Роли',
     ];
 
     protected array $rules = [
-        'user_id' => 'nullable',
-        'lastname' => 'required_without:user_id',
-        'firstname' => 'required_without:user_id',
-        'patronymic' => 'required_without:user_id',
+        'mode' => 'required',
+        'user_id' => 'required_if:mode,existing',
+        'lastname' => 'required_if:mode,new',
+        'firstname' => 'required_if:mode,new',
+        'patronymic' => 'required_if:mode,new',
         'display_name' => 'nullable',
-        'email' => 'required_without_all:user_id,username',
-        'phone' => 'nullable',
-        'username' => 'required_without_all:user_id,email',
-        'password' => 'required_without:user_id',
+        'email' => 'required_if:mode,new|email',
+        'phone' => 'required_if:mode,new|size:11|bail',
+        'username' => 'nullable',
+        'password' => 'required_if:mode,new|min:6|bail',
         'status_id' => 'required',
         'roles' => 'nullable',
     ];
 
     protected array $messages = [
+        'user_id.required_if' =>'Поле "Учётная запись" обязательно для заполнения',
         'email.unique' => 'Учётная запись с таким email уже зарегистрирована',
         'phone.unique' => 'Учётная запись с таким телефоном уже зарегистрирована',
+        'phone.required_if' => 'Поле "Телефон" обязательно для заполнения',
         'username.unique' => 'Учётная запись с таким именем пользователя уже зарегистрирована',
+        'lastname.required_if' => 'Поле "Фамилия" обязательно для заполнения',
+        'firstname.required_if' => 'Поле "Имя" обязательно для заполнения',
+        'patronymic.required_if' => 'Поле "Отчество" обязательно для заполнения',
+        'email.required_if' => 'Поле "Адрес электронной почты" обязательно для заполнения, если не указан логин.',
+        'username.required_without_all' => 'Поле "Логин" обязательно для заполнения, не указан адрес электронной почты.',
+        'password.required_if' => 'Поле "Пароль" обязательно для заполнения.',
     ];
 
     /**
      * Get staff position data.
      *
-     * @param Request $request
-     *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function get(Request $request): JsonResponse
+    public function get(): ApiResponse
     {
         $position = new Position();
         $position->type_id = PositionType::staff;
 
-        return APIResponse::form(
-            'Добавление сотрудника',
-            [
+        return ApiResponse::form()
+            ->title('Регистрация сотрудника')
+            ->values([
+                'mode' => null,
                 'user_id' => null,
                 'lastname' => null,
                 'firstname' => null,
@@ -79,12 +88,10 @@ class StaffCreateController extends ApiController
                 'password' => null,
                 'status_id' => $position->status_id,
                 'roles' => null,
-            ],
-            null,
-            $this->rules,
-            $this->titles,
-            []
-        );
+            ])
+            ->rules($this->rules)
+            ->titles($this->titles)
+            ->messages($this->messages);
     }
 
     /**
@@ -92,9 +99,10 @@ class StaffCreateController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
+     * @noinspection DuplicatedCode
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request): ApiResponse
     {
         $position = new Position();
         $position->type_id = PositionType::staff;
@@ -103,18 +111,20 @@ class StaffCreateController extends ApiController
 
         if ($data['user_id']) {
             // check this user already has staff position
-            $exists = Position::query()->whereHas('user', function (Builder $query) use ($data) {
-                    $query->where('id', $data['user_id']);
-                })->count() > 0;
+            $exists = Position::query()
+                    ->where('type_id', PositionType::staff)
+                    ->whereHas('user', function (Builder $query) use ($data) {
+                        $query->where('id', $data['user_id']);
+                    })->count() > 0;
             if ($exists) {
-                return APIResponse::validationError(['user_id' => ['Выбранный пользователь уже зарегистрирован как сотрудник']],
-                    'Выбранный пользователь уже зарегистрирован как сотрудник');
+                return APIResponse::validationError(['user_id' => ['Сотрудник с этой учётной записью уже зарегистрирован.']]);
             }
         } else {
             // upgrade rules to check user can be created
-            $this->rules['email'] = 'required_without_all:user_id,username|unique:users';
+            $this->rules['email'] = 'nullable|email|required_without_all:user_id,username|unique:users';
             $this->rules['phone'] = 'nullable|unique:users';
-            $this->rules['username'] = 'required_without_all:user_id,email|unique:users';
+            // todo check for NOT email is in username
+            $this->rules['username'] = 'nullable|required_without_all:user_id,email|unique:users';
             $this->rules['password'] = 'required|min:6';
         }
 
@@ -130,7 +140,7 @@ class StaffCreateController extends ApiController
                 'Пользователь не найден');
         }
 
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         DB::transaction(function () use ($position, $user, $data, $current) {
             $userChanges = [];
@@ -143,7 +153,10 @@ class StaffCreateController extends ApiController
             $this->set($user, 'username', $data['username'], Casting::string, $userChanges);
             $user->password = Hash::make($data['password']);
             $user->save();
-            $user->addHistory(HistoryAction::user_created, $current->positionId())->addChanges($userChanges);
+
+            if ($user->wasRecentlyCreated) {
+                $user->addHistory(HistoryAction::user_created, $current->positionId())->addChanges($userChanges);
+            }
 
             $positionChanges = [];
             $this->set($position, 'user_id', $user->id, Casting::int, $positionChanges);
@@ -152,9 +165,16 @@ class StaffCreateController extends ApiController
             $position->save();
             $position->roles()->sync($data['roles']);
             $positionChanges[] = ['parameter' => 'roles', 'type' => Casting::array, 'old' => null, 'new' => $data['roles']];
-            $position->addHistory(HistoryAction::staff_position_created, $current->positionId())->addChanges($positionChanges);
+            $position
+                ->addHistory(HistoryAction::staff_position_created, $current->positionId())
+                ->addChanges($positionChanges)
+                ->addLink($user->compactName, EntryScope::user, $user->id);
+
+            $user
+                ->addHistory(HistoryAction::user_staff_attached, $current->positionId())
+                ->addLink($user->compactName, EntryScope::position, $position->id, PositionType::typeToString(PositionType::staff));
         });
 
-        return APIResponse::success('OK');
+        return APIResponse::success('Сотрудник зарегистрирован')->payload(['id' => $position->id]);
     }
 }

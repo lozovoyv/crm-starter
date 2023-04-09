@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class Current
 {
-    protected static self $instance;
+    protected static ?self $instance;
 
     protected ?User $user;
 
@@ -34,6 +34,16 @@ class Current
         }
 
         return static::$instance;
+    }
+
+    /**
+     * Reset instance.
+     *
+     * @return void
+     */
+    public static function unset(): void
+    {
+        self::$instance = null;
     }
 
     /**
@@ -113,6 +123,29 @@ class Current
     }
 
     /**
+     * Get current position ID.
+     *
+     * @return int|null
+     */
+    public function positionId(): ?int
+    {
+        return $this->proxyPosition->id ?? $this->position->id ?? null;
+    }
+
+    /**
+     * Check current user permission.
+     *
+     * @param string|null $key
+     * @param bool $fresh
+     *
+     * @return  bool
+     */
+    public function can(?string $key, bool $fresh = false): bool
+    {
+        return $this->position ? $this->position->can($key, $fresh) : false;
+    }
+
+    /**
      * Get current user ID.
      *
      * @return  int|null
@@ -142,11 +175,6 @@ class Current
         return $this->user->email ?? null;
     }
 
-    public function positionId(): ?int
-    {
-        return $this->position->id ?? null;
-    }
-
     /**
      * Get current user permissions.
      *
@@ -155,42 +183,6 @@ class Current
     public function permissions(): array
     {
         return $this->position ? $this->position->getPermissionsList() : [];
-    }
-
-    /**
-     * Check current user permission.
-     *
-     * @param string|null $key
-     * @param bool $fresh
-     *
-     * @return  bool
-     */
-    public function can(?string $key, bool $fresh = false): bool
-    {
-        return $this->position ? $this->position->can($key, $fresh) : false;
-    }
-
-    /**
-     * Get current user permissions.
-     *
-     * @return Collection|null
-     */
-    public function roles(): ?Collection
-    {
-        return $this->position->roles ?? null;
-    }
-
-    /**
-     * Check current user permission.
-     *
-     * @param int|string $role
-     * @param bool $fresh
-     *
-     * @return  bool
-     */
-    public function hasRole(int|string $role, bool $fresh = false): bool
-    {
-        return $this->position ? $this->position->hasRole($role, $fresh) : false;
     }
 
     /**

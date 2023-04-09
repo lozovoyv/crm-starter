@@ -36,7 +36,7 @@ import {useStore} from "vuex";
 import {computed} from "vue";
 import {User} from "@/Core/Types/User";
 import Logo from "@/App/Logo.vue";
-import menuRaw from "@/App/menu";
+import menuSrc from "@/App/menu";
 import ApplicationMenu from "@/Components/Layout/Menu/ApplicationMenu.vue";
 import {Menu, MenuItem} from "@/Core/Types/Menu";
 import UserMenu from "@/Components/Layout/UserMenu.vue";
@@ -50,7 +50,7 @@ import {can} from "@/Core/Can";
 const store = useStore();
 
 const user = computed((): User | null => {
-    return store.getters['user/user'];
+    return <User | null>store.getters['user/user'];
 });
 
 const organization = computed((): string | null | undefined => {
@@ -58,7 +58,7 @@ const organization = computed((): string | null | undefined => {
 });
 
 const menu = computed((): Menu => {
-    return filterMenu(menuRaw);
+    return filterMenu(menuSrc);
 })
 
 function logout(): void {

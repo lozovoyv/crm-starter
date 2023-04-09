@@ -42,7 +42,7 @@ const toggle_state_internal = ref<boolean>(false);
 const is_initiator = ref<boolean>(false);
 const dropped = ref<boolean>(false);
 
-function toggle(event: PointerEvent): void {
+function toggle(event: MouseEvent): void {
     event.stopPropagation();
     if (!parent.value) {
         emit('clicked');

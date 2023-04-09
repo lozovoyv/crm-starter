@@ -15,7 +15,7 @@ function replacePart(message: string, search: string, replace: string | null) {
     return message.replaceAll(search, replace ? replace : '');
 }
 
-function getAttr(attributes: null | string[], index: number): string | null{
+function getAttr(attributes: null | string[], index: number): string | null {
     return attributes ? attributes[index] : null;
 }
 
@@ -204,10 +204,16 @@ const messageFormatters = [
 /**
  * Make whole validation error message for given rule and field.
  */
-function formatErrorMessage(name: string, value: any, failed_rule: string, validation_rule: FieldRules, titles: { [index: string]: string }, values: { [index: string]: any }) {
+function formatErrorMessage(name: string, value: any, failed_rule: string, validation_rule: FieldRules, titles: { [index: string]: string }, values: { [index: string]: any }, messages: { [index: string]: string }) {
 
-    // @ts-ignore
-    let message: string | { [index: string]: string } = Localization[failed_rule];
+    let message: string | { [index: string]: string };
+
+    if (!empty(messages[name + '.' + failed_rule])) {
+        message = messages[name + '.' + failed_rule];
+    } else {
+        // @ts-ignore
+        message = Localization[failed_rule];
+    }
 
     // todo handle password validation message
 

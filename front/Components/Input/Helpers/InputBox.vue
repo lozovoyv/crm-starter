@@ -8,6 +8,9 @@
                              points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
                 </svg>
             </span>
+            <span class="input-box__additional" v-if="$slots.additional">
+                <slot name="additional"/>
+            </span>
         </label>
         <div class="input-box__border" v-else :class="classList">
             <slot/>
@@ -16,6 +19,9 @@
                     <polygon fill="currentColor"
                              points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
                 </svg>
+            </span>
+            <span class="input-box__additional" v-if="$slots.additional">
+                <slot name="additional"/>
             </span>
         </div>
     </div>
@@ -127,6 +133,15 @@ function clear() {
                 transform: translate(-50%, -50%) scale(1.2);
             }
         }
+    }
+
+    &__additional {
+        height: 100%;
+        position: relative;
+        flex-grow: 0;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
     }
 }
 </style>

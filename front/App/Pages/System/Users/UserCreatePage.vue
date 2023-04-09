@@ -1,5 +1,5 @@
 <template>
-    <UserEdit :user-id="null"/>
+    <UserEdit :user-id="undefined"/>
 </template>
 
 <script setup lang="ts">

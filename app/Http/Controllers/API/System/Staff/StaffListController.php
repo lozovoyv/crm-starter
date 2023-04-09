@@ -1,14 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Staff;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionType;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 
 class StaffListController extends ApiController
 {
@@ -34,9 +34,9 @@ class StaffListController extends ApiController
      *
      * @param APIListRequest $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function list(APIListRequest $request): JsonResponse
+    public function list(APIListRequest $request): ApiResponse
     {
         $query = Position::query()
             ->with(['status', 'user'])
@@ -88,15 +88,12 @@ class StaffListController extends ApiController
 
         $staff = $request->paginate($query);
 
-        return APIResponse::list(
-            $staff,
-            $this->titles,
-            $filters,
-            $this->defaultFilters,
-            $request->search(true),
-            $order,
-            $orderBy,
-            $this->ordering
-        );
+        return ApiResponse::list()
+            ->items($staff)
+            ->titles($this->titles)
+            ->filters($filters, $this->defaultFilters)
+            ->search($request->search(true))
+            ->order($orderBy, $order)
+            ->orderable($this->ordering);
     }
 }

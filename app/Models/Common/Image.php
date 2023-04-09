@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Common;
 
@@ -35,6 +36,7 @@ class Image extends Model
      * Accessor for url attribute.
      *
      * @return  string|null
+     * @noinspection PhpUnused
      */
     public function getUrlAttribute(): ?string
     {
@@ -99,6 +101,7 @@ class Image extends Model
      * @param string $disk
      *
      * @return  Collection
+     * @noinspection PhpUnused
      */
     public static function createFromMany(array $images, string $disk): Collection
     {

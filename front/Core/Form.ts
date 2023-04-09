@@ -15,7 +15,7 @@ export class Form {
     /** Default options to pass to request */
     options: { [index: string]: any } = {};
     /** Form title */
-    title: string | null = null;
+    title: string | undefined = undefined;
 
     /** Validate field when its value changed */
     validate_on_update: boolean = false;
@@ -26,6 +26,7 @@ export class Form {
     titles: { [index: string]: string } = {};
     rules: { [index: string]: FieldRules } = {};
     payload: { [index: string]: any } = {};
+    messages: { [index: string]: string } = {};
 
     valid: { [index: string]: boolean } = {};
     errors: { [index: string]: string[] } = {};
@@ -54,7 +55,7 @@ export class Form {
      * @param options
      * @param use_toaster
      */
-    constructor(title: string | null, load_url: string | null, save_url: string | null, options: object = {}, use_toaster: boolean = true) {
+    constructor(title: string | undefined, load_url: string | null, save_url: string | null, options: object = {}, use_toaster: boolean = true) {
         this.title = title;
         this.load_url = load_url;
         this.save_url = save_url;
@@ -99,6 +100,7 @@ export class Form {
                     this.hash = response.data.hash ? response.data.hash : null;
                     this.title = response.data.title ? response.data.title : this.title;
                     this.titles = response.data.titles;
+                    this.messages = response.data.messages ? response.data.messages : [];
                     this.rules = {};
                     Object.keys(response.data.rules).map(key => {
                         this.rules[key] = ParseFieldRules(response.data.rules[key]);
@@ -143,7 +145,7 @@ export class Form {
      * @param silent Disable notifications for this operation.
      */
     save(options = null, silent: boolean = false) {
-        return new Promise((resolve: ((obj: { values: object, payload: object }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
+        return new Promise((resolve: ((obj: { values: { [index: string]: any }, payload: { [index: string]: any } }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
             if (this.save_url === null) {
                 this.notify('Can not save form. Save URL is not defined.', 0, 'error');
                 reject({code: 0, message: 'Can not save form. Save URL is not defined.', response: null});
@@ -212,7 +214,7 @@ export class Form {
      * @param delay
      * @param type
      */
-    protected notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null): void {
+    notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null): void {
         if (this.use_toaster) {
             toaster.show(message, delay, type);
         } else {
@@ -296,7 +298,7 @@ export class Form {
 
         this.errors[name] = [];
         failed.map((failed_rule: string) => {
-            const error: string | null = formatErrorMessage(name, this.values[name], failed_rule, this.rules[name], this.titles, this.values);
+            const error: string | null = formatErrorMessage(name, this.values[name], failed_rule, this.rules[name], this.titles, this.values, this.messages);
             if (error) {
                 this.errors[name].push(error);
             }
@@ -319,9 +321,11 @@ export class Form {
     /**
      * Reset form changes to originals.
      */
-    clear() {
+    clear(except: null | Array<string> = null) {
         Object.keys(this.originals).map(key => {
-            this.update(key, this.originals[key]);
+            if (except === null || except?.indexOf(key) === -1) {
+                this.update(key, this.originals[key]);
+            }
         });
     };
 

@@ -10,12 +10,15 @@
         :required="required"
         :errors="errors"
         :hide-title="hideTitle"
+        :empty-title="emptyTitle"
         :vertical="vertical"
         :placeholder="title"
-        :label="label ? label : title"
+        :label="label !== undefined ? label : title"
         :value="value"
         @change="change"
-    />
+    >
+        <slot/>
+    </FieldCheckBox>
 </template>
 
 <script setup lang="ts">
@@ -31,6 +34,7 @@ const props = defineProps<{
     clearable?: boolean,
     // field props
     hideTitle?: boolean,
+    emptyTitle?: boolean,
     vertical?: boolean,
     // form props
     form: Form,
@@ -40,15 +44,15 @@ const props = defineProps<{
     value?: number | string,
 }>();
 
-const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
+const emit = defineEmits<{ (e: 'change', value: boolean | Array<number | string>, name: string, payload: any): void }>()
 
 const title = computed(() => {
     return getTitle(props.form, props.name);
 });
-const modelValue = computed((): boolean | number | string | Array<number | string> => {
+const modelValue = computed((): boolean | Array<number | string> => {
     return getValue(props.form, props.name, null);
 });
-const original = computed((): string | null => {
+const original = computed((): undefined | boolean | Array<number | string> | null => {
     return getOriginal(props.form, props.name, props.defaultValue);
 });
 const valid = computed((): boolean => {
@@ -62,8 +66,10 @@ const required = computed((): boolean => {
     return isRequired(props.form, props.name)
 });
 
-function change(value: any, name: string, payload: any = null) {
-    props.form.update(name, value);
-    emit('change', value, name, payload);
+function change(value: boolean | Array<number | string>, name: string | undefined) {
+    if(name) {
+        props.form.update(name, value);
+        emit('change', value, name, null);
+    }
 }
 </script>

@@ -12,5 +12,5 @@
 <body>
 <div id="application"></div>
 </body>
-<script src="{{ mix('js/application.js') }}"></script>
+@vite('front/application.ts')
 </html>

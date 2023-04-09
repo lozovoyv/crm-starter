@@ -8,11 +8,11 @@ import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps<{
     list: List<any>,
-    options?: Array<Number>,
+    options?: Array<number>,
 }>();
 
 const emit = defineEmits<{
-    (e: 'pagination', page: Number, perPage: Number): void,
+    (e: 'pagination', page: number, perPage: number): void,
 }>()
 
 function setPage(page: number, perPage: number): void {

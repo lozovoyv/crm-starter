@@ -42,6 +42,10 @@
             </div>
 
         </div>
+
+        <template #additional v-if="$slots.additional">
+            <slot name="additional"/>
+        </template>
     </InputBox>
 </template>
 
@@ -63,7 +67,7 @@ const props = defineProps<{
     clearable?: boolean,
 
     // dropdown props
-    placeholder?: string,
+    placeholder?: string | null,
     hasNull?: boolean,
     nullCaption?: string,
     emptyCaption?: string,
@@ -91,8 +95,8 @@ const terms = ref<string | null>(null);
 const dropped = ref<boolean>(false);
 const removing = ref<boolean>(false);
 
-const list = ref<HTMLDivElement | null>(null);
-const searchRef = ref<InstanceType<typeof InputSearch> | null>(null);
+const list = ref<HTMLDivElement | undefined>(undefined);
+const searchRef = ref<InstanceType<typeof InputSearch> | undefined>(undefined);
 
 const isDirty = computed((): boolean => {
     return props.original !== undefined && JSON.stringify(props.original) !== JSON.stringify(props.modelValue);
@@ -167,8 +171,8 @@ function isCurrent(option: DropDownDisplayOption): boolean {
 function setValue(value: DropDownDisplayOption | null): void {
     if (!props.multi) {
         emit('update:modelValue', value === null ? null : value.key);
-        if(value === null)
-        emit('change',   null , props.name, null);
+        if (value === null)
+            emit('change', null, props.name, null);
         else {
             emit('change', value.key, props.name, value.payload);
         }
@@ -232,7 +236,7 @@ function toggle(): void {
         emit('dropped');
         setTimeout(() => {
             window.addEventListener('click', close);
-            if (searchRef.value !== null) {
+            if (searchRef.value) {
                 searchRef.value.focus();
             }
         }, 100);
@@ -250,7 +254,7 @@ function close() {
 
 function updateHeight(): void {
     nextTick(() => {
-        if (list.value !== null) {
+        if (list.value) {
             list.value.style.height = '';
             list.value.style.height = (list.value.clientHeight + 1) + 'px';
         }
@@ -313,7 +317,7 @@ function updateHeight(): void {
             &-item {
                 display: inline-flex;
                 align-items: center;
-                font-size: 16px;
+                font-size: 14px;
                 font-family: $project_font;
                 color: inherit;
                 border: 1px solid transparentize($color_default, 0.5);

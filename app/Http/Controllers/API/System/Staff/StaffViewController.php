@@ -1,18 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Staff;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionStatus;
 use App\Models\Positions\PositionType;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class StaffViewController extends ApiController
 {
-    public function view(Request $request): JsonResponse
+    public function view(Request $request): ApiResponse
     {
         /** @var Position|null $staff */
         $staff = Position::query()
@@ -22,10 +22,10 @@ class StaffViewController extends ApiController
             ->first();
 
         if ($staff === null) {
-            return APIResponse::notFound('Сотрудник не найден');
+            return ApiResponse::notFound('Сотрудник не найден');
         }
 
-        return APIResponse::response([
+        return APIResponse::common([
             'id' => $staff->id,
             'active' => $staff->hasStatus(PositionStatus::active),
             'status' => $staff->status->name,

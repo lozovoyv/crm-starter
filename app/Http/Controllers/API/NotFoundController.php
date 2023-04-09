@@ -1,16 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
-use Illuminate\Http\JsonResponse;
+use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
 
 class NotFoundController extends ApiController
 {
-    public function notFound(Request $request): JsonResponse
+    public function notFound(Request $request): ApiResponse
     {
-        return APIResponse::notFound('Метод API ' . $request->path() . ' не найден');
+        return ApiResponse::notFound('Метод API ' . $request->path() . ' не найден');
     }
 }

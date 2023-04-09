@@ -22,7 +22,7 @@ import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 
 const data = ref<Data<{}>>(new Data<{}>('/api/profile'));
 
-const tab = ref<string | null>(null);
+const tab = ref<string | undefined>(undefined);
 
 data.value.load();
 </script>

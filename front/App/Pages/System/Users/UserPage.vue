@@ -44,7 +44,7 @@ const userID = computed((): number => {
     return Number(route.params['id']);
 })
 
-const tab = ref<string | null>(null);
+const tab = ref<string | undefined>(undefined);
 
 const tabs = computed((): { [index: string]: string } => {
     return {user: 'Учётная запись', history: 'История'};
@@ -58,8 +58,8 @@ const title = computed((): string => {
     return user.value.is_loaded ? user.value.data.name : '...';
 });
 
-const history = ref<InstanceType<typeof UserView> | null>(null);
-const operations = ref<InstanceType<typeof UserHistory> | null>(null);
+const history = ref<InstanceType<typeof UserView> | undefined>(undefined);
+const operations = ref<InstanceType<typeof UserHistory> | undefined>(undefined);
 
 const processing = ref<boolean>(false);
 

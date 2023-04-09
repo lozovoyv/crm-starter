@@ -6,6 +6,7 @@
         :required="required"
         :errors="errors"
         :hide-title="hideTitle"
+        :empty-title="emptyTitle"
         :vertical="vertical"
     >
         <InputText
@@ -30,19 +31,20 @@ import InputText from "@/Components/Input/InputText.vue";
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: string,
-    original?: string,
+    modelValue: string | null,
+    original?: string | null,
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
     // field props
-    title?: string,
+    title?: string | null,
+    hideTitle?: boolean,
+    emptyTitle?: boolean,
     required?: boolean,
     errors?: string[],
-    hideTitle?: boolean,
     vertical?: boolean,
     // string props
-    placeholder?: string,
+    placeholder?: string | null,
 }>();
 
 const emit = defineEmits<{
@@ -50,7 +52,7 @@ const emit = defineEmits<{
     (e: 'change', value: string | null, name: string | undefined): void,
 }>()
 
-const input = ref<InstanceType<typeof InputText> | null>(null);
+const input = ref<InstanceType<typeof InputText> | undefined>(undefined);
 
 const proxyValue = computed({
     get: (): string | null => {

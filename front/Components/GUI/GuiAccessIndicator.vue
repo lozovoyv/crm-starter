@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import IconUser from "@/Icons/IconUser";
+import IconUser from "@/Icons/IconUser.vue";
 
 export default {
     components: {

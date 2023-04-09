@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http;
 
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'api' => [
             EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
+            StartSession::class,
             SubstituteBindings::class,
         ],
     ];
@@ -92,6 +94,5 @@ class Kernel extends HttpKernel
 
         'permission' => CheckPermission::class,
         'position' => CheckPosition::class,
-        'role' => CheckRole::class,
     ];
 }

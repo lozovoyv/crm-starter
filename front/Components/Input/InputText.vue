@@ -2,9 +2,9 @@
     <InputBox class="input-text" :label="true" :dirty="isDirty" :disabled="disabled" :has-errors="hasErrors" :is-empty="!modelValue" :clearable="clearable" @clear="clear">
         <textarea
             class="input-text__input"
-            :value="modelValue"
+            :value="modelValue ? modelValue : ''"
             :disabled="disabled"
-            :placeholder="placeholder"
+            :placeholder="placeholder ? placeholder : undefined"
             @input="update"
             ref="input"
         />
@@ -18,13 +18,13 @@ import InputBox from "@/Components/Input/Helpers/InputBox.vue";
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: string,
-    original?: string,
+    modelValue: string | null,
+    original?: string | null,
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
     // string props
-    placeholder?: string,
+    placeholder?: string | null,
 }>();
 
 const emit = defineEmits<{
@@ -32,10 +32,10 @@ const emit = defineEmits<{
     (e: 'change', value: string | null, name: string | undefined): void,
 }>()
 
-const input = ref<HTMLTextAreaElement | null>(null);
+const input = ref<HTMLTextAreaElement | undefined>(undefined);
 
 const isDirty = computed((): boolean => {
-    return props.original !== undefined && props.modelValue !== undefined && props.modelValue !== props.original;
+    return props.original !== undefined && props.modelValue !== props.original;
 });
 
 function clear() {
@@ -43,7 +43,7 @@ function clear() {
     emit('change', null, props.name);
 }
 
-function update(event: InputEvent) {
+function update(event: Event) {
     const target: HTMLTextAreaElement = <HTMLTextAreaElement>event.target;
     let value: string | null = String(target.value);
     if (value === '') {
@@ -54,7 +54,7 @@ function update(event: InputEvent) {
 }
 
 function focus(): void {
-    if (input.value !== null) {
+    if (input.value) {
         input.value.focus();
     }
 }
@@ -68,7 +68,7 @@ defineExpose({
 <style lang="scss">
 @import "@/variables.scss";
 
-.input-text{
+.input-text {
     min-height: $base_size_unit + 2px;
     box-sizing: content-box;
 

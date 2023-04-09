@@ -64,7 +64,7 @@ const parent = computed<boolean>((): boolean => {
 const dropped = ref<boolean>(false);
 const leftAdjust = ref<number>(0);
 const widthAdjust = ref<number>(0);
-const subMenu = ref<HTMLDivElement | null>(null);
+const subMenu = ref<HTMLDivElement | undefined>(undefined);
 const toggle_state_internal = ref<boolean>(false);
 
 // Hover handle

@@ -23,7 +23,7 @@ const props = defineProps<{
     dirty?: boolean,
     disabled?: boolean,
     hasErrors?: boolean,
-    label?: string,
+    label?: string | null,
 }>();
 
 const emit = defineEmits<{

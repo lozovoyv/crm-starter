@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History\Formatters;
 
@@ -32,6 +33,8 @@ class UserChangesFormatter implements FormatterInterface
                 break;
             case 'phone':
                 $result['parameter'] = 'Телефон';
+                $result['old'] = $result['old'] ? preg_replace('/(\d)(\d{3})(\d{3})(\d{2})(\d{2})/', '+$1 ($2) $3-$4-$5', $result['old']) : null;
+                $result['new'] = $result['new'] ? preg_replace('/(\d)(\d{3})(\d{3})(\d{2})(\d{2})/', '+$1 ($2) $3-$4-$5', $result['new']) : null;
                 break;
             case 'username':
                 $result['parameter'] = 'Имя пользователя';

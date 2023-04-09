@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\Response;
 
 class FrontendController extends Controller

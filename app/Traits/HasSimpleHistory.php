@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Traits;
 
@@ -28,6 +29,7 @@ trait HasSimpleHistory
      * Related history.
      *
      * @return  MorphMany
+     * @noinspection PhpUnused
      */
     public function entries(): MorphMany
     {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History;
 
@@ -40,25 +41,19 @@ class HistoryLine extends Model
      * @param int|null $scopedId
      * @param string|null $description
      * @param int|null $operatorId
-     * @param int|null $operandId
-     * @param array|null $changes
-     * @param array|null $links
      *
      * @return  History
      */
-    public function addHistory(int $action, string $scope, ?int $scopedId, ?string $description = null, ?int $operatorId = null, ?int $operandId = null, ?array $changes = null, ?array $links = null): History
+    public function addHistory(int $action, string $scope, ?int $scopedId, ?string $description = null, ?int $operatorId = null): History
     {
         $record = new History;
-        $record->history_id = $this->id;
+        $record->history_line_id = $this->id;
         $record->action_id = $action;
-        $record->scope = $scope;
-        $record->scoped_id = $scopedId;
+        $record->entry_name = $scope;
+        $record->entry_id = $scopedId;
         $record->description = $description;
         $record->timestamp = Carbon::now();
-        $record->operator_id = $operatorId;
-        $record->operand_id = $operandId;
-        $record->changed = $changes;
-        $record->links = $links;
+        $record->position_id = $operatorId;
         $record->save();
 
         return $record;

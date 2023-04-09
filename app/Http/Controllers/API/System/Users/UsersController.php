@@ -1,20 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
 use App\Current;
-use App\Foundation\Casting;
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
 use App\Models\History\HistoryAction;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
+use App\Utils\Casting;
 use Exception;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
+use UnexpectedValueException;
 
 class UsersController extends ApiController
 {
@@ -23,9 +25,9 @@ class UsersController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function deactivate(Request $request): JsonResponse
+    public function deactivate(Request $request): ApiResponse
     {
         try {
             $user = $this->getUser($request);
@@ -33,7 +35,7 @@ class UsersController extends ApiController
             return APIResponse::error($exception->getMessage());
         }
 
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         if ($current->userId() === $user->id) {
             return APIResponse::error('Вы не можете заблокировать собственную учётную запись');
@@ -43,7 +45,7 @@ class UsersController extends ApiController
 
         $user->addHistory(HistoryAction::user_deactivated, $current->positionId());
 
-        return APIResponse::success('Учётная запись заблокирована');
+        return ApiResponse::success('Учётная запись заблокирована');
     }
 
     /**
@@ -51,9 +53,9 @@ class UsersController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function activate(Request $request): JsonResponse
+    public function activate(Request $request): ApiResponse
     {
         try {
             $user = $this->getUser($request);
@@ -63,7 +65,7 @@ class UsersController extends ApiController
 
         $user->setStatus(UserStatus::active, true);
 
-        $current = Current::get($request);
+        $current = Current::init($request);
         $user->addHistory(HistoryAction::user_activated, $current->positionId());
 
         return APIResponse::success('Учётная запись активирована');
@@ -74,9 +76,9 @@ class UsersController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function password(Request $request): JsonResponse
+    public function password(Request $request): ApiResponse
     {
         try {
             $user = $this->getUser($request);
@@ -96,7 +98,7 @@ class UsersController extends ApiController
         $user->password = empty($data['password']) ? null : Hash::make($data['password']);
         $user->save();
 
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         if ($hadPassword) {
             $user->addHistory($hasPassword ? HistoryAction::user_password_changed : HistoryAction::user_password_cleared, $current->positionId());
@@ -112,9 +114,9 @@ class UsersController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function remove(Request $request): JsonResponse
+    public function remove(Request $request): ApiResponse
     {
         try {
             $user = $this->getUser($request);
@@ -122,7 +124,7 @@ class UsersController extends ApiController
             return APIResponse::error($exception->getMessage());
         }
 
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         if ($current->userId() === $user->id) {
             return APIResponse::error('Вы не можете удалить собственную учётную запись');
@@ -139,7 +141,7 @@ class UsersController extends ApiController
         ];
 
         try {
-            DB::transaction(function () use ($user, $changes, $current) {
+            DB::transaction(static function () use ($user, $changes, $current) {
                 $user
                     ->addHistory(HistoryAction::user_deleted, $current->positionId())
                     ->addChanges($changes);
@@ -150,7 +152,7 @@ class UsersController extends ApiController
             return APIResponse::error('Невозможно удалить учётную запись.');
         }
 
-        return APIResponse::success('Учётная запись удалена');
+        return ApiResponse::success('Учётная запись удалена');
     }
 
     /**
@@ -167,10 +169,10 @@ class UsersController extends ApiController
         $user = User::query()->where('id', $request->input('user_id'))->first();
 
         if ($user === null) {
-            throw new Exception('Учётная запись не найдена');
+            throw new UnexpectedValueException('Учётная запись не найдена');
         }
         if (!$user->isHash($request->input('user_hash'))) {
-            throw new Exception('Учётная запись была изменена в другом месте.');
+            throw new RuntimeException('Учётная запись была изменена в другом месте.');
         }
 
         return $user;

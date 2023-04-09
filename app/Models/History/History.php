@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History;
 
@@ -136,12 +137,20 @@ class History extends Model
      * @param string $entryTitle
      * @param string|null $entryName
      * @param int|null $entryId
+     * @param string|null $entryType
      *
      * @return  $this
+     *
+     * @see HistoryLink
      */
-    public function addLink(string $entryTitle, ?string $entryName = null, ?int $entryId = null): self
+    public function addLink(string $entryTitle, ?string $entryName = null, ?int $entryId = null, ?string $entryType = null): self
     {
-        $this->links()->create(['entry_title' => $entryTitle, 'entry_name' => $entryName, 'entry_id' => $entryId]);
+        $this->links()->create([
+            'entry_title' => $entryTitle,
+            'entry_name' => $entryName,
+            'entry_id' => $entryId,
+            'entry_type' => $entryType,
+        ]);
 
         return $this;
     }

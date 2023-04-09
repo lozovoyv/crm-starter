@@ -1,15 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
 use App\Current;
-use App\Foundation\Casting;
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
 use App\Models\History\HistoryAction;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
-use Illuminate\Http\JsonResponse;
+use App\Utils\Casting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -27,7 +27,7 @@ class UserEditController extends ApiController
         'email_confirmation_need' => 'nullable',
         'new_password' => 'nullable|min:6',
         'clear_password' => 'nullable',
-        'phone' => 'required_without:lastname',
+        'phone' => 'nullable|string|required_without:lastname|size:11',
     ];
 
     protected array $titles = [
@@ -44,14 +44,21 @@ class UserEditController extends ApiController
         'phone' => 'Телефон',
     ];
 
+    protected array $messages = [
+        'username.unique' => 'Данный логин уже занят',
+        'email.unique' => 'Данный адрес электронной почты уже используется',
+        'phone.unique' => 'Данный телефон уже используется',
+        'phone.size' => 'Номер телефона некорректно заполнен',
+    ];
+
     /**
      * Get user data.
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return ApiResponse
      */
-    public function get(Request $request): JsonResponse
+    public function get(Request $request): ApiResponse
     {
         /** @var User $user */
         $user = $this->firstOrNew(User::class, $request->input('user_id'));
@@ -60,9 +67,9 @@ class UserEditController extends ApiController
             return APIResponse::notFound('Учётная запись не найдена');
         }
 
-        return APIResponse::form(
-            $user->exists ? $user->fullName : 'Создание учётной записи',
-            [
+        return ApiResponse::form()
+            ->title($user->exists ? $user->fullName : 'Создание учётной записи')
+            ->values([
                 'lastname' => $user->lastname,
                 'firstname' => $user->firstname,
                 'patronymic' => $user->patronymic,
@@ -74,14 +81,14 @@ class UserEditController extends ApiController
                 'new_password' => null,
                 'clear_password' => false,
                 'phone' => $user->phone,
-            ],
-            $user->getHash(),
-            $this->rules,
-            $this->titles,
-            [
+            ])
+            ->rules($this->rules)
+            ->titles($this->titles)
+            ->messages($this->messages)
+            ->hash($user->getHash())
+            ->payload([
                 'has_password' => !empty($user->password),
-            ]
-        );
+            ]);
     }
 
     /**
@@ -89,9 +96,10 @@ class UserEditController extends ApiController
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
+     * @noinspection DuplicatedCode
      */
-    public function update(Request $request): JsonResponse
+    public function update(Request $request): ApiResponse
     {
         /** @var User $user */
         $user = $this->firstOrNew(User::class, $request->input('user_id'));
@@ -108,21 +116,18 @@ class UserEditController extends ApiController
             Rule::unique('users', 'email')->ignore($user),
         ];
         $this->rules['phone'] = [
+            ...explode('|', $this->rules['phone']),
             Rule::unique('users', 'phone')->ignore($user),
         ];
         $this->rules['username'] = [
             Rule::unique('users', 'username')->ignore($user),
         ];
 
-        if ($errors = $this->validate($data, $this->rules, $this->titles, [
-            'email.unique' => 'Данный адрес электронной почты уже используется',
-            'phone.unique' => 'Данный телефон уже используется',
-            'username.unique' => 'Данный логин уже занят',
-        ])) {
+        if ($errors = $this->validate($data, $this->rules, $this->titles, $this->messages)) {
             return APIResponse::validationError($errors);
         }
 
-        $current = Current::get($request);
+        $current = Current::init($request);
 
         $changes = [];
         $this->set($user, 'lastname', $data['lastname'], Casting::string, $changes);
@@ -161,20 +166,16 @@ class UserEditController extends ApiController
             }
         }
 
-        if (!empty($changes)) {
-            $user
-                ->addHistory($user->wasRecentlyCreated ? HistoryAction::user_created : HistoryAction::user_edited, $current->positionId())
-                ->addChanges($changes);
-        } else {
-            return APIResponse::success(
-                'Изменений не сделано',
-                ['id' => $user->id]
-            );
+        if (empty($changes)) {
+            return APIResponse::success('Изменений не сделано')
+                ->payload(['id' => $user->id]);
         }
 
-        return APIResponse::success(
-            $user->wasRecentlyCreated ? 'Учётная запись добавлена' : 'Учётная запись сохранена',
-            ['id' => $user->id]
-        );
+        $user
+            ->addHistory($user->wasRecentlyCreated ? HistoryAction::user_created : HistoryAction::user_edited, $current->positionId())
+            ->addChanges($changes);
+
+        return APIResponse::success($user->wasRecentlyCreated ? 'Учётная запись добавлена' : 'Учётная запись сохранена')
+            ->payload(['id' => $user->id]);
     }
 }

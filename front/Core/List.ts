@@ -2,6 +2,7 @@ import clone from "./Helpers/Clone";
 import toaster from "./Toaster/Toaster";
 import {ErrorResponse, http} from "./Http/Http";
 import {LocalStore} from "@/Core/LocalStore";
+import {CommunicationError, CommunicationState} from "@/Core/Types/Communications";
 
 export type ListPagination = {
     current_page: number,
@@ -12,7 +13,7 @@ export type ListPagination = {
     per_page: number,
 }
 
-export type ListOptions = null | {
+export type ListConfig = {
     prefix?: string,
     without_pagination?: boolean,
     without_toaster?: boolean,
@@ -23,63 +24,58 @@ export type ListOptions = null | {
     }
 }
 
+export type ListOptions = { [index: string]: any }
+
 type ListResponse = {
-    message: string,
     list: { [index: string]: any },
-    filters: { [index: string]: string },
-    default_filters: { [index: string]: string },
-    titles: { [index: string]: string },
-    search: string | null,
-    order: string | null,
-    order_by: string | null,
-    ordering: null | { [index: string]: any },
-    payload: { [index: string]: any },
-    pagination: ListPagination,
+    pagination: ListPagination | undefined,
+    title: string | undefined,
+    titles: { [index: string]: string } | undefined,
+    filters: { [index: string]: string } | undefined,
+    search: string | undefined,
+    order: string | undefined,
+    order_by: string | undefined,
+    orderable: { [index: string]: any } | undefined,
+    message: string | undefined,
+    payload: { [index: string]: any } | undefined,
 }
 
 export class List<Type> {
 
     /** Url to load form data */
-    load_url: string | null = null;
+    load_url: string | undefined = undefined;
+
     /** Default options to pass to request */
-    options: { [index: string]: any } = {};
+    options: ListOptions | undefined = undefined;
 
-    /** Pagination */
-    pagination: ListPagination | null = null;
+    config: ListConfig | undefined = undefined;
 
-    titles: { [index: string]: string } = {};
     list: Type[] = [];
-    payload: { [index: string]: any } = {};
-
+    pagination: ListPagination | undefined = undefined;
+    title: string | undefined = undefined;
+    titles: { [index: string]: string } = {};
     filters: { [index: string]: any } = {};
-    default_filters: { [index: string]: any } = {};
-
     search: string | null = null;
-
     order_by: string | null = null;
     order: 'asc' | 'desc' | null = null;
-    ordering: null | { [index: string]: any } = null;
+    orderable: null | { [index: string]: any } = null;
+    payload: { [index: string]: any } = {};
 
-    listOptions: ListOptions = null;
-
-    is_loading: boolean = false;
-    is_loaded: boolean = false;
-    is_forbidden: boolean = false;
-    is_not_found: boolean = false;
+    state: CommunicationState = {
+        is_loading: false,
+        is_loaded: false,
+        is_forbidden: false,
+        is_not_found: false,
+    }
 
     use_toaster: boolean = true;
 
-    /** Callbacks */
-    loaded_callback: ((list: object, titles: object, payload: object) => void) | null = null;
-    load_failed_callback: ((code: number, message: string, response: ErrorResponse) => void) | null = null;
-
-    constructor(load_url: string | null, options: object = {}, listOptions: ListOptions = null) {
+    constructor(load_url: string, options: ListOptions = {}, config: ListConfig | undefined = undefined) {
         this.load_url = load_url;
         this.options = options;
-        this.options = options;
-        this.listOptions = listOptions;
+        this.config = config;
 
-        if (!listOptions || !listOptions.without_pagination) {
+        if (!config || !config.without_pagination) {
             this.pagination = {
                 current_page: 1,
                 last_page: 1,
@@ -89,29 +85,17 @@ export class List<Type> {
                 per_page: 10,
             };
         }
-        if (!listOptions || !listOptions.without_toaster) {
+        if (!config || !config.without_toaster) {
             this.use_toaster = false;
         }
-    }
 
-    /**
-     * Reload current page
-     */
-    reload() {
-        return this.load(this.pagination ? this.pagination.current_page : 1, this.pagination ? this.pagination.per_page : null);
-    }
-
-    /**
-     * Initial list load
-     */
-    initial() {
-        // get remembered filters
-        if (this.listOptions && this.listOptions.prefix && this.listOptions.remember) {
-            const prefix: string = this.listOptions.prefix;
-            if (this.listOptions.remember.pagination && this.pagination) {
+        // get remembered
+        if (config && config.prefix && config.remember) {
+            const prefix: string = config.prefix;
+            if (config.remember.pagination && this.pagination) {
                 this.pagination.per_page = Number(LocalStore.get(prefix + '::per_page'));
             }
-            if (this.listOptions.remember.filters) {
+            if (config.remember.filters) {
                 let json: string | null = LocalStore.get(prefix + '::filters');
                 if (json !== null) {
                     let filters: { [index: string]: any } = JSON.parse(json);
@@ -120,7 +104,7 @@ export class List<Type> {
                     })
                 }
             }
-            if (this.listOptions.remember.order) {
+            if (config.remember.order) {
                 this.order_by = LocalStore.get(prefix + '::order_by');
                 let order = LocalStore.get(prefix + '::order');
                 if (order === 'asc') {
@@ -132,8 +116,13 @@ export class List<Type> {
                 }
             }
         }
+    }
 
-        return this.load(1, null, true);
+    /**
+     * Reload current page
+     */
+    reload() {
+        return this.load(this.pagination ? this.pagination.current_page : 1, this.pagination ? this.pagination.per_page : null);
     }
 
     /**
@@ -141,99 +130,133 @@ export class List<Type> {
      *
      * @param page
      * @param perPage
-     * @param initial
      */
-    load(page: number = 1, perPage: number | null = null, initial: boolean = false) {
-        return new Promise((resolve: ((obj: { list: any[], titles: { [index: string]: string }, payload: { [index: string]: any } }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
-            if (this.load_url === null) {
+    load(page: number = 1, perPage: number | null = null) {
+        return new Promise((resolve: ((response: ListResponse) => void), reject: ((error: CommunicationError) => void)) => {
+            if (!this.load_url) {
                 this.notify('Can not load list. Load URL is not defined.', 0, 'error');
                 reject({code: 0, message: 'Can not load data. Load URL is not defined.', response: null});
                 return;
             }
 
-            this.is_loading = true;
+            this.state.is_loading = true;
 
-            let options = clone(this.options);
+            let options = this.prepareOptions(page, perPage);
 
-            options['filters'] = this.filters;
-            options['search'] = this.search;
-            options['order'] = this.order;
-            options['order_by'] = this.order_by;
-            options['page'] = page;
-            options['per_page'] = perPage !== null ? perPage : (this.pagination ? this.pagination.per_page : null);
-            options['initial'] = initial;
-
-            // remember options
-            if (this.listOptions && this.listOptions.prefix && this.listOptions.remember) {
-                const prefix: string = this.listOptions.prefix;
-                if (this.listOptions.remember.pagination && this.pagination) {
-                    LocalStore.set(prefix + '::per_page', options['per_page']);
-                }
-                if (this.listOptions.remember.filters) {
-                    let filters: { [index: string]: any } = {};
-                    this.listOptions.remember.filters.map((filter: string) => {
-                        filters[filter] = this.filters[filter];
-                    });
-                    LocalStore.set(prefix + '::filters', JSON.stringify(filters));
-                }
-                if (this.listOptions.remember.order) {
-                    LocalStore.set(prefix + '::order', options['order']);
-                    LocalStore.set(prefix + '::order_by', options['order_by']);
-                }
-            }
-
-            http.post<ListResponse>(this.load_url, options)
+            http.get<ListResponse>(this.load_url, {params: options})
                 .then(response => {
                     this.list = [];
                     Object.keys(response.data.list).map(key => {
                         this.list.push(response.data.list[key]);
                     });
-                    this.titles = typeof response.data.titles !== "undefined" ? response.data.titles : {};
-                    this.pagination = typeof response.data.pagination !== "undefined" ? response.data.pagination : null;
-                    this.filters = typeof response.data.filters !== "undefined" && response.data.filters !== null && Object.keys(response.data.filters).length > 0 ? response.data.filters : {};
-                    this.default_filters = typeof response.data.default_filters !== "undefined" && response.data.default_filters !== null ? response.data.default_filters : {};
-                    this.search = typeof response.data.payload !== "undefined" ? response.data.search : null;
-                    this.order_by = typeof response.data.payload !== "undefined" ? response.data.order_by : null;
-                    this.order = typeof response.data.payload !== "undefined" ? (response.data.order === 'desc' ? 'desc' : 'asc') : null;
-                    this.ordering = typeof response.data.payload !== "undefined" ? response.data.ordering : null;
-                    this.payload = typeof response.data.payload !== "undefined" ? response.data.payload : {};
+                    this.pagination = response.data.pagination ? response.data.pagination : undefined;
+                    this.title = response.data.title ? response.data.title : undefined;
+                    this.titles = response.data.titles ? response.data.titles : {};
+                    this.filters = response.data.filters ? response.data.filters : this.filters;
+                    this.search = response.data.search ? response.data.search : this.search;
+                    this.order_by = response.data.order_by ? response.data.order_by : this.order_by;
+                    this.order = response.data.order ? (response.data.order === 'desc' ? 'desc' : 'asc') : this.order;
+                    this.orderable = response.data.orderable ? response.data.orderable : null;
+                    this.payload = response.data.payload ? response.data.payload : {};
 
-                    this.is_loaded = true;
-                    this.is_forbidden = false;
-                    this.is_not_found = false;
+                    this.state.is_loaded = true;
+                    this.state.is_forbidden = false;
+                    this.state.is_not_found = false;
 
-                    if (typeof this.loaded_callback === "function") {
-                        this.loaded_callback(this.list, this.titles, this.payload);
-                    }
-                    resolve({list: this.list, titles: this.titles, payload: this.payload});
+                    resolve({
+                        list: this.list,
+                        pagination: this.pagination,
+                        title: this.title,
+                        titles: this.titles,
+                        filters: this.filters,
+                        search: this.search ?? undefined,
+                        order: this.order ?? undefined,
+                        order_by: this.order_by ?? undefined,
+                        orderable: this.orderable ?? undefined,
+                        message: response.data.message,
+                        payload: this.payload,
+                    });
                 })
                 .catch((error: ErrorResponse) => {
-                    this.is_forbidden = error.status === 403;
-                    this.is_not_found = error.status === 404;
+                    this.state.is_forbidden = error.status === 403;
+                    this.state.is_not_found = error.status === 404;
                     if ([403, 404, 500].indexOf(error.status) === -1) {
                         this.notify(error.data.message, 0, 'error');
-                    }
-                    if (typeof this.load_failed_callback === "function") {
-                        this.load_failed_callback(error.status, error.data.message, error);
                     }
                     reject({code: error.status, message: error.data.message, response: error});
                 })
                 .finally(() => {
-                    this.is_loading = false;
+                    this.state.is_loading = false;
                 });
         });
+    }
+
+    prepareOptions(page: number, perPage: number | null): ListOptions {
+        let options = clone(this.options);
+
+        options['filters'] = this.filters;
+        options['search'] = this.search;
+        options['order'] = this.order;
+        options['order_by'] = this.order_by;
+        if (page !== 1) {
+            options['page'] = page;
+        }
+        if (!this.config || !this.config?.without_pagination) {
+            if (perPage !== null) {
+                options['per_page'] = perPage;
+            } else {
+                options['per_page'] = this.pagination && this.pagination.per_page ? this.pagination.per_page : null
+            }
+        }
+        // remember options
+        if (this.config && this.config.prefix && this.config.remember) {
+            const prefix: string = this.config.prefix;
+            if (this.config.remember.pagination && this.pagination) {
+                LocalStore.set(prefix + '::per_page', options['per_page']);
+            }
+            if (this.config.remember.filters) {
+                let filters: { [index: string]: any } = {};
+                this.config.remember.filters.map((filter: string) => {
+                    filters[filter] = this.filters[filter];
+                });
+                LocalStore.set(prefix + '::filters', JSON.stringify(filters));
+            }
+            if (this.config.remember.order) {
+                LocalStore.set(prefix + '::order', options['order']);
+                LocalStore.set(prefix + '::order_by', options['order_by']);
+            }
+        }
+
+        return options;
     }
 
     /**
      * Clear list loaded data.
      */
     clear() {
-        this.titles = {};
         this.list = [];
+        this.pagination = !this.config || this.config.without_pagination ? undefined : {
+            current_page: 1,
+            last_page: 1,
+            from: 0,
+            to: 0,
+            total: 0,
+            per_page: 10,
+        };
+        this.title = undefined;
+        this.titles = {};
+        this.filters = {};
+        this.search = null;
+        this.order_by = null;
+        this.order = null;
+        this.orderable = null;
         this.payload = {};
-        this.is_loading = false;
-        this.is_loaded = false;
-        this.is_forbidden = false;
+        this.state = {
+            is_loading: false,
+            is_loaded: false,
+            is_forbidden: false,
+            is_not_found: false,
+        };
     }
 
     /**
@@ -243,7 +266,7 @@ export class List<Type> {
      * @param delay
      * @param type
      */
-    protected notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null) {
+    notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null) {
         if (this.use_toaster) {
             toaster.show(message, delay, type);
         } else {

@@ -7,19 +7,18 @@
 
         <template v-for="(link, index) in breadcrumbs">
             <router-link v-if="link.route" class="breadcrumbs__link" :to="link.route">{{ link.name }}</router-link>
-            <span v-else class="breadcrumbs__text">{{ link.name }}</span>
+            <span v-else class="breadcrumbs__text">{{ link.name ? link.name : '...' }}</span>
             <span class="breadcrumbs__divider" v-if="index +1 < nodesCount">{{ dividerInner }}</span>
         </template>
     </div>
 </template>
 
 <script setup lang="ts">
-import {RouteRecordRaw} from "vue-router";
 import {computed} from "vue";
 import IconHome from "@/Icons/IconHome.vue";
 
 const props = defineProps<{
-    breadcrumbs?: Array<{ name: string, route: RouteRecordRaw }>,
+    breadcrumbs?: Array<{ name?: string, route?: { name: string, params?: { id: number } } }>,
     divider?: string,
 }>();
 

@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-    loading: boolean,
+    loading?: boolean,
     transparent?: boolean,
 }>();
 </script>
@@ -36,6 +36,7 @@ $loader_animation_time: 2s;
     width: 100%;
     height: 100%;
     position: relative;
+    min-height: $base_size_unit;
 
     &__wrapper {
         position: absolute;

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\History\Formatters;
 
@@ -20,8 +21,12 @@ class PermissionRoleChangesFormatter implements FormatterInterface
                 break;
             case 'active':
                 $result['parameter'] = 'Статус';
-                $result['old'] = $result['old'] === null ? null : ($result['old'] ? 'Включена' : 'Отключена');
-                $result['new'] = $result['new'] === null ? null : ($result['new'] ? 'Включена' : 'Отключена');
+                if ($result['old'] !== null) {
+                    $result['old'] = $result['old'] ? 'Включена' : 'Отключена';
+                }
+                if (!$result['new'] !== null) {
+                    $result['new'] = $result['new'] ? 'Включена' : 'Отключена';
+                }
                 break;
             case 'description':
                 $result['parameter'] = 'Описание';

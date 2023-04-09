@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
+import {computed, StyleValue} from "vue";
 
 const props = defineProps<{
     title?: string,
@@ -16,7 +16,7 @@ const props = defineProps<{
     maxWidth?: string,
 }>();
 
-const style = computed((): object => {
+const style = computed((): StyleValue => {
     let style: { width?: string, minWidth?: string, maxWidth?: string } = {};
     style['width'] = props.width ? props.width : '100%';
     if (props.minWidth) {

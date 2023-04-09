@@ -6,6 +6,7 @@
         :required="required"
         :errors="errors"
         :hide-title="hideTitle"
+        :empty-title="emptyTitle"
         :vertical="vertical"
     >
         <InputDropDown
@@ -42,21 +43,22 @@ import InputDropDown from "@/Components/Input/InputDropDown.vue";
 const props = defineProps<{
     // common props
     name?: string,
-    modelValue?: DropDownValueType,
+    modelValue: DropDownValueType,
     original?: DropDownValueType,
     disabled?: boolean,
     hasErrors?: boolean,
     clearable?: boolean,
 
     // field props
-    title?: string,
+    title?: string | null,
     required?: boolean,
     errors?: string[],
     hideTitle?: boolean,
+    emptyTitle?: boolean,
     vertical?: boolean,
 
     // dropdown props
-    placeholder?: string,
+    placeholder?: string | null,
     hasNull?: boolean,
     nullCaption?: string,
     emptyCaption?: string,
@@ -75,7 +77,7 @@ const emit = defineEmits<{
     (e: 'change', value: string | number | boolean | null | Array<string | number>, name: string | undefined, payload: any): void,
 }>()
 
-const input = ref<InstanceType<typeof InputDropDown> | null>(null);
+const input = ref<InstanceType<typeof InputDropDown> | undefined>(undefined);
 
 const proxyValue = computed({
     get: (): string | number | boolean | null | Array<string | number> => {

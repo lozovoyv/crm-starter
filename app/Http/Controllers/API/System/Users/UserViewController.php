@@ -1,16 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
 use App\Models\Users\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserViewController extends ApiController
 {
-    public function view(Request $request): JsonResponse
+    public function view(Request $request): ApiResponse
     {
         /** @var User|null $user */
         $user = User::query()
@@ -19,13 +19,13 @@ class UserViewController extends ApiController
             ->first();
 
         if ($user === null) {
-            return APIResponse::notFound('Учётная запись не найдена');
+            return ApiResponse::notFound('Учётная запись не найдена');
         }
 
         $data = $user->toArray();
 
         $data['name'] = $user->compactName;
 
-        return APIResponse::response($data);
+        return APIResponse::common($data);
     }
 }

@@ -1,14 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Staff;
 
-use App\Http\APIResponse;
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
 use App\Models\EntryScope;
 use App\Models\Positions\PositionType;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class StaffHistoryController extends ApiHistoryController
@@ -19,9 +19,9 @@ class StaffHistoryController extends ApiHistoryController
      * @param APIListRequest $request
      * @param int $id
      *
-     * @return  JsonResponse
+     * @return  ApiResponse
      */
-    public function list(APIListRequest $request, int $id): JsonResponse
+    public function list(APIListRequest $request, int $id): ApiResponse
     {
         $query = History::query()
             ->where('entry_name', EntryScope::position)
@@ -39,9 +39,9 @@ class StaffHistoryController extends ApiHistoryController
      * @param Request $request
      * @param int $id
      *
-     * @return JsonResponse
+     * @return  ApiResponse
      */
-    public function comments(Request $request, int $id): JsonResponse
+    public function comments(Request $request, int $id): ApiResponse
     {
         // TODO refactor on need !!!
 
@@ -58,7 +58,7 @@ class StaffHistoryController extends ApiHistoryController
             return APIResponse::error('Запись не найдена');
         }
 
-        return APIResponse::list($record->comments);
+        return APIResponse::list()->items($record->comments);
     }
 
     /**
@@ -67,9 +67,9 @@ class StaffHistoryController extends ApiHistoryController
      * @param Request $request
      * @param int $id
      *
-     * @return JsonResponse
+     * @return  ApiResponse
      */
-    public function changes(Request $request, int $id): JsonResponse
+    public function changes(Request $request, int $id): ApiResponse
     {
         $query = History::query()
             ->where('entry_name', EntryScope::position)
@@ -80,7 +80,7 @@ class StaffHistoryController extends ApiHistoryController
         $record = $this->retrieveRecord($query, $request);
 
         if ($record === null) {
-            return APIResponse::error('Запись не найдена');
+            return ApiResponse::error('Запись не найдена');
         }
 
         return $this->changesResponse($record);

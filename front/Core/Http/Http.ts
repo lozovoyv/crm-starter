@@ -1,4 +1,4 @@
-import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import dialog from "@/Core/Dialog/Dialog";
 import toaster from "@/Core/Toaster/Toaster";
 
@@ -35,7 +35,7 @@ export type ErrorResponse = {
 
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate
-const injectToken = (config: AxiosRequestConfig): AxiosRequestConfig => {
+const injectToken = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     // try {
     //     const token = localStorage.getItem("accessToken");
     //
@@ -122,7 +122,7 @@ class Http {
             case StatusCode.TokenExpired: {
                 if (!response.headers['X-Retry-request']) {
                     return new Promise((resolve) => {
-                        axios.get('/sanctum/csrf-cookie')
+                        axios.get('/api/sanctum/csrf-cookie')
                             .then(() => {
                                 response.headers['X-Retry-request'] = 'true';
                                 resolve(axios(response.config));

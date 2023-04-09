@@ -56,7 +56,6 @@
 <script setup lang="ts">
 import LoadingProgress from "@/Components/LoadingProgress.vue";
 import {computed} from "vue";
-import {RouteRecordRaw} from "vue-router";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import Breadcrumbs from "@/Components/Layout/Breadcrumbs.vue";
 
@@ -64,8 +63,8 @@ const props = defineProps<{
     isProcessing?: boolean,
     isForbidden?: boolean,
     isNotFound?: boolean,
-    link?: { name: string, route: Array<RouteRecordRaw> },
-    breadcrumbs?: Array<{ name: string, route: RouteRecordRaw }>,
+    link?: { name: string, route?: { name: string, params?: { id: number } } },
+    breadcrumbs?: Array<{ name?: string, route?: { name: string, params?: { id: number } } }>,
     title?: string,
     wide?: boolean,
 }>();
