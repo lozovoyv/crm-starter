@@ -19,6 +19,7 @@ trait ApiInteractions
         Current::unset();
 
         $headers['Accept'] = 'application/json';
+        $headers['origin'] = '127.0.0.1';
 
         return $this->get($url, $headers);
     }
