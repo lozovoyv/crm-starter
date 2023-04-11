@@ -25,10 +25,10 @@ class PermissionGroupsListController extends ApiController
         'updated_at' => 'Изменено',
     ];
 
-    protected array $ordering = ['id', 'state', 'name', 'updated_at'];
+    protected array $ordering = ['id', 'name', 'updated_at'];
 
     /**
-     * Get roles list.
+     * Get permission groups list.
      *
      * @param APIListRequest $request
      *

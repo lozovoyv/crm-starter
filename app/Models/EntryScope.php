@@ -17,7 +17,7 @@ class EntryScope
 {
     public const user = 'user';
     public const position = 'position';
-    public const role = 'role';
+    public const permission_group = 'permission_group';
     public const dictionary = 'dictionary';
 
     public static function enforceMorphMap(): void
@@ -25,7 +25,7 @@ class EntryScope
         Relation::enforceMorphMap([
             self::user => User::class,
             self::position => Position::class,
-            self::role => PermissionGroup::class,
+            self::permission_group => PermissionGroup::class,
         ]);
     }
 }

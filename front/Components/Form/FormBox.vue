@@ -1,6 +1,6 @@
 <template>
     <div class="form">
-        <LoadingProgress :loading="form.is_loading || form.is_saving">
+        <LoadingProgress :loading="form.state.is_loading || form.state.is_saving">
             <slot/>
             <div class="form__errors" v-if="errors.length > 0">
                 <div class="form__errors-error" v-for="error in errors">{{ error.text }}</div>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import GuiButton from "@/Components/GUI/GuiButton.vue";
-import {Form} from "@/Core/Form";
+import {Form, FormResponse} from "@/Core/Form";
 import {computed} from "vue";
 import LoadingProgress from "@/Components/LoadingProgress.vue";
 
@@ -28,13 +28,13 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'save', response: { values: { [index: string]: any }, payload: { [index: string]: any } }): void,
+    (e: 'save', response: FormResponse): void,
     (e: 'clear'): void,
     (e: 'cancel'): void,
 }>()
 
 const disabled = computed((): boolean => {
-    return props.saveDisabled || !props.form.is_loaded || props.form.is_loading || props.form.is_saving || props.form.is_forbidden;
+    return props.saveDisabled || !props.form.state.is_loaded || !!props.form.state.is_loading || !!props.form.state.is_saving || !!props.form.state.is_forbidden;
 });
 
 const errors = computed((): Array<{ text: string, key: string, index: number }> => {

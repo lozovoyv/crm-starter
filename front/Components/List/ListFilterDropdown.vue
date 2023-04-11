@@ -59,6 +59,10 @@ const props = defineProps<{
     search?: boolean,
 }>();
 
+if(props.list.filters[props.name] === undefined) {
+    props.list.filters[props.name] = null;
+}
+
 function changeFilter(value: string | number | boolean | null | Array<string | number>): void {
     if (!props.manual) {
         props.list.filters[props.name] = value;

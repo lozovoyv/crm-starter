@@ -5,7 +5,7 @@ namespace App\Models\History\Formatters;
 
 use App\Models\History\HistoryChanges;
 
-class PermissionRoleChangesFormatter implements FormatterInterface
+class PermissionGroupChangesFormatter implements FormatterInterface
 {
     public static function format(HistoryChanges $changes): array
     {

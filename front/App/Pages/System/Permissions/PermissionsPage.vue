@@ -9,11 +9,9 @@
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
         <PermissionGroupsList v-if="tab === 'groups'" ref="groups"/>
         <PermissionsList v-if="tab === 'permissions'"/>
-<!--
         <PermissionsHistory v-if="tab === 'history'" ref="history"/>
--->
 
-<!--        <PermissionGroupEditForm ref="form"/>-->
+        <PermissionGroupEditForm ref="form"/>
     </LayoutPage>
 </template>
 
@@ -23,10 +21,10 @@ import GuiActionsMenu from "@/Components/GUI/GuiActionsMenu.vue";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 import {computed, ref} from "vue";
-import PermissionGroupsList from "@/App/Pages/System/Permissions/PermissionGroupsList.vue";
-// import PermissionsHistory from "@/App/Pages/System/Permissions/PermissionsHistory.vue";
-import PermissionsList from "@/App/Pages/System/Permissions/PermissionsList.vue";
-// import PermissionGroupEditForm from "@/App/Pages/System/Permissions/PermissionGroupEditForm.vue";
+import PermissionGroupsList from "@/App/Pages/System/Permissions/parts/PermissionGroupsList.vue";
+import PermissionsHistory from "@/App/Pages/System/Permissions/parts/PermissionsHistory.vue";
+import PermissionsList from "@/App/Pages/System/Permissions/parts/PermissionsList.vue";
+import PermissionGroupEditForm from "@/App/Pages/System/Permissions/parts/PermissionGroupEditForm.vue";
 
 const tab = ref<string | undefined>(undefined);
 
@@ -35,20 +33,20 @@ const tabs = computed((): { [index: string]: string } => {
 });
 
 const groups = ref<InstanceType<typeof PermissionGroupsList> | undefined>(undefined);
-// const form = ref<InstanceType<typeof PermissionGroupEditForm> | undefined>(undefined);
-// const history = ref<InstanceType<typeof PermissionsHistory> | undefined>(undefined);
+const form = ref<InstanceType<typeof PermissionGroupEditForm> | undefined>(undefined);
+const history = ref<InstanceType<typeof PermissionsHistory> | undefined>(undefined);
 
 function create(): void {
-    // if(form.value) {
-    //     form.value.show(0)
-            // ?.then(() => {
-            //     if (tab.value === 'groups' && groups.value) {
-            //         groups.value?.reload();
-            //     }
-            //     if (tab.value === 'history' && history.value) {
-            //         history.value?.reload();
-            //     }
-            // });
-    // }
+    if(form.value) {
+        form.value.show(0)
+            ?.then(() => {
+                if (tab.value === 'groups' && groups.value) {
+                    groups.value?.reload();
+                }
+                if (tab.value === 'history' && history.value) {
+                    history.value?.reload();
+                }
+            });
+    }
 }
 </script>

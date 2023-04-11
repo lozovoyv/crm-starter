@@ -48,7 +48,7 @@ class Permission extends Model
     }
 
     /**
-     * Roles this permission attached to.
+     * Groups this permission attached to.
      *
      * @return  BelongsToMany
      */

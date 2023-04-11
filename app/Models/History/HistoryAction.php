@@ -23,12 +23,12 @@ class HistoryAction extends Model
     public const dictionary_item_activated = 161;
     public const dictionary_item_deactivated = 165;
 
-    /** PERMISSIONS ADN ROLES (201-300) */
-    public const permission_role_created = 201;
-    public const permission_role_edited = 211;
-    public const permission_role_deleted = 221;
-    public const permission_role_activated = 231;
-    public const permission_role_deactivated = 241;
+    /** PERMISSIONS AND PERMISSION GROUPS (201-300) */
+    public const permission_group_created = 201;
+    public const permission_group_edited = 211;
+    public const permission_group_deleted = 221;
+    public const permission_group_activated = 231;
+    public const permission_group_deactivated = 241;
 
     /** USERS (301-400) */
     public const user_created = 301;

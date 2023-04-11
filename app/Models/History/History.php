@@ -168,7 +168,13 @@ class History extends Model
     public function addChanges(string|array $parameter, int $type = null, mixed $old = null, mixed $new = null): self
     {
         if (is_array($parameter)) {
-            $this->changes()->createMany($parameter);
+            foreach ($parameter as $change) {
+                if ($change instanceof HistoryChanges) {
+                    $this->changes()->save($change);
+                } else {
+                    $this->changes()->create($parameter);
+                }
+            }
         } else {
             $this->changes()->create([
                 'parameter' => $parameter,

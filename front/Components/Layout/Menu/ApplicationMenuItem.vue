@@ -81,7 +81,7 @@ function clicked(): void {
     &-item {
         flex-grow: 0;
         font-family: $project_font;
-        font-size: 14px;
+        font-size: 15px;
         position: relative;
         color: $color_text_black;
         transition: color $animation $animation_time, background-color $animation $animation_time;
@@ -94,7 +94,7 @@ function clicked(): void {
             box-sizing: border-box;
             cursor: pointer;
             white-space: nowrap;
-            line-height: 22px;
+            line-height: 24px;
             flex-grow: 1;
             padding: 0 3px 0 5px;
 

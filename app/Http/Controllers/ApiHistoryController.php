@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
+use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller;
 
@@ -41,7 +41,7 @@ class ApiHistoryController extends Controller
     protected function retrieveHistory(Builder $query, APIListRequest $request): LengthAwarePaginator
     {
         // apply order
-        $this->order = $request->order();
+        $this->order = $request->order('desc');
         // fixed ordering by timestamp only
         $this->orderBy = 'timestamp';
         $query->orderBy('timestamp', $this->order)->orderBy('id', $this->order);
@@ -49,7 +49,7 @@ class ApiHistoryController extends Controller
         $query->withCount(['comments', 'links', 'changes']);
 
         // apply filters
-        $this->filters = $request->filters();
+        $this->filters = $request->filters(['action_ids' => Casting::array]);
         if (isset($this->filters['action_ids'])) {
             $query->whereIn('action_id', $this->filters['action_ids']);
         }
@@ -60,18 +60,15 @@ class ApiHistoryController extends Controller
     /**
      * History list response.
      *
-     * @param APIListRequest $request
      * @param LengthAwarePaginator $history
      *
      * @return APIResponse
      */
-    protected function listResponse(APIListRequest $request, LengthAwarePaginator $history): APIResponse
+    protected function listResponse(LengthAwarePaginator $history): APIResponse
     {
         return APIResponse::list()
             ->items($history)
             ->titles($this->titles)
-            ->filters($this->filters)
-            ->search($request->search(true))
             ->order($this->orderBy, $this->order)
             ->orderable($this->ordering);
     }
@@ -80,15 +77,15 @@ class ApiHistoryController extends Controller
      * Retrieve history record.
      *
      * @param Builder $query
-     * @param Request $request
+     * @param int $id
      *
      * @return History|null
      */
-    protected function retrieveRecord(Builder $query, Request $request): ?History
+    protected function retrieveRecord(Builder $query, int $id): ?History
     {
         /** @var History|null $record */
         $record = $query->with(['changes', 'comments'])
-            ->where('id', $request->input('id'))
+            ->where('id', $id)
             ->first();
 
         return $record;

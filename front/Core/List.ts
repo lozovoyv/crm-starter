@@ -26,7 +26,7 @@ export type ListConfig = {
 
 export type ListOptions = { [index: string]: any }
 
-type ListResponse = {
+export type ListResponse = {
     list: { [index: string]: any },
     pagination: ListPagination | undefined,
     title: string | undefined,
@@ -43,7 +43,7 @@ type ListResponse = {
 export class List<Type> {
 
     /** Url to load form data */
-    load_url: string | undefined = undefined;
+    url: string | undefined = undefined;
 
     /** Default options to pass to request */
     options: ListOptions | undefined = undefined;
@@ -70,8 +70,8 @@ export class List<Type> {
 
     use_toaster: boolean = true;
 
-    constructor(load_url: string, options: ListOptions = {}, config: ListConfig | undefined = undefined) {
-        this.load_url = load_url;
+    constructor(url: string, options: ListOptions = {}, config: ListConfig | undefined = undefined) {
+        this.url = url;
         this.options = options;
         this.config = config;
 
@@ -130,10 +130,11 @@ export class List<Type> {
      *
      * @param page
      * @param perPage
+     * @param suffix
      */
-    load(page: number = 1, perPage: number | null = null) {
-        return new Promise((resolve: ((response: ListResponse) => void), reject: ((error: CommunicationError) => void)) => {
-            if (!this.load_url) {
+    load(page: number = 1, perPage: number | null = null, suffix: string|undefined = undefined) {
+        return new Promise((resolve: (response: ListResponse) => void, reject: (error: CommunicationError) => void) => {
+            if (!this.url) {
                 this.notify('Can not load list. Load URL is not defined.', 0, 'error');
                 reject({code: 0, message: 'Can not load data. Load URL is not defined.', response: null});
                 return;
@@ -143,7 +144,9 @@ export class List<Type> {
 
             let options = this.prepareOptions(page, perPage);
 
-            http.get<ListResponse>(this.load_url, {params: options})
+            const url = this.url + (suffix ? `${suffix}` : '');
+
+            http.get<ListResponse>(url, {params: options})
                 .then(response => {
                     this.list = [];
                     Object.keys(response.data.list).map(key => {

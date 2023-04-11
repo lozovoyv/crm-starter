@@ -5,7 +5,7 @@ namespace App\Models\History;
 
 use App\Models\EntryScope;
 use App\Models\History\Formatters\FormatterInterface;
-use App\Models\History\Formatters\PermissionRoleChangesFormatter;
+use App\Models\History\Formatters\PermissionGroupChangesFormatter;
 use App\Models\History\Formatters\PositionChangesFormatter;
 use App\Models\History\Formatters\UserChangesFormatter;
 use App\Utils\Casting;
@@ -30,7 +30,7 @@ class HistoryChanges extends Model
     protected $fillable = ['parameter', 'type', 'old', 'new'];
 
     protected array $formatters = [
-        EntryScope::role => PermissionRoleChangesFormatter::class,
+        EntryScope::permission_group => PermissionGroupChangesFormatter::class,
         EntryScope::position => PositionChangesFormatter::class,
         EntryScope::user => UserChangesFormatter::class,
     ];

@@ -23,7 +23,7 @@ class HistoryController extends ApiHistoryController
     {
         $history = $this->retrieveHistory(History::query(), $request);
 
-        return $this->listResponse($request, $history);
+        return $this->listResponse($history);
     }
 
     /**
@@ -40,7 +40,7 @@ class HistoryController extends ApiHistoryController
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
-            ->where('entry_name', EntryScope::role)
+            ->where('entry_name', EntryScope::permission_group)
             ->where('id', $request->input('id'))
             ->first();
 

@@ -1,7 +1,7 @@
 <template>
     <div class="login__wrapper">
         <div class="login">
-            <LoadingProgress :loading="form.is_loading || form.is_saving">
+            <LoadingProgress :loading="form.state.is_loading || form.state.is_saving">
                 <div class="login__logo">
                     <div class="login__logo-img">
                         <Logo/>
@@ -46,12 +46,13 @@ const router = useRouter();
 const route = useRoute();
 const login_input = ref<InstanceType<typeof FormString> | undefined>(undefined);
 const password_input = ref<InstanceType<typeof FormPassword> | undefined>(undefined);
-const form = ref<Form>(new Form(undefined, null, '/api/login'));
+
+const form = ref<Form>(new Form('/api/login'));
 
 form.value.set('username', null, 'required', 'Адрес электронной почты / логин', true);
 form.value.set('password', null, 'required', 'Пароль', true);
 form.value.set('remember', null, null, 'Запомнить меня', true);
-form.value.load();
+form.value.setLoaded();
 
 onMounted(() => {
     login_input.value?.focus();
@@ -68,10 +69,10 @@ function enter() {
 }
 
 function login() {
-    if (form.value.is_saving || !form.value.validate()) {
+    if (form.value.state.is_saving || !form.value.validate()) {
         return;
     }
-    form.value.save(null, true)
+    form.value.save(null, true, true)
         .then(() => {
             if (route.redirectedFrom) {
                 router.replace(route.redirectedFrom);

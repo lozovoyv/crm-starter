@@ -46,14 +46,14 @@ const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
 let internalResolveFunction: undefined | { (value: unknown): void } = undefined;
 
-function show(options: { [index: string]: any } = {}) {
+function show(id: number|undefined, options: { [index: string]: any } = {}) {
     if (!popup.value) {
         console.error('Popup instance not set');
         return;
     }
     popup.value?.show();
     props.form.options = options;
-    props.form.load()
+    props.form.load(id, options)
         .catch(() => {
             popup.value?.hide();
         })

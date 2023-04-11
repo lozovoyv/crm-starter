@@ -57,10 +57,10 @@ const style = computed((): StyleValue => {
         left: 10px;
         top: -7px;
         font-family: $project_font;
-        font-size: 14px;
+        font-size: 15px;
         color: $color_gray;
-        height: 14px;
-        line-height: 14px;
+        height: 15px;
+        line-height: 15px;
         background-color: $color_white;
         padding: 0 5px;
     }

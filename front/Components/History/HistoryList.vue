@@ -10,11 +10,11 @@
                 <div v-for="link in record.links" style="white-space: nowrap" v-html="formatLink(link, true)"/>
             </ListTableCell>
             <ListTableCell style="text-align: center">
-                <template v-if="record.comments_count === 0 || !commentsUrl">{{ record.comments_count ? record.comments_count : '—' }}</template>
+                <template v-if="record.comments_count === 0">{{ record.comments_count ? record.comments_count : '—' }}</template>
                 <GuiLink v-else @click="showComments(record)">{{ record.comments_count }}</GuiLink>
             </ListTableCell>
             <ListTableCell style="text-align: center">
-                <template v-if="record.changes_count === 0 || !changesUrl">{{ record.changes_count ? record.changes_count : '—' }}</template>
+                <template v-if="record.changes_count === 0">{{ record.changes_count ? record.changes_count : '—' }}</template>
                 <GuiLink v-else @click="showChanges(record)">{{ record.changes_count }}</GuiLink>
             </ListTableCell>
             <ListTableCell style="white-space: nowrap">{{ record.position }}</ListTableCell>
@@ -24,7 +24,7 @@
         </template>
     </ListTable>
 
-    <HistoryChanges :url="changesUrl" ref="changes"/>
+    <HistoryChanges :url="url" ref="changes"/>
 
 </template>
 
@@ -41,8 +41,6 @@ import {useRouter} from "vue-router";
 
 const props = defineProps<{
     url: string,
-    commentsUrl?: string,
-    changesUrl?: string,
     prefix?: string,
     options?: { [index: string]: any },
     emptyMessage?: string,
@@ -83,7 +81,7 @@ const history = ref<List<History>>(new List<History>(props.url, props.options ? 
 
 const changes = ref<InstanceType<typeof HistoryChanges> | undefined>(undefined);
 
-history.value.initial();
+history.value.load();
 
 function reload(): void {
     history.value.reload();

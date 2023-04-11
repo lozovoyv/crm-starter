@@ -38,7 +38,7 @@ watch(() => props.tabs, () => {
 });
 
 function initTabs(initial: boolean = true): void {
-    let initialTab: string | null = null;
+    let initialTab: string | null;
 
     initialTab = props.modelValue ? props.modelValue : null;
 
@@ -93,7 +93,7 @@ function setTab(newTab: string | number | symbol | null, initial: boolean = fals
     @include no_selection();
 
     &__tab {
-        font-size: 14px;
+        font-size: 15px;
         font-family: $project_font;
         height: $base_size_unit;
         line-height: $base_size_unit;

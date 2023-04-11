@@ -69,7 +69,7 @@ function close() {
         align-items: center;
         font-family: $project_font;
         color: $color_default;
-        font-size: 14px;
+        font-size: 15px;
         cursor: pointer;
         height: 100%;
         background-color: transparent;
@@ -93,7 +93,7 @@ function close() {
         }
 
         & > svg {
-            width: 14px;
+            width: 15px;
             height: 100%;
         }
     }
@@ -115,7 +115,7 @@ function close() {
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
-        font-size: 14px;
+        font-size: 15px;
 
         &:before {
             content: '';

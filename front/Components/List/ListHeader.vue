@@ -39,14 +39,14 @@ const props = defineProps<{
 }>();
 
 const items = computed((): Array<HeaderItem> => {
-    if (!props.list.is_loaded || !props.list.titles) {
+    if (!props.list.state.is_loaded || !props.list.titles) {
         return [];
     }
     return Object.keys(props.list.titles).map((key: string) => {
         return {
             key: key,
             title: typeof props.list.titles !== 'undefined' && typeof props.list.titles[key] !== 'undefined' ? props.list.titles[key] : null,
-            ordering: props.list.ordering ? props.list.ordering.indexOf(key) !== -1 : false,
+            ordering: props.list.orderable ? props.list.orderable.indexOf(key) !== -1 : false,
             order: props.list.order,
             ordered: props.list.order_by === key,
         };
@@ -90,7 +90,7 @@ function changeOrder(item: HeaderItem): void {
         color: $color_text_black;
         vertical-align: top;
         font-family: $project_font;
-        font-size: 14px;
+        font-size: 15px;
         text-transform: uppercase;
         box-sizing: border-box;
         padding: 7px 15px;

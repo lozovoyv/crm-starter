@@ -1,7 +1,7 @@
 import {Form} from "@/Core/Form";
 
 export function getFromForm(form: Form, scope: 'titles' | 'values' | 'originals' | 'valid' | 'errors' | 'rules', name: string, defaults: any = null): any {
-    if (!form.is_loaded) {
+    if (!form.state.is_loaded) {
         return defaults;
     }
     return typeof form[scope][name] !== "undefined" ? form[scope][name] : defaults;

@@ -59,7 +59,7 @@ function close() {
         justify-content: center;
         font-family: $project_font;
         color: $color_gray_darken_2;
-        font-size: 14px;
+        font-size: 15px;
         cursor: pointer;
         width: 16px;
         height: 16px;
@@ -73,7 +73,7 @@ function close() {
         }
 
         & > svg {
-            width: 14px;
+            width: 15px;
             height: 100%;
         }
     }
@@ -96,7 +96,7 @@ function close() {
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
-        font-size: 14px;
+        font-size: 15px;
 
         &:before {
             content: '';

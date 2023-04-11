@@ -15,7 +15,7 @@ export default {}
     font-family: $project_font;
     text-align: left;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 15px;
     color: $color_text_black;
 }
 </style>

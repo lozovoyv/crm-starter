@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\API\System\Staff;
+namespace App\Http\Controllers\API\System\StaffPositions;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;

@@ -91,7 +91,7 @@ class PermissionBaseTest extends TestCase
         $this->assertEquals(0, $permission2->groups->count());
 
         $this->assertEquals('test role', $group->historyEntryTitle());
-        $this->assertEquals(EntryScope::role, $group->historyEntryName());
+        $this->assertEquals(EntryScope::permission_group, $group->historyEntryName());
         $this->assertEquals(null, $group->historyEntryType());
         $this->assertIsString($group->hash());
         $this->assertEquals([

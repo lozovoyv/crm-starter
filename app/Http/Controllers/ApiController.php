@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\History\HistoryChanges;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -36,8 +37,8 @@ class ApiController extends Controller
     {
         $validator = Validator::make(
             $data, $rules, $messages, array_map(static function ($title) {
-            return '"' . mb_strtolower($title) . '"';
-        }, $titles)
+                return '"' . mb_strtolower($title) . '"';
+            }, $titles)
         );
 
         return $validator->fails() ? $validator->getMessageBag()->toArray() : null;
@@ -50,17 +51,27 @@ class ApiController extends Controller
      * @param string $key
      * @param mixed $value
      * @param int $type
-     * @param array $changes
      *
-     * @return  void
+     * @return HistoryChanges|null
      */
-    protected function set(Model $model, string $key, mixed $value, int $type, array &$changes): void
+    protected function set(Model $model, string $key, mixed $value, int $type): ?HistoryChanges
     {
         /** @noinspection TypeUnsafeComparisonInspection */
         if (!$model->exists || $model->getAttribute($key) != $value) {
-            $changes[] = ['parameter' => $key, 'type' => $type, 'old' => $model->exists ? $model->getAttribute($key) : null, 'new' => $value];
+
+            $changes = new HistoryChanges([
+                'parameter' => $key,
+                'type' => $type,
+                'old' => $model->exists ? $model->getAttribute($key) : null,
+                'new' => $value,
+            ]);
+
             $model->setAttribute($key, $value);
+
+            return $changes;
         }
+
+        return null;
     }
 
     /**

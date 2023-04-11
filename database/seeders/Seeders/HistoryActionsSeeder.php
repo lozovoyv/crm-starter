@@ -18,11 +18,11 @@ class HistoryActionsSeeder extends GenericSeeder
             HistoryAction::dictionary_item_deactivated => ['name' => 'Запись справочника :entry отключена'],
 
             /** PERMISSIONS AND ROLES */
-            HistoryAction::permission_role_created => ['name' => 'Роль :entry создана'],
-            HistoryAction::permission_role_edited => ['name' => 'Роль :entry изменена'],
-            HistoryAction::permission_role_deleted => ['name' => 'Роль :entry удалена'],
-            HistoryAction::permission_role_activated => ['name' => 'Роль :entry включена'],
-            HistoryAction::permission_role_deactivated => ['name' => 'Роль :entry отключена'],
+            HistoryAction::permission_group_created => ['name' => 'Роль :entry создана'],
+            HistoryAction::permission_group_edited => ['name' => 'Роль :entry изменена'],
+            HistoryAction::permission_group_deleted => ['name' => 'Роль :entry удалена'],
+            HistoryAction::permission_group_activated => ['name' => 'Роль :entry включена'],
+            HistoryAction::permission_group_deactivated => ['name' => 'Роль :entry отключена'],
 
             /** USERS */
             HistoryAction::user_created => ['name' => 'Учётная запись :entry создана'],

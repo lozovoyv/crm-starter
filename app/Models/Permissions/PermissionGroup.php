@@ -57,7 +57,7 @@ class PermissionGroup extends Model implements Historical
      */
     public function historyEntryName(): string
     {
-        return EntryScope::role;
+        return EntryScope::permission_group;
     }
 
     /**

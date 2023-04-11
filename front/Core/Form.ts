@@ -5,135 +5,131 @@ import {validate} from "./Validator/Validate";
 import formatErrorMessage from "./Validator/Message";
 import toaster from "./Toaster/Toaster";
 import {ErrorResponse, http} from "./Http/Http";
+import {CommunicationError, CommunicationState} from "@/Core/Types/Communications";
+
+export type FormResponse = {
+    values: { [index: string]: any },
+    title?: string,
+    titles?: { [index: string]: string },
+    rules?: { [index: string]: string },
+    messages?: { [index: string]: string },
+    hash?: string | null,
+    message?: string,
+    payload?: { [index: string]: any },
+}
 
 export class Form {
 
     /** Url to load form data */
-    load_url: string | null = null;
+    url_load: string | null = null;
+
     /** Url to save form data */
-    save_url: string | null = null;
+    url_save: string | null = null;
+
+    /** Model ID */
+    id: number | undefined;
+
     /** Default options to pass to request */
     options: { [index: string]: any } = {};
-    /** Form title */
-    title: string | undefined = undefined;
-
-    /** Validate field when its value changed */
-    validate_on_update: boolean = false;
 
     values: { [index: string]: any } = {};
-    originals: { [index: string]: any } = {};
-    hash: string | null = null;
+    title: string | undefined = undefined;
     titles: { [index: string]: string } = {};
     rules: { [index: string]: FieldRules } = {};
-    payload: { [index: string]: any } = {};
     messages: { [index: string]: string } = {};
+    hash: string | null | undefined = undefined;
+    payload: { [index: string]: any } = {};
 
+    originals: { [index: string]: any } = {};
     valid: { [index: string]: boolean } = {};
     errors: { [index: string]: string[] } = {};
 
-    is_loading: boolean = false
-    is_loaded: boolean = false
-    is_saving: boolean = false
-    is_saved: boolean = false
-    is_forbidden: boolean = false
-    is_not_found: boolean = false;
+    state: CommunicationState = {
+        is_loading: false,
+        is_loaded: false,
+        is_saving: false,
+        is_saved: false,
+        is_forbidden: false,
+        is_not_found: false,
+    }
 
     use_toaster: boolean = true;
-
-    /** Callbacks */
-    loaded_callback: ((values: object, payload: object) => void) | null = null;
-    load_failed_callback: ((code: number, message: string, response: ErrorResponse) => void) | null = null;
-    saved_callback: ((values: object, payload: object) => void) | null = null;
-    save_failed_callback: ((code: number, message: string, response: ErrorResponse) => void) | null = null;
+    validate_on_update: boolean = false;
 
     /**
      * Constructor
      *
      * @param title
-     * @param load_url
-     * @param save_url
+     * @param url
      * @param options
      * @param use_toaster
      */
-    constructor(title: string | undefined, load_url: string | null, save_url: string | null, options: object = {}, use_toaster: boolean = true) {
+    constructor(url: string, title: string | undefined = undefined, options: { [index: string]: any } = {}, use_toaster: boolean = true) {
         this.title = title;
-        this.load_url = load_url;
-        this.save_url = save_url;
+        this.url_load = url;
+        this.url_save = url;
         this.options = options;
         this.use_toaster = use_toaster;
     };
 
     /**
-     * Set form title.
-     *
-     * @param title
-     */
-    setTitle(title: string): void {
-        this.title = title;
-    }
-
-    /**
      * Load form data.
      *
+     * @param id
      * @param options Options to pass to load request. Overrides form default options if not null.
      */
-    load(options: { [index: string]: any } | null = null) {
-        return new Promise((resolve: ((obj: { values: { [index: string]: any }, payload: { [index: string]: any } }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
-            if (this.load_url === null || this.load_url === '') {
-                this.is_loaded = true;
-                if (typeof this.loaded_callback === "function") {
-                    this.loaded_callback(this.values, this.payload);
-                }
-                resolve({values: this.values, payload: this.payload});
+    load(id: number | undefined, options: { [index: string]: any } | null = null) {
+
+        this.id = id;
+
+        return new Promise((resolve: (response: FormResponse) => void, reject: (error: CommunicationError) => void) => {
+            if (this.url_load === null || this.url_load === '') {
+                this.notify('Can not load form. Load URL is not defined.', 0, 'error');
+                reject({code: 0, message: 'Can not load form. Load URL is not defined.', response: null});
                 return;
             }
 
-            this.is_loaded = false;
-            this.is_loading = true;
-            this.is_saving = false;
-            this.is_not_found = false;
+            this.state = {is_loaded: false, is_loading: true, is_saving: false, is_not_found: false};
 
-            http.post(this.load_url, options !== null ? options : this.options)
+            const url = this.url_load + (this.id ? `/${this.id}` : '');
+
+            http.get(url, {params: options !== null ? options : this.options})
                 .then(response => {
                     this.values = response.data.values;
                     this.originals = clone(this.values);
-                    this.hash = response.data.hash ? response.data.hash : null;
                     this.title = response.data.title ? response.data.title : this.title;
                     this.titles = response.data.titles;
-                    this.messages = response.data.messages ? response.data.messages : [];
                     this.rules = {};
                     Object.keys(response.data.rules).map(key => {
                         this.rules[key] = ParseFieldRules(response.data.rules[key]);
                     });
+                    this.messages = response.data.messages ? response.data.messages : [];
+                    this.hash = response.data.hash ? response.data.hash : null;
                     this.payload = !empty(response.data.payload) ? response.data.payload : {};
+
                     this.valid = {};
                     this.errors = {};
 
-                    this.is_loaded = true;
-                    this.is_forbidden = false;
-                    this.is_not_found = false;
+                    this.state.is_loaded = true;
+                    this.state.is_forbidden = false;
+                    this.state.is_not_found = false;
 
-                    if (typeof this.loaded_callback === "function") {
-                        this.loaded_callback(this.values, this.payload);
-                    }
-
-                    resolve({values: this.values, payload: this.payload});
+                    resolve({
+                        values: this.values,
+                        payload: this.payload,
+                    });
                 })
                 .catch((error: ErrorResponse) => {
                     if (error.status !== 500) {
                         this.notify(error.data.message, 0, 'error');
                     }
-                    this.is_forbidden = error.status === 403;
-                    this.is_not_found = error.status === 404;
-
-                    if (typeof this.load_failed_callback === "function") {
-                        this.load_failed_callback(error.status, error.data.message, error);
-                    }
+                    this.state.is_forbidden = error.status === 403;
+                    this.state.is_not_found = error.status === 404;
 
                     reject({code: error.status, message: error.data.message, response: error});
                 })
                 .finally((): void => {
-                    this.is_loading = false;
+                    this.state.is_loading = false;
                 });
         });
     };
@@ -143,43 +139,51 @@ export class Form {
      *
      * @param options Options to pass to load request. Overrides form default options if not null.
      * @param silent Disable notifications for this operation.
+     * @param use_post Use post method.
      */
-    save(options = null, silent: boolean = false) {
-        return new Promise((resolve: ((obj: { values: { [index: string]: any }, payload: { [index: string]: any } }) => void), reject: ((obj: { code: number, message: string, response: ErrorResponse | null }) => void)) => {
-            if (this.save_url === null) {
+    save(options = null, silent: boolean = false, use_post: boolean = false) {
+        return new Promise((resolve: (response: FormResponse) => void, reject: (error: CommunicationError) => void) => {
+            if (this.url_save === null) {
                 this.notify('Can not save form. Save URL is not defined.', 0, 'error');
                 reject({code: 0, message: 'Can not save form. Save URL is not defined.', response: null});
                 return;
             }
 
-            if (this.is_loading || !this.is_loaded) {
+            if (this.state.is_loading || !this.state.is_loaded) {
                 this.notify('Form is not loaded or in loading process.', 0, 'error');
+                reject({code: 0, message: 'Form is not loaded or in loading process.', response: null});
                 return;
             }
 
-            this.is_saving = true;
+            this.state.is_saving = true;
 
             let _options = clone(options !== null ? options : this.options);
             _options['hash'] = this.hash;
             _options['data'] = this.values;
 
-            http.post(this.save_url, _options)
-                .then(response => {
-                    this.is_forbidden = false;
-                    if (!silent) {
-                        this.notify(response.data.message, 5000, 'success');
-                    }
-                    this.originals = clone(this.values);
-                    if (!empty(response.data.payload)) {
-                        this.payload = response.data.payload;
-                    }
-                    if (typeof this.saved_callback === "function") {
-                        this.saved_callback(this.values, this.payload);
-                    }
-                    resolve({values: this.values, payload: this.payload});
-                })
+            const url = this.url_save + (this.id ? `/${this.id}` : '');
+            let promise;
+
+            if (use_post) {
+                promise = http.post(url, _options);
+            } else {
+                promise = http.put(url, _options);
+            }
+
+            promise.then(response => {
+                this.state.is_forbidden = false;
+                if (!silent) {
+                    this.notify(response.data.message, 5000, 'success');
+                }
+                this.originals = clone(this.values);
+                if (!empty(response.data.payload)) {
+                    this.payload = response.data.payload;
+                }
+                resolve({values: this.values, payload: this.payload});
+            })
                 .catch((error: ErrorResponse) => {
-                    this.is_forbidden = error.status === 403;
+                    this.state.is_forbidden = error.status === 403;
+                    this.state.is_not_found = error.status === 404;
                     if (error.status === 422) {
                         if (!silent) {
                             this.notify(error.data.message, 5000, 'error');
@@ -190,22 +194,32 @@ export class Form {
                                 this.valid[key] = false;
                             });
                         }
-                    } else {
-                        if (error.status !== 500) {
-                            this.notify(error.data.message, 0, 'error');
-                        }
-                        if (typeof this.save_failed_callback === "function") {
-                            this.save_failed_callback(error.status, error.data.message, error);
-                        }
                     }
                     reject({code: error.status, message: error.data.message, response: error});
                 })
                 .finally(() => {
-                    this.is_saved = true;
-                    this.is_saving = false;
+                    this.state.is_saved = true;
+                    this.state.is_saving = false;
                 });
         });
     };
+
+    /**
+     * Set form state is loaded manually.
+     */
+    setLoaded(): void {
+        this.state.is_loaded = true;
+    }
+
+    /**
+     * Set form title.
+     *
+     * @param title
+     */
+    setTitle(title: string): void {
+        this.title = title;
+    }
+
 
     /**
      * Show notification to user.
@@ -340,11 +354,11 @@ export class Form {
         this.rules = {};
         this.valid = {};
         this.errors = {};
-        this.is_loaded = false;
-        this.is_loading = false;
-        this.is_saving = false;
-        this.is_saved = false;
-        this.is_forbidden = false;
+        this.state.is_loaded = false;
+        this.state.is_loading = false;
+        this.state.is_saving = false;
+        this.state.is_saved = false;
+        this.state.is_forbidden = false;
     };
 
     /**

@@ -1,28 +1,30 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\API\System\Staff;
+namespace App\Http\Controllers\API\System\StaffPositions;
 
 use App\Http\Controllers\ApiHistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
+use App\Models\EntryScope;
+use App\Models\Positions\PositionType;
 use Illuminate\Http\Request;
 
-class StaffOperationsController extends ApiHistoryController
+class StaffAllHistoryController extends ApiHistoryController
 {
     /**
      * Get staff history list.
      *
      * @param APIListRequest $request
-     * @param int $id
      *
      * @return  ApiResponse
      */
-    public function list(APIListRequest $request, int $id): ApiResponse
+    public function list(APIListRequest $request): ApiResponse
     {
         $query = History::query()
-            ->where('position_id', $id);
+            ->where('entry_name', EntryScope::position)
+            ->where('entry_type', PositionType::typeToString(PositionType::staff));
 
         $history = $this->retrieveHistory($query, $request);
 
@@ -33,18 +35,18 @@ class StaffOperationsController extends ApiHistoryController
      * Get staff history record comments
      *
      * @param Request $request
-     * @param int $id
      *
-     * @return ApiResponse
+     * @return  ApiResponse
      */
-    public function comments(Request $request, int $id): ApiResponse
+    public function comments(Request $request): ApiResponse
     {
         // TODO refactor on need !!!
 
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
-            ->where('position_id', $id)
+            ->where('entry_name', EntryScope::position)
+            ->where('entry_type', PositionType::typeToString(PositionType::staff))
             ->where('id', $request->input('id'))
             ->first();
 
@@ -59,14 +61,14 @@ class StaffOperationsController extends ApiHistoryController
      * Get staff history record changes
      *
      * @param Request $request
-     * @param int $id
      *
-     * @return ApiResponse
+     * @return  ApiResponse
      */
-    public function changes(Request $request, int $id): ApiResponse
+    public function changes(Request $request): ApiResponse
     {
         $query = History::query()
-            ->where('position_id', $id);
+            ->where('entry_name', EntryScope::position)
+            ->where('entry_type', PositionType::typeToString(PositionType::staff));
 
         /** @var History|null $record */
         $record = $this->retrieveRecord($query, $request);
