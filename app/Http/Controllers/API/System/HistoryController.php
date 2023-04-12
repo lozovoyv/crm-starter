@@ -30,18 +30,17 @@ class HistoryController extends ApiHistoryController
      * Get history record comments
      *
      * @param Request $request
+     * @param int $id
      *
      * @return APIResponse
      */
-    public function comments(Request $request): APIResponse
+    public function comments(int $id): APIResponse
     {
-        // TODO refactor on need !!!
-
         /** @var History|null $record */
         $record = History::query()
             ->with('comments')
             ->where('entry_name', EntryScope::permission_group)
-            ->where('id', $request->input('id'))
+            ->where('id', $id)
             ->first();
 
         if ($record === null) {
@@ -55,14 +54,14 @@ class HistoryController extends ApiHistoryController
     /**
      * Get history record changes
      *
-     * @param Request $request
+     * @param int $id
      *
      * @return APIResponse
      */
-    public function changes(Request $request): APIResponse
+    public function changes(int $id): APIResponse
     {
         /** @var History|null $record */
-        $record = $this->retrieveRecord(History::query(), $request);
+        $record = $this->retrieveRecord(History::query(), $id);
 
         if ($record === null) {
             return APIResponse::error('Запись не найдена');

@@ -59,6 +59,6 @@ Route::get('/api/system/permissions/history', [PermissionsHistoryController::cla
 Route::get('/api/system/permissions/history/{id}/comments', [PermissionsHistoryController::class, 'comments'])->middleware(['position:admin,staff', 'permission:system.permissions']);
 Route::get('/api/system/permissions/history/{id}/changes', [PermissionsHistoryController::class, 'changes'])->middleware(['position:admin,staff', 'permission:system.permissions']);
 
-Route::post('/api/system/history', [HistoryController::class, 'list'])->middleware(['position:staff', 'permission:system.history']);
-Route::post('/api/system/history/comments', [HistoryController::class, 'comments'])->middleware(['position:staff', 'permission:system.history']);
-Route::post('/api/system/history/changes', [HistoryController::class, 'changes'])->middleware(['position:staff', 'permission:system.history']);
+Route::get('/api/system/history', [HistoryController::class, 'list'])->middleware(['position:admin,staff', 'permission:system.history']);
+Route::get('/api/system/history/{id}/comments', [HistoryController::class, 'comments'])->middleware(['position:admin,staff', 'permission:system.history']);
+Route::get('/api/system/history/{id}/changes', [HistoryController::class, 'changes'])->middleware(['position:admin,staff', 'permission:system.history']);

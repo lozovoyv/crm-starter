@@ -2,8 +2,6 @@
     <LayoutPage title="Журнал операций" :breadcrumbs="[{name: 'Журнал операций'}]">
         <HistoryList
             url="/api/system/history"
-            commentsUrl="/api/system/history/comments"
-            changesUrl="/api/system/history/changes"
             prefix="system_history"
             empty-message="Нет истории операций"
             ref="history"
