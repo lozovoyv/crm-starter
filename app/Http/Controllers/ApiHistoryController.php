@@ -7,11 +7,12 @@ use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
 use App\Utils\Casting;
+use BadMethodCallException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller;
 
-class ApiHistoryController extends Controller
+abstract class ApiHistoryController extends Controller
 {
     protected array $titles = [
         'timestamp' => 'Дата',
@@ -29,6 +30,80 @@ class ApiHistoryController extends Controller
     protected ?string $order;
 
     protected ?string $orderBy;
+
+    /**
+     * Builder for history query. Must be redefined.
+     *
+     * @param array $with
+     * @param mixed ...$args
+     *
+     * @return Builder
+     */
+    protected function getQueryForHistory(array $with, ...$args): Builder
+    {
+        if(!method_exists($this, 'getQuery')) {
+            throw new BadMethodCallException('getQuery() method must be defined in ' . static::class);
+        }
+
+        return $this->getQuery($with, $args);
+    }
+
+    /**
+     * Get permissions history list.
+     *
+     * @param APIListRequest $request
+     * @param mixed ...$args
+     *
+     * @return  ApiResponse
+     */
+    public function list(APIListRequest $request, ...$args): ApiResponse
+    {
+        $query = $this->getQueryForHistory([], $args);
+
+        $history = $this->retrieveHistory($query, $request);
+
+        return $this->listResponse($history);
+    }
+
+    /**
+     * Get history record comments
+     *
+     * @param int $historyID
+     * @param mixed ...$args
+     *
+     * @return  ApiResponse
+     */
+    public function comments(int $historyID, ...$args): ApiResponse
+    {
+        /** @var History|null $record */
+        $record = $this->retrieveRecord($this->getQueryForHistory(['comments'], $args), $historyID);
+
+        if ($record === null) {
+            return ApiResponse::error('Запись не найдена');
+        }
+
+        return APIResponse::list()->items($record->comments);
+    }
+
+    /**
+     * Get history record changes
+     *
+     * @param int $historyID
+     * @param mixed ...$args
+     *
+     * @return  ApiResponse
+     */
+    public function changes(int $historyID, ...$args): ApiResponse
+    {
+        /** @var History|null $record */
+        $record = $this->retrieveRecord($this->getQueryForHistory([], $args), $historyID);
+
+        if ($record === null) {
+            return APIResponse::error('Запись не найдена');
+        }
+
+        return $this->changesResponse($record);
+    }
 
     /**
      * Retrieve history record list.
