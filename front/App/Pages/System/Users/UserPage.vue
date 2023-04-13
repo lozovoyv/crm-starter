@@ -1,14 +1,14 @@
 <template>
     <LayoutPage :title="title"
-                :is-processing="user.is_loading"
-                :is-forbidden="user.is_forbidden"
-                :is-not-found="user.is_not_found"
+                :is-processing="user.state.is_loading"
+                :is-forbidden="user.state.is_forbidden"
+                :is-not-found="user.state.is_not_found"
                 :breadcrumbs="[
                     {name: 'Учётные записи', route: {name: 'users'}},
                     {name: title},
                 ]"
     >
-        <template v-slot:actions v-if="can('system.users.change') && user.is_loaded">
+        <template v-slot:actions v-if="can('system.users.change') && user.state.is_loaded">
             <GuiActionsMenu title="Действия">
                 <GuiLink name="Редактировать" :route="{name: 'user_edit', params: {id: userID}}"/>
                 <GuiLink name="Удалить" @click="remove"/>
@@ -31,8 +31,8 @@ import {computed, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {Data} from "@/Core/Data";
 import {can} from "@/Core/Can";
-import UserHistory from "@/App/Pages/System/Users/UserHistory.vue";
-import UserView from "@/App/Pages/System/Users/UserView.vue";
+import UserHistory from "@/App/Pages/System/Users/parts/UserHistory.vue";
+import UserView from "@/App/Pages/System/Users/parts/UserView.vue";
 import {UserInfo} from "@/App/types";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
@@ -50,12 +50,12 @@ const tabs = computed((): { [index: string]: string } => {
     return {user: 'Учётная запись', history: 'История'};
 });
 
-const user = ref<Data<UserInfo>>(new Data<UserInfo>('/api/system/users/view', {id: userID.value}));
+const user = ref<Data<UserInfo>>(new Data<UserInfo>(`/api/system/users/${userID.value}`));
 
 user.value.load();
 
 const title = computed((): string => {
-    return user.value.is_loaded ? user.value.data.name : '...';
+    return user.value.state.is_loaded ? user.value.data.name : '...';
 });
 
 const history = ref<InstanceType<typeof UserView> | undefined>(undefined);

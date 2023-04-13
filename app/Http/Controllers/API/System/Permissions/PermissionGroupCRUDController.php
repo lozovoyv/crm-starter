@@ -95,7 +95,7 @@ class PermissionGroupCRUDController extends ApiController
      *
      * @return  ApiResponse
      */
-    public function update(Request $request, ?int $id = null): ApiResponse
+    public function save(Request $request, ?int $id = null): ApiResponse
     {
         try {
             $group = $this->getPermissionGroup($id, $request->input('hash'), true);
@@ -208,7 +208,7 @@ class PermissionGroupCRUDController extends ApiController
      *
      * @return  ApiResponse
      */
-    public function change(int $id, Request $request): ApiResponse
+    public function status(int $id, Request $request): ApiResponse
     {
         try {
             $group = $this->getPermissionGroup($id, $request->input('hash'), true, null, true);

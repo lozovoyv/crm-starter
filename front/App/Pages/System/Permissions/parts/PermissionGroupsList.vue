@@ -89,7 +89,7 @@ function deactivate(group: PermissionGroup): void {
         question: `Отключить группу "${group.name}"?`,
         button: dialog.button('yes', 'Отключить', 'default'),
         method: 'patch',
-        url: `/api/system/permissions/group/${group.id}`,
+        url: `/api/system/permissions/group/${group.id}/status`,
         options: {disable: true, hash: group.hash},
         progress: p => processing.value = p
     }).then(() => {
@@ -103,7 +103,7 @@ function activate(group: PermissionGroup): void {
         question: `Включить группу "${group.name}"?`,
         button: dialog.button('yes', 'Включить', 'default'),
         method: 'patch',
-        url: `/api/system/permissions/group/${group.id}`,
+        url: `/api/system/permissions/group/${group.id}/status`,
         options: {hash: group.hash},
         progress: p => processing.value = p
     }).then(() => {

@@ -62,7 +62,7 @@ const isDirty = computed((): boolean => {
     } else {
         value = !!props.modelValue;
     }
-        return original === value;
+        return original !== value;
 });
 </script>
 

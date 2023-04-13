@@ -7,27 +7,22 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Users\User;
+use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Builder;
 
 class UsersListController extends ApiController
 {
-    protected array $defaultFilters = [
-        'status_id' => null,
-    ];
-
     protected array $titles = [
         'id' => 'ID',
-        'active' => null,
         'name' => 'ФИО',
-        'display_name' => 'Отображаемое имя',
         'username' => 'Логин',
-        'email' => 'Адрес электронной почты',
+        'email' => 'Электронная почта',
         'phone' => 'Телефон',
-        'created_at' => 'Дата созданий',
-        'updated_at' => 'Последнее изменение',
+        'created_at' => 'Создана',
+        'updated_at' => 'Изменена',
     ];
 
-    protected array $ordering = ['id', 'name', 'display_name', 'username', 'email', 'phone', 'created_at', 'updated_at'];
+    protected array $ordering = ['id', 'name', 'username', 'email', 'phone', 'created_at', 'updated_at'];
 
     /**
      * Get users list.
@@ -46,7 +41,6 @@ class UsersListController extends ApiController
         switch ($orderBy) {
             case 'id':
             case 'username':
-            case 'display_name':
             case 'email':
             case 'phone':
             case 'created_at':
@@ -55,11 +49,12 @@ class UsersListController extends ApiController
                 break;
             case 'name':
             default:
+                $orderBy = 'name';
                 $query->orderBy('lastname', $order);
         }
 
         // apply filters
-        $filters = $request->filters($this->defaultFilters);
+        $filters = $request->filters(['status_id' => Casting::int]);
         if (isset($filters['status_id'])) {
             $query->where('status_id', $filters['status_id']);
         }
@@ -87,8 +82,6 @@ class UsersListController extends ApiController
         return ApiResponse::list()
             ->items($users)
             ->titles($this->titles)
-            ->filters($filters, $this->defaultFilters)
-            ->search($request->search(true))
             ->order($orderBy, $order)
             ->orderable($this->ordering);
     }

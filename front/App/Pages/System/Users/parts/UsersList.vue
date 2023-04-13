@@ -8,15 +8,16 @@
         </template>
         <ListTableRow v-for="user in users.list">
             <ListTableCell v-html="highlight(user.id, users.search)"/>
-            <ListTableCell/>
-            <ListTableCell>
-                <GuiAccessIndicator :locked="!user.is_active"/>
-                <GuiLink :route="{name: 'user_view', params: {id: user.id}}">
-                    <span v-html="highlight(user.lastname, users.search)"/> <span v-html="highlight(user.firstname, users.search)"/> <span
-                    v-html="highlight(user.patronymic, users.search)"/>
-                </GuiLink>
+            <ListTableCell :nowrap="true">
+                <div>
+                    <GuiAccessIndicator :locked="!user.is_active"/>
+                    <GuiLink :route="{name: 'user_view', params: {id: user.id}}">
+                        <span v-html="highlight(user.lastname, users.search)"/> <span v-html="highlight(user.firstname, users.search)"/> <span
+                        v-html="highlight(user.patronymic, users.search)"/>
+                    </GuiLink>
+                </div>
+                <div v-html="highlight(user.display_name, users.search)"/>
             </ListTableCell>
-            <ListTableCell v-html="highlight(user.display_name, users.search)"/>
             <ListTableCell v-html="highlight(user.username, users.search)"/>
             <ListTableCell v-html="highlight(user.email, users.search)"/>
             <ListTableCell v-html="highlight(formatPhone(user.phone), users.search)"/>
@@ -61,7 +62,7 @@ const canChange = computed((): boolean => {
     return can('system.users.change');
 })
 
-users.value.initial();
+users.value.load();
 
 function reload(): void {
     users.value.reload();

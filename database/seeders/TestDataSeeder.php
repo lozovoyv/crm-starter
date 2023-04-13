@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Database\Seeders\Test\TestRolesSeeder;
+use Database\Seeders\Test\TestPermissionGroupsSeeder;
 use Database\Seeders\Test\TestUsersSeeder;
 use Exception;
 use Illuminate\Database\Seeder;
@@ -10,7 +11,7 @@ use Illuminate\Database\Seeder;
 class TestDataSeeder extends Seeder
 {
     protected array $seeders = [
-        TestRolesSeeder::class,
+        TestPermissionGroupsSeeder::class,
         TestUsersSeeder::class,
     ];
 

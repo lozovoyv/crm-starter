@@ -71,7 +71,9 @@ const actions = <ActionTree<State, any>>{
                         resolve(state.dictionaries[dictionary] !== undefined ? state.dictionaries[dictionary] : null);
                         return;
                     }
-                    toaster.error(error.data.message);
+                    if(error.status !== 500) {
+                        toaster.error(error.data.message);
+                    }
                     reject(error.status);
                 });
         });
@@ -97,7 +99,9 @@ const actions = <ActionTree<State, any>>{
                         resolve(state.dictionaries[dictionary] !== undefined ? state.dictionaries[dictionary] : null);
                         return;
                     }
-                    toaster.error(error.data.message);
+                    if(error.status !== 500) {
+                        toaster.error(error.data.message);
+                    }
                     reject(error.status);
                 });
         });

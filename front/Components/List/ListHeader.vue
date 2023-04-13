@@ -90,7 +90,7 @@ function changeOrder(item: HeaderItem): void {
         color: $color_text_black;
         vertical-align: top;
         font-family: $project_font;
-        font-size: 15px;
+        font-size: 14px;
         text-transform: uppercase;
         box-sizing: border-box;
         padding: 7px 15px;

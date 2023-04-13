@@ -33,7 +33,7 @@ Route::prefix('/api/system/admins')->middleware(['position:admin'])->group(funct
     Route::get('/{positionID}', [AdminPositionViewController::class, 'view']);
     Route::get('/position/{positionID?}', [AdminPositionCRUDController::class, 'get']);
     Route::put('/position/{positionID?}', [AdminPositionCRUDController::class, 'save']);
-    Route::patch('/position/{positionID}', [AdminPositionCRUDController::class, 'change']);
+    Route::patch('/position/{positionID}/status', [AdminPositionCRUDController::class, 'status']);
     Route::delete('/position/{positionID}', [AdminPositionCRUDController::class, 'remove']);
     Route::get('/position/{positionID}/history', [AdminPositionHistoryController::class, 'list']);
     Route::get('/position/{positionID}/history/{historyID}/comments', [AdminPositionHistoryController::class, 'comments']);
@@ -51,7 +51,7 @@ Route::prefix('/api/system/staff')->middleware(['position:admin,staff', 'permiss
     Route::get('/{positionID}', [StaffPositionViewController::class, 'view']);
     Route::get('/position/{positionID?}', [StaffPositionCRUDController::class, 'get'])->middleware('permission:system.staff.change');
     Route::put('/position/{positionID?}', [StaffPositionCRUDController::class, 'save'])->middleware('permission:system.staff.change');
-    Route::patch('/position/{positionID}', [StaffPositionCRUDController::class, 'change'])->middleware('permission:system.users.change');
+    Route::patch('/position/{positionID}/status', [StaffPositionCRUDController::class, 'status'])->middleware('permission:system.users.change');
     Route::delete('/position/{positionID}', [StaffPositionCRUDController::class, 'remove'])->middleware('permission:system.users.change');
     Route::get('/position/{positionID}/history', [StaffPositionHistoryController::class, 'list']);
     Route::get('/position/{positionID}/history/{historyID}/comments', [StaffPositionHistoryController::class, 'comments']);
@@ -69,7 +69,7 @@ Route::prefix('/api/system/users')->middleware(['position:admin,staff', 'permiss
     Route::get('/{userID}', [UserViewController::class, 'view']);
     Route::get('/user/{userID?}', [UserCRUDController::class, 'get'])->middleware('permission:system.users.change');
     Route::put('/user/{userID?}', [UserCRUDController::class, 'save'])->middleware('permission:system.users.change');
-    Route::patch('/user/{userID}', [UserCRUDController::class, 'change'])->middleware('permission:system.users.change');
+    Route::patch('/user/{userID}/status', [UserCRUDController::class, 'status'])->middleware('permission:system.users.change');
     Route::patch('/user/{userID}/password', [UserCRUDController::class, 'password'])->middleware('permission:system.users.change');
     Route::delete('/user/{userID}', [UserCRUDController::class, 'remove'])->middleware('permission:system.users.change');
     Route::get('/user/{userID}/history', [UserHistoryController::class, 'list']);
@@ -83,7 +83,7 @@ Route::prefix('/api/system/permissions')->middleware(['position:admin,staff', 'p
     Route::get('/group/{groupID?}', [PermissionGroupCRUDController::class, 'get']);
     Route::put('/group/{groupID?}', [PermissionGroupCRUDController::class, 'save']);
     Route::delete('/group/{groupID}', [PermissionGroupCRUDController::class, 'remove']);
-    Route::patch('/group/{groupID}', [PermissionGroupCRUDController::class, 'change']);
+    Route::patch('/group/{groupID}/status', [PermissionGroupCRUDController::class, 'status']);
     Route::get('/history', [PermissionsHistoryController::class, 'list']);
     Route::get('/history/{historyID}/comments', [PermissionsHistoryController::class, 'comments']);
     Route::get('/history/{historyID}/changes', [PermissionsHistoryController::class, 'changes']);

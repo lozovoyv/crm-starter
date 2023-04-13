@@ -6,15 +6,15 @@ namespace Database\Seeders\Test;
 use App\Models\Permissions\PermissionGroup;
 use Database\Seeders\GenericSeeder;
 
-class TestRolesSeeder extends GenericSeeder
+class TestPermissionGroupsSeeder extends GenericSeeder
 {
     public function run(): void
     {
         $i = 20;
         foreach (range(1,  $i) as $index) {
-            $role = new PermissionGroup;
-            $role->name = 'Роль №'.$index;
-            $role->save();
+            $group = new PermissionGroup;
+            $group->name = 'Группа прав №'.$index;
+            $group->save();
         }
     }
 }

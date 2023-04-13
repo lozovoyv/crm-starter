@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 
-import UserEdit from "@/App/Pages/System/Users/UserEdit.vue";
+import UserEdit from "@/App/Pages/System/Users/parts/UserEdit.vue";
 import {computed} from "vue";
 import {useRoute} from "vue-router";
 

@@ -68,9 +68,9 @@ class APIListRequest extends FormRequest
     /**
      * Get search terms.
      *
-     * @return  array|string|null
+     * @return  array
      */
-    public function search(): array|string|null
+    public function search(): array
     {
         $search = $this->input('search');
 

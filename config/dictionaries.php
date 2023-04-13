@@ -26,17 +26,17 @@ return [
     ],
     'user_statuses' => [
         'class' => UserStatusDictionary::class,
-        'view' => [PositionType::admin => true, PositionType::staff => ['system.users.change']],
+        'view' => [PositionType::admin => true, PositionType::staff => ['system.users', 'system.users.change']],
         'edit' => false,
     ],
     'position_statuses' => [
         'class' => PositionStatusDictionary::class,
-        'view' => [PositionType::admin => true, PositionType::staff => ['system.staff.change']],
+        'view' => [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']],
         'edit' => false,
     ],
     'roles' => [
         'class' => PermissionRoleDictionary::class,
-        'view' => [PositionType::admin => true, PositionType::staff => ['system.staff.change']],
+        'view' => [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']],
         'edit' => false,
     ],
     'test' => [

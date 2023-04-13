@@ -3,9 +3,9 @@ import empty from "./Helpers/Empty";
 import {FieldRules, ParseFieldRules} from "./Validator/ParseRules";
 import {validate} from "./Validator/Validate";
 import formatErrorMessage from "./Validator/Message";
-import toaster from "./Toaster/Toaster";
 import {ErrorResponse, http} from "./Http/Http";
 import {CommunicationError, CommunicationState} from "@/Core/Types/Communications";
+import {notify} from "@/Core/Notify";
 
 export type FormResponse = {
     values: { [index: string]: any },
@@ -229,15 +229,7 @@ export class Form {
      * @param type
      */
     notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null): void {
-        if (this.use_toaster) {
-            toaster.show(message, delay, type);
-        } else {
-            if (type === 'error') {
-                console.error(message);
-            } else {
-                console.log(message);
-            }
-        }
+        notify(message, delay, type, this.use_toaster);
     };
 
     /**

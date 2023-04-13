@@ -11,6 +11,6 @@ class NotFoundController extends ApiController
 {
     public function notFound(Request $request): ApiResponse
     {
-        return ApiResponse::notFound('Метод API ' . $request->path() . ' не найден');
+        return ApiResponse::notFound('Метод API ' . $request->method() . ' ' . $request->path() . ' не найден');
     }
 }

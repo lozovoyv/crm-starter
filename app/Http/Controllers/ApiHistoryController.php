@@ -33,19 +33,21 @@ abstract class ApiHistoryController extends Controller
 
     /**
      * Builder for history query. Must be redefined.
+     * Router params would be passed to `getQuery()` target method in order of appearance.
+     * Notice: all params type is string.
      *
      * @param array $with
-     * @param mixed ...$args
+     * @param array $args
      *
      * @return Builder
      */
-    protected function getQueryForHistory(array $with, ...$args): Builder
+    protected function getQueryForHistory(array $with, array $args): Builder
     {
         if(!method_exists($this, 'getQuery')) {
             throw new BadMethodCallException('getQuery() method must be defined in ' . static::class);
         }
 
-        return $this->getQuery($with, $args);
+        return $this->getQuery($with, ...$args);
     }
 
     /**

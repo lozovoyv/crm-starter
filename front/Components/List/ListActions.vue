@@ -84,7 +84,7 @@ function close() {
         top: 0;
         transform: translate(-100%, 0);
         box-sizing: border-box;
-        padding: 12px 20px;
+        padding: 8px 16px;
         border-radius: 2px;
         min-width: 100%;
         z-index: 9;
@@ -96,7 +96,7 @@ function close() {
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
-        font-size: 15px;
+        font-size: 14px;
 
         &:before {
             content: '';

@@ -10,12 +10,12 @@ use Illuminate\Http\Request;
 
 class UserViewController extends ApiController
 {
-    public function view(Request $request): ApiResponse
+    public function view(Request $request, int $id): ApiResponse
     {
         /** @var User|null $user */
         $user = User::query()
             ->with(['status'])
-            ->where('id', $request->input('id'))
+            ->where('id', $id)
             ->first();
 
         if ($user === null) {

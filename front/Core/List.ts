@@ -1,8 +1,8 @@
 import clone from "./Helpers/Clone";
-import toaster from "./Toaster/Toaster";
 import {ErrorResponse, http} from "./Http/Http";
 import {LocalStore} from "@/Core/LocalStore";
 import {CommunicationError, CommunicationState} from "@/Core/Types/Communications";
+import {notify} from "@/Core/Notify";
 
 export type ListPagination = {
     current_page: number,
@@ -270,14 +270,6 @@ export class List<Type> {
      * @param type
      */
     notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null) {
-        if (this.use_toaster) {
-            toaster.show(message, delay, type);
-        } else {
-            if (type === 'error') {
-                console.error(message);
-            } else {
-                console.log(message);
-            }
-        }
+        notify(message, delay, type, this.use_toaster);
     }
 }

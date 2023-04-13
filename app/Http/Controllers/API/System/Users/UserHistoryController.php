@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserHistoryController extends ApiHistoryController
 {
-    protected function getQuery(array $with, int $userID): Builder
+    protected function getQuery(array $with, $userID): Builder
     {
         return History::query()
             ->with($with)
             ->where('entry_name', EntryScope::user)
-            ->where('entry_id', $userID);
+            ->where('entry_id', (int)$userID);
     }
 }

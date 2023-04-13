@@ -24,7 +24,7 @@ const props = defineProps<{
         color: $color_text_black;
         height: 24px;
         line-height: 24px;
-        font-size: 15px;
+        font-size: 14px;
         display: block;
     }
 }

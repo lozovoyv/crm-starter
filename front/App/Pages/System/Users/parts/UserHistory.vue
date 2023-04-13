@@ -1,8 +1,6 @@
 <template>
     <HistoryList
-        :url="'/api/system/users/' + userId + '/history'"
-        :commentsUrl="'/api/system/users/' + userId + '/history/comments'"
-        :changesUrl="'/api/system/users/' + userId + '/history/changes'"
+        :url="`/api/system/users/user/${userId}/history`"
         prefix="system_users_history"
         empty-message="Нет истории изменения учётной записи"
         ref="history"

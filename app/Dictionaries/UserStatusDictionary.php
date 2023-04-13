@@ -13,4 +13,5 @@ class UserStatusDictionary extends Dictionary
 
     protected static ?string $order_field = 'name';
     protected static ?string $locked_field = null;
+    protected static ?string $enabled_field = null;
 }

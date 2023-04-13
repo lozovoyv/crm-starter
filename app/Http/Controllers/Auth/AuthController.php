@@ -33,8 +33,8 @@ class AuthController extends ApiController
             'id' => $current->userId(),
             'name' => $current->userName(),
             'email' => $current->userEmail(),
-            'organization' => 'Opx Dev',
-            'position' => 'Администратор',
+            'organization' => null,
+            'position' => $current->position()->type->name,
             'avatar' => null,
         ];
 
@@ -120,6 +120,8 @@ class AuthController extends ApiController
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        Current::unset();
 
         return APIResponse::success('OK');
     }

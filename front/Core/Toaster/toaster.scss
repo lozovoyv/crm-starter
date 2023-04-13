@@ -1,38 +1,4 @@
-@import "@/variables";
-
-$toast_color: $color_default_darken_1 !default;
-$toast_text_color: $color_white !default;
-$toast_close_border_color: transparentize($color_white, 0.7) !default;
-$toast_close_color: transparentize($color_white, 0.3) !default;
-$toast_close_hover_color: $color_white !default;
-
-$toast_success_color: $color_success_darken_1 !default;
-$toast_success_text_color: $color_white !default;
-$toast_success_close_border_color: transparentize($color_white, 0.7) !default;
-$toast_success_close_color: transparentize($color_white, 0.3) !default;
-$toast_success_close_hover_color: $color_white !default;
-
-$toast_info_color: $color_info_darken_1 !default;
-$toast_info_text_color: $color_white !default;
-$toast_info_close_border_color: transparentize($color_white, 0.7) !default;
-$toast_info_close_color: transparentize($color_white, 0.3) !default;
-$toast_info_close_hover_color: $color_white !default;
-
-$toast_error_color: $color_error_darken_1 !default;
-$toast_error_text_color: $color_white !default;
-$toast_error_close_border_color: transparentize($color_white, 0.7) !default;
-$toast_error_close_color: transparentize($color_white, 0.3) !default;
-$toast_error_close_hover_color: $color_white !default;
-
-$toast: (
-    xxs: (min-width: 100%, max-width: 100%),
-    xs: (min-width: 100%, max-width: 100%),
-    s: (min-width: 100%, max-width: 100%),
-    m: (min-width: 10%, max-width: 100%),
-    l: (min-width: 10%, max-width: 100%),
-    xl: (min-width: 10%, max-width: 100%),
-    xxl: (min-width: 10%, max-width: 100%),
-);
+@import "@/variables.scss";
 
 .toaster {
     display: flex;
@@ -46,26 +12,30 @@ $toast: (
 
     &__toast {
         align-items: center;
-        background-color: $toast_color;
-        border-radius: 2px;
+        background-color: $color_white;
+        border-radius: 3px;
+        border-color: $color_default;
+        border-style: solid;
+        border-width: 0 0 0 10px;
         box-shadow: $shadow_3;
-        color: $toast_text_color;
+        color: $color_text_black;
         cursor: default;
         display: inline-flex;
         font-family: $project_font;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: normal;
         height: auto;
         justify-content: space-between;
         letter-spacing: 0.05rem;
         line-height: 24px;
         margin-top: 10px;
-        max-width: 100%;
+        max-width: 500px;
         min-height: 40px;
         min-width: 10%;
         opacity: 0;
-        padding: 15px 60px 15px 25px;
+        padding: 16px 40px 16px 24px;
         position: relative;
+        text-align: left;
         top: 20px;
         transition: top $animation $animation_time, opacity $animation $animation_time, visibility $animation $animation_time;
         width: auto;
@@ -88,8 +58,7 @@ $toast: (
             right: 0;
             width: 32px;
             cursor: pointer;
-            border-left: 1px solid $toast_close_border_color;
-            color: $toast_close_color;
+            color: $color_text_black;
             height: 100%;
             box-sizing: content-box;
             display: flex;
@@ -97,63 +66,31 @@ $toast: (
 
             & > svg {
                 position: absolute;
-                top: 50%;
+                top: 18px;
                 left: 50%;
                 width: 12px;
                 height: 12px;
                 transform: translate(-50%, -50%);
-                transition: transform $animation_time $animation_bounce;
+                transition: opacity $animation_time $animation, transform $animation_time $animation_bounce;
+                opacity: 0.75;
             }
 
             &:hover > svg {
                 transform: translate(-50%, -50%) scale(1.2);
-            }
-
-            &:hover {
-                color: $toast_close_hover_color;
+                opacity: 1;
             }
         }
 
         &-success {
-            background-color: $toast_success_color;
-            color: $toast_success_text_color;
-
-            &-close {
-                border-color: $toast_success_close_border_color;
-                color: $toast_success_close_color;
-
-                &:hover {
-                    color: $toast_success_close_hover_color;
-                }
-            }
+            border-color: $color_success;
         }
 
         &-info {
-            background-color: $toast_info_color;
-            color: $toast_info_text_color;
-
-            &-close {
-                border-color: $toast_info_close_border_color;
-                color: $toast_info_close_color;
-
-                &:hover {
-                    color: $toast_info_close_hover_color;
-                }
-            }
+            border-color: $color_info;
         }
 
         &-error {
-            background-color: $toast_error_color;
-            color: $toast_error_text_color;
-
-            &-close {
-                border-color: $toast_error_close_border_color;
-                color: $toast_error_close_color;
-
-                &:hover {
-                    color: $toast_error_close_hover_color;
-                }
-            }
+            border-color: $color_error;
         }
     }
 }
