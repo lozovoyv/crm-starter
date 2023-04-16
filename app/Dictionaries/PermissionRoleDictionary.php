@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Dictionaries;
 
 use App\Models\Permissions\PermissionGroup;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class PermissionRoleDictionary extends Dictionary

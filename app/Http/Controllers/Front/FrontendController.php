@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Front;
 
-use Illuminate\Routing\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
 
 class FrontendController extends Controller
 {

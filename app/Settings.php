@@ -6,7 +6,6 @@ namespace App;
 use App\Exceptions\CastingException;
 use App\Utils\Casting;
 use Illuminate\Support\Facades\DB;
-use JsonException;
 use RuntimeException;
 
 class Settings

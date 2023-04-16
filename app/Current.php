@@ -7,7 +7,6 @@ use App\Exceptions\NoPositionSelectedException;
 use App\Exceptions\PositionMismatchException;
 use App\Models\Positions\Position;
 use App\Models\Users\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class Current

@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 use App\Models\History\HistoryChanges;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {

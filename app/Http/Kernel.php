@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\CheckPosition;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;

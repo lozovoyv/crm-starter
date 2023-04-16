@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Current;
-use App\Http\Responses\ApiResponse;
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionType;
 use App\Models\Users\User;
