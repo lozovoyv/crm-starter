@@ -24,7 +24,7 @@ class PermissionGroupChangesFormatter implements FormatterInterface
                 if ($result['old'] !== null) {
                     $result['old'] = $result['old'] ? 'Включена' : 'Отключена';
                 }
-                if (!$result['new'] !== null) {
+                if ($result['new'] !== null) {
                     $result['new'] = $result['new'] ? 'Включена' : 'Отключена';
                 }
                 break;

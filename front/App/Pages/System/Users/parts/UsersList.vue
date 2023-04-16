@@ -18,13 +18,15 @@
                 </div>
                 <div v-html="highlight(user.display_name, users.search)"/>
             </ListTableCell>
-            <ListTableCell v-html="highlight(user.username, users.search)"/>
-            <ListTableCell v-html="highlight(user.email, users.search)"/>
-            <ListTableCell v-html="highlight(formatPhone(user.phone), users.search)"/>
+            <ListTableCell >
+                <div v-html="highlight(user.email ?? '—', users.search)"/>
+                <div v-html="highlight(user.username, users.search)"/>
+            </ListTableCell>
+            <ListTableCell v-html="highlight(formatPhone(user.phone), users.search)" style="white-space: nowrap"/>
             <ListTableCell>{{ toDatetime(user.created_at) }}</ListTableCell>
             <ListTableCell>{{ toDatetime(user.updated_at) }}</ListTableCell>
             <ListTableCell :action="true" v-if="canChange">
-                <ListActions>
+                <ListActions v-if="!user.locked">
                     <GuiLink :route="{name: 'user_edit', params: {id: user.id}}">Редактировать</GuiLink>
                     <GuiLink @click="block(user)" v-if="user.is_active">Заблокировать</GuiLink>
                     <GuiLink @click="activate(user)" v-if="!user.is_active">Активировать</GuiLink>
@@ -72,30 +74,45 @@ const processing = ref<boolean>(false);
 
 function block(user: User): void {
     let name = String([user.lastname, user.firstname, user.patronymic].join(' ')).trim();
-    processEntry('Блокировка', `Заблокировать учётную запись "${name}"?`, dialog.button('yes', 'Заблокировать', 'default'),
-        '/api/system/users/deactivate', {user_id: user.id, user_hash: user.hash},
-        p => processing.value = p
-    ).then(() => {
+    processEntry({
+        title: 'Блокировка',
+        question: `Заблокировать учётную запись "${name}"?`,
+        button: dialog.button('yes', 'Заблокировать', 'default'),
+        method: 'put',
+        url: `/api/system/users/user/${user.id}/status`,
+        options: {disable: true, hash: user.hash},
+        progress: p => processing.value = p
+    }).then(() => {
         reload();
     });
 }
 
 function activate(user: User): void {
     let name = String([user.lastname, user.firstname, user.patronymic].join(' ')).trim();
-    processEntry('Активация', `Активировать учётную запись "${name}"?`, dialog.button('yes', 'Активировать', 'default'),
-        '/api/system/users/activate', {user_id: user.id, user_hash: user.hash},
-        p => processing.value = p
-    ).then(() => {
+    processEntry({
+        title: 'Активация',
+        question: `Активировать учётную запись "${name}"?`,
+        button: dialog.button('yes', 'Активировать', 'default'),
+        method: 'put',
+        url: `/api/system/users/user/${user.id}/status`,
+        options: {hash: user.hash},
+        progress: p => processing.value = p
+    }).then(() => {
         reload();
     });
 }
 
 function remove(user: User): void {
-    let name = String([user.lastname, user.firstname, user.patronymic].join(' ')).trim();
-    processEntry('Удаление', `Удалить учётную запись "${name}"?`, dialog.button('yes', 'Удалить', 'default'),
-        '/api/system/users/remove', {user_id: user.id, user_hash: user.hash},
-        p => processing.value = p
-    ).then(() => {
+    const name = String([user.lastname, user.firstname, user.patronymic].join(' ')).trim();
+    processEntry({
+        title: 'Удаление',
+        question: `Удалить учётную запись "${name}"?`,
+        button: dialog.button('yes', 'Удалить', 'error'),
+        method: 'delete',
+        url: `/api/system/users/user/${user.id}`,
+        options: {hash: user.hash},
+        progress: p => processing.value = p
+    }).then(() => {
         reload();
     });
 }

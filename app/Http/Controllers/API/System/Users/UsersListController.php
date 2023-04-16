@@ -15,14 +15,13 @@ class UsersListController extends ApiController
     protected array $titles = [
         'id' => 'ID',
         'name' => 'ФИО',
-        'username' => 'Логин',
-        'email' => 'Электронная почта',
+        'email' => 'Электронная почта, Логин',
         'phone' => 'Телефон',
         'created_at' => 'Создана',
         'updated_at' => 'Изменена',
     ];
 
-    protected array $ordering = ['id', 'name', 'username', 'email', 'phone', 'created_at', 'updated_at'];
+    protected array $ordering = ['id', 'name', 'email', 'phone', 'created_at', 'updated_at'];
 
     /**
      * Get users list.

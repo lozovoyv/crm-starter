@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->unsignedInteger('id', true);
 
             $table->unsignedTinyInteger('status_id')->default(UserStatus::default);
+            $table->boolean('locked')->default(false);
 
             $table->string('email')->unique()->nullable();
             $table->string('username', 50)->unique()->nullable();

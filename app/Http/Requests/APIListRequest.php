@@ -57,9 +57,11 @@ class APIListRequest extends FormRequest
     {
         $filters = $this->input('filters', $default);
 
-        foreach ($casting as $key=>$type) {
-            if(isset($filters[$key])) {
+        foreach ($casting as $key => $type) {
+            if (isset($filters[$key])) {
                 $filters[$key] = Casting::fromString($filters[$key], $type);
+            } else {
+                $filters[$key] = null;
             }
         }
         return $filters;
@@ -80,9 +82,13 @@ class APIListRequest extends FormRequest
 
         $search = explode(' ', $search);
 
-        return array_map(static function ($term) {
-            return trim($term);
-        }, $search);
+        return array_values(
+            array_filter(
+                array_map(static function ($term) {
+                    return trim($term);
+                }, $search)
+            )
+        );
     }
 
     /**

@@ -2,7 +2,7 @@
     <div class="form">
         <LoadingProgress :loading="form.state.is_loading || form.state.is_saving">
             <slot/>
-            <div class="form__errors" v-if="errors.length > 0">
+            <div class="form__errors" v-if="!hideErrors && errors.length > 0">
                 <div class="form__errors-error" v-for="error in errors">{{ error.text }}</div>
             </div>
         </LoadingProgress>
@@ -25,6 +25,7 @@ const props = defineProps<{
     saveButton?: string,
     saveDisabled?: boolean,
     hideButtons?:boolean,
+    hideErrors?:boolean,
 }>();
 
 const emit = defineEmits<{
@@ -87,12 +88,11 @@ function clear() {
         font-family: $project_font;
 
         &-error {
-            padding: 0 8px;
-            height: $base_size_unit;
-            line-height: $base_size_unit;
+            padding: 4px 8px;
+            line-height: 16px;
             margin: 0 0 5px;
             border: 1px solid transparentize($color_error, 0.9);
-            background-color: transparentize($color_error, 0.85);
+            background-color: transparentize($color_error, 0.95);
             color: $color_text_black;
             border-radius: 2px;
             font-size: 14px;

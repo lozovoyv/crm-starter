@@ -29,6 +29,7 @@ class AdminSeeder extends Seeder
             $admin->username = 'admin';
             $admin->lastname = 'Администратор';
             $admin->email = 'admin@admin.admin';
+            $admin->locked = true;
             $admin->password = Hash::make('admin');
             $admin->save();
 

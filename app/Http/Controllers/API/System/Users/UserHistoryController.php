@@ -10,6 +10,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserHistoryController extends ApiHistoryController
 {
+    protected function getHistoryID(array $args): ?int
+    {
+        return (int)array_pop($args);
+    }
+
+    protected function getArguments(array $args): array
+    {
+        array_pop($args);
+
+        return $args;
+    }
+
     protected function getQuery(array $with, $userID): Builder
     {
         return History::query()

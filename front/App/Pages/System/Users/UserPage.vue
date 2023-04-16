@@ -9,7 +9,7 @@
                 ]"
     >
         <template v-slot:actions v-if="can('system.users.change') && user.state.is_loaded">
-            <GuiActionsMenu title="Действия">
+            <GuiActionsMenu title="Действия" v-if="!user.data.locked">
                 <GuiLink name="Редактировать" :route="{name: 'user_edit', params: {id: userID}}"/>
                 <GuiLink name="Удалить" @click="remove"/>
             </GuiActionsMenu>
@@ -68,11 +68,16 @@ function update(): void {
 }
 
 function remove(): void {
-    let name = String([user.value.data.lastname, user.value.data.firstname, user.value.data.patronymic].join(' ')).trim();
-    processEntry('Удаление', `Удалить учётную запись "${name}"?`, dialog.button('yes', 'Удалить', 'default'),
-        '/api/system/users/remove', {user_id: user.value.data.id, user_hash: user.value.data.hash},
-        p => processing.value = p
-    ).then(() => {
+    const name = String([user.value.data.lastname, user.value.data.firstname, user.value.data.patronymic].join(' ')).trim();
+    processEntry({
+        title: 'Удаление',
+        question: `Удалить учётную запись "${name}"?`,
+        button: dialog.button('yes', 'Удалить', 'error'),
+        method: 'delete',
+        url: `/api/system/users/user/${userID.value}`,
+        options: {hash: user.value.data.hash},
+        progress: p => processing.value = p
+    }).then(() => {
         router.push({name: 'users'});
     });
 }

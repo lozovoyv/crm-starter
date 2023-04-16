@@ -12,6 +12,7 @@
             <FormString :form="form" name="firstname" :clearable="true" autocomplete="off"/>
             <FormString :form="form" name="patronymic" :clearable="true" autocomplete="off"/>
             <FormString :form="form" name="display_name" :clearable="true" autocomplete="off"/>
+            <FormPhone :form="form" name="phone" :clearable="true" autocomplete="off"/>
             <GuiBreak/>
             <FormDictionary :form="form" name="status_id" dictionary="user_statuses"/>
             <FormString :form="form" name="username" :clearable="true" autocomplete="off"/>
@@ -19,18 +20,21 @@
             <template v-if="form.values['email'] !== form.originals['email']">
                 <FormCheckBox :form="form" name="email_confirmation_need"/>
                 <FieldWrapper v-if="form.values['email_confirmation_need']">
-                    <GuiHint>* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты поменяется на новый только после
-                        его подтверждения.
+                    <GuiHint v-if="userId">* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты поменяется на новый
+                        только после его подтверждения.
+                    </GuiHint>
+                    <GuiHint v-else>* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты станет действительным
+                        только после его подтверждения.
                     </GuiHint>
                 </FieldWrapper>
             </template>
-            <FieldString title="Пароль" :disabled="true" :model-value="form.payload['has_password'] ? '******' : 'Не задан'"/>
+            <FieldString v-if="userId" title="Пароль" :disabled="true" :model-value="form.payload['has_password'] ? '******' : 'Не задан'"/>
             <FormPassword :form="form" name="new_password" :clearable="true" :disabled="form.values['clear_password']" autocomplete="new-password"/>
             <FieldWrapper>
-                <GuiHint>* Введите новый пароль для того, чтобы его изменить. Чтобы пароль остался прежним, оставьте поле пустым.</GuiHint>
+                <GuiHint v-if="userId">* Введите новый пароль для того, чтобы его изменить. Чтобы пароль остался прежним, оставьте поле пустым.</GuiHint>
+                <GuiHint v-else>* Введите новый пароль для учётной записи. Если оставить поле пустым, по пользователь не сможет войти в систему.</GuiHint>
             </FieldWrapper>
-            <FormCheckBox :form="form" name="clear_password"/>
-            <FormPhone :form="form" name="phone" :clearable="true" autocomplete="off"/>
+            <FormCheckBox v-if="userId" :form="form" name="clear_password"/>
         </FormBox>
     </LayoutPage>
 </template>
@@ -57,11 +61,9 @@ const props = defineProps<{
 
 const router = useRouter();
 
-const form = ref<Form>(new Form(undefined, '/api/system/users/get', '/api/system/users/update', {
-    user_id: props.userId ? props.userId : 0
-}));
+const form = ref<Form>(new Form('/api/system/users/user'));
 
-form.value.load();
+form.value.load(props.userId);
 
 function saved(response: { values: { [index: string]: any }, payload: { [index: string]: any } }): void {
     router.push({name: 'user_view', params: {id: response.payload.id}});

@@ -8,7 +8,7 @@ use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PermissionGroupsListControllerTest extends TestCase
+class PermissionsListControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -17,20 +17,16 @@ class PermissionGroupsListControllerTest extends TestCase
         $this->seed();
     }
 
-    public function test_permission_groups_list(): void
+    public function test_permissions_list(): void
     {
-        $response = $this
-            ->apiActingAs(PositionType::staff, ['system.permissions'])
-            ->get('/api/system/permissions/groups');
+        $response = $this->apiActingAs(PositionType::staff, ['system.permissions'])->get('/api/system/permissions');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
     }
 
-    public function test_permission_groups_list_no_permission(): void
+    public function test_permissions_list_no_permission(): void
     {
-        $response = $this
-            ->apiActingAs(PositionType::staff, [])
-            ->get('/api/system/permissions/groups');
+        $response = $this->apiActingAs(PositionType::staff, [])->get('/api/system/permissions');
 
         $this->assertEquals(ApiResponse::CODE_FORBIDDEN, $response->status());
     }

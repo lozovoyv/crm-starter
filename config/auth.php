@@ -108,4 +108,5 @@ return [
 
     'password_timeout' => 10800,
 
+    'email_confirmation_timeout' => env('EMAIL_CONFIRMATION_LIFETIME', 0),
 ];

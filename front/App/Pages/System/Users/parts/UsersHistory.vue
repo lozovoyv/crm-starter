@@ -1,8 +1,6 @@
 <template>
     <HistoryList
         url="/api/system/users/history"
-        commentsUrl="/api/system/users/history/comments"
-        changesUrl="/api/system/users/history/changes"
         prefix="system_users_history"
         empty-message="Нет истории изменения учётных записей"
         ref="history"

@@ -34,6 +34,11 @@ class HistoryActionsSeeder extends GenericSeeder
             HistoryAction::user_activated => ['name' => 'Учётная запись :entry активирована'],
             HistoryAction::user_deactivated => ['name' => 'Учётная запись :entry заблокирована'],
             HistoryAction::user_staff_attached => ['name' => 'Учётная запись :entry привязана к сотруднику'],
+            HistoryAction::user_email_set => ['name' => 'Задан адрес электронной почты для учётной записи :entry'],
+            HistoryAction::user_email_changed => ['name' => 'Изменён адрес электронной почты для учётной записи :entry'],
+            HistoryAction::user_email_cleared => ['name' => 'Удалён адрес электронной почты для учётной записи :entry'],
+            HistoryAction::user_email_verification_sent => ['name' => 'Отправлен запрос на подтверждение адреса электронной почты для учётной записи :entry'],
+            HistoryAction::user_email_verified => ['name' => 'Адрес электронной почты для учётной записи :entry подтверждён'],
 
             /** STAFF */
             HistoryAction::staff_position_created => ['name' => 'Добавлен сотрудник :entry'],

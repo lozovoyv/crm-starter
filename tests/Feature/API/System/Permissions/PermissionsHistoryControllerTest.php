@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature\API\System\Permissions;
 
+use App\Http\Controllers\API\System\Permissions\PermissionsHistoryController;
 use App\Http\Responses\ApiResponse;
 use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PermissionGroupsListControllerTest extends TestCase
+class PermissionsHistoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -17,20 +18,16 @@ class PermissionGroupsListControllerTest extends TestCase
         $this->seed();
     }
 
-    public function test_permission_groups_list(): void
+    public function test_permissions_groups_history(): void
     {
-        $response = $this
-            ->apiActingAs(PositionType::staff, ['system.permissions'])
-            ->get('/api/system/permissions/groups');
+        $response = $this->apiActingAs(PositionType::staff, ['system.permissions'])->get('/api/system/permissions/history');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
     }
 
-    public function test_permission_groups_list_no_permission(): void
+    public function test_permissions_groups_history_no_permission(): void
     {
-        $response = $this
-            ->apiActingAs(PositionType::staff, [])
-            ->get('/api/system/permissions/groups');
+        $response = $this->apiActingAs(PositionType::staff, [])->get('/api/system/permissions/history');
 
         $this->assertEquals(ApiResponse::CODE_FORBIDDEN, $response->status());
     }

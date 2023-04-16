@@ -216,7 +216,7 @@ class PermissionGroupCRUDController extends ApiController
             return APIResponse::error($exception->getMessage());
         }
 
-        $group->active = !$request->boolean('disable', false);
+        $group->active = !$request->boolean('disable');
         $group->save();
 
         $current = Current::init($request);
@@ -233,13 +233,13 @@ class PermissionGroupCRUDController extends ApiController
      *
      * @param int|null $id
      * @param string|null $hash
-     * @param bool $check
+     * @param bool $checkHash
      * @param int|null $overrideId
      * @param bool $onlyExisting
      *
      * @return PermissionGroup
      */
-    protected function getPermissionGroup(?int $id, ?string $hash, bool $check, ?int $overrideId = null, bool $onlyExisting = false): PermissionGroup
+    protected function getPermissionGroup(?int $id, ?string $hash, bool $checkHash, ?int $overrideId = null, bool $onlyExisting = false): PermissionGroup
     {
         /** @var PermissionGroup|null $group */
         if ($id === null) {
@@ -258,7 +258,7 @@ class PermissionGroupCRUDController extends ApiController
         if ($group === null) {
             throw new UnexpectedValueException('Группа прав не найдена');
         }
-        if ($check && $group->exists && !$group->isHash($hash)) {
+        if ($checkHash && $group->exists && !$group->isHash($hash)) {
             throw new RuntimeException('Группа прав была изменена в другом месте.');
         }
         if ($group->locked) {

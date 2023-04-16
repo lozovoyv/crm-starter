@@ -40,6 +40,11 @@ class HistoryAction extends Model
     public const user_activated = 331;
     public const user_deactivated = 341;
     public const user_staff_attached = 361;
+    public const user_email_set = 371;
+    public const user_email_changed = 372;
+    public const user_email_cleared = 373;
+    public const user_email_verification_sent = 376;
+    public const user_email_verified = 377;
 
     /** POSITIONS (401-500) */
     public const staff_position_created = 401;

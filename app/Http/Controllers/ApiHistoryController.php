@@ -43,11 +43,46 @@ abstract class ApiHistoryController extends Controller
      */
     protected function getQueryForHistory(array $with, array $args): Builder
     {
-        if(!method_exists($this, 'getQuery')) {
+        if (!method_exists($this, 'getQuery')) {
             throw new BadMethodCallException('getQuery() method must be defined in ' . static::class);
         }
 
         return $this->getQuery($with, ...$args);
+    }
+
+    /**
+     * Extract historyID from router params.
+     * Notice: Route parameters are injected into controllers based on their order - the names do not matter.
+     *
+     * @param array $args
+     *
+     * @return int|null
+     */
+    protected function getArgumentForHistoryID(array $args): ?int
+    {
+        if (method_exists($this, 'getHistoryID')) {
+            return $this->getHistoryID($args);
+        }
+
+        return isset($args[0]) ? (int)$args[0] : null;
+    }
+
+    /**
+     * Extract arguments except historyID from router params.
+     * Notice: Route parameters are injected into controllers based on their order - the names do not matter.
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    protected function getArgumentForQuery(array $args): array
+    {
+        if (method_exists($this, 'getArguments')) {
+            return $this->getArguments($args);
+        }
+
+        array_shift($args);
+        return $args;
     }
 
     /**
@@ -70,15 +105,14 @@ abstract class ApiHistoryController extends Controller
     /**
      * Get history record comments
      *
-     * @param int $historyID
-     * @param mixed ...$args
+     * @param string[] ...$args
      *
      * @return  ApiResponse
      */
-    public function comments(int $historyID, ...$args): ApiResponse
+    public function comments(...$args): ApiResponse
     {
         /** @var History|null $record */
-        $record = $this->retrieveRecord($this->getQueryForHistory(['comments'], $args), $historyID);
+        $record = $this->retrieveRecord($this->getQueryForHistory(['comments'], $this->getArgumentForQuery($args)), $this->getArgumentForHistoryID($args));
 
         if ($record === null) {
             return ApiResponse::error('Запись не найдена');
@@ -90,15 +124,14 @@ abstract class ApiHistoryController extends Controller
     /**
      * Get history record changes
      *
-     * @param int $historyID
-     * @param mixed ...$args
+     * @param string[] ...$args
      *
      * @return  ApiResponse
      */
-    public function changes(int $historyID, ...$args): ApiResponse
+    public function changes(...$args): ApiResponse
     {
         /** @var History|null $record */
-        $record = $this->retrieveRecord($this->getQueryForHistory([], $args), $historyID);
+        $record = $this->retrieveRecord($this->getQueryForHistory([], $this->getArgumentForQuery($args)), $this->getArgumentForHistoryID($args));
 
         if ($record === null) {
             return APIResponse::error('Запись не найдена');

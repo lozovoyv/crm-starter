@@ -147,7 +147,7 @@ class Position extends Model implements Statusable, Historical
         if ($this->permissionsCache === null || $fresh) {
             $this->permissionsCache = [];
 
-            if ($this->type_id === PositionType::admin) {
+            if ($this->hasType(PositionType::admin)) {
                 $permissions = Permission::query()->get();
             } else {
                 $groups = $this->permissionGroups()->with('permissions')->get();

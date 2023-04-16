@@ -88,7 +88,7 @@ function deactivate(group: PermissionGroup): void {
         title: 'Отключение',
         question: `Отключить группу "${group.name}"?`,
         button: dialog.button('yes', 'Отключить', 'default'),
-        method: 'patch',
+        method: 'put',
         url: `/api/system/permissions/group/${group.id}/status`,
         options: {disable: true, hash: group.hash},
         progress: p => processing.value = p
@@ -102,7 +102,7 @@ function activate(group: PermissionGroup): void {
         title: 'Включение',
         question: `Включить группу "${group.name}"?`,
         button: dialog.button('yes', 'Включить', 'default'),
-        method: 'patch',
+        method: 'put',
         url: `/api/system/permissions/group/${group.id}/status`,
         options: {hash: group.hash},
         progress: p => processing.value = p

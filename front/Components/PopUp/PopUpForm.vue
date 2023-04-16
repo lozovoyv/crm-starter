@@ -9,7 +9,7 @@
            :width="width"
            ref="popup"
     >
-        <FormBox :form="form" :hide-buttons="true">
+        <FormBox :form="form" :hide-buttons="true" :hide-errors="hideErrors">
             <slot/>
         </FormBox>
     </PopUp>
@@ -21,6 +21,7 @@ import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import PopUp from "@/Components/PopUp/PopUp.vue";
 import FormBox from "@/Components/Form/FormBox.vue";
+import {notify} from "@/Core/Notify";
 
 const props = defineProps<{
     form: Form,
@@ -33,6 +34,7 @@ const props = defineProps<{
     manual?: boolean,
     resolving?: DialogResolveFunction,
     width?: DialogWidth,
+    hideErrors?: boolean,
 }>();
 
 const popUpButtons = computed((): DialogButtons => {
@@ -46,19 +48,19 @@ const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
 let internalResolveFunction: undefined | { (value: unknown): void } = undefined;
 
-function show(id: number|undefined, options: { [index: string]: any } = {}) {
+function show(id: number | undefined, options: { [index: string]: any } = {}, skipLoading: boolean = false) {
     if (!popup.value) {
         console.error('Popup instance not set');
         return;
     }
     popup.value?.show();
     props.form.options = options;
-    props.form.load(id, options)
-        .catch(() => {
-            popup.value?.hide();
-        })
-        .finally(() => {
-        });
+    if (!skipLoading) {
+        props.form.load(id, options)
+            .catch(() => {
+                popup.value?.hide();
+            });
+    }
     return new Promise(resolve => {
         internalResolveFunction = resolve;
     });
@@ -92,6 +94,11 @@ function resolved(result: string | null): boolean {
                 internalResolveFunction(payload);
             }
             return true;
+        })
+        .catch(error => {
+            if (error.code !== 422) {
+                notify(error.message, 0, 'error');
+            }
         })
     return false;
 }
