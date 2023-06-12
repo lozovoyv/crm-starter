@@ -6,7 +6,7 @@ namespace App\Resources;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-abstract class Resource
+abstract class EntryResource
 {
     protected array $rules = [];
     protected array $titles = [];

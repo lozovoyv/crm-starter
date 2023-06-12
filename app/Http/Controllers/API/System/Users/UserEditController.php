@@ -9,7 +9,7 @@ use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
-use App\Resources\Users\UserResource;
+use App\Resources\Users\UserEntryResource;
 use Exception;
 
 class UserEditController extends ApiController
@@ -18,11 +18,11 @@ class UserEditController extends ApiController
      * Get user data.
      *
      * @param int|null $userID
-     * @param UserResource $resource
+     * @param UserEntryResource $resource
      *
      * @return ApiResponse
      */
-    public function get(?int $userID, UserResource $resource): ApiResponse
+    public function get(?int $userID, UserEntryResource $resource): ApiResponse
     {
         /** @var User $user */
         try {
@@ -46,12 +46,12 @@ class UserEditController extends ApiController
      *
      * @param int|null $userID
      * @param APIRequest $request
-     * @param UserResource $resource
+     * @param UserEntryResource $resource
      *
      * @return  ApiResponse
      * @noinspection DuplicatedCode
      */
-    public function save(?int $userID, APIRequest $request, UserResource $resource): ApiResponse
+    public function save(?int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true, false);
@@ -79,11 +79,11 @@ class UserEditController extends ApiController
      *
      * @param int $userID
      * @param APIRequest $request
-     * @param UserResource $resource
+     * @param UserEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function password(int $userID, APIRequest $request, UserResource $resource): ApiResponse
+    public function password(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);
@@ -106,11 +106,11 @@ class UserEditController extends ApiController
      *
      * @param int $userID
      * @param APIRequest $request
-     * @param UserResource $resource
+     * @param UserEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function email(int $userID, APIRequest $request, UserResource $resource): ApiResponse
+    public function email(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);
@@ -135,11 +135,11 @@ class UserEditController extends ApiController
      *
      * @param int $userID
      * @param APIRequest $request
-     * @param UserResource $resource
+     * @param UserEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function status(int $userID, APIRequest $request, UserResource $resource): ApiResponse
+    public function status(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);
@@ -162,11 +162,11 @@ class UserEditController extends ApiController
      *
      * @param int $userID
      * @param APIRequest $request
-     * @param UserResource $resource
+     * @param UserEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function remove(int $userID, APIRequest $request, UserResource $resource): ApiResponse
+    public function remove(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);

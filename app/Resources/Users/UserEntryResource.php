@@ -14,7 +14,7 @@ use App\Models\History\HistoryChanges;
 use App\Models\Users\User;
 use App\Models\Users\UserEmailConfirmation;
 use App\Models\Users\UserStatus;
-use App\Resources\Resource;
+use App\Resources\EntryResource;
 use App\Utils\Casting;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
-class UserResource extends Resource
+class UserEntryResource extends EntryResource
 {
     protected array $rules = [
         'lastname' => 'required_without:display_name',

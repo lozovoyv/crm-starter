@@ -12,7 +12,7 @@ use App\Models\History\HistoryAction;
 use App\Models\History\HistoryChanges;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
-use App\Resources\Resource;
+use App\Resources\EntryResource;
 use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\QueryException;
@@ -20,7 +20,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class PermissionGroupResource extends Resource
+class PermissionGroupEntryResource extends EntryResource
 {
     protected array $rules = [
         'name' => 'required',

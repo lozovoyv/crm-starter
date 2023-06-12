@@ -8,7 +8,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\HistoryAction;
-use App\Resources\Permissions\PermissionGroupResource;
+use App\Resources\Permissions\PermissionGroupEntryResource;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -19,11 +19,11 @@ class PermissionGroupEditController extends ApiController
      *
      * @param int|null $groupID
      * @param APIRequest $request
-     * @param PermissionGroupResource $resource
+     * @param PermissionGroupEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function get(?int $groupID, APIRequest $request, PermissionGroupResource $resource): ApiResponse
+    public function get(?int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
     {
         if ($groupID === null) {
             $groupID = $request->integer('from_group_id');
@@ -55,13 +55,13 @@ class PermissionGroupEditController extends ApiController
      *
      * @param int|null $groupID
      * @param APIRequest $request
-     * @param PermissionGroupResource $resource
+     * @param PermissionGroupEntryResource $resource
      *
      * @return  ApiResponse
      *
      * @noinspection DuplicatedCode
      */
-    public function save(?int $groupID, APIRequest $request, PermissionGroupResource $resource): ApiResponse
+    public function save(?int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
     {
         try {
             $group = $resource->get($groupID, $request->hash(), true, false);
@@ -86,11 +86,11 @@ class PermissionGroupEditController extends ApiController
      *
      * @param int $groupID
      * @param APIRequest $request
-     * @param PermissionGroupResource $resource
+     * @param PermissionGroupEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function status(int $groupID, APIRequest $request, PermissionGroupResource $resource): ApiResponse
+    public function status(int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
     {
         try {
             $group = $resource->get($groupID, $request->hash(), true);
@@ -113,11 +113,11 @@ class PermissionGroupEditController extends ApiController
      *
      * @param int $groupID
      * @param APIRequest $request
-     * @param PermissionGroupResource $resource
+     * @param PermissionGroupEntryResource $resource
      *
      * @return  ApiResponse
      */
-    public function remove(int $groupID, APIRequest $request, PermissionGroupResource $resource): ApiResponse
+    public function remove(int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
     {
         try {
             $group = $resource->get($groupID, $request->hash(), true);
