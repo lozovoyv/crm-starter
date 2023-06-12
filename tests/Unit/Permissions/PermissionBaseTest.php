@@ -37,13 +37,10 @@ class PermissionBaseTest extends TestCase
         $this->assertTrue(Permission::get('test.permission')->is($permission));
         $this->assertNull(Permission::get('test.permission.not.existing'));
 
-        $this->assertEquals([
-            'id' => $permission->id,
-            'key' => 'test.permission',
-            'scope' => 'test scope',
-            'name' => 'test permission',
-            'description' => 'test permission description',
-        ], $permission->toArray());
+        $this->assertEquals('test.permission', $permission->key);
+        $this->assertEquals('test', $permission->scope_name);
+        $this->assertEquals('test permission', $permission->name);
+        $this->assertEquals('test permission description', $permission->description);
 
         // Module 2
         $scope2 = new PermissionScope();
@@ -94,16 +91,11 @@ class PermissionBaseTest extends TestCase
         $this->assertEquals(EntryScope::permission_group, $group->historyEntryName());
         $this->assertEquals(null, $group->historyEntryType());
         $this->assertIsString($group->hash());
-        $this->assertEquals([
-            'id' => $group->id,
-            'name' => 'test role',
-            'count' => 1,
-            'description' => null,
-            'active' => true,
-            'locked' => false,
-            'hash' => $group->getHash(),
-            'updated_at' => $group->updated_at,
-        ], $group->toArray());
+        $this->assertEquals('test role', $group->name);
+        $this->assertEquals(1, $group->permissions->count());
+        $this->assertEquals(null, $group->description);
+        $this->assertEquals(true, $group->active);
+        $this->assertEquals(false, $group->locked);
         $this->assertEquals(md5($now->toString()), $group->getHash());
     }
 }

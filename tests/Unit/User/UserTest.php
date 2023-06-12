@@ -6,6 +6,7 @@ namespace Tests\Unit\User;
 use App\Models\EntryScope;
 use App\Models\Users\UserStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\HelperTraits\CreatesUser;
 use Tests\TestCase;
 
@@ -44,22 +45,15 @@ class UserTest extends TestCase
 
         $this->assertEquals('Тестовый Иван', $user->fullName);
         $this->assertEquals('Тестовый И.', $user->compactName);
-        $this->assertEquals([
-            'id' => $user->id,
-            'is_active' => false,
-            'status' => UserStatus::get(UserStatus::blocked)->name,
-            'lastname' => 'Тестовый',
-            'firstname' => 'Иван',
-            'patronymic' => null,
-            'display_name' => 'test',
-            'username' => 'test',
-            'email' => 'test@test.ru',
-            'has_password' => true,
-            'phone' => '+79876543210',
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at,
-            'hash' => md5($user->updated_at->toString()),
-        ], $user->toArray());
+        $this->assertEquals(UserStatus::get(UserStatus::blocked)->id, $user->status_id);
+        $this->assertEquals('Тестовый', $user->lastname);
+        $this->assertEquals('Иван', $user->firstname);
+        $this->assertEquals(null, $user->patronymic);
+        $this->assertEquals('test', $user->display_name);
+        $this->assertEquals('test', $user->username);
+        $this->assertEquals('test@test.ru', $user->email);
+        $this->assertEquals('+79876543210', $user->phone);
+        $this->assertTrue(Hash::check('123456', $user->password));
 
         $this->assertEquals(0, $user->positions->count());
 

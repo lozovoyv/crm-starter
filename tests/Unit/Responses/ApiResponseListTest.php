@@ -31,7 +31,7 @@ class ApiResponseListTest extends TestCase
     public function test_http_response_list_array(): void
     {
         $request = new Request();
-        $response = ApiResponse::list()->items([1, 2, 3]);
+        $response = ApiResponse::list([1, 2, 3]);
         $result = $response->toResponse($request);
 
         $this->assertEquals(200, $result->status());

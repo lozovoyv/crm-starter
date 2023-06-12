@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace App\Http\Responses;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Support\Collection;
 use Throwable;
 
 abstract class ApiResponse implements Responsable
@@ -199,13 +202,13 @@ abstract class ApiResponse implements Responsable
     /**
      * Success API response factory.
      *
-     * @param string $message
+     * @param string|null $message
      * @param int $statusCode
      * @param array $headers
      *
      * @return  ApiResponseSuccess
      */
-    public static function success(string $message, int $statusCode = self::CODE_OK, array $headers = []): ApiResponseSuccess
+    public static function success(?string $message = null, int $statusCode = self::CODE_OK, array $headers = []): ApiResponseSuccess
     {
         return (new ApiResponseSuccess($statusCode, $headers))->message($message);
     }
@@ -270,14 +273,15 @@ abstract class ApiResponse implements Responsable
     /**
      * List API response factory.
      *
+     * @param array|Arrayable|Collection|LengthAwarePaginator $list
      * @param int $statusCode
      * @param array $headers
      *
      * @return  ApiResponseList
      */
-    public static function list(int $statusCode = self::CODE_OK, array $headers = []): ApiResponseList
+    public static function list(array|Arrayable|Collection|LengthAwarePaginator $list = [], int $statusCode = self::CODE_OK, array $headers = []): ApiResponseList
     {
-        return new ApiResponseList($statusCode, $headers);
+        return (new ApiResponseList($statusCode, $headers))->items($list);
     }
 
 }

@@ -17,7 +17,7 @@ trait SetAttributeWithChanges
      *
      * @return HistoryChanges|null
      */
-    public function changeAttribute(string $key, mixed $value, int $type = null, string $historyKey = null): ?HistoryChanges
+    public function changeAttribute(string $key, mixed $value, ?int $type = null, string $historyKey = null): ?HistoryChanges
     {
         $oldValue = $this->getAttribute($key);
 

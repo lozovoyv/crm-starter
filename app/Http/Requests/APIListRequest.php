@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Utils\Casting;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class APIListRequest extends FormRequest
 {
@@ -48,47 +45,23 @@ class APIListRequest extends FormRequest
     /**
      * Get filters list.
      *
-     * @param array $casting
      * @param array $default
      *
      * @return  array
      */
-    public function filters(array $casting = [], array $default = []): array
+    public function filters(array $default = []): array
     {
-        $filters = $this->input('filters', $default);
-
-        foreach ($casting as $key => $type) {
-            if (isset($filters[$key])) {
-                $filters[$key] = Casting::fromString($filters[$key], $type);
-            } else {
-                $filters[$key] = null;
-            }
-        }
-        return $filters;
+        return $this->input('filters', $default);
     }
 
     /**
      * Get search terms.
      *
-     * @return  array
+     * @return string|null
      */
-    public function search(): array
+    public function search(): ?string
     {
-        $search = $this->input('search');
-
-        if (empty($search)) {
-            return [];
-        }
-
-        $search = explode(' ', $search);
-
-        return array_values(
-            array_filter(
-                array_map(static function ($term) {
-                    return trim($term);
-                }, $search)
-            )
-        );
+        return $this->input('search');
     }
 
     /**
@@ -115,20 +88,5 @@ class APIListRequest extends FormRequest
     public function orderBy(?string $default = null): ?string
     {
         return $this->input('order_by', $default) ?? $default;
-    }
-
-    /**
-     * Paginate query with request parameters.
-     *
-     * @param Builder $query
-     * @param string $pageKey
-     * @param string $perPageKey
-     * @param int $perPageDefault
-     *
-     * @return  LengthAwarePaginator
-     */
-    public function paginate(Builder $query, string $pageKey = 'page', string $perPageKey = 'per_page', int $perPageDefault = 10): LengthAwarePaginator
-    {
-        return $query->paginate($this->perPage($perPageDefault, $perPageKey), ['*'], $pageKey, $this->page($pageKey));
     }
 }

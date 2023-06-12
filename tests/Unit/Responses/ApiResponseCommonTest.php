@@ -38,7 +38,7 @@ class ApiResponseCommonTest extends TestCase
         $this->assertTrue($result->headers->has('Last-Modified'));
 
         $timestamp = Carbon::parse($result->headers->get('Last-Modified'));
-        $this->assertTrue($timestamp->is($now->toString()));
+        $this->assertTrue($timestamp->is($now->setTimezone('GMT')->toString()), $timestamp->toString() . ' != ' . $now->toString());
     }
 
     public function test_http_response_common_message(): void

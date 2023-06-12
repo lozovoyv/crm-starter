@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\API\System\Permissions;
 
-use App\Http\Controllers\API\System\Permissions\PermissionsHistoryController;
+use App\Http\Controllers\API\System\Permissions\PermissionGroupHistoryController;
 use App\Http\Responses\ApiResponse;
 use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;

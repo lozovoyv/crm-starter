@@ -9,6 +9,7 @@ use App\Models\Positions\PositionStatus;
 use App\Models\Positions\PositionType;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Arr;
 use Tests\HelperTraits\CreatesUser;
 use Tests\TestCase;
 
@@ -52,14 +53,7 @@ class PositionTest extends TestCase
         $this->assertEquals('Base P.T.', $position->historyEntryTitle());
         $this->assertEquals(EntryScope::position, $position->historyEntryName());
         $this->assertEquals('staff', $position->historyEntryType());
-        $this->assertEquals([
-            'id' => $position->id,
-            'active' => false,
-            'created_at' => $position->created_at,
-            'updated_at' => $position->updated_at,
-            'hash' => md5($position->updated_at->toString()),
-            'user' => $user->toArray(),
-        ], $position->toArray());
+        $this->assertEquals($user->id, $position->user_id);
     }
 
     public function test_base_position_no_user(): void

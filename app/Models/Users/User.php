@@ -3,29 +3,21 @@ declare(strict_types=1);
 
 namespace App\Models\Users;
 
-use App\Current;
-use App\Exceptions\Model\ModelLockedException;
-use App\Exceptions\Model\ModelNotFoundException;
-use App\Exceptions\Model\ModelWrongHashException;
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
 use App\Models\EntryScope;
-use App\Models\History\HistoryAction;
-use App\Models\History\HistoryChanges;
 use App\Models\Positions\Position;
 use App\Traits\HashCheck;
 use App\Traits\HasHistoryLine;
 use App\Traits\HasStatus;
 use App\Traits\SetAttributeWithChanges;
-use App\Utils\Casting;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -282,213 +274,5 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
     public function historyEntryType(): ?string
     {
         return null;
-    }
-
-    /**
-     * Get permission group.
-     *
-     * @param int|null $id
-     * @param string|null $hash
-     * @param bool $check
-     * @param bool $onlyExisting
-     *
-     * @return User
-     * @throws ModelLockedException
-     * @throws ModelWrongHashException
-     * @throws ModelNotFoundException
-     */
-    public static function get(?int $id, ?string $hash = null, bool $check = false, bool $onlyExisting = true): User
-    {
-        /** @var User|null $user */
-        if ($id === null) {
-            $user = $onlyExisting ? null : new self();
-        } else {
-            $user = self::query()->where('id', $id)->first();
-        }
-
-        if ($user === null) {
-            throw new ModelNotFoundException('Учётная запись не найдена');
-        }
-        if ($check && $user->exists && !$user->isHash($hash)) {
-            throw new ModelWrongHashException('Учётная запись была изменена в другом месте.');
-        }
-        if ($user->locked) {
-            throw new ModelLockedException('Эту учётную запись нельзя изменить или удалить');
-        }
-
-        return $user;
-    }
-
-    /**
-     * Update user common data.
-     *
-     * @param string|null $lastname
-     * @param string|null $firstname
-     * @param string|null $patronymic
-     * @param string|null $displayName
-     * @param string|null $username
-     * @param string|null $phone
-     * @param Current $current
-     *
-     * @return $this
-     */
-    public function change(?string $lastname, ?string $firstname, ?string $patronymic, ?string $displayName, ?string $username, ?string $phone, Current $current): self
-    {
-        $changes = [];
-        $changes[] = $this->changeAttribute('lastname', $lastname, Casting::string);
-        $changes[] = $this->changeAttribute('firstname', $firstname, Casting::string);
-        $changes[] = $this->changeAttribute('patronymic', $patronymic, Casting::string);
-        $changes[] = $this->changeAttribute('display_name', $displayName, Casting::string);
-        $changes[] = $this->changeAttribute('username', $username, Casting::string);
-        $changes[] = $this->changeAttribute('phone', $phone, Casting::string);
-        $this->save();
-
-        $changes = array_filter($changes);
-
-        if (!empty($changes)) {
-            $this
-                ->addHistory($this->wasRecentlyCreated ? HistoryAction::user_created : HistoryAction::user_edited, $current->positionId())
-                ->addChanges($changes);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Change user status.
-     *
-     * @param int $statusId
-     * @param Current $current
-     *
-     * @return $this
-     */
-    public function changeStatus(int $statusId, Current $current): self
-    {
-        if ($statusId !== $this->status_id) {
-            $this->setStatus($statusId);
-            $this->save();
-
-            $action = match ($this->status_id) {
-                UserStatus::active => HistoryAction::user_activated,
-                UserStatus::blocked => HistoryAction::user_deactivated,
-            };
-            $this->addHistory($action, $current->positionId());
-        }
-
-        return $this;
-    }
-
-    /**
-     * Change user password.
-     *
-     * @param string|null $newPassword
-     * @param bool $clear
-     * @param Current $current
-     *
-     * @return $this
-     */
-    public function changePassword(?string $newPassword, bool $clear, Current $current): self
-    {
-        if ($clear) {
-            if (!empty($this->password)) {
-                $this->password = null;
-                $this->save();
-                $this->addHistory(HistoryAction::user_password_cleared, $current->positionId());
-            }
-        } else if (!empty($newPassword)) {
-            $action = match (true) {
-                empty($this->password) => HistoryAction::user_password_set,
-                default => HistoryAction::user_password_changed,
-            };
-            $this->password = Hash::make($newPassword);
-            $this->save();
-            $this->addHistory($action, $current->positionId());
-        }
-
-        return $this;
-    }
-
-    public function changeEmail(?string $newEmail, bool $withConfirmation, Current $current): self
-    {
-        if ($this->email === $newEmail) {
-            return $this;
-        }
-
-        if (!$withConfirmation || $newEmail === null) {
-            $oldEmail = $this->email;
-            $change = $this->changeAttribute('email', $newEmail, Casting::string);
-            $this->save();
-
-            $action = match (true) {
-                ($oldEmail === null) => HistoryAction::user_email_set,
-                ($newEmail === null) => HistoryAction::user_email_cleared,
-                default => HistoryAction::user_email_changed,
-            };
-
-            $this
-                ->addHistory($action, $current->positionId())
-                ->addChanges([$change]);
-
-            return $this;
-        }
-
-        $confirmation = UserEmailConfirmation::create($this, $newEmail);
-
-        // TODO send mail
-        $this->addHistory(HistoryAction::user_email_verification_sent, $current->positionId(), $newEmail);
-
-        return $this;
-    }
-
-    /**
-     * Remove user.
-     *
-     * @param Current $current
-     *
-     * @return void
-     */
-    public function remove(Current $current): void
-    {
-        $changes = [
-            new HistoryChanges(['parameter' => 'lastname', 'type' => Casting::string, 'old' => $this->lastname, 'new' => null]),
-            new HistoryChanges(['parameter' => 'firstname', 'type' => Casting::string, 'old' => $this->firstname, 'new' => null]),
-            new HistoryChanges(['parameter' => 'patronymic', 'type' => Casting::string, 'old' => $this->patronymic, 'new' => null]),
-            new HistoryChanges(['parameter' => 'display_name', 'type' => Casting::string, 'old' => $this->display_name, 'new' => null]),
-            new HistoryChanges(['parameter' => 'email', 'type' => Casting::string, 'old' => $this->email, 'new' => null]),
-            new HistoryChanges(['parameter' => 'phone', 'type' => Casting::string, 'old' => $this->phone, 'new' => null]),
-            new HistoryChanges(['parameter' => 'username', 'type' => Casting::string, 'old' => $this->username, 'new' => null]),
-        ];
-
-        $this
-            ->addHistory(HistoryAction::user_deleted, $current->positionId())
-            ->addChanges($changes);
-
-        $this->delete();
-    }
-
-    /**
-     * Cast to array.
-     *
-     * @return  array
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'is_active' => $this->hasStatus(UserStatus::active),
-            'locked' => $this->locked,
-            'status' => $this->status->name,
-            'lastname' => $this->lastname,
-            'firstname' => $this->firstname,
-            'patronymic' => $this->patronymic,
-            'display_name' => $this->display_name,
-            'username' => $this->username,
-            'email' => $this->email,
-            'has_password' => !empty($this->password),
-            'phone' => $this->phone,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'hash' => $this->getHash(),
-        ];
     }
 }

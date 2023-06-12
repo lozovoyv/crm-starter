@@ -56,20 +56,4 @@ class Permission extends Model
     {
         return $this->belongsToMany(PermissionGroup::class, 'permission_in_group', 'permission_id', 'group_id');
     }
-
-    /**
-     * Default representation permission as array.
-     *
-     * @return  array
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'key' => $this->key,
-            'scope' => $this->scope->name,
-            'name' => $this->name,
-            'description' => $this->description,
-        ];
-    }
 }

@@ -7,6 +7,7 @@ use App\Interfaces\Historical;
 use App\Models\EntryScope;
 use App\Models\Model;
 use App\Traits\HasSimpleHistory;
+use App\Traits\SetAttributeWithChanges;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class PermissionGroup extends Model implements Historical
 {
-    use HasSimpleHistory;
+    use HasSimpleHistory, SetAttributeWithChanges;
 
     /** @var array Attributes casting. */
     protected $casts = [
@@ -78,26 +79,5 @@ class PermissionGroup extends Model implements Historical
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'permission_in_group', 'group_id', 'permission_id');
-    }
-
-    /**
-     * Default representation role as array.
-     *
-     * @return  array
-     */
-    public function toArray(): array
-    {
-        $permissionsCount = $this->getAttribute('permissions_count') ?? $this->permissions()->count();
-
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'count' => $permissionsCount,
-            'description' => $this->description,
-            'active' => $this->active,
-            'locked' => $this->locked,
-            'hash' => $this->getHash(),
-            'updated_at' => $this->updated_at,
-        ];
     }
 }

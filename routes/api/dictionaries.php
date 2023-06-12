@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/api/dictionary/{alias}', [DictionaryController::class, 'view']);
 
-Route::get('/api/dictionaries', [DictionaryController::class, 'index']);
-Route::get('/api/dictionaries/{alias}', [DictionaryController::class, 'list']);
-Route::patch('/api/dictionaries/{alias}', [DictionaryController::class, 'sync']);
-Route::get('/api/dictionaries/{alias}/{ID}', [DictionaryController::class, 'get']);
-Route::put('/api/dictionaries/{alias}/{ID}', [DictionaryController::class, 'update']);
-Route::patch('/api/dictionaries/{alias}/{ID}', [DictionaryController::class, 'toggle']);
-Route::delete('/api/dictionaries/{alias}/{ID}', [DictionaryController::class, 'delete']);
+Route::prefix('/api/dictionaries')->group(function () {
+    Route::get('/', [DictionaryController::class, 'index']);
+    Route::get('/{alias}', [DictionaryController::class, 'list']);
+    Route::patch('/{alias}', [DictionaryController::class, 'sync']);
+    Route::get('/{alias}/{ID}', [DictionaryController::class, 'get']);
+    Route::put('/{alias}/{ID}', [DictionaryController::class, 'update']);
+    Route::patch('/{alias}/{ID}', [DictionaryController::class, 'toggle']);
+    Route::delete('/{alias}/{ID}', [DictionaryController::class, 'delete']);
+});

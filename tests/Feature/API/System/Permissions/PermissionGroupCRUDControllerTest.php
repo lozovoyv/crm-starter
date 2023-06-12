@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\API\System\Permissions;
 
-use App\Http\Controllers\API\System\Permissions\PermissionGroupCRUDController;
+use App\Http\Controllers\API\System\Permissions\PermissionGroupEditController;
 use Tests\TestCase;
 
 class PermissionGroupCRUDControllerTest extends TestCase

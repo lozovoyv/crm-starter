@@ -16,4 +16,24 @@ class APIRequest extends FormRequest
     {
         return [];
     }
+
+    /**
+     * Get data from request.
+     *
+     * @return array
+     */
+    public function data(): array
+    {
+        return $this->input('data', []);
+    }
+
+    /**
+     * Get hash parameter from request.
+     *
+     * @return string|null
+     */
+    public function hash(): ?string
+    {
+        return $this->input('hash', null);
+    }
 }
