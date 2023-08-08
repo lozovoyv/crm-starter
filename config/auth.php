@@ -13,6 +13,9 @@ return [
     |
     */
 
+    'registration_enabled' => env('AUTH_REGISTRATION_ENABLED', false),
+    'reset_password_enabled' => env('AUTH_RESET_PASSWORD_ENABLED', false),
+
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
@@ -108,5 +111,5 @@ return [
 
     'password_timeout' => 10800,
 
-    'email_confirmation_timeout' => env('EMAIL_CONFIRMATION_LIFETIME', 0),
+    'email_confirmation_timeout' => env('AUTH_EMAIL_CONFIRMATION_LIFETIME', 0),
 ];

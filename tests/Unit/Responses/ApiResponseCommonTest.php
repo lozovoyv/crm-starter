@@ -6,7 +6,7 @@ namespace Tests\Unit\Responses;
 use App\Http\Responses\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ApiResponseCommonTest extends TestCase
 {

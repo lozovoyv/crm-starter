@@ -89,6 +89,19 @@ class Settings
             $values[] = ['key' => $key, 'value' => $value];
         }
         DB::table('settings')->truncate();
-        DB::table('settings')->insert($values);
+        if (!empty($values)) {
+            DB::table('settings')->insert($values);
+        }
+    }
+
+    /**
+     * Reset settings to initial state.
+     *
+     * @return  void
+     */
+    public static function reset(): void
+    {
+        self::$loaded = false;
+        self::$settings = [];
     }
 }

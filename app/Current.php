@@ -141,7 +141,7 @@ class Current
      */
     public function can(?string $key, bool $fresh = false): bool
     {
-        return $this->position ? $this->position->can($key, $fresh) : false;
+        return $this->position() && $this->position()->can($key, $fresh);
     }
 
     /**
@@ -155,13 +155,23 @@ class Current
     }
 
     /**
-     * Get current username.
+     * Get current user compact name.
      *
      * @return  string|null
      */
-    public function userName(): ?string
+    public function compactName(): ?string
     {
         return isset($this->user) ? $this->user->compactName : null;
+    }
+
+    /**
+     * Get current user full name.
+     *
+     * @return  string|null
+     */
+    public function fullName(): ?string
+    {
+        return isset($this->user) ? $this->user->fullName : null;
     }
 
     /**
@@ -169,7 +179,7 @@ class Current
      *
      * @return  string|null
      */
-    public function userEmail(): ?string
+    public function email(): ?string
     {
         return $this->user->email ?? null;
     }
@@ -181,7 +191,7 @@ class Current
      */
     public function permissions(): array
     {
-        return $this->position ? $this->position->getPermissionsList() : [];
+        return $this->position() ? $this->position()->getPermissionsList() : [];
     }
 
     /**
@@ -193,6 +203,6 @@ class Current
      */
     public function hasPositionType(int $positionType): bool
     {
-        return $this->position && $this->position->type_id === $positionType;
+        return $this->position() && $this->position()->type_id === $positionType;
     }
 }

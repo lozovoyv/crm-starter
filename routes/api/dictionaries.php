@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Route;
  * are checked inside DictionaryController based on dictionary configs:
  * config/dictionaries.php
  */
-Route::get('/api/dictionary/{alias}', [DictionaryController::class, 'view']);
+Route::get('/api/dictionary/{alias}', [DictionaryController::class, 'view'])->middleware(['auth:sanctum']);
 
-Route::prefix('/api/dictionaries')->group(function () {
+Route::prefix('/api/dictionaries')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/', [DictionaryController::class, 'index']);
     Route::get('/{alias}', [DictionaryController::class, 'list']);
     Route::patch('/{alias}', [DictionaryController::class, 'sync']);

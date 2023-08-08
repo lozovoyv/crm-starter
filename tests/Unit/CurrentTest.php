@@ -49,6 +49,21 @@ class CurrentTest extends TestCase
         $this->assertNull($current->position());
     }
 
+    public function test_current_user_details(): void
+    {
+        $user = $this->createUser('Тестовый', 'Тест', 'Тестович', 'test@test.com', 'tester');
+        $request = Request::create('/');
+        $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+        $current = Current::init($request, true);
+        $this->assertEquals($user->id, $current->userId());
+        $this->assertEquals('Тестовый Т.Т.', $current->compactName());
+        $this->assertEquals('Тестовый Тест Тестович', $current->fullName());
+        $this->assertEquals('test@test.com', $current->email());
+    }
+
     public function test_current_user_one_position(): void
     {
         $user = $this->createUser();
@@ -186,5 +201,79 @@ class CurrentTest extends TestCase
         $this->assertNotNull($current->position());
         $this->assertTrue($current->position()->is($position2));
         $this->assertEquals($position2->id, $current->positionId());
+    }
+
+    public function test_current_permissions(): void
+    {
+        $user = $this->createUser();
+        $position = $this->createPosition($user, PositionType::staff);
+        $position->permissions()->sync([
+            Permission::get('system.act_as_other')?->id,
+            Permission::get('system.history')?->id,
+        ]);
+        $request = Request::create('/');
+        $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+        $current = Current::init($request, true);
+
+        $this->assertEquals(['system.act_as_other', 'system.history'], array_values($current->permissions()));
+    }
+
+    public function test_current_proxy_permissions(): void
+    {
+        $user = $this->createUser();
+        $position = $this->createPosition($user, PositionType::staff);
+        $position->permissions()->sync([Permission::get('system.act_as_other')?->id]);
+
+        $user2 = $this->createUser();
+        $position2 = $this->createPosition($user2, PositionType::staff);
+        $position2->permissions()->sync([Permission::get('system.history')?->id]);
+
+        $request = Request::create('/');
+        $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+        $request->cookies->set('proxy_position', $position2->id);
+        $current = Current::init($request, true);
+
+        $this->assertEquals(['system.history'], array_values($current->permissions()));
+    }
+
+    public function test_current_has_position_type(): void
+    {
+        $user = $this->createUser();
+        $this->createPosition($user, PositionType::staff);
+        $request = Request::create('/');
+        $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+        $current = Current::init($request, true);
+
+        $this->assertTrue($current->hasPositionType(PositionType::staff));
+        $this->assertFalse($current->hasPositionType(PositionType::admin));
+    }
+
+    public function test_current_has_proxy_position_type(): void
+    {
+        $user = $this->createUser();
+        $this->createPosition($user, PositionType::admin);
+
+        $user2 = $this->createUser();
+        $position2 = $this->createPosition($user2, PositionType::staff);
+
+        $request = Request::create('/');
+        $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+        $request->cookies->set('proxy_position', $position2->id);
+        $current = Current::init($request, true);
+
+        $this->assertTrue($current->hasPositionType(PositionType::staff));
+        $this->assertFalse($current->hasPositionType(PositionType::admin));
     }
 }

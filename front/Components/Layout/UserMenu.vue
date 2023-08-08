@@ -38,7 +38,7 @@ import {nextTick, ref} from "vue";
 import IconUserCircle from "@/Icons/IconUserCircle.vue";
 
 const props = defineProps<{
-    user: User | null,
+    user: User,
 }>();
 
 const dropped = ref<boolean>(false);

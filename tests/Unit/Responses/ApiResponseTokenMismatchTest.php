@@ -5,7 +5,7 @@ namespace Tests\Unit\Responses;
 
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ApiResponseTokenMismatchTest extends TestCase
 {

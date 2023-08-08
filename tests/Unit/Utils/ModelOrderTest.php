@@ -6,7 +6,6 @@ namespace Tests\Unit\Utils;
 use App\Models\Users\UserStatus;
 use App\Utils\ModelOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ModelOrderTest extends TestCase
@@ -15,6 +14,8 @@ class ModelOrderTest extends TestCase
 
     public function test_util_model_order(): void
     {
+        UserStatus::query()->delete();
+
         for ($i = 0; $i < 5; $i++) {
             $status = new UserStatus();
             $status->id = 10 + $i;
@@ -37,6 +38,8 @@ class ModelOrderTest extends TestCase
 
     public function test_util_model_order_no_order(): void
     {
+        UserStatus::query()->delete();
+
         for ($i = 0; $i < 5; $i++) {
             $status = new UserStatus();
             $status->id = 10 + $i;

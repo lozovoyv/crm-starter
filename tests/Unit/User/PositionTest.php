@@ -9,7 +9,6 @@ use App\Models\Positions\PositionStatus;
 use App\Models\Positions\PositionType;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
 use Tests\HelperTraits\CreatesUser;
 use Tests\TestCase;
 

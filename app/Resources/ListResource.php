@@ -80,6 +80,20 @@ abstract class ListResource
     }
 
     /**
+     * Set list titles.
+     *
+     * @param array $titles
+     *
+     * @return $this
+     */
+    public function setTitles(array $titles): self
+    {
+        $this->titles = $titles;
+
+        return $this;
+    }
+
+    /**
      * Get list columns keys and titles.
      *
      * @return array
@@ -89,6 +103,20 @@ abstract class ListResource
         return array_map(static function (?string $title): ?string {
             return $title ? trans($title) : null;
         }, $this->titles);
+    }
+
+    /**
+     * Set orderable columns.
+     *
+     * @param array $keys
+     *
+     * @return $this
+     */
+    public function setOrderableColumns(array $keys): self
+    {
+        $this->orderableColumns = $keys;
+
+        return $this;
     }
 
     /**

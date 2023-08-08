@@ -11,18 +11,24 @@ trait ApiInteractions
 {
     use CreatesUser, CreatesPosition;
 
-    protected function apiActingAs(int $positionType, array $permissions = [], array $session = []): self
+    protected function apiActingAs(?int $positionType, array $permissions = [], array $session = []): self
     {
+        Current::unset();
+
+        $this
+            ->withSession($session)
+            ->withHeader('Accept', 'application/json')
+            ->withHeader('origin', '127.0.0.1');
+
+        if ($positionType === null) {
+            return $this;
+        }
+
         $user = $this->createUser('testing', 'user');
         $position = $this->createPosition($user, $positionType);
         $position->permissions()->sync(Permission::query()->whereIn('key', $permissions)->pluck('id')->toArray());
         Sanctum::actingAs($user);
-        Current::unset();
 
-        return $this
-            ->actingAs($user)
-            ->withSession($session)
-            ->withHeader('Accept', 'application/json')
-            ->withHeader('origin', '127.0.0.1');
+        return $this->actingAs($user);
     }
 }

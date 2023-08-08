@@ -237,16 +237,6 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
     }
 
     /**
-     * Instance hash.
-     *
-     * @return  string|null
-     */
-    public function hash(): ?string
-    {
-        return $this->updated_at?->toString();
-    }
-
-    /**
      * History entry title.
      *
      * @return  string

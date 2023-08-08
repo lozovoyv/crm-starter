@@ -1,4 +1,4 @@
-export type User = null | {
+export type User = null | undefined | {
     id: number,
     name: string | null,
     organization: string | null,

@@ -11,7 +11,7 @@ use App\Resources\History\CommonHistoryResource;
 class HistoryController extends ApiController
 {
     /**
-     * All users history list.
+     * All history list.
      *
      * @param APIListRequest $request
      * @param CommonHistoryResource $resource
@@ -32,7 +32,7 @@ class HistoryController extends ApiController
     }
 
     /**
-     * All users history entry comments.
+     * All history entry comments.
      *
      * @param int $historyID
      * @param CommonHistoryResource $resource
@@ -51,7 +51,7 @@ class HistoryController extends ApiController
     }
 
     /**
-     * All users history entry changes.
+     * All history entry changes.
      *
      * @param int $historyID
      * @param CommonHistoryResource $resource

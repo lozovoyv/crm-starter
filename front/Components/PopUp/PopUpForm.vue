@@ -96,7 +96,7 @@ function resolved(result: string | null): boolean {
             return true;
         })
         .catch(error => {
-            if (error.code !== 422) {
+            if ([422, 500].indexOf(error.code) === -1) {
                 notify(error.message, 0, 'error');
             }
         })

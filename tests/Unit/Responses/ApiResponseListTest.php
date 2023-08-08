@@ -6,7 +6,7 @@ namespace Tests\Unit\Responses;
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use TypeError;
 
 class ApiResponseListTest extends TestCase

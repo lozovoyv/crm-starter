@@ -5,7 +5,7 @@ namespace Tests\Unit\Traits;
 
 use App\Interfaces\HashCheckable;
 use App\Traits\HashCheck;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class HashCheckTest extends TestCase implements HashCheckable
 {
@@ -13,19 +13,11 @@ class HashCheckTest extends TestCase implements HashCheckable
 
     protected ?string $hash;
 
-    /**
-     * Make hash for model.
-     *
-     * @return  string|null
-     */
-    public function hash(): ?string
-    {
-        return $this->hash;
-    }
+    protected $updated_at;
 
     public function test_hash_check():void
     {
-        $this->hash = 'test';
+        $this->updated_at = 'test';
         $hash = $this->getHash();
 
         $this->assertTrue($this->isHash($hash));
@@ -34,7 +26,7 @@ class HashCheckTest extends TestCase implements HashCheckable
 
     public function test_hash_check_null():void
     {
-        $this->hash = null;
+        $this->updated_at = null;
         $hash = $this->getHash();
 
         $this->assertTrue($this->isHash($hash));

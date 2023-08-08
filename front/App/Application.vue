@@ -49,8 +49,8 @@ import {can} from "@/Core/Can";
 
 const store = useStore();
 
-const user = computed((): User | null => {
-    return <User | null>store.getters['user/user'];
+const user = computed((): User => {
+    return <User>store.getters['user/user'];
 });
 
 const organization = computed((): string | null | undefined => {

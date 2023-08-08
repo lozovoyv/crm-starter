@@ -17,9 +17,9 @@ trait SetAttributeWithChanges
      *
      * @return HistoryChanges|null
      */
-    public function changeAttribute(string $key, mixed $value, ?int $type = null, string $historyKey = null): ?HistoryChanges
+    public function setAttributeWithChanges(string $key, mixed $value, ?int $type = null, string $historyKey = null): ?HistoryChanges
     {
-        $oldValue = $this->getAttribute($key);
+        $oldValue = $this->{$key};
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($type !== null && $oldValue != $value) {
@@ -32,7 +32,7 @@ trait SetAttributeWithChanges
             ]);
         }
 
-        parent::setAttribute($key, $value);
+        $this->{$key} = $value;
 
         return $changes ?? null;
     }

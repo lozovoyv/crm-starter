@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Models\Permissions;
 
+use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Models\EntryScope;
 use App\Models\Model;
+use App\Traits\HashCheck;
 use App\Traits\HasSimpleHistory;
 use App\Traits\SetAttributeWithChanges;
 use Carbon\Carbon;
@@ -23,9 +25,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @property Collection<Permission> $permissions
  */
-class PermissionGroup extends Model implements Historical
+class PermissionGroup extends Model implements Historical, HashCheckable
 {
-    use HasSimpleHistory, SetAttributeWithChanges;
+    use HashCheck, HasSimpleHistory, SetAttributeWithChanges;
 
     /** @var array Attributes casting. */
     protected $casts = [

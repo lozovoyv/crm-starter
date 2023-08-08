@@ -225,9 +225,9 @@ class PermissionGroupEntryResource extends EntryResource
     {
         DB::transaction(function () use (&$group, $data, $current) {
             $changes = [];
-            $changes[] = $group->changeAttribute('name', $data['name'], Casting::string);
-            $changes[] = $group->changeAttribute('active', $data['active'], Casting::bool);
-            $changes[] = $group->changeAttribute('description', $data['description'], Casting::string);
+            $changes[] = $group->setAttributeWithChanges('name', $data['name'], Casting::string);
+            $changes[] = $group->setAttributeWithChanges('active', $data['active'], Casting::bool);
+            $changes[] = $group->setAttributeWithChanges('description', $data['description'], Casting::string);
             $group->save();
 
             $ids = [];

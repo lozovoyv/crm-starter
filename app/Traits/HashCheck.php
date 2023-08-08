@@ -4,12 +4,27 @@ declare(strict_types=1);
 namespace App\Traits;
 
 use BadMethodCallException;
+use Carbon\Carbon;
 
 /**
- * @method string|null hash()
+ * @property Carbon|null $updated_at
  */
 trait HashCheck
 {
+    /**
+     * Instance hash.
+     *
+     * @return  string|null
+     */
+    public function hash(): ?string
+    {
+        if (empty($this->updated_at)) {
+            return null;
+        }
+
+        return $this->updated_at instanceof Carbon ? $this->updated_at->toString() : (string)$this->updated_at;
+    }
+
     /**
      * Make hash to check modifications.
      *
@@ -17,10 +32,6 @@ trait HashCheck
      */
     public function getHash(): ?string
     {
-        if (!method_exists($this, 'hash')) {
-            throw new BadMethodCallException('Undefined `hash()` method on ' . __CLASS__);
-        }
-
         $hash = $this->hash();
 
         return $hash ? md5($this->hash()) : null;

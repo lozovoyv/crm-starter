@@ -5,7 +5,7 @@ import {http} from "@/Core/Http/Http";
 import {User} from "@/Core/Types/User";
 
 class State {
-    user: User = null;
+    user: User = undefined;
     permissions: { [index: number]: string } = [];
     loading: boolean = false;
     loaded: boolean = false;

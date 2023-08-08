@@ -3,23 +3,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Interfaces\HashCheckable;
-use App\Traits\HashCheck;
+use Carbon\Carbon;
 
 /**
  * Parent class for all applications models except User.
+ *
+ * @property Carbon|null $updated_at
  */
-class Model extends \Illuminate\Database\Eloquent\Model implements HashCheckable
+class Model extends \Illuminate\Database\Eloquent\Model
 {
-    use HashCheck;
 
-    /**
-     * Instance hash.
-     *
-     * @return  string|null
-     */
-    public function hash(): ?string
-    {
-        return $this->updated_at?->toString();
-    }
 }

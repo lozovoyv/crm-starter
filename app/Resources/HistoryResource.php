@@ -9,12 +9,12 @@ use App\Utils\Casting;
 abstract class HistoryResource extends ListResource
 {
     protected array $titles = [
-        'timestamp' => 'history.history.timestamp',
-        'action' => 'history.history.action',
-        'links' => 'history.history.links',
-        'comment' => 'history.history.comment',
-        'changes' => 'history.history.changes',
-        'position_id' => 'history.history.position',
+        'timestamp' => 'history/history.timestamp',
+        'action' => 'history/history.action',
+        'links' => 'history/history.links',
+        'comment' => 'history/history.comment',
+        'changes' => 'history/history.changes',
+        'position_id' => 'history/history.position',
     ];
 
     protected array $orderableColumns = ['timestamp'];
@@ -59,7 +59,7 @@ abstract class HistoryResource extends ListResource
         $filters = $this->castFilters($filters, ['action_ids' => Casting::array]);
 
         if (isset($filters['action_ids'])) {
-            $this->query->whereIn('action_id', $this->filters['action_ids']);
+            $this->query->whereIn('action_id', $filters['action_ids']);
         }
 
         parent::filter($filters);
@@ -108,9 +108,9 @@ abstract class HistoryResource extends ListResource
     public function getChangesTitles(): array
     {
         return [
-            trans('history.history.parameter'),
-            trans('history.history.old_value'),
-            trans('history.history.new_value'),
+            trans('history/history.parameter'),
+            trans('history/history.old_value'),
+            trans('history/history.new_value'),
         ];
     }
 }

@@ -33,8 +33,8 @@
         </PopUpForm>
 
         <PopUpForm :form="form_email" ref="ref_form_email" :hide-errors="true" :width="{width: '400px'}">
-            <FormString :form="form_email" name="email" :clearable="true" :hide-title="true" :disabled="form_email.values['clear_password']"/>
-            <FormCheckBox :form="form_email" name="email_confirmation_need" :hide-title="true" :disabled="form_email.values['email'] === null"/>
+            <FormString :form="form_email" name="email" :clearable="true" :hide-title="true"/>
+            <FormCheckBox :form="form_email" name="email_confirmation_need" :hide-title="true" :disabled="form_email.values['email'] === null || form_email.values['email'] === form_email.originals['email']"/>
             <GuiHint v-if="form_email.values['email_confirmation_need']">* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты поменяется на новый
                 только после его подтверждения.
             </GuiHint>

@@ -200,22 +200,22 @@ class UserEntryResource extends EntryResource
         $changes = [];
 
         if (array_key_exists('lastname', $data)) {
-            $changes[] = $user->changeAttribute('lastname', $data['lastname'], Casting::string);
+            $changes[] = $user->setAttributeWithChanges('lastname', $data['lastname'], Casting::string);
         }
         if (array_key_exists('firstname', $data)) {
-            $changes[] = $user->changeAttribute('firstname', $data['firstname'], Casting::string);
+            $changes[] = $user->setAttributeWithChanges('firstname', $data['firstname'], Casting::string);
         }
         if (array_key_exists('patronymic', $data)) {
-            $changes[] = $user->changeAttribute('patronymic', $data['patronymic'], Casting::string);
+            $changes[] = $user->setAttributeWithChanges('patronymic', $data['patronymic'], Casting::string);
         }
         if (array_key_exists('display_name', $data)) {
-            $changes[] = $user->changeAttribute('display_name', $data['display_name'], Casting::string);
+            $changes[] = $user->setAttributeWithChanges('display_name', $data['display_name'], Casting::string);
         }
         if (array_key_exists('username', $data)) {
-            $changes[] = $user->changeAttribute('username', $data['username'], Casting::string);
+            $changes[] = $user->setAttributeWithChanges('username', $data['username'], Casting::string);
         }
         if (array_key_exists('phone', $data)) {
-            $changes[] = $user->changeAttribute('phone', $data['phone'], Casting::string);
+            $changes[] = $user->setAttributeWithChanges('phone', $data['phone'], Casting::string);
         }
 
         $changes = array_filter($changes);
@@ -315,7 +315,7 @@ class UserEntryResource extends EntryResource
         if (empty($data['email_confirmation_need']) || $data['email'] === null) {
 
             $oldEmail = $user->email;
-            $change = $user->changeAttribute('email', $data['email'], Casting::string);
+            $change = $user->setAttributeWithChanges('email', $data['email'], Casting::string);
             $user->save();
 
             $action = match (true) {
@@ -352,7 +352,7 @@ class UserEntryResource extends EntryResource
             if (User::query()->where('email', $data['email'])->count()) {
                 throw new InvalidArgumentException('Адрес электронной почты ' . $data['email'] . ' уже занят');
             }
-            $change = $user->changeAttribute('email', $data['email'], Casting::string);
+            $change = $user->setAttributeWithChanges('email', $data['email'], Casting::string);
             $user->save();
             $user->addHistory(HistoryAction::user_email_verified, null)->addChanges([$change]);
         });

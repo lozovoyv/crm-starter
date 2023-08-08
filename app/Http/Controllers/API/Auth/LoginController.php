@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\API\Auth;
 
 use App\Current;
 use App\Http\Controllers\ApiController;
@@ -16,34 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
-class AuthController extends ApiController
+class LoginController extends ApiController
 {
-    /**
-     * Get current user info.
-     *
-     * @param Request $request
-     *
-     * @return  APIResponse
-     */
-    public function current(Request $request): APIResponse
-    {
-        $current = Current::init($request);
-
-        $user = !$current->isAuthenticated() ? null : [
-            'id' => $current->userId(),
-            'name' => $current->userName(),
-            'email' => $current->userEmail(),
-            'organization' => null,
-            'position' => $current->position()->type->name,
-            'avatar' => null,
-        ];
-
-        return ApiResponse::common([
-            'user' => $user,
-            'permissions' => $current->permissions(),
-        ]);
-    }
-
     /**
      * Handle an incoming authentication request.
      *
