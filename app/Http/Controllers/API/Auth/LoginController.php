@@ -27,18 +27,18 @@ class LoginController extends ApiController
      */
     public function login(Request $request): ApiResponse
     {
-        $data = $this->data($request);
+        $data = $request->input('data');
 
         // validate request
-        if ($errors = $this->validate($data, [
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ], [
-            'username' => 'Имя пользователя',
-            'password' => 'Пароль',
-        ])) {
-            return ApiResponse::validationError($errors);
-        }
+        //if ($errors = $this->validate($data, [
+        //    'username' => 'required|string',
+        //    'password' => 'required|string',
+        //], [
+        //    'username' => 'Имя пользователя',
+        //    'password' => 'Пароль',
+        //])) {
+        //    return ApiResponse::validationError($errors);
+        //}
 
         // authenticate
         if ($errors = $this->authenticate($request)) {

@@ -1,4 +1,4 @@
-const getCurrentUserUrl = '/api/current';
+const getCurrentUserUrl = '/api/auth/current';
 
 import {GetterTree, MutationTree, ActionTree} from "vuex"
 import {http} from "@/Core/Http/Http";
@@ -51,7 +51,7 @@ const actions = <ActionTree<State, any>>{
     async refresh({commit}) {
         commit('setLoading', true);
         return new Promise((resolve: (value: any) => void, reject: (reason: string) => void) => {
-            http.post<{}, { data: { [index: string]: any } }>(getCurrentUserUrl, {})
+            http.get<{}, { data: { [index: string]: any } }>(getCurrentUserUrl, {})
                 .then(response => {
                     const data = response.data['data'];
                     commit('setUser', data['user']);

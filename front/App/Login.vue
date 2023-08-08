@@ -47,7 +47,7 @@ const route = useRoute();
 const login_input = ref<InstanceType<typeof FormString> | undefined>(undefined);
 const password_input = ref<InstanceType<typeof FormPassword> | undefined>(undefined);
 
-const form = ref<Form>(new Form('/api/login'));
+const form = ref<Form>(new Form('/api/auth/login'));
 
 form.value.set('username', null, 'required', 'Адрес электронной почты / логин', true);
 form.value.set('password', null, 'required', 'Пароль', true);
