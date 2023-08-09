@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 return [
 
@@ -13,6 +14,8 @@ return [
     |
     */
 
+    'login_username' => 'Логин',
+    'login_password' => 'Пароль',
     'failed' => 'Неверный логин или пароль.',
     'empty' => 'Доступ в систему закрыт.',
     'password' => 'Пароль не совпадает.',

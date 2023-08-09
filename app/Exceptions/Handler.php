@@ -33,6 +33,10 @@ class Handler extends ExceptionHandler
             return ApiResponse::tokenMismatch()->toResponse($request);
         }
 
+        if ($e instanceof ApiUnauthorizedException) {
+            return ApiResponse::unauthenticated()->toResponse($request);
+        }
+
         if (method_exists($e, 'render') && $response = $e->render($request)) {
             return Router::toResponse($request, $response);
         }
