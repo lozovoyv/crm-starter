@@ -1,30 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dictionaries;
+namespace App\Dictionaries\Base;
 
 use App\Current;
-use App\Dictionaries\Utils\EloquentDictionaryList;
-use App\Dictionaries\Utils\EloquentDictionaryView;
+use App\Exceptions\Dictionary\DictionaryForbiddenException;
 use App\Http\Responses\ApiResponse;
-use App\Models\AbstractDictionary;
-use App\Models\History\History;
 use App\Models\History\HistoryAction;
 use App\Utils\Casting;
 use App\Utils\ModelOrder;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
-abstract class Dictionary implements DictionaryInterface
+abstract class EloquentDictionary extends Dictionary implements DictionaryInterface
 {
-    protected static string $dictionaryClass = AbstractDictionary::class;
-    protected static string $name = 'Абстрактный справочник';
+    protected static string $dictionaryClass = Model::class;
 
     protected static bool $orderable = true;
 
@@ -36,51 +30,151 @@ abstract class Dictionary implements DictionaryInterface
     protected static ?string $locked_field = 'locked';
     protected static ?string $updated_at_field = 'updated_at';
 
-    protected static array $messages = [
-        'form create title' => 'Добавление записи',
-        'form edit title' => 'Редактирование записи :name',
-        'item created successfully' => 'Запись :name добавлена',
-        'item edited successfully' => 'Запись :name сохранена',
-        'item switched off' => 'Запись :name отключена',
-        'item switch on' => 'Запись :name включена',
-        'item deleted' => 'Запись :name удалена',
-        'item not found' => 'Запись не найдена',
-    ];
+    /**
+     * The query for dictionary view.
+     *
+     * @return  Builder
+     */
+    public static function query(): Builder
+    {
+        /** @var Model $class */
+        $class = static::$dictionaryClass;
 
-    protected static array $fields = [
-        'name' => [
-            'title' => 'Название',
-            'type' => 'string',
-            'column' => 'name',
-            'rules' => 'required|unique',
-            'messages' => ['unique' => 'Такая запись уже существует'],
-            'show' => true,
-        ],
-    ];
+        $fields = array_filter([
+            static::$id_field . ' as id',
+            static::$name_field . ' as name',
+            static::$hint_field ? static::$hint_field . ' as hint' : null,
+            static::$enabled_field ? static::$enabled_field . ' as enabled' : null,
+            static::$order_field ? static::$order_field . ' as order' : null,
+            static::$updated_at_field ? static::$updated_at_field . ' as updated_at' : null,
+        ]);
+
+        return $class::query()
+            ->select($fields)
+            ->orderBy(static::$order_field ?? static::$name_field);
+    }
+
+    /**
+     * Dictionary filtering boilerplate.
+     *
+     * @param Builder $query
+     * @param array $filters
+     *
+     * @return Builder
+     */
+    public static function filter(Builder $query, array $filters = []): Builder
+    {
+        return $query;
+    }
+
+    /**
+     * Dictionary search boilerplate.
+     *
+     * @param Builder $query
+     * @param string|null $search
+     *
+     * @return Builder
+     */
+    public static function search(Builder $query, ?string $search = null): Builder
+    {
+        return $query;
+    }
+
+    /**
+     * Format output record.
+     *
+     * @param Model $model
+     *
+     * @return  array
+     */
+    public static function asArray(Model $model): array
+    {
+        return $model->toArray();
+    }
 
     /**
      * Get dictionary items for select.
      *
-     * @param bool $isEditable
+     * @param Current $current
      * @param string|null $ifModifiedSince
      * @param array $filters
      * @param string|null $search
      *
-     * @return  DictionaryViewInterface
+     * @return  DictionaryViewContainerInterface
+     * @throws DictionaryForbiddenException
      */
-    public static function view(bool $isEditable, ?string $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewInterface
+    public static function view(Current $current, ?string $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewContainerInterface
     {
-        return new EloquentDictionaryView(
-            static::query(),
-            static::$dictionaryClass,
-            function(Model $item) { return static::asArray($item); }, // todo test this
-            $isEditable,
-            static::$updated_at_field,
-            $ifModifiedSince,
-            $filters,
-            $search
-        );
+        if(!static::canView($current)){
+            throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
+        }
+
+        $query = static::query();
+        $query = static::filter($query, $filters);
+        $query = static::search($query, $search);
+
+        if (static::$updated_at_field) {
+            $actual = $query->clone()->latest(static::$updated_at_field)->value(static::$updated_at_field);
+            $actual = Carbon::parse($actual)->setTimezone('GMT');
+
+            if ($ifModifiedSince) {
+                $requested = Carbon::createFromFormat('D\, d M Y H:i:s \G\M\T', $ifModifiedSince, 'GMT');
+                if ($requested >= $actual) {
+                    return new DictionaryViewContainer(null, $actual, true);
+                }
+            }
+        }
+
+        $isEditable = static::canEdit($current);
+
+        $items = $query->get();
+
+        $items->transform(function (Model $item) use ($isEditable) {
+            $result = static::asArray($item);
+            if ($isEditable && method_exists($item, 'getHash')) {
+                $result['hash'] = $item->getHash();
+            }
+            return $result;
+        });
+
+        return new DictionaryViewContainer($items, $actual ?? null, false, $isEditable);
     }
+
+    /**
+     * TODO refactor:
+     */
+
+
+    /**
+     * The query for dictionary view.
+     *
+     * @return  Builder
+     */
+    public static function listQuery(): Builder
+    {
+        /** @var Model $class */
+        $class = static::$dictionaryClass;
+
+        $fields = [
+            static::$id_field . ' as id',
+            static::$enabled_field ? static::$enabled_field . ' as enabled' : null,
+            static::$order_field ? static::$order_field . ' as order' : null,
+            static::$locked_field ? static::$locked_field . ' as locked' : null,
+            static::$updated_at_field ? static::$updated_at_field . ' as updated_at' : null,
+        ];
+
+        foreach (static::$fields as $name => $field) {
+            if (array_key_exists('show', $field) && $field['show']) {
+                $fields[] = ($field['column'] ?? $name) . " as $name";
+            }
+        }
+
+        return $class::query()
+            ->select(array_filter($fields))
+            ->orderBy(static::$order_field ?? static::$name_field);
+    }
+
+
 
     /**
      * Get dictionary items for editor.
@@ -92,10 +186,10 @@ abstract class Dictionary implements DictionaryInterface
         return new EloquentDictionaryList(
             static::listQuery(),
             static::title(),
-            static::getTitles(),
+            static::fieldTitles(),
             static::$orderable,
             static::$enabled_field !== null,
-            static::getListOptions(),
+            static::fieldTypes(),
             ['static', 'asListArray'] // todo test this
         );
     }
@@ -109,23 +203,24 @@ abstract class Dictionary implements DictionaryInterface
      */
     public static function get(Request $request): ApiResponse
     {
-        $id = $request->input('id');
+        $id = $request->input('id'); // todo refactor
 
-        /** @var AbstractDictionary $class */
+        /** @var Model $class */
         $class = static::$dictionaryClass;
 
-        /** @var AbstractDictionary|Model $item */
+        /** @var Model $item */
         if ($id === null) {
             $item = new static::$dictionaryClass();
         } else {
             $item = $class::query()->where(static::$id_field, $id)->first();
             if ($item === null) {
-                return ApiResponse::notFound(static::message(static::$messages['item not found']));
+                // todo refactor
+                return ApiResponse::notFound(static::messageItemNotFound());
             }
         }
 
         return ApiResponse::form()
-            ->title(static::message($item->exists ? static::$messages['form edit title'] : static::$messages['form create title'], $item->name))
+            ->title(static::message($item->exists ? static::$localizations['form edit title'] : static::$localizations['form create title'], $item->name))
             ->values(static::getValues($item))
             ->rules(static::getRules($item))
             ->titles(static::getTitles())
@@ -161,7 +256,7 @@ abstract class Dictionary implements DictionaryInterface
         } else {
             $item = $class::query()->where('id', $id)->first();
             if ($item === null) {
-                return ApiResponse::notFound(static::message(static::$messages['item not found']));
+                return ApiResponse::notFound(static::message(static::$localizations['item not found']));
             }
         }
 
@@ -202,7 +297,7 @@ abstract class Dictionary implements DictionaryInterface
 
         return ApiResponse::success(
             static::message(
-                $item->wasRecentlyCreated ? static::$messages['item created successfully'] : static::$messages['item edited successfully'],
+                $item->wasRecentlyCreated ? static::$localizations['item created successfully'] : static::$localizations['item edited successfully'],
                 $item->{static::$name_field}
             )
         )
@@ -246,7 +341,7 @@ abstract class Dictionary implements DictionaryInterface
 
         ModelOrder::fix(static::$dictionaryClass, static::$order_field);
 
-        return ApiResponse::success(static::message(static::$messages['item deleted'], $item->{static::$name_field}))
+        return ApiResponse::success(static::message(static::$localizations['item deleted'], $item->{static::$name_field}))
             ->payload(['id' => $item->id]);
     }
 
@@ -276,7 +371,7 @@ abstract class Dictionary implements DictionaryInterface
             ])->first();
 
         if ($item === null) {
-            return ApiResponse::notFound(static::message(static::$messages['item not found']));
+            return ApiResponse::notFound(static::message(static::$localizations['item not found']));
         }
 
         if (!$item->isHash($request->input('hash'))) {
@@ -292,7 +387,7 @@ abstract class Dictionary implements DictionaryInterface
 
         return ApiResponse::success(
             static::message(
-                $item->{static::$enabled_field} ? static::$messages['item switch on'] : static::$messages['item switched off'],
+                $item->{static::$enabled_field} ? static::$localizations['item switch on'] : static::$localizations['item switched off'],
                 $item->{static::$name_field}
             )
         )
@@ -373,85 +468,10 @@ abstract class Dictionary implements DictionaryInterface
             });
         } catch (Exception $exception) {
 
-            return ApiResponse::error("Ошибка обновления справочника " . static::$name)->payload(['exception' => $exception->getMessage()]);
+            return ApiResponse::error("Ошибка обновления справочника " . static::$title)->payload(['exception' => $exception->getMessage()]);
         }
 
-        return APIResponse::success("Справочник " . static::$name . " обновлён");
-    }
-
-    /**
-     * Get dictionary title.
-     *
-     * @return string
-     */
-    public static function title(): string
-    {
-        return static::$name;
-    }
-
-    /**
-     * The query for dictionary view.
-     *
-     * @return  Builder
-     */
-    protected static function query(): Builder
-    {
-        /** @var AbstractDictionary $class */
-        $class = static::$dictionaryClass;
-
-        $fields = array_filter([
-            static::$id_field . ' as id',
-            static::$name_field . ' as name',
-            static::$hint_field ? static::$hint_field . ' as hint' : null,
-            static::$enabled_field ? static::$enabled_field . ' as enabled' : null,
-            static::$order_field ? static::$order_field . ' as order' : null,
-            static::$updated_at_field ? static::$updated_at_field . ' as updated_at' : null,
-        ]);
-
-        return $class::query()
-            ->select($fields)
-            ->orderBy(static::$order_field ?? static::$name_field);
-    }
-
-    /**
-     * The query for dictionary view.
-     *
-     * @return  Builder
-     */
-    protected static function listQuery(): Builder
-    {
-        /** @var AbstractDictionary $class */
-        $class = static::$dictionaryClass;
-
-        $fields = [
-            static::$id_field . ' as id',
-            static::$enabled_field ? static::$enabled_field . ' as enabled' : null,
-            static::$order_field ? static::$order_field . ' as order' : null,
-            static::$locked_field ? static::$locked_field . ' as locked' : null,
-            static::$updated_at_field ? static::$updated_at_field . ' as updated_at' : null,
-        ];
-
-        foreach (static::$fields as $name => $field) {
-            if (array_key_exists('show', $field) && $field['show']) {
-                $fields[] = ($field['column'] ?? $name) . " as $name";
-            }
-        }
-
-        return $class::query()
-            ->select(array_filter($fields))
-            ->orderBy(static::$order_field ?? static::$name_field);
-    }
-
-    /**
-     * Format output record.
-     *
-     * @param Model $model
-     *
-     * @return  array
-     */
-    protected static function asArray(Model $model): array
-    {
-        return $model->toArray();
+        return APIResponse::success("Справочник " . static::$title . " обновлён");
     }
 
     /**
@@ -467,33 +487,13 @@ abstract class Dictionary implements DictionaryInterface
     }
 
     /**
-     * Get types array for item editing form.
-     *
-     * @return array
-     */
-    protected static function getListOptions(): array
-    {
-        return array_filter(
-            array_map(static function (array $record) {
-                if (!isset($record['show'])) {
-                    return null;
-                }
-
-                return [
-                    'type' => $record['type'],
-                ];
-            }, static::$fields)
-        );
-    }
-
-    /**
      * Get values array for item editing form.
      *
-     * @param AbstractDictionary|Model $item
+     * @param Model $item
      *
      * @return array
      */
-    protected static function getValues(AbstractDictionary|Model $item): array
+    protected static function getValues(Model $item): array
     {
         $values = [];
 
@@ -502,121 +502,5 @@ abstract class Dictionary implements DictionaryInterface
         }
 
         return $values;
-    }
-
-    /**
-     * Get types array for item editing form.
-     *
-     * @return array
-     */
-    protected static function getTypes(): array
-    {
-        return array_map(static function (array $record) {
-            return $record['type'];
-        }, static::$fields);
-    }
-
-    /**
-     * Get rules array for item validation.
-     *
-     * @param AbstractDictionary|Model $item
-     * @param bool $withDatabaseRules
-     *
-     * @return array
-     */
-    protected static function getRules(AbstractDictionary|Model $item, bool $withDatabaseRules = false): array
-    {
-        $rules = [];
-
-        foreach (static::$fields as $key => $record) {
-            if (array_key_exists('rules', $record)) {
-                if (!$withDatabaseRules) {
-                    $rules[$key] = $record['rules'];
-                } else {
-                    $ruleSet = explode('|', $record['rules']);
-                    foreach ($ruleSet as $rule) {
-                        if ($rule === 'unique') {
-                            $rules[$key][] = Rule::unique($item->getTable())->ignore($item->id);
-                        } else {
-                            $rules[$key][] = $rule;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Get titles array for item edit form.
-     *
-     * @return array
-     */
-    protected static function getTitles(): array
-    {
-        return array_map(static function (array $record) {
-            return $record['title'];
-        }, static::$fields);
-    }
-
-    /**
-     * Get messages array for item validation.
-     *
-     * @return array
-     */
-    protected static function getMessages(): array
-    {
-        $messages = [];
-
-        foreach (static::$fields as $name => $record) {
-            if (array_key_exists('messages', $record)) {
-                foreach ($record['messages'] as $key => $message) {
-                    $messages["$name.$key"] = $message;
-                }
-            }
-        }
-
-        return $messages;
-    }
-
-    /**
-     * Get formatted message.
-     *
-     * @param string $message
-     * @param string|null $name
-     *
-     * @return string
-     */
-    protected static function message(string $message, ?string $name = null): string
-    {
-        return str_replace([':name', '  '], [$name ?? '', ' '], $message);
-    }
-
-    /**
-     * Add history record for dictionary entry.
-     *
-     * @param string $alias
-     * @param AbstractDictionary|Model $item
-     * @param int $action_id
-     * @param Current $current
-     *
-     * @return History
-     */
-    protected static function addHistory(string $alias, AbstractDictionary|Model $item, int $action_id, Current $current): History
-    {
-        $history = new History([
-            'action_id' => $action_id,
-            'entry_title' => static::title() . ' "' . $item->{static::$name_field} . '"',
-            'entry_name' => get_class($item),
-            'entry_type' => 'dictionary_' . $alias,
-            'entry_id' => $item->{static::$id_field},
-            'position_id' => $current->positionId(),
-            'timestamp' => Carbon::now(),
-        ]);
-
-        $history->save();
-
-        return $history;
     }
 }

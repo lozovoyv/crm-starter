@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Models\AbstractDictionary;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 trait HasStatus
@@ -12,22 +12,22 @@ trait HasStatus
      * Check and set new status for the model.
      *
      * @param string $class
-     * @param int $status
+     * @param int $status_id
      * @param bool $save
      * @param string $name
      *
      * @return  void
      */
-    protected function checkAndSetStatus(string $class, int $status, string $name = 'status_id', bool $save = false): void
+    protected function checkAndSetStatus(string $class, int $status_id, string $name = 'status_id', bool $save = false): void
     {
-        /** @var AbstractDictionary $class */
-        $statusEntry = $class::get($status);
-
+        /** @var Model $class */
+        $statusEntry = $class::query()->find($status_id);
+        // todo check enabled ??? vis dictionaries ????
         if ($statusEntry === null || !$statusEntry->exists) {
             throw new InvalidArgumentException('Неверный статус.');
         }
 
-        $this->setAttribute($name, $status);
+        $this->setAttribute($name, $status_id);
 
         if ($save) {
             $this->save();

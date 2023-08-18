@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dictionaries\Utils;
+namespace App\Dictionaries\Base;
 
-use App\Dictionaries\DictionaryListInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -18,6 +17,42 @@ class EloquentDictionaryList implements DictionaryListInterface
     protected bool $orderable;
     protected bool $switchable;
     protected array $fields;
+
+    /**
+     * @param Builder $query
+     * @param string $title
+     * @param array $titles
+     * @param bool $orderable
+     * @param bool $switchable
+     * @param array $fields
+     * @param callable|null $transform
+     */
+    public function __construct(
+        Builder $query,
+        string $title,
+        array $titles,
+        bool $orderable,
+        bool $switchable,
+        array $fields,
+        ?callable $transform = null,
+    )
+    {
+        $items = $query->get();
+
+        $items->transform(function (Model $item) use ($transform) {
+            $result = !is_null($transform) ? $transform($item) : $item->toArray();
+            $result['hash'] = method_exists($item, 'getHash') ? $item->getHash() : null;
+
+            return $result;
+        });
+
+        $this->items = $items;
+        $this->title = $title;
+        $this->titles = $titles;
+        $this->orderable = $orderable;
+        $this->switchable = $switchable;
+        $this->fields = $fields;
+    }
 
     /**
      * Items getter.
@@ -77,41 +112,5 @@ class EloquentDictionaryList implements DictionaryListInterface
     public function fields(): array
     {
         return $this->fields;
-    }
-
-    /**
-     * @param Builder $query
-     * @param string $title
-     * @param array $titles
-     * @param bool $orderable
-     * @param bool $switchable
-     * @param array $fields
-     * @param callable|null $transform
-     */
-    public function __construct(
-        Builder $query,
-        string $title,
-        array $titles,
-        bool $orderable,
-        bool $switchable,
-        array $fields,
-        ?callable $transform = null,
-    )
-    {
-        $items = $query->get();
-
-        $items->transform(function (Model $item) use ($transform) {
-            $result = !is_null($transform) ? $transform($item) : $item->toArray();
-            $result['hash'] = method_exists($item, 'getHash') ? $item->getHash() : null;
-
-            return $result;
-        });
-
-        $this->items = $items;
-        $this->title = $title;
-        $this->titles = $titles;
-        $this->orderable = $orderable;
-        $this->switchable = $switchable;
-        $this->fields = $fields;
     }
 }

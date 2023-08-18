@@ -3,23 +3,24 @@ declare(strict_types=1);
 
 namespace App\Dictionaries;
 
+use App\Dictionaries\Base\EloquentDictionary;
 use App\Models\Permissions\PermissionGroup;
+use App\Models\Positions\PositionType;
 use Illuminate\Database\Eloquent\Model;
 
-class PermissionRoleDictionary extends Dictionary
+class PermissionRoleDictionary extends EloquentDictionary
 {
     protected static string $dictionaryClass = PermissionGroup::class;
 
-    protected static string $name = 'Роли';
+    protected static string $title = 'Роли';
+
+    protected static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
+
     protected static bool $orderable = false;
 
-    protected static string $id_field = 'id';
-    protected static string $name_field = 'name';
     protected static ?string $hint_field = 'description';
     protected static ?string $enabled_field = 'active';
     protected static ?string $order_field = 'name';
-    protected static ?string $updated_at_field = 'updated_at';
-    protected static ?string $locked_field = 'locked';
 
     /**
      * Format output record.
@@ -28,7 +29,7 @@ class PermissionRoleDictionary extends Dictionary
      *
      * @return  array
      */
-    protected static function asArray(PermissionGroup|Model $model): array
+    public static function asArray(PermissionGroup|Model $model): array
     {
         return [
             'id' => $model->getAttribute('id'),

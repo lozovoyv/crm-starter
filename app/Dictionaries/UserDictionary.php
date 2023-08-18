@@ -3,24 +3,28 @@ declare(strict_types=1);
 
 namespace App\Dictionaries;
 
+use App\Dictionaries\Base\EloquentDictionary;
+use App\Models\Positions\PositionType;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class UserDictionary extends Dictionary
+class UserDictionary extends EloquentDictionary
 {
     protected static string $dictionaryClass = User::class;
 
-    protected static string $name = 'Учётные записи';
+    protected static string $title = 'Учётные записи';
+
+    protected static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff.change']];
 
     /**
      * The query for dictionary view.
      *
      * @return  Builder
      */
-    protected static function query(): Builder
+    public static function query(): Builder
     {
         return User::query()
             ->with(['status'])
@@ -47,38 +51,32 @@ class UserDictionary extends Dictionary
     /**
      * Format output record.
      *
-     * @param User|Model $model
+     * @param User|Model $user
      *
      * @return  array
      */
-    protected static function asArray(User|Model $model): array
+    public static function asArray(User|Model $user): array
     {
         /** @var UserStatus $status */
-        $status = $model->getRelation('status');
+        $status = $user->getRelation('status');
 
         return [
-            'id' => $model->getAttribute('id'),
-            'name' => $model->getAttribute('name'),
-            'hint' => implode(
-                ' — ', array_filter([
-                    'email' => $model->getAttribute('email'),
-                    'phone' => $model->getAttribute('phone'),
-                    'username' => $model->getAttribute('username'),
-                ])
-            ),
-            'enabled' => (bool)$model->getAttribute('enabled'),
+            'id' => $user->id,
+            'name' => $user->getAttribute('name'),
+            'hint' => $user->getAttribute('hint'),
+            'enabled' => (bool)$user->getAttribute('enabled'),
             'info' => [
-                'created_at' => $model->getAttribute('created_at'),
-                'updated_at' => $model->getAttribute('updated_at'),
-                'lastname' => $model->getAttribute('lastname'),
-                'firstname' => $model->getAttribute('firstname'),
-                'patronymic' => $model->getAttribute('patronymic'),
-                'username' => $model->getAttribute('username'),
-                'email' => $model->getAttribute('email'),
-                'phone' => $model->getAttribute('phone'),
-                'has_password' => (bool)$model->getAttribute('has_password'),
-                'display_name' => $model->getAttribute('display_name'),
-                'is_active' => $model->getAttribute('status_id') === UserStatus::active,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'lastname' => $user->lastname,
+                'firstname' => $user->firstname,
+                'patronymic' => $user->patronymic,
+                'username' => $user->username,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'has_password' => (bool)$user->getAttribute('has_password'),
+                'display_name' => $user->display_name,
+                'is_active' => $user->getAttribute('enabled'),
                 'status' => $status->name,
             ],
         ];

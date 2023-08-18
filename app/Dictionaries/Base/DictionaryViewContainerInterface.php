@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dictionaries;
+namespace App\Dictionaries\Base;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-interface DictionaryViewInterface
+interface DictionaryViewContainerInterface
 {
     /**
      * Dictionary items.
@@ -28,4 +28,11 @@ interface DictionaryViewInterface
      * @return bool
      */
     public function isNotModified(): bool;
+
+    /**
+     * Is dictionary editable.
+     *
+     * @return bool
+     */
+    public function isEditable(): bool;
 }

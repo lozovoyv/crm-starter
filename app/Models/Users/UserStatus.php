@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Users;
 
-use App\Models\AbstractDictionary;
+use App\Models\Model;
 use Carbon\Carbon;
 
 /**
@@ -15,7 +15,7 @@ use Carbon\Carbon;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class UserStatus extends AbstractDictionary
+class UserStatus extends Model
 {
     public const active = 1;
     public const blocked = 2;

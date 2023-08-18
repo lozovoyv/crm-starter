@@ -45,7 +45,7 @@ class UserTest extends TestCase
 
         $this->assertEquals('Тестовый Иван', $user->fullName);
         $this->assertEquals('Тестовый И.', $user->compactName);
-        $this->assertEquals(UserStatus::get(UserStatus::blocked)->id, $user->status_id);
+        $this->assertEquals(UserStatus::query()->find(UserStatus::blocked)->id, $user->status_id);
         $this->assertEquals('Тестовый', $user->lastname);
         $this->assertEquals('Иван', $user->firstname);
         $this->assertEquals(null, $user->patronymic);

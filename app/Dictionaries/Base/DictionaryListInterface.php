@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dictionaries;
+namespace App\Dictionaries\Base;
 
 use Illuminate\Support\Collection;
 

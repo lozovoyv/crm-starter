@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Positions;
 
-use App\Models\AbstractDictionary;
+use App\Models\Model;
 use Database\Seeders\Seeders\PositionTypesSeeder;
 use InvalidArgumentException;
 
@@ -15,7 +15,7 @@ use InvalidArgumentException;
  *
  * @see PositionTypesSeeder
  */
-class PositionType extends AbstractDictionary
+class PositionType extends Model
 {
     /** @var int The id of staff position type */
     public const admin = 1;
