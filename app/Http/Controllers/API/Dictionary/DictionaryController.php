@@ -9,6 +9,8 @@ use App\Dictionaries\Base\DictionaryInterface;
 use App\Exceptions\Dictionary\DictionaryForbiddenException;
 use App\Exceptions\Dictionary\DictionaryNotFoundException;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\APIListRequest;
+use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use Carbon\Carbon;
 use Exception;
@@ -20,12 +22,12 @@ class DictionaryController extends ApiController
     /**
      * Get dictionary by alias.
      *
-     * @param Request $request
      * @param string $alias
      *
+     * @param APIListRequest $request
      * @return  ApiResponse
      */
-    public function view(string $alias, Request $request): ApiResponse
+    public function view(string $alias, APIListRequest $request): ApiResponse
     {
         try {
             /** @var DictionaryInterface $dictionaryClass */
@@ -33,13 +35,7 @@ class DictionaryController extends ApiController
 
             $current = Current::init($request);
 
-            $ifModifiedSince = $request->hasHeader('If-Modified-Since')
-                ? Carbon::createFromFormat('D\, d M Y H:i:s \G\M\T', $request->header('If-Modified-Since'), 'GMT')
-                : null;
-            $filters = $request->input('filters', []);
-            $search = $request->input('search');
-
-            $dictionary = $dictionaryClass::view($current, $ifModifiedSince, $filters, $search);
+            $dictionary = $dictionaryClass::view($current, $request->ifModifiedSince(), $request->filters(), $request->search());
 
         } catch (Exception $exception) {
             return $this->exceptionResponse($exception);

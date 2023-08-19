@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Builder;
 class UserListResource extends ListSearchableResource
 {
     protected array $titles = [
-        'id' => 'users.user.id',
-        'name' => 'users.user.name',
-        'email' => 'users.user.email',
-        'phone' => 'users.user.phone',
-        'created_at' => 'users.user.created_at',
-        'updated_at' => 'users.user.updated_at',
+        'id' => 'users/user.id',
+        'name' => 'users/user.name',
+        'email' => 'users/user.email',
+        'phone' => 'users/user.phone',
+        'created_at' => 'users/user.created_at',
+        'updated_at' => 'users/user.updated_at',
     ];
 
     protected array $orderableColumns = ['id', 'name', 'email', 'phone', 'created_at', 'updated_at'];

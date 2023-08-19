@@ -52,6 +52,8 @@ const actions = <ActionTree<State, any>>{
             let headers: { [index: string]: string } = {};
             if (state.timestamps[dictionary] !== undefined && state.timestamps[dictionary] !== null) {
                 headers['if-modified-since'] = state.timestamps[dictionary];
+            } else {
+                headers['x-force-update'] = 'true';
             }
             http.get<{ dictionary: string }, AxiosResponse>(dictionariesUrl + dictionary, {headers: headers})
                 .then(response => {

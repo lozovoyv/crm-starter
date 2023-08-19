@@ -21,10 +21,10 @@ class AuthLoginTest extends TestCase
         $user = $this->createUser('testing', 'user', null, 'test@mail.ru', 'tester', null, null, 'test');
         $position = $this->createPosition($user, PositionType::admin);
 
-        $response = $this->apiActingAs(null)->post('/api/auth/login', [
+        $response = $this->apiActingAs(null)->post('/api/auth/login', ['data' => [
             'username' => 'test@mail.ru',
             'password' => 'test',
-        ]);
+        ]]);
 
         $response->assertOk();
     }
@@ -34,10 +34,10 @@ class AuthLoginTest extends TestCase
         $user = $this->createUser('testing', 'user', null, 'test@mail.ru', 'tester', null, null, 'test');
         $position = $this->createPosition($user, PositionType::admin);
 
-        $response = $this->apiActingAs(null)->post('/api/auth/login', [
+        $response = $this->apiActingAs(null)->post('/api/auth/login', ['data' => [
             'username' => 'tester',
             'password' => 'test',
-        ]);
+        ]]);
 
         $response->assertOk();
     }
@@ -47,10 +47,10 @@ class AuthLoginTest extends TestCase
         $user = $this->createUser('testing', 'user', null, 'test@mail.ru', 'tester', null, null, 'test');
         $position = $this->createPosition($user, PositionType::admin);
 
-        $response = $this->apiActingAs(null)->post('/api/auth/login', [
+        $response = $this->apiActingAs(null)->post('/api/auth/login', ['data' => [
             'username' => 'testa',
             'password' => 'test',
-        ]);
+        ]]);
 
         $response->assertUnprocessable();
     }
@@ -60,10 +60,10 @@ class AuthLoginTest extends TestCase
         $user = $this->createUser('testing', 'user', null, 'test@mail.ru', 'tester', null, null, 'test');
         $position = $this->createPosition($user, PositionType::admin);
 
-        $response = $this->apiActingAs(null)->post('/api/auth/login', [
+        $response = $this->apiActingAs(null)->post('/api/auth/login', ['data' => [
             'username' => 'testa@mail.ru',
             'password' => 'test',
-        ]);
+        ]]);
 
         $response->assertUnprocessable();
     }
@@ -73,10 +73,10 @@ class AuthLoginTest extends TestCase
         $user = $this->createUser('testing', 'user', null, 'test@mail.ru', 'tester', null, null, 'test');
         $position = $this->createPosition($user, PositionType::admin);
 
-        $response = $this->apiActingAs(null)->post('/api/auth/login', [
+        $response = $this->apiActingAs(null)->post('/api/auth/login', ['data' => [
             'username' => 'test@mail.ru',
             'password' => 'testa',
-        ]);
+        ]]);
 
         $response->assertUnprocessable();
     }
@@ -86,10 +86,10 @@ class AuthLoginTest extends TestCase
         $user = $this->createUser('testing', 'user', null, 'test@mail.ru', 'tester', null, null, 'test');
         $position = $this->createPosition($user, PositionType::staff);
 
-        $response = $this->apiActingAs(null)->post('/api/auth/login', [
+        $response = $this->apiActingAs(null)->post('/api/auth/login', ['data' => [
             'username' => 'test@mail.ru',
             'password' => 'test',
-        ]);
+        ]]);
 
         $response->assertOk();
     }

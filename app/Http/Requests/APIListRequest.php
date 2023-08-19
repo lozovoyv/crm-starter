@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
+
 class APIListRequest extends APIBaseRequest
 {
     /**
@@ -86,5 +88,14 @@ class APIListRequest extends APIBaseRequest
     public function orderBy(?string $default = null): ?string
     {
         return $this->input('order_by', $default) ?? $default;
+    }
+
+    public function ifModifiedSince(): ?Carbon
+    {
+        if (!$this->hasHeader('If-Modified-Since') || $this->hasHeader('X-Force-Update')) {
+            return null;
+        }
+
+        return Carbon::createFromFormat('D\, d M Y H:i:s \G\M\T', $this->header('If-Modified-Since'), 'GMT');
     }
 }
