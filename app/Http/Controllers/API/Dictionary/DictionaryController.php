@@ -83,15 +83,15 @@ class DictionaryController extends ApiController
      */
     protected function exceptionResponse(Exception $exception): ApiResponse
     {
-        if ($exception instanceof DictionaryNotFoundException::class) {
+        if (get_class($exception) === DictionaryNotFoundException::class) {
             return APIResponse::notFound($exception->getMessage());
         }
 
-        if ($exception instanceof DictionaryForbiddenException::class) {
+        if (get_class($exception) === DictionaryForbiddenException::class) {
             return APIResponse::forbidden($exception->getMessage());
         }
 
-        return ApiResponse::error($exception->getMessage());
+        return ApiResponse::serverError($exception);
     }
 
 
