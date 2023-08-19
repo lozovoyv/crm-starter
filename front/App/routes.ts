@@ -33,8 +33,8 @@ async function guest(to: RouteLocationNormalized, from: RouteLocationNormalized,
 }
 
 const routes: Array<RouteRecordRaw> = [
-    {path: '/login', name: 'login', component: () => import("./Login.vue"), beforeEnter: [guest]},
     {path: '/', name: 'home', component: () => import("./Pages/Welcome.vue"), beforeEnter: [auth]},
+    {path: '/login', name: 'login', component: () => import("./Login.vue"), beforeEnter: [guest]},
 
     {path: '/confirm/email', component: () => import("./Pages/Confirm/ConfirmEmailPage.vue")},
 

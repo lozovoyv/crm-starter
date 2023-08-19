@@ -96,14 +96,14 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      * Get dictionary items for select.
      *
      * @param Current $current
-     * @param string|null $ifModifiedSince
+     * @param Carbon|null $ifModifiedSince
      * @param array $filters
      * @param string|null $search
      *
      * @return  DictionaryViewContainerInterface
      * @throws DictionaryForbiddenException
      */
-    public static function view(Current $current, ?string $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewContainerInterface
+    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewContainerInterface
     {
         if(!static::canView($current)){
             throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
@@ -117,11 +117,8 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             $actual = $query->clone()->latest(static::$updated_at_field)->value(static::$updated_at_field);
             $actual = Carbon::parse($actual)->setTimezone('GMT');
 
-            if ($ifModifiedSince) {
-                $requested = Carbon::createFromFormat('D\, d M Y H:i:s \G\M\T', $ifModifiedSince, 'GMT');
-                if ($requested >= $actual) {
-                    return new DictionaryViewContainer(null, $actual, true);
-                }
+            if ($ifModifiedSince && $ifModifiedSince >= $actual) {
+                return new DictionaryViewContainer(null, $actual, true);
             }
         }
 

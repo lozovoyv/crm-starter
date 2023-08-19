@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Users\UserStatus;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class APILoginRequest extends APIBaseRequest
@@ -28,7 +29,9 @@ class APILoginRequest extends APIBaseRequest
      */
     public function validationData(): array
     {
-        return $this->only(['username', 'password']);
+        $input = $this->input('data', []);
+
+        return Arr::only($input, ['username', 'password']);
     }
 
     /**
@@ -52,11 +55,11 @@ class APILoginRequest extends APIBaseRequest
     public function credentials(): array
     {
         $credentials = [
-            'password' => $this->input('password'),
+            'password' => $this->input('data.password'),
             'status_id' => UserStatus::active,
         ];
 
-        $login = $this->input('username');
+        $login = $this->input('data.username');
 
         $type = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
@@ -72,7 +75,7 @@ class APILoginRequest extends APIBaseRequest
      */
     public function remember(): bool
     {
-        return $this->boolean('remember');
+        return $this->boolean('data.remember');
     }
 
 
@@ -83,6 +86,6 @@ class APILoginRequest extends APIBaseRequest
      */
     public function throttleKey(): string
     {
-        return Str::lower($this->input('username')) . '|' . $this->ip();
+        return Str::lower($this->input('data.username')) . '|' . $this->ip();
     }
 }

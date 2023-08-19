@@ -37,11 +37,13 @@ import FormString from "@/Components/Form/FormString.vue";
 import FormPassword from "@/Components/Form/FormPassword.vue";
 import FormCheckBox from "@/Components/Form/FormCheckBox.vue";
 import GuiButton from "@/Components/GUI/GuiButton.vue";
+import {useStore} from "vuex";
 
 const props = defineProps<{
     message?: string,
 }>();
 
+const store = useStore();
 const router = useRouter();
 const route = useRoute();
 const login_input = ref<InstanceType<typeof FormString> | undefined>(undefined);
@@ -74,11 +76,13 @@ function login() {
     }
     form.value.save(null, true, true)
         .then(() => {
-            if (route.redirectedFrom) {
-                router.replace(route.redirectedFrom);
-            } else {
-                router.replace({name: 'home'});
-            }
+            store.dispatch('user/refresh').then(() => {
+                if (route.redirectedFrom) {
+                    router.replace(route.redirectedFrom);
+                } else {
+                    router.replace({name: 'home'});
+                }
+            });
         })
         .catch(error => {
             if (error.code === 301) {

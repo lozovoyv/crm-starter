@@ -57,7 +57,7 @@ const actions = <ActionTree<State, any>>{
                     commit('setUser', data['user']);
                     commit('setPermissions', data['permissions']);
                     commit('setLoaded', true);
-                    resolve(data);
+                    resolve(data['user']);
                 })
                 .catch(error => {
                     const data = error.response.data['data'];

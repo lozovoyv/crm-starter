@@ -65,7 +65,7 @@ function logout(): void {
     dialog.show('Подтверждение', 'Выйти из системы?', [dialog.button('ok', 'Выйти', 'default'), dialog.button('cancel', 'Отмена')])
         .then(result => {
             if (result === 'ok') {
-                http.post('/api/logout', {})
+                http.post('/api/auth/logout', {})
                     .then(() => {
                         window.location.reload();
                     })
