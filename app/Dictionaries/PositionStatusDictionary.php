@@ -13,7 +13,7 @@ class PositionStatusDictionary extends EloquentDictionary
 
     protected static string $title = 'Статус пользователя';
 
-    protected static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
 
     protected static ?string $enabled_field = null;
     protected static ?string $order_field = 'name';

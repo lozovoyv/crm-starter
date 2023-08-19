@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Schema;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class FakeEloquentDictionary extends Model
+class TestingEloquentDictionaryModel extends Model
 {
     protected $table = 'test_eloquent_dictionary';
 

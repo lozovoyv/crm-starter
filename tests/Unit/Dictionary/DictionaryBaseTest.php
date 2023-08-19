@@ -3,12 +3,38 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Dictionary;
 
+use App\Models\Permissions\Permission;
+use App\Models\Permissions\PermissionScope;
+use App\Models\Positions\PositionType;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use Tests\HelperTraits\CreatesCurrent;
 use Tests\TestCase;
 
 class DictionaryBaseTest extends TestCase
 {
-    public function test_dictionary_base_titles_and_messages(): void
+    use CreatesCurrent, RefreshDatabase;
+
+    protected function afterRefreshingDatabase(): void
+    {
+        $this->seed();
+
+        if (!Permission::query()->where('key', 'testing.dictionary')->exists()) {
+            if (!PermissionScope::query()->where('scope_name', 'dictionary')->exists()) {
+                PermissionScope::query()->create([
+                    'scope_name' => 'dictionary',
+                    'name' => 'dictionary testing',
+                ]);
+            }
+            !Permission::query()->create([
+                'key' => 'testing.dictionary',
+                'scope_name' => 'dictionary',
+                'name' => 'dictionary testing permission',
+            ]);
+        }
+    }
+
+    public function test_dictionary_titles_and_messages(): void
     {
         App::setLocale('en');
         $this->assertEquals('Dictionary test not found', TestingDictionary::messageDictionaryNotFound('test'));
@@ -39,7 +65,7 @@ class DictionaryBaseTest extends TestCase
         $this->assertEquals('Порядок записей изменён', TestingDictionary::messageItemsReordered());
     }
 
-    public function test_dictionary_base_get_titles(): void
+    public function test_dictionary_get_titles(): void
     {
         App::setLocale('en');
         $this->assertEquals([
@@ -54,7 +80,7 @@ class DictionaryBaseTest extends TestCase
         ], TestingDictionary::fieldTitles());
     }
 
-    public function test_dictionary_base_get_types(): void
+    public function test_dictionary_get_types(): void
     {
         $this->assertEquals([
             'name' => 'string',
@@ -66,7 +92,7 @@ class DictionaryBaseTest extends TestCase
         ], TestingDictionary::fieldTypes(true));
     }
 
-    public function test_dictionary_base_get_rules(): void
+    public function test_dictionary_get_rules(): void
     {
         $this->assertEquals([
             'name' => 'required|unique',
@@ -74,7 +100,7 @@ class DictionaryBaseTest extends TestCase
         ], TestingDictionary::fieldRules());
     }
 
-    public function test_dictionary_base_get_validation_messages(): void
+    public function test_dictionary_get_validation_messages(): void
     {
         App::setLocale('en');
         $this->assertEquals([
@@ -89,5 +115,60 @@ class DictionaryBaseTest extends TestCase
             'name.unique' => 'Такое значение поля :attribute уже существует.',
             'value.required' => 'Поле :attribute обязательно для заполнения.',
         ], TestingDictionary::fieldMessages());
+    }
+
+    public function test_dictionary_permissions_no_access(): void
+    {
+        TestingDictionary::$viewPermissions = false;
+        TestingDictionary::$editPermissions = false;
+
+        $current = $this->initCurrent(PositionType::admin);
+        $this->assertFalse(TestingDictionary::canView($current));
+        $this->assertFalse(TestingDictionary::canEdit($current));
+
+        $current = $this->initCurrent(PositionType::staff);
+        $this->assertFalse(TestingDictionary::canView($current));
+        $this->assertFalse(TestingDictionary::canEdit($current));
+    }
+
+    public function test_dictionary_permissions_full_access(): void
+    {
+        TestingDictionary::$viewPermissions = true;
+        TestingDictionary::$editPermissions = true;
+
+        $current = $this->initCurrent(PositionType::admin);
+        $this->assertTrue(TestingDictionary::canView($current));
+        $this->assertTrue(TestingDictionary::canEdit($current));
+
+        $current = $this->initCurrent(PositionType::staff);
+        $this->assertTrue(TestingDictionary::canView($current));
+        $this->assertTrue(TestingDictionary::canEdit($current));
+    }
+
+    public function test_dictionary_permissions_permission_access(): void
+    {
+        $currentAdmin = $this->initCurrent(PositionType::admin);
+        $currentStaff = $this->initCurrent(PositionType::staff, ['testing.dictionary']);
+
+        TestingDictionary::$viewPermissions = [PositionType::staff => ['testing.dictionary']];
+        TestingDictionary::$editPermissions = false;
+        $this->assertFalse(TestingDictionary::canView($currentAdmin));
+        $this->assertFalse(TestingDictionary::canEdit($currentAdmin));
+        $this->assertTrue(TestingDictionary::canView($currentStaff));
+        $this->assertFalse(TestingDictionary::canEdit($currentStaff));
+
+        TestingDictionary::$viewPermissions = false;
+        TestingDictionary::$editPermissions = [PositionType::staff => ['testing.dictionary']];
+        $this->assertFalse(TestingDictionary::canView($currentAdmin));
+        $this->assertFalse(TestingDictionary::canEdit($currentAdmin));
+        $this->assertFalse(TestingDictionary::canView($currentStaff));
+        $this->assertTrue(TestingDictionary::canEdit($currentStaff));
+
+        TestingDictionary::$viewPermissions = [PositionType::admin => true, PositionType::staff => ['testing.dictionary']];
+        TestingDictionary::$editPermissions = [PositionType::admin => true, PositionType::staff => ['testing.dictionary']];
+        $this->assertTrue(TestingDictionary::canView($currentAdmin));
+        $this->assertTrue(TestingDictionary::canEdit($currentAdmin));
+        $this->assertTrue(TestingDictionary::canView($currentStaff));
+        $this->assertTrue(TestingDictionary::canEdit($currentStaff));
     }
 }

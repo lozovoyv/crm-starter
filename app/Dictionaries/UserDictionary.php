@@ -17,7 +17,7 @@ class UserDictionary extends EloquentDictionary
 
     protected static string $title = 'Учётные записи';
 
-    protected static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff.change']];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff.change']];
 
     /**
      * The query for dictionary view.

@@ -7,7 +7,7 @@ use App\Dictionaries\Base\EloquentDictionary;
 
 class TestingEloquentDictionary extends EloquentDictionary
 {
-    protected static string $dictionaryClass = FakeEloquentDictionary::class;
+    protected static string $dictionaryClass = TestingEloquentDictionaryModel::class;
 
     protected static bool $orderable = true;
 

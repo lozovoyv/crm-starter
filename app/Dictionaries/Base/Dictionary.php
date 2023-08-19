@@ -23,9 +23,9 @@ abstract class Dictionary
 {
     protected static string $title = 'dictionaries/defaults.title';
 
-    protected static bool|array $viewPermissions = false;
+    public static bool|array $viewPermissions = false;
 
-    protected static bool|array $editPermissions = false;
+    public static bool|array $editPermissions = false;
 
     protected static array $localizations = [
         'form_create_title' => 'dictionaries/defaults.form.create_title',

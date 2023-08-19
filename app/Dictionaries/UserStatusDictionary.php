@@ -14,7 +14,7 @@ class UserStatusDictionary extends EloquentDictionary
 
     protected static string $title = 'Статус учётной записи';
 
-    protected static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.users', 'system.users.change']];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.users', 'system.users.change']];
 
     protected static ?string $order_field = 'name';
     protected static ?string $locked_field = null;

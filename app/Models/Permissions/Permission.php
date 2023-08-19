@@ -21,6 +21,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Permission extends Model
 {
+    protected $fillable = [
+        'key',
+        'scope_name',
+        'name',
+    ];
+
     /**
      * Get permission by key.
      *
@@ -40,7 +46,6 @@ class Permission extends Model
      * Permission's module.
      *
      * @return  BelongsTo
-     * @noinspection PhpUnused
      */
     public function scope(): BelongsTo
     {

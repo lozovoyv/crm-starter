@@ -14,7 +14,7 @@ class PermissionRoleDictionary extends EloquentDictionary
 
     protected static string $title = 'Роли';
 
-    protected static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
 
     protected static bool $orderable = false;
 

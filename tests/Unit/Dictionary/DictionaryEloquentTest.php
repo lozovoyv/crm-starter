@@ -10,11 +10,11 @@ class DictionaryEloquentTest extends TestCase
 {
     public function test_dictionary_eloquent_query(): void
     {
-        FakeEloquentDictionary::up();
+        TestingEloquentDictionaryModel::up();
 
-        FakeEloquentDictionary::query()->create(['name' => 'test', 'order' => 2, 'enabled' => true]);
-        FakeEloquentDictionary::query()->create(['name' => 'test 2', 'order' => 1, 'enabled' => true]);
-        FakeEloquentDictionary::query()->create(['name' => 'test 3', 'order' => 0, 'enabled' => false]);
+        TestingEloquentDictionaryModel::query()->create(['name' => 'test', 'order' => 2, 'enabled' => true]);
+        TestingEloquentDictionaryModel::query()->create(['name' => 'test 2', 'order' => 1, 'enabled' => true]);
+        TestingEloquentDictionaryModel::query()->create(['name' => 'test 3', 'order' => 0, 'enabled' => false]);
 
         $query = TestingEloquentDictionary::query();
         $result = $query->get();
@@ -30,21 +30,21 @@ class DictionaryEloquentTest extends TestCase
             [
                 'id' => 1, 'name' => 'test', 'hint' => null, 'enabled' => true, 'order' => 2, 'updated_at' => null,
             ],
-        ], $result->map(function (FakeEloquentDictionary $dict) {
+        ], $result->map(function (TestingEloquentDictionaryModel $dict) {
             $dict->updated_at = null;
             return $dict;
         })->toArray());
 
-        FakeEloquentDictionary::down();
+        TestingEloquentDictionaryModel::down();
     }
 
     public function test_dictionary_eloquent_list_query(): void
     {
-        FakeEloquentDictionary::up();
+        TestingEloquentDictionaryModel::up();
 
-        FakeEloquentDictionary::query()->create(['name' => 'test', 'order' => 2]);
-        FakeEloquentDictionary::query()->create(['name' => 'test 2', 'order' => 1]);
-        FakeEloquentDictionary::query()->create(['name' => 'test 3', 'enabled' => false]);
+        TestingEloquentDictionaryModel::query()->create(['name' => 'test', 'order' => 2]);
+        TestingEloquentDictionaryModel::query()->create(['name' => 'test 2', 'order' => 1]);
+        TestingEloquentDictionaryModel::query()->create(['name' => 'test 3', 'enabled' => false]);
 
         $query = TestingEloquentDictionary::listQuery();
         $result = $query->get();
@@ -60,11 +60,11 @@ class DictionaryEloquentTest extends TestCase
             [
                 'id' => 1, 'name' => 'test', 'enabled' => true, 'order' => 2, 'updated_at' => null, 'locked' => false, 'description' => null,
             ],
-        ], $result->map(function (FakeEloquentDictionary $dict) {
+        ], $result->map(function (TestingEloquentDictionaryModel $dict) {
             $dict->updated_at = null;
             return $dict;
         })->toArray());
 
-        FakeEloquentDictionary::down();
+        TestingEloquentDictionaryModel::down();
     }
 }

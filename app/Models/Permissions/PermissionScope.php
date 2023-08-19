@@ -17,6 +17,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class PermissionScope extends Model
 {
+    protected $fillable = [
+        'scope_name',
+        'name',
+    ];
+
     /**
      * Module's permissions.
      *
