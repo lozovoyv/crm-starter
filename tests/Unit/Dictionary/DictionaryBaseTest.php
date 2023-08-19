@@ -11,6 +11,8 @@ class DictionaryBaseTest extends TestCase
     public function test_dictionary_base_titles_and_messages(): void
     {
         App::setLocale('en');
+        $this->assertEquals('Dictionary test not found', TestingDictionary::messageDictionaryNotFound('test'));
+        $this->assertEquals('Dictionary test prohibited', TestingDictionary::messageDictionaryForbidden('test'));
         $this->assertEquals('Abstract dictionary', TestingDictionary::title());
         $this->assertEquals('Create item', TestingDictionary::titleFormCreate());
         $this->assertEquals('Edit item test', TestingDictionary::titleFormEdit('test'));
@@ -23,6 +25,8 @@ class DictionaryBaseTest extends TestCase
         $this->assertEquals('Order of items changed', TestingDictionary::messageItemsReordered());
 
         App::setLocale('ru');
+        $this->assertEquals('Справочник test не найден', TestingDictionary::messageDictionaryNotFound('test'));
+        $this->assertEquals('Доступ к справочнику test запрещен', TestingDictionary::messageDictionaryForbidden('test'));
         $this->assertEquals('Абстрактный справочник', TestingDictionary::title());
         $this->assertEquals('Добавление записи', TestingDictionary::titleFormCreate());
         $this->assertEquals('Редактирование записи test', TestingDictionary::titleFormEdit('test'));
