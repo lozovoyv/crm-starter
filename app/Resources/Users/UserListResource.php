@@ -85,12 +85,12 @@ class UserListResource extends ListSearchableResource
     /**
      * Apply order.
      *
-     * @param string $orderBy
-     * @param string $order
+     * @param string|null $orderBy
+     * @param string|null $order
      *
      * @return $this
      */
-    public function order(string $orderBy = 'name', string $order = 'asc'): self
+    public function order(?string $orderBy = 'name', ?string $order = 'asc'): self
     {
         switch ($orderBy) {
             case 'id':
