@@ -10,9 +10,7 @@ use App\Exceptions\Dictionary\DictionaryForbiddenException;
 use App\Exceptions\Dictionary\DictionaryNotFoundException;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
-use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -61,7 +59,7 @@ class DictionaryController extends ApiController
      */
     protected function getDictionaryClass(?string $alias): string
     {
-        $dictionaries = require app_path('Dictionaries/dictionaries.php');
+        $dictionaries = config('dictionaries');
 
         if (!isset($dictionaries[$alias])) {
             throw new DictionaryNotFoundException(Dictionary::messageDictionaryNotFound($alias));

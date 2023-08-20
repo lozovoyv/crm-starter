@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Resources;
 
-use App\Utils\Casting;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use ReflectionClass;
 use ReflectionException;
+use Tests\Assets\Resources\ListSearchableResource;
 use Tests\TestCase;
 
 class ListSearchableResourceTest extends TestCase

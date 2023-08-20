@@ -12,8 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Session\ArraySessionHandler;
 use Illuminate\Session\Store;
-use Tests\HelperTraits\CreatesPosition;
-use Tests\HelperTraits\CreatesUser;
+use Tests\Traits\CreatesPosition;
+use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
 class CurrentTest extends TestCase

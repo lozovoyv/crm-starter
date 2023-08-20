@@ -1,9 +1,19 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
-namespace Tests\Unit\Dictionary;
+namespace Tests\Assets\Dictionary;
 
 use App\Dictionaries\Base\EloquentDictionary;
+use Illuminate\Database\Eloquent\Model;
 
 class TestingEloquentDictionary extends EloquentDictionary
 {
@@ -52,4 +62,15 @@ class TestingEloquentDictionary extends EloquentDictionary
             'show' => false,
         ],
     ];
+
+    public static function asArray(Model $model): array
+    {
+        return [
+            'id' => $model->getAttribute('id'),
+            'name' => $model->getAttribute('name'),
+            'hint' => $model->getAttribute('hint'),
+            'enabled' => $model->getAttribute('enabled'),
+            'order' => $model->getAttribute('order'),
+        ];
+    }
 }

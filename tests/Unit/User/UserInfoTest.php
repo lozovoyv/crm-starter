@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\Unit\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\HelperTraits\CreatesUser;
+use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
 class UserInfoTest extends TestCase

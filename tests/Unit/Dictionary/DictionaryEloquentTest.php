@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Dictionary;
 
-use Illuminate\Support\Facades\App;
+use Tests\Assets\Dictionary\TestingEloquentDictionary;
+use Tests\Assets\Dictionary\TestingEloquentDictionaryModel;
 use Tests\TestCase;
 
 class DictionaryEloquentTest extends TestCase

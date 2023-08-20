@@ -7,7 +7,7 @@ use App\Models\EntryScope;
 use App\Models\Users\UserStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Tests\HelperTraits\CreatesUser;
+use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
 class UserTest extends TestCase

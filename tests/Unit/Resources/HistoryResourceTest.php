@@ -8,7 +8,8 @@ use App\Models\History\History;
 use App\Models\History\HistoryAction;
 use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\HelperTraits\CreatesUser;
+use Tests\Assets\Resources\HistoryResource;
+use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
 class HistoryResourceTest extends TestCase

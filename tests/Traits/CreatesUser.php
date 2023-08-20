@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\HelperTraits;
+namespace Tests\Traits;
 
 use App\Models\Users\User;
 use Illuminate\Support\Facades\Hash;

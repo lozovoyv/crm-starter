@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Utils;
 
+use App\Models\Users\User;
 use App\Models\Users\UserStatus;
 use App\Utils\ModelOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,6 +15,8 @@ class ModelOrderTest extends TestCase
 
     public function test_util_model_order(): void
     {
+        User::query()->delete();
+
         UserStatus::query()->delete();
 
         for ($i = 0; $i < 5; $i++) {
@@ -38,6 +41,8 @@ class ModelOrderTest extends TestCase
 
     public function test_util_model_order_no_order(): void
     {
+        User::query()->delete();
+
         UserStatus::query()->delete();
 
         for ($i = 0; $i < 5; $i++) {

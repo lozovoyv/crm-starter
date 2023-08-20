@@ -8,8 +8,8 @@ use App\Models\Permissions\PermissionGroup;
 use App\Models\Permissions\PermissionScope;
 use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\HelperTraits\CreatesPosition;
-use Tests\HelperTraits\CreatesUser;
+use Tests\Traits\CreatesPosition;
+use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
 class PositionTest extends TestCase

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use ReflectionClass;
 use ReflectionException;
+use Tests\Assets\Resources\ListResource;
 use Tests\TestCase;
 
 class ListResourceTest extends TestCase

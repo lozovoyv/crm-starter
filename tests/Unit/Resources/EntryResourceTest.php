@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Resources;
 
+use Tests\Assets\Resources\EntryResource;
 use Tests\TestCase;
 
 class EntryResourceTest extends TestCase

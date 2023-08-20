@@ -8,7 +8,8 @@ use App\Models\Permissions\PermissionScope;
 use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
-use Tests\HelperTraits\CreatesCurrent;
+use Tests\Assets\Dictionary\TestingDictionary;
+use Tests\Traits\CreatesCurrent;
 use Tests\TestCase;
 
 class DictionaryBaseTest extends TestCase

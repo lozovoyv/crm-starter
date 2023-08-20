@@ -13,10 +13,8 @@ use Throwable;
 abstract class ApiResponse implements Responsable
 {
     public const CODE_OK = 200;
-
     public const CODE_REDIRECT = 301;
     public const CODE_NOT_MODIFIED = 304;
-
     public const CODE_ERROR = 400;
     public const CODE_UNAUTHENTICATED = 401;
     public const CODE_FORBIDDEN = 403;
