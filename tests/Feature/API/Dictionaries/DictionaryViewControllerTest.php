@@ -43,14 +43,14 @@ class DictionaryViewControllerTest extends TestCase
         config()->set('dictionaries.testing', TestingEloquentDictionary::class);
     }
 
-    public function test_dictionary_controller_not_found(): void
+    public function test_dictionary_view_not_found(): void
     {
         $response = $this->apiActingAs(PositionType::staff, ['testing.dictionary'])->get('/api/dictionary/fake_test');
 
         $this->assertEquals(ApiResponse::CODE_NOT_FOUND, $response->status());
     }
 
-    public function test_dictionary_controller_forbidden(): void
+    public function test_dictionary_view_forbidden(): void
     {
         TestingEloquentDictionary::$viewPermissions = false;
         TestingEloquentDictionary::$editPermissions = false;
@@ -60,7 +60,7 @@ class DictionaryViewControllerTest extends TestCase
         $this->assertEquals(ApiResponse::CODE_FORBIDDEN, $response->status());
     }
 
-    public function test_dictionary_controller_full_assess(): void
+    public function test_dictionary_view_full_assess(): void
     {
         $this->apiActingAs(PositionType::staff, ['testing.dictionary']);
 
@@ -93,7 +93,7 @@ class DictionaryViewControllerTest extends TestCase
         ]);
     }
 
-    public function test_dictionary_controller_modified_since(): void
+    public function test_dictionary_view_modified_since(): void
     {
         $this->apiActingAs(PositionType::staff, ['testing.dictionary']);
         TestingEloquentDictionary::$viewPermissions = true;
@@ -115,7 +115,7 @@ class DictionaryViewControllerTest extends TestCase
         ]);
     }
 
-    public function test_dictionary_controller_not_modified_since(): void
+    public function test_dictionary_view_not_modified_since(): void
     {
         $this->apiActingAs(PositionType::staff, ['testing.dictionary']);
         TestingEloquentDictionary::$viewPermissions = true;
@@ -127,7 +127,7 @@ class DictionaryViewControllerTest extends TestCase
         $response->assertNoContent(ApiResponse::CODE_NOT_MODIFIED);
     }
 
-    public function test_dictionary_controller_not_modified_force_update(): void
+    public function test_dictionary_view_not_modified_force_update(): void
     {
         $this->apiActingAs(PositionType::staff, ['testing.dictionary']);
         TestingEloquentDictionary::$viewPermissions = true;

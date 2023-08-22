@@ -46,7 +46,36 @@ class DictionaryController extends ApiController
         return ApiResponse::list()
             ->items($dictionary->items())
             ->lastModified($dictionary->lastModified())
-            ->payload(['is_editable' => $dictionary->isEditable()]);
+            ->payload([
+                'is_editable' => $dictionary->isEditable(),
+                'is_editor_available' => $current->can('system.dictionaries'),
+            ]);
+    }
+
+    /**
+     * Get editable dictionaries list.
+     *
+     * @param Request $request
+     *
+     * @return  ApiResponse
+     */
+    public function index(Request $request): ApiResponse
+    {
+        $current = Current::init($request);
+
+        $dictionaries = Config::get('dictionaries', []);
+
+        $list = [];
+
+        foreach ($dictionaries as $alias => $dictionary) {
+            /** @var Dictionary $dictionary */
+
+            if ($dictionary::canEdit($current)) {
+                $list[$alias] = $dictionary::title();
+            }
+        }
+
+        return ApiResponse::list()->items($list);
     }
 
     /**
@@ -59,7 +88,7 @@ class DictionaryController extends ApiController
      */
     protected function getDictionaryClass(?string $alias): string
     {
-        $dictionaries = config('dictionaries');
+        $dictionaries = Config::get('dictionaries', []);
 
         if (!isset($dictionaries[$alias])) {
             throw new DictionaryNotFoundException(Dictionary::messageDictionaryNotFound($alias));
@@ -94,34 +123,6 @@ class DictionaryController extends ApiController
      * TODO refactor this:
      */
 
-    /**
-     * Get editable dictionaries list.
-     *
-     * @param Request $request
-     *
-     * @return  ApiResponse
-     */
-    public function index(Request $request): ApiResponse
-    {
-        $current = Current::init($request);
-
-        $dictionaries = Config::get('dictionaries', []);
-
-        $editable = [];
-
-        foreach ($dictionaries as $alias => $dictionary) {
-            /** @var \App\Dictionaries\Base\Dictionary $class */
-            $class = $dictionary['class'];
-            if (!array_key_exists('edit', $dictionary) || $this->isAllowed($dictionary['edit'], $current)) {
-                $editable[] = [
-                    'name' => $alias,
-                    'title' => $class::title(),
-                ];
-            }
-        }
-
-        return ApiResponse::list()->items($editable);
-    }
 
     /**
      * Get dictionary items list for editor.
@@ -179,7 +180,7 @@ class DictionaryController extends ApiController
             return APIResponse::forbidden($exception->getMessage());
         }
 
-        /** @var \App\Dictionaries\Base\Dictionary $class */
+        /** @var Dictionary $class */
         $class = $dictionary['class'];
 
         return $class::get($request);
@@ -205,7 +206,7 @@ class DictionaryController extends ApiController
             return APIResponse::forbidden($exception->getMessage());
         }
 
-        /** @var \App\Dictionaries\Base\Dictionary $class */
+        /** @var Dictionary $class */
         $class = $dictionary['class'];
 
         return $class::update($request, $name);
@@ -231,7 +232,7 @@ class DictionaryController extends ApiController
             return APIResponse::forbidden($exception->getMessage());
         }
 
-        /** @var \App\Dictionaries\Base\Dictionary $class */
+        /** @var Dictionary $class */
         $class = $dictionary['class'];
 
         return $class::delete($request, $name);
@@ -283,7 +284,7 @@ class DictionaryController extends ApiController
             return APIResponse::forbidden($exception->getMessage());
         }
 
-        /** @var \App\Dictionaries\Base\Dictionary $class */
+        /** @var Dictionary $class */
         $class = $dictionary['class'];
 
         return $class::sync($request);
