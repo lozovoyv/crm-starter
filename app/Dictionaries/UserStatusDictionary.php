@@ -21,7 +21,7 @@ class UserStatusDictionary extends EloquentDictionary
 {
     protected static string $dictionaryClass = UserStatus::class;
 
-    protected static string $title = 'Статус учётной записи';
+    protected static string $title = 'dictionaries/user_statuses.title';
 
     public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.users', 'system.users.change']];
 

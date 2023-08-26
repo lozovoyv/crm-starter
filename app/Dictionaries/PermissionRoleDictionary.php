@@ -21,10 +21,9 @@ class PermissionRoleDictionary extends EloquentDictionary
 {
     protected static string $dictionaryClass = PermissionGroup::class;
 
-    protected static string $title = 'Роли';
+    protected static string $title = 'dictionaries/roles.title';
 
     public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
-
     protected static bool $orderable = false;
 
     protected static ?string $hint_field = 'description';
