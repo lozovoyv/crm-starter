@@ -17,5 +17,5 @@ use Carbon\Carbon;
 
 interface DictionaryInterface
 {
-    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewContainerInterface;
+    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewInterface;
 }

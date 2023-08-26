@@ -71,11 +71,46 @@ class DictionaryController extends ApiController
             /** @var Dictionary $dictionary */
 
             if ($dictionary::canEdit($current)) {
-                $list[$alias] = $dictionary::title();
+                $list[] = [
+                    'name' => $alias,
+                    'title' => $dictionary::title()
+                ];
             }
         }
 
         return ApiResponse::list()->items($list);
+    }
+
+
+    /**
+     * Get dictionary items list for editor.
+     *
+     * @param string $alias
+     * @param Request $request
+     *
+     * @return ApiResponse
+     */
+    public function list(string $alias, Request $request): ApiResponse
+    {
+        try {
+            /** @var DictionaryInterface $dictionaryClass */
+            $dictionaryClass = $this->getDictionaryClass($alias);
+
+            $dictionary = $dictionaryClass::list();
+
+        } catch (Exception $exception) {
+            return $this->exceptionResponse($exception);
+        }
+
+        return ApiResponse::list()
+            ->items($dictionary->items())
+            ->title($dictionary->title())
+            ->titles($dictionary->titles())
+            ->payload([
+                'orderable' => $dictionary->orderable(),
+                'switchable' => $dictionary->switchable(),
+                'fields' => $dictionary->fields(),
+            ]);
     }
 
     /**
@@ -123,42 +158,6 @@ class DictionaryController extends ApiController
      * TODO refactor this:
      */
 
-
-    /**
-     * Get dictionary items list for editor.
-     *
-     * @param Request $request
-     *
-     * @return ApiResponse
-     */
-    public function list(Request $request): ApiResponse
-    {
-        $name = $request->input('dictionary');
-        $current = Current::init($request);
-
-        try {
-            $dictionaryRecord = $this->getDictionaryRecord($name, $current, false, true);
-        } catch (DictionaryNotFoundException $exception) {
-            return APIResponse::notFound($exception->getMessage());
-        } catch (DictionaryForbiddenException $exception) {
-            return APIResponse::forbidden($exception->getMessage());
-        }
-
-        /** @var Dictionary $class */
-        $class = $dictionaryRecord['class'];
-
-        $dictionary = $class::list();
-
-        return ApiResponse::list()
-            ->items($dictionary->items())
-            ->title($dictionary->title())
-            ->titles($dictionary->titles())
-            ->payload([
-                'orderable' => $dictionary->orderable(),
-                'switchable' => $dictionary->switchable(),
-                'fields' => $dictionary->fields(),
-            ]);
-    }
 
     /**
      * Get editing data for dictionary entry.

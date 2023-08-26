@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace App\Dictionaries\Base;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class EloquentDictionaryList implements DictionaryListInterface
+class DictionaryList implements DictionaryListInterface
 {
-    /** @var Collection|array|null Dictionary items. */
-    protected Collection|array|null $items;
+    /** @var Collection|array Dictionary items. */
+    protected Collection|array $items;
 
     protected string $title;
     protected array $titles;
@@ -28,33 +26,15 @@ class EloquentDictionaryList implements DictionaryListInterface
     protected array $fields;
 
     /**
-     * @param Builder $query
+     * @param array|Collection $items
      * @param string $title
      * @param array $titles
      * @param bool $orderable
      * @param bool $switchable
      * @param array $fields
-     * @param callable|null $transform
      */
-    public function __construct(
-        Builder $query,
-        string $title,
-        array $titles,
-        bool $orderable,
-        bool $switchable,
-        array $fields,
-        ?callable $transform = null,
-    )
+    public function __construct(array|Collection $items, string $title, array $titles, bool $orderable, bool $switchable, array $fields)
     {
-        $items = $query->get();
-
-        $items->transform(function (Model $item) use ($transform) {
-            $result = !is_null($transform) ? $transform($item) : $item->toArray();
-            $result['hash'] = method_exists($item, 'getHash') ? $item->getHash() : null;
-
-            return $result;
-        });
-
         $this->items = $items;
         $this->title = $title;
         $this->titles = $titles;
@@ -66,11 +46,11 @@ class EloquentDictionaryList implements DictionaryListInterface
     /**
      * Items getter.
      *
-     * @return Collection|array|null
+     * @return Collection|array
      */
-    public function items(): Collection|array|null
+    public function items(): Collection|array
     {
-        return $this->items ?? null;
+        return $this->items ?? [];
     }
 
     /**

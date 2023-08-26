@@ -19,9 +19,9 @@ interface DictionaryListInterface
     /**
      * Dictionary items.
      *
-     * @return Collection|array|null
+     * @return Collection|array
      */
-    public function items(): Collection|array|null;
+    public function items(): Collection|array;
 
     /**
      * Dictionary title.

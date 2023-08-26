@@ -109,10 +109,10 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      * @param array $filters
      * @param string|null $search
      *
-     * @return  DictionaryViewContainerInterface
+     * @return  DictionaryViewInterface
      * @throws DictionaryForbiddenException
      */
-    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewContainerInterface
+    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewInterface
     {
         if(!static::canView($current)){
             throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
@@ -127,7 +127,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             $actual = Carbon::parse($actual)->setTimezone('GMT');
 
             if ($ifModifiedSince && $ifModifiedSince >= $actual) {
-                return new DictionaryViewContainer(null, $actual, true);
+                return new DictionaryView(null, $actual, true);
             }
         }
 
@@ -143,16 +143,11 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             return $result;
         });
 
-        return new DictionaryViewContainer($items, $actual ?? null, false, $isEditable);
+        return new DictionaryView($items, $actual ?? null, false, $isEditable);
     }
 
     /**
-     * TODO refactor:
-     */
-
-
-    /**
-     * The query for dictionary view.
+     * The list query for dictionary editor.
      *
      * @return  Builder
      */
@@ -180,8 +175,6 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             ->orderBy(static::$order_field ?? static::$name_field);
     }
 
-
-
     /**
      * Get dictionary items for editor.
      *
@@ -189,16 +182,43 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      */
     public static function list(): DictionaryListInterface
     {
-        return new EloquentDictionaryList(
-            static::listQuery(),
+        $items = static::listQuery()->get();
+
+        $items->transform(function (Model $item) {
+            $result = static::asListArray($item);
+            $result['hash'] = method_exists($item, 'getHash') ? $item->getHash() : null;
+
+            return $result;
+        });
+
+        return new DictionaryList(
+            $items,
             static::title(),
             static::fieldTitles(),
             static::$orderable,
             static::$enabled_field !== null,
             static::fieldTypes(),
-            ['static', 'asListArray'] // todo test this
         );
     }
+
+    /**
+     * Format output record for editor list.
+     *
+     * @param Model $model
+     *
+     * @return  array
+     */
+    protected static function asListArray(Model $model): array
+    {
+        return $model->toArray();
+    }
+
+    /**
+     * TODO refactor:
+     */
+
+
+
 
     /**
      * Get dictionary record data for editing.
@@ -480,17 +500,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         return APIResponse::success("Справочник " . static::$title . " обновлён");
     }
 
-    /**
-     * Format output record for editor list.
-     *
-     * @param Model $model
-     *
-     * @return  array
-     */
-    protected static function asListArray(Model $model): array
-    {
-        return $model->toArray();
-    }
+
 
     /**
      * Get values array for item editing form.
