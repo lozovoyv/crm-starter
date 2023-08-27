@@ -6,6 +6,7 @@ namespace Tests\Feature\API\System\Permissions;
 use App\Http\Controllers\API\System\Permissions\PermissionGroupHistoryController;
 use App\Http\Responses\ApiResponse;
 use App\Models\Positions\PositionType;
+use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +21,7 @@ class PermissionsHistoryControllerTest extends TestCase
 
     public function test_permissions_groups_history(): void
     {
-        $response = $this->apiActingAs(PositionType::staff, ['system.permissions'])->get('/api/system/permissions/history');
+        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__permissions])->get('/api/system/permissions/history');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
     }

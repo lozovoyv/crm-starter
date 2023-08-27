@@ -39,6 +39,21 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     protected static ?string $locked_field = 'locked';
     protected static ?string $updated_at_field = 'updated_at';
 
+    protected static array $fields = [
+        'name' => [ // key name
+            'title' => 'Name', // column and field title (direct or localization key)
+            'type' => 'string', // type of field
+            'column' => 'name', // table column name
+            'validation_rules' => 'required|unique',
+            'validation_messages' => [
+                'required' => 'validation.required',
+                'unique' => 'validation.unique',
+            ],
+            'show' => true, // show column in editor list
+            'edit' => true, // show field in edit form
+        ],
+    ];
+
     /**
      * The query for dictionary view.
      *
@@ -94,7 +109,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      *
      * @param Model $model
      *
-     * @return  array
+     * @return array
      */
     public static function asArray(Model $model): array
     {
@@ -109,12 +124,12 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      * @param array $filters
      * @param string|null $search
      *
-     * @return  DictionaryViewInterface
+     * @return DictionaryViewInterface
      * @throws DictionaryForbiddenException
      */
     public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewInterface
     {
-        if(!static::canView($current)){
+        if (!static::canView($current)) {
             throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
         }
 
@@ -178,10 +193,17 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     /**
      * Get dictionary items for editor.
      *
-     * @return  DictionaryListInterface
+     * @param Current $current
+     *
+     * @return DictionaryListInterface
+     * @throws DictionaryForbiddenException
      */
-    public static function list(): DictionaryListInterface
+    public static function list(Current $current): DictionaryListInterface
     {
+        if (!static::canEdit($current)) {
+            throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
+        }
+
         $items = static::listQuery()->get();
 
         $items->transform(function (Model $item) {
@@ -194,10 +216,10 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         return new DictionaryList(
             $items,
             static::title(),
-            static::fieldTitles(),
+            static::fieldTitles(true, false),
             static::$orderable,
             static::$enabled_field !== null,
-            static::fieldTypes(),
+            static::fieldTypes(true, false),
         );
     }
 
@@ -216,9 +238,6 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     /**
      * TODO refactor:
      */
-
-
-
 
     /**
      * Get dictionary record data for editing.
@@ -499,8 +518,6 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
 
         return APIResponse::success("Справочник " . static::$title . " обновлён");
     }
-
-
 
     /**
      * Get values array for item editing form.

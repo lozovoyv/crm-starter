@@ -31,7 +31,7 @@ class TestingEloquentDictionary extends EloquentDictionary
 
     protected static array $fields = [
         'name' => [
-            'title' => 'dictionaries/defaults.fields.name',
+            'title' => 'Name',
             'type' => 'string',
             'column' => 'name',
             'validation_rules' => 'required|unique',
@@ -40,9 +40,10 @@ class TestingEloquentDictionary extends EloquentDictionary
                 'unique' => 'validation.unique',
             ],
             'show' => true,
+            'edit' => true,
         ],
         'description' => [
-            'title' => 'dictionaries/defaults.fields.name',
+            'title' => 'Description',
             'type' => 'string',
             'column' => 'value',
             'validation_rules' => 'required',
@@ -50,9 +51,10 @@ class TestingEloquentDictionary extends EloquentDictionary
                 'required' => 'validation.required',
             ],
             'show' => true,
+            'edit' => false,
         ],
         'value' => [
-            'title' => 'dictionaries/defaults.fields.name',
+            'title' => 'Value',
             'type' => 'string',
             'column' => 'value',
             'validation_rules' => 'required',
@@ -60,6 +62,7 @@ class TestingEloquentDictionary extends EloquentDictionary
                 'required' => 'validation.required',
             ],
             'show' => false,
+            'edit' => true,
         ],
     ];
 

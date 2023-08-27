@@ -194,30 +194,39 @@ abstract class Dictionary
     /**
      * Get titles array for item edit form.
      *
+     * @param bool $shown
+     * @param bool $editable
+     *
      * @return array
      */
-    public static function fieldTitles(): array
+    public static function fieldTitles(bool $shown, bool $editable): array
     {
-        return array_map(static function (array $record) {
-            return trans($record['title']);
-        }, static::$fields);
+        return array_filter(
+            array_map(static function (array $record) use ($shown, $editable) {
+                if (($shown && isset($record['show']) && $record['show']) || ($editable && isset($record['edit']) && $record['edit'])) {
+                    return trans($record['title']);
+                }
+                return null;
+            }, static::$fields)
+        );
     }
 
     /**
      * Get optionally filtered types array.
      *
-     * @param bool $onlyShown
+     * @param bool $shown
+     * @param bool $editable
      *
      * @return array
      */
-    public static function fieldTypes(bool $onlyShown = false): array
+    public static function fieldTypes(bool $shown, bool $editable): array
     {
         return array_filter(
-            array_map(static function (array $record) use ($onlyShown) {
-                if ($onlyShown && empty($record['show'])) {
-                    return null;
+            array_map(static function (array $record) use ($shown, $editable) {
+                if (($shown && isset($record['show']) && $record['show']) || ($editable && isset($record['edit']) && $record['edit'])) {
+                    return trans($record['type']);
                 }
-                return $record['type'];
+                return null;
             }, static::$fields)
         );
     }
@@ -294,7 +303,7 @@ abstract class Dictionary
      */
     private static function isAllowed(array|bool|null $allow, Current $current): bool
     {
-        if (empty($allow) || is_bool($allow)) {
+        if (is_null($allow) || is_bool($allow)) {
             return !($allow === false);
         }
 
@@ -319,6 +328,8 @@ abstract class Dictionary
     }
 
     /**
+     * todo refactor this
+     *
      * Add history record for dictionary entry.
      *
      * @param string $alias

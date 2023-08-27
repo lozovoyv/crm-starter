@@ -15,6 +15,7 @@ namespace App\Dictionaries;
 use App\Dictionaries\Base\EloquentDictionary;
 use App\Models\Permissions\PermissionGroup;
 use App\Models\Positions\PositionType;
+use App\Permissions;
 use Illuminate\Database\Eloquent\Model;
 
 class PermissionRoleDictionary extends EloquentDictionary
@@ -23,7 +24,7 @@ class PermissionRoleDictionary extends EloquentDictionary
 
     protected static string $title = 'dictionaries/roles.title';
 
-    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => [Permissions::system__staff, Permissions::system__staff_change]];
     protected static bool $orderable = false;
 
     protected static ?string $hint_field = 'description';

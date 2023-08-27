@@ -8,6 +8,7 @@ use App\Exceptions\NoPositionSelectedException;
 use App\Exceptions\PositionMismatchException;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
+use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Session\ArraySessionHandler;
@@ -189,7 +190,7 @@ class CurrentTest extends TestCase
         $user = $this->createUser();
         $user2 = $this->createUser();
         $position = $this->createPosition($user, PositionType::staff);
-        $position->permissions()->sync([Permission::get('system.act_as_other')?->id]);
+        $position->permissions()->sync([Permission::get(Permissions::system__act_as_other)?->id]);
         $position2 = $this->createPosition($user2, PositionType::admin);
         $request = Request::create('/');
         $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
@@ -208,8 +209,8 @@ class CurrentTest extends TestCase
         $user = $this->createUser();
         $position = $this->createPosition($user, PositionType::staff);
         $position->permissions()->sync([
-            Permission::get('system.act_as_other')?->id,
-            Permission::get('system.history')?->id,
+            Permission::get(Permissions::system__act_as_other)?->id,
+            Permission::get(Permissions::system__history)?->id,
         ]);
         $request = Request::create('/');
         $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
@@ -218,18 +219,18 @@ class CurrentTest extends TestCase
         });
         $current = Current::init($request, true);
 
-        $this->assertEquals(['system.act_as_other', 'system.history'], array_values($current->permissions()));
+        $this->assertEquals([Permissions::system__act_as_other, Permissions::system__history], array_values($current->permissions()));
     }
 
     public function test_current_proxy_permissions(): void
     {
         $user = $this->createUser();
         $position = $this->createPosition($user, PositionType::staff);
-        $position->permissions()->sync([Permission::get('system.act_as_other')?->id]);
+        $position->permissions()->sync([Permission::get(Permissions::system__act_as_other)?->id]);
 
         $user2 = $this->createUser();
         $position2 = $this->createPosition($user2, PositionType::staff);
-        $position2->permissions()->sync([Permission::get('system.history')?->id]);
+        $position2->permissions()->sync([Permission::get(Permissions::system__history)?->id]);
 
         $request = Request::create('/');
         $request->setLaravelSession(new Store('array', new ArraySessionHandler(10)));
@@ -239,7 +240,7 @@ class CurrentTest extends TestCase
         $request->cookies->set('proxy_position', $position2->id);
         $current = Current::init($request, true);
 
-        $this->assertEquals(['system.history'], array_values($current->permissions()));
+        $this->assertEquals([Permissions::system__history], array_values($current->permissions()));
     }
 
     public function test_current_has_position_type(): void

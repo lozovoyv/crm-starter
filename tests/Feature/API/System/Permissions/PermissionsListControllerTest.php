@@ -5,6 +5,7 @@ namespace Tests\Feature\API\System\Permissions;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Positions\PositionType;
+use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,7 +20,7 @@ class PermissionsListControllerTest extends TestCase
 
     public function test_permissions_list(): void
     {
-        $response = $this->apiActingAs(PositionType::staff, ['system.permissions'])->get('/api/system/permissions');
+        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__permissions])->get('/api/system/permissions');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
     }

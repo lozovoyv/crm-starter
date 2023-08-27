@@ -48,13 +48,23 @@ class ApiResponseServerError extends ApiResponse
      */
     protected function convertExceptionToArray(Throwable $exception): array
     {
-        return config('app.debug') ? [
-            'message' => $exception->getMessage(),
-            'exception' => get_class($exception),
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'trace' => collect($exception->getTrace())->map(fn($trace) => Arr::except($trace, ['args']))->all(),
-        ] : [
+        if (config('app.debug')) {
+            $vendorPath = base_path('vendor');
+
+            $message = str_replace('`', '\'', $exception->getMessage());
+            return [
+                'message' => $message,
+                'exception' => get_class($exception),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => collect($exception->getTrace())->map(function ($trace) use ($vendorPath) {
+                    $trace['is_vendor'] = isset($trace['file']) && str_starts_with($trace['file'], $vendorPath);
+                    return Arr::except($trace, ['args']);
+                })->all(),
+            ];
+        }
+
+        return [
             'message' => 'Server error',
         ];
     }

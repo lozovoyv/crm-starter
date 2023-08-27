@@ -11,6 +11,7 @@ use App\Exceptions\Dictionary\DictionaryNotFoundException;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
+use App\Permissions;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -48,7 +49,7 @@ class DictionaryController extends ApiController
             ->lastModified($dictionary->lastModified())
             ->payload([
                 'is_editable' => $dictionary->isEditable(),
-                'is_editor_available' => $current->can('system.dictionaries'),
+                'is_editor_available' => $current->can(Permissions::system__dictionaries),
             ]);
     }
 
@@ -81,7 +82,6 @@ class DictionaryController extends ApiController
         return ApiResponse::list()->items($list);
     }
 
-
     /**
      * Get dictionary items list for editor.
      *
@@ -96,7 +96,9 @@ class DictionaryController extends ApiController
             /** @var DictionaryInterface $dictionaryClass */
             $dictionaryClass = $this->getDictionaryClass($alias);
 
-            $dictionary = $dictionaryClass::list();
+            $current = Current::init($request);
+
+            $dictionary = $dictionaryClass::list($current);
 
         } catch (Exception $exception) {
             return $this->exceptionResponse($exception);
@@ -109,7 +111,7 @@ class DictionaryController extends ApiController
             ->payload([
                 'orderable' => $dictionary->orderable(),
                 'switchable' => $dictionary->switchable(),
-                'fields' => $dictionary->fields(),
+                'types' => $dictionary->types(),
             ]);
     }
 

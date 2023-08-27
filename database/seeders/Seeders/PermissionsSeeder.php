@@ -5,6 +5,7 @@ namespace Database\Seeders\Seeders;
 
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionScope;
+use App\Permissions;
 use Illuminate\Database\Seeder;
 
 class PermissionsSeeder extends Seeder
@@ -15,12 +16,10 @@ class PermissionsSeeder extends Seeder
 
     protected function loadDefinitions(): void
     {
-        $data = require base_path('/app/permissions.php');
-        $this->scopes = $data['scopes'];
-        $permissions = $data['permissions'];
+        $this->scopes = Permissions::$scopes;
 
-        foreach ($permissions as $permission) {
-            $this->add($permission[0], $permission[1], $permission[2] ?? null);
+        foreach (Permissions::$permissions as $name => $permission) {
+            $this->add($name, $permission['name'], $permission['description'] ?? null);
         }
     }
 
@@ -40,7 +39,7 @@ class PermissionsSeeder extends Seeder
      */
     protected function add(string $key, string $name, string $description): void
     {
-        $scopes = explode('.', $key, 2)[0];
+        $scopes = explode('__', $key, 2)[0];
         if (!isset($this->permissions[$scopes])) {
             $this->permissions[$scopes] = [];
         }

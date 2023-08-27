@@ -5,6 +5,7 @@ namespace Tests\Feature\API\System\Permissions;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Positions\PositionType;
+use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +21,7 @@ class PermissionGroupsListControllerTest extends TestCase
     public function test_permission_groups_list(): void
     {
         $response = $this
-            ->apiActingAs(PositionType::staff, ['system.permissions'])
+            ->apiActingAs(PositionType::staff, [Permissions::system__permissions])
             ->get('/api/system/permissions/groups');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());

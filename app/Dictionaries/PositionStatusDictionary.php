@@ -15,6 +15,7 @@ namespace App\Dictionaries;
 use App\Dictionaries\Base\EloquentDictionary;
 use App\Models\Positions\PositionStatus;
 use App\Models\Positions\PositionType;
+use App\Permissions;
 
 class PositionStatusDictionary extends EloquentDictionary
 {
@@ -22,7 +23,7 @@ class PositionStatusDictionary extends EloquentDictionary
 
     protected static string $title = 'dictionaries/position_statuses.title';
 
-    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => ['system.staff', 'system.staff.change']];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => [Permissions::system__staff, Permissions::system__staff_change]];
     protected static ?string $order_field = 'name';
     protected static ?string $locked_field = null;
 }

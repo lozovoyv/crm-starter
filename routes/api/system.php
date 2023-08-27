@@ -18,6 +18,7 @@ use App\Http\Controllers\API\System\Users\UserEditController;
 use App\Http\Controllers\API\System\Users\UserHistoryController;
 use App\Http\Controllers\API\System\Users\UserListController;
 use App\Http\Controllers\API\System\Users\UserViewController;
+use App\Permissions;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/api/system/admins')->middleware(['auth:sanctum', 'position:admin'])->group(function () {
@@ -38,16 +39,16 @@ Route::prefix('/api/system/admins')->middleware(['auth:sanctum', 'position:admin
     Route::get('/position/{positionID}/operations/{historyID}/changes', [AdminHistoryController::class, 'changesByAdmin']);
 });
 
-Route::prefix('/api/system/staff')->middleware(['auth:sanctum', 'position:admin,staff', 'permission:system.staff,system.staff.change'])->group(function () {
+Route::prefix('/api/system/staff')->middleware(['auth:sanctum', 'position:admin,staff', 'permission:system__staff,system__staff_change'])->group(function () {
     Route::get('/', [StaffListController::class, 'list']);
     Route::get('/history', [StaffHistoryController::class, 'list']);
     Route::get('/history/{historyID}/comments', [StaffHistoryController::class, 'comments']);
     Route::get('/history/{historyID}/changes', [StaffHistoryController::class, 'changes']);
     // todo fix Route::get('/{positionID}', [StaffPositionViewController::class, 'view']);
-    // todo fix Route::get('/position/{positionID?}', [StaffPositionCRUDController::class, 'get'])->middleware('permission:system.staff.change');
-    // todo fix Route::put('/position/{positionID?}', [StaffPositionCRUDController::class, 'save'])->middleware('permission:system.staff.change');
-    // todo fix Route::patch('/position/{positionID}/status', [StaffPositionCRUDController::class, 'status'])->middleware('permission:system.users.change');
-    // todo fix Route::delete('/position/{positionID}', [StaffPositionCRUDController::class, 'remove'])->middleware('permission:system.users.change');
+    // todo fix Route::get('/position/{positionID?}', [StaffPositionCRUDController::class, 'get'])->middleware('permission:system__staff_change');
+    // todo fix Route::put('/position/{positionID?}', [StaffPositionCRUDController::class, 'save'])->middleware('permission:system__staff_change');
+    // todo fix Route::patch('/position/{positionID}/status', [StaffPositionCRUDController::class, 'status'])->middleware('permission:system__users_change');
+    // todo fix Route::delete('/position/{positionID}', [StaffPositionCRUDController::class, 'remove'])->middleware('permission:system__users_change');
     Route::get('/position/{positionID}/history', [StaffHistoryController::class, 'listForStaff']);
     Route::get('/position/{positionID}/history/{historyID}/comments', [StaffHistoryController::class, 'commentsForStaff']);
     Route::get('/position/{positionID}/history/{historyID}/changes', [StaffHistoryController::class, 'changesForStaff']);
@@ -56,24 +57,24 @@ Route::prefix('/api/system/staff')->middleware(['auth:sanctum', 'position:admin,
     Route::get('/position/{positionID}/operations/{historyID}/changes', [StaffHistoryController::class, 'changesByStaff']);
 });
 
-Route::prefix('/api/system/users')->middleware(['auth:sanctum', 'position:admin,staff', 'permission:system.users,system.users.change'])->group(function () {
+Route::prefix('/api/system/users')->middleware(['auth:sanctum', 'position:admin,staff', Permissions::middleware(Permissions::system__users, Permissions::system__users_change)])->group(function () {
     Route::get('/', [UserListController::class, 'list']);
     Route::get('/history', [UserHistoryController::class, 'list']);
     Route::get('/history/{historyID}/comments', [UserHistoryController::class, 'comments']);
     Route::get('/history/{historyID}/changes', [UserHistoryController::class, 'changes']);
-    Route::get('/user/{userID?}', [UserEditController::class, 'get'])->middleware('permission:system.users.change');
-    Route::put('/user/{userID?}', [UserEditController::class, 'save'])->middleware('permission:system.users.change');
-    Route::patch('/user/{userID}/status', [UserEditController::class, 'status'])->middleware('permission:system.users.change');
-    Route::patch('/user/{userID}/password', [UserEditController::class, 'password'])->middleware('permission:system.users.change');
-    Route::patch('/user/{userID}/email', [UserEditController::class, 'email'])->middleware('permission:system.users.change');
-    Route::delete('/user/{userID}', [UserEditController::class, 'remove'])->middleware('permission:system.users.change');
+    Route::get('/user/{userID?}', [UserEditController::class, 'get'])->middleware(Permissions::middleware(Permissions::system__users_change));
+    Route::put('/user/{userID?}', [UserEditController::class, 'save'])->middleware(Permissions::middleware(Permissions::system__users_change));
+    Route::patch('/user/{userID}/status', [UserEditController::class, 'status'])->middleware(Permissions::middleware(Permissions::system__users_change));
+    Route::patch('/user/{userID}/password', [UserEditController::class, 'password'])->middleware(Permissions::middleware(Permissions::system__users_change));
+    Route::patch('/user/{userID}/email', [UserEditController::class, 'email'])->middleware(Permissions::middleware(Permissions::system__users_change));
+    Route::delete('/user/{userID}', [UserEditController::class, 'remove'])->middleware(Permissions::middleware(Permissions::system__users_change));
     Route::get('/user/{userID}/history', [UserHistoryController::class, 'listForUser']);
     Route::get('/user/{userID}/history/{historyID}/comments', [UserHistoryController::class, 'commentsForUser']);
     Route::get('/user/{userID}/history/{historyID}/changes', [UserHistoryController::class, 'changesForUser']);
     Route::get('/{userID}', [UserViewController::class, 'view']);
 });
 
-Route::prefix('/api/system/permissions')->middleware(['auth:sanctum', 'position:admin,staff', 'permission:system.permissions'])->group(function () {
+Route::prefix('/api/system/permissions')->middleware(['auth:sanctum', 'position:admin,staff', Permissions::middleware(Permissions::system__permissions)])->group(function () {
     Route::get('/', [PermissionListController::class, 'list']);
     Route::get('/groups', [PermissionGroupListController::class, 'list']);
     Route::get('/group/{groupID?}', [PermissionGroupEditController::class, 'get']);
@@ -85,7 +86,7 @@ Route::prefix('/api/system/permissions')->middleware(['auth:sanctum', 'position:
     Route::get('/history/{historyID}/changes', [PermissionGroupHistoryController::class, 'changes']);
 });
 
-Route::prefix('/api/system/history')->middleware(['auth:sanctum', 'position:admin,staff', 'permission:system.history'])->group(function () {
+Route::prefix('/api/system/history')->middleware(['auth:sanctum', 'position:admin,staff', Permissions::middleware(Permissions::system__history)])->group(function () {
     Route::get('/', [HistoryController::class, 'list']);
     Route::get('/{historyID}/comments', [HistoryController::class, 'comments']);
     Route::get('/{historyID}/changes', [HistoryController::class, 'changes']);

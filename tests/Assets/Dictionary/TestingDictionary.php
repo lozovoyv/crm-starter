@@ -27,6 +27,7 @@ class TestingDictionary extends Dictionary
                 'unique' => 'validation.unique',
             ],
             'show' => true,
+            'edit' => false,
         ],
         'value' => [
             'title' => 'dictionaries/defaults.fields.name',
@@ -37,6 +38,7 @@ class TestingDictionary extends Dictionary
                 'required' => 'validation.required',
             ],
             'show' => false,
+            'edit' => true,
         ],
     ];
 }

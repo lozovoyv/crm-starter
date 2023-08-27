@@ -23,7 +23,7 @@ class DictionaryList implements DictionaryListInterface
     protected array $titles;
     protected bool $orderable;
     protected bool $switchable;
-    protected array $fields;
+    protected array $types;
 
     /**
      * @param array|Collection $items
@@ -31,16 +31,16 @@ class DictionaryList implements DictionaryListInterface
      * @param array $titles
      * @param bool $orderable
      * @param bool $switchable
-     * @param array $fields
+     * @param array $types
      */
-    public function __construct(array|Collection $items, string $title, array $titles, bool $orderable, bool $switchable, array $fields)
+    public function __construct(array|Collection $items, string $title, array $titles, bool $orderable, bool $switchable, array $types)
     {
         $this->items = $items;
         $this->title = $title;
         $this->titles = $titles;
         $this->orderable = $orderable;
         $this->switchable = $switchable;
-        $this->fields = $fields;
+        $this->types = $types;
     }
 
     /**
@@ -98,8 +98,8 @@ class DictionaryList implements DictionaryListInterface
      *
      * @return array
      */
-    public function fields(): array
+    public function types(): array
     {
-        return $this->fields;
+        return $this->types;
     }
 }

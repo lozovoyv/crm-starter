@@ -56,5 +56,5 @@ interface DictionaryListInterface
      *
      * @return array
      */
-    public function fields(): array;
+    public function types(): array;
 }

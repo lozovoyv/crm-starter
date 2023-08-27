@@ -7,10 +7,9 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionScope;
 use App\Models\Positions\PositionType;
-use Carbon\Carbon;
+use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Assets\Dictionary\TestingEloquentDictionary;
-use Tests\Assets\Dictionary\TestingEloquentDictionaryModel;
 use Tests\TestCase;
 
 class DictionaryIndexControllerTest extends TestCase
@@ -49,13 +48,14 @@ class DictionaryIndexControllerTest extends TestCase
     {
         TestingEloquentDictionary::$editPermissions = [PositionType::staff => ['testing.dictionary']];
 
-        $response = $this->apiActingAs(PositionType::staff, ['system.dictionaries', 'testing.dictionary'])->get('/api/dictionaries');
+        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
 
         $list = $response->json('list');
 
-        $this->assertArrayHasKey('testing', $list);
+        $item = array_filter($list, static fn($item) => isset($item['name']) && $item['name'] === 'testing');
+        $this->assertNotEmpty($item);
     }
 
     public function test_dictionary_index_wo_edit(): void
@@ -63,12 +63,13 @@ class DictionaryIndexControllerTest extends TestCase
         TestingEloquentDictionary::$editPermissions = false;
         TestingEloquentDictionary::$viewPermissions = [PositionType::staff => ['testing.dictionary']];
 
-        $response = $this->apiActingAs(PositionType::staff, ['system.dictionaries', 'testing.dictionary'])->get('/api/dictionaries');
+        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
 
         $list = $response->json('list');
 
-        $this->assertArrayNotHasKey('testing', $list);
+        $item = array_filter($list, static fn($item) => isset($item['name']) && $item['name'] === 'testing');
+        $this->assertEmpty($item);
     }
 }

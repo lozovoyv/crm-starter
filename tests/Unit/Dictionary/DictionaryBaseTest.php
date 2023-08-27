@@ -71,26 +71,29 @@ class DictionaryBaseTest extends TestCase
         App::setLocale('en');
         $this->assertEquals([
             'name' => 'Name',
+        ], TestingDictionary::fieldTitles(true, false));
+        $this->assertEquals([
             'value' => 'Name',
-        ], TestingDictionary::fieldTitles());
+        ], TestingDictionary::fieldTitles(false, true));
 
         App::setLocale('ru');
         $this->assertEquals([
             'name' => 'Название',
+        ], TestingDictionary::fieldTitles(true, false));
+        $this->assertEquals([
             'value' => 'Название',
-        ], TestingDictionary::fieldTitles());
+        ], TestingDictionary::fieldTitles(false, true));
     }
 
     public function test_dictionary_get_types(): void
     {
         $this->assertEquals([
             'name' => 'string',
-            'value' => 'string',
-        ], TestingDictionary::fieldTypes());
+        ], TestingDictionary::fieldTypes(true, false));
 
         $this->assertEquals([
-            'name' => 'string',
-        ], TestingDictionary::fieldTypes(true));
+            'value' => 'string',
+        ], TestingDictionary::fieldTypes(false, true));
     }
 
     public function test_dictionary_get_rules(): void

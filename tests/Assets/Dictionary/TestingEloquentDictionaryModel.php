@@ -50,6 +50,11 @@ class TestingEloquentDictionaryModel extends Model
 
     protected $fillable = ['name', 'order', 'value', 'description', 'hint', 'enabled', 'locked'];
 
+    public function getHash(): string
+    {
+        return 'test hash';
+    }
+
     /**
      * Run the migrations.
      *
