@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace App\Dictionaries;
 
 use App\Dictionaries\Base\EloquentDictionary;
+use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
 use App\Models\Users\User;
-use App\Permissions;
 
 class UserDictionary extends EloquentDictionary
 {
@@ -23,5 +23,5 @@ class UserDictionary extends EloquentDictionary
 
     protected static string $title = 'dictionaries/users.title';
 
-    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => [Permissions::system__staff_change]];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => [Permission::system__staff_change]];
 }

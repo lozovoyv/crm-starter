@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace App\Dictionaries;
 
 use App\Dictionaries\Base\EloquentDictionary;
+use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
 use App\Models\Users\UserStatus;
-use App\Permissions;
 use Illuminate\Database\Eloquent\Model;
 
 class UserStatusDictionary extends EloquentDictionary
@@ -24,7 +24,7 @@ class UserStatusDictionary extends EloquentDictionary
 
     protected static string $title = 'dictionaries/user_statuses.title';
 
-    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => [Permissions::system__users, Permissions::system__users_change]];
+    public static bool|array $viewPermissions = [PositionType::admin => true, PositionType::staff => [Permission::system__users, Permission::system__users_change]];
 
     protected static ?string $order_field = 'name';
     protected static ?string $locked_field = null;

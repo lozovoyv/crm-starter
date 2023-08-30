@@ -34,4 +34,21 @@ class PositionType extends Model
 
         throw new InvalidArgumentException('Wrong position type');
     }
+
+    /**
+     * Make position type middleware.
+     *
+     * @param int ...$type
+     *
+     * @return string
+     */
+    public static function middleware(...$type): string
+    {
+        $positions = [];
+        foreach ($type as $value) {
+            $positions[] = self::typeToString($value);
+        }
+
+        return 'position:' . implode(',', $positions);
+    }
 }

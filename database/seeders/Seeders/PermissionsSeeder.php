@@ -5,7 +5,6 @@ namespace Database\Seeders\Seeders;
 
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionScope;
-use App\Permissions;
 use Illuminate\Database\Seeder;
 
 class PermissionsSeeder extends Seeder
@@ -16,9 +15,9 @@ class PermissionsSeeder extends Seeder
 
     protected function loadDefinitions(): void
     {
-        $this->scopes = Permissions::$scopes;
+        $this->scopes = Permission::$scopes;
 
-        foreach (Permissions::$permissions as $name => $permission) {
+        foreach (Permission::$permissions as $name => $permission) {
             $this->add($name, $permission['name'], $permission['description'] ?? null);
         }
     }

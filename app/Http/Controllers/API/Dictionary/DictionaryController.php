@@ -11,7 +11,7 @@ use App\Exceptions\Dictionary\DictionaryNotFoundException;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
-use App\Permissions;
+use App\Models\Permissions\Permission;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -24,6 +24,7 @@ class DictionaryController extends ApiController
      * @param string $alias
      *
      * @param APIListRequest $request
+     *
      * @return  ApiResponse
      */
     public function view(string $alias, APIListRequest $request): ApiResponse
@@ -49,7 +50,7 @@ class DictionaryController extends ApiController
             ->lastModified($dictionary->lastModified())
             ->payload([
                 'is_editable' => $dictionary->isEditable(),
-                'is_editor_available' => $current->can(Permissions::system__dictionaries),
+                'is_editor_available' => $current->can(Permission::system__dictionaries),
             ]);
     }
 
@@ -74,7 +75,7 @@ class DictionaryController extends ApiController
             if ($dictionary::canEdit($current)) {
                 $list[] = [
                     'name' => $alias,
-                    'title' => $dictionary::title()
+                    'title' => $dictionary::title(),
                 ];
             }
         }

@@ -7,7 +7,6 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionScope;
 use App\Models\Positions\PositionType;
-use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Assets\Dictionary\TestingEloquentDictionary;
 use Tests\TestCase;
@@ -48,7 +47,7 @@ class DictionaryIndexControllerTest extends TestCase
     {
         TestingEloquentDictionary::$editPermissions = [PositionType::staff => ['testing.dictionary']];
 
-        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries');
+        $response = $this->apiActingAs(PositionType::staff, [Permission::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
 
@@ -63,7 +62,7 @@ class DictionaryIndexControllerTest extends TestCase
         TestingEloquentDictionary::$editPermissions = false;
         TestingEloquentDictionary::$viewPermissions = [PositionType::staff => ['testing.dictionary']];
 
-        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries');
+        $response = $this->apiActingAs(PositionType::staff, [Permission::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
 

@@ -5,6 +5,7 @@ namespace App;
 
 use App\Exceptions\NoPositionSelectedException;
 use App\Exceptions\PositionMismatchException;
+use App\Models\Permissions\Permission;
 use App\Models\Positions\Position;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
@@ -86,7 +87,7 @@ class Current
             }
         }
 
-        if ($this->position && ($proxyId = $request->cookie('proxy_position')) && $this->position->can(Permissions::system__act_as_other)) {
+        if ($this->position && ($proxyId = $request->cookie('proxy_position')) && $this->position->can(Permission::system__act_as_other)) {
             $this->proxyPosition = Position::query()->where('id', $proxyId)->first();
         }
     }

@@ -7,7 +7,6 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionScope;
 use App\Models\Positions\PositionType;
-use App\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Assets\Dictionary\TestingEloquentDictionary;
 use Tests\Assets\Dictionary\TestingEloquentDictionaryModel;
@@ -53,7 +52,7 @@ class DictionaryListControllerTest extends TestCase
     {
         TestingEloquentDictionary::$editPermissions = false;
 
-        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries])->get('/api/dictionaries/testing');
+        $response = $this->apiActingAs(PositionType::staff, [Permission::system__dictionaries])->get('/api/dictionaries/testing');
 
         $this->assertEquals(ApiResponse::CODE_FORBIDDEN, $response->status());
     }
@@ -62,7 +61,7 @@ class DictionaryListControllerTest extends TestCase
     {
         TestingEloquentDictionary::$editPermissions = [PositionType::staff => ['testing.dictionary']];
 
-        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries/testing');
+        $response = $this->apiActingAs(PositionType::staff, [Permission::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries/testing');
 
         $this->assertEquals(ApiResponse::CODE_OK, $response->status());
     }
@@ -71,7 +70,7 @@ class DictionaryListControllerTest extends TestCase
     {
         TestingEloquentDictionary::$editPermissions = [PositionType::staff => ['testing.dictionary']];
 
-        $response = $this->apiActingAs(PositionType::staff, [Permissions::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries/testing');
+        $response = $this->apiActingAs(PositionType::staff, [Permission::system__dictionaries, 'testing.dictionary'])->get('/api/dictionaries/testing');
 
         $content = $response->json();
 
