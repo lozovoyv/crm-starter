@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserStatusDictionary extends EloquentDictionary
 {
-    protected static string $dictionaryClass = UserStatus::class;
+    protected static string $dictionaryModel = UserStatus::class;
 
     protected static string $title = 'dictionaries/user_statuses.title';
 

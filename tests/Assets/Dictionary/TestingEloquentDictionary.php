@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TestingEloquentDictionary extends EloquentDictionary
 {
-    protected static string $dictionaryClass = TestingEloquentDictionaryModel::class;
+    protected static string $dictionaryModel = TestingEloquentDictionaryModel::class;
 
     protected static bool $orderable = true;
 

@@ -269,6 +269,21 @@ abstract class Dictionary
         return $messages;
     }
 
+
+    /**
+     * Get field options array.
+     *
+     * @return array
+     */
+    public static function fieldOptions(): array
+    {
+        return array_filter(
+            array_map(static function (array $record) {
+                return $record['options'] ?? null;
+            }, static::$fields)
+        );
+    }
+
     /**
      * Check view ability.
      *

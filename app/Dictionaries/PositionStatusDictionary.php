@@ -19,7 +19,7 @@ use App\Models\Positions\PositionType;
 
 class PositionStatusDictionary extends EloquentDictionary
 {
-    protected static string $dictionaryClass = PositionStatus::class;
+    protected static string $dictionaryModel = PositionStatus::class;
 
     protected static string $title = 'dictionaries/position_statuses.title';
 

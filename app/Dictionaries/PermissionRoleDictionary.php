@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PermissionRoleDictionary extends EloquentDictionary
 {
-    protected static string $dictionaryClass = PermissionGroup::class;
+    protected static string $dictionaryModel = PermissionGroup::class;
 
     protected static string $title = 'dictionaries/roles.title';
 

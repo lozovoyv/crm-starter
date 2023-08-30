@@ -19,7 +19,7 @@ use App\Models\Users\User;
 
 class UserDictionary extends EloquentDictionary
 {
-    protected static string $dictionaryClass = User::class;
+    protected static string $dictionaryModel = User::class;
 
     protected static string $title = 'dictionaries/users.title';
 

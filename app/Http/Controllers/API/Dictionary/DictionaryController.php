@@ -117,6 +117,68 @@ class DictionaryController extends ApiController
     }
 
     /**
+     * Get editing data for dictionary entry.
+     *
+     * @param string $alias
+     * @param int|string|null $id
+     * @param Request $request
+     *
+     * @return ApiResponse
+     */
+    public function get(string $alias, int|string|null $id, Request $request): ApiResponse
+    {
+        try {
+            /** @var DictionaryInterface $dictionaryClass */
+            $dictionaryClass = $this->getDictionaryClass($alias);
+
+            $current = Current::init($request);
+
+            $dictionary = $dictionaryClass::get($id, $current);
+
+        } catch (Exception $exception) {
+            return $this->exceptionResponse($exception);
+        }
+
+        return ApiResponse::form()
+            ->title($dictionary->title())
+            ->values($dictionary->values())
+            ->rules($dictionary->rules())
+            ->titles($dictionary->titles())
+            ->messages($dictionary->messages())
+            ->hash($dictionary->hash())
+            ->payload([
+                'types' => $dictionary->types(),
+                'id' => $dictionary->id(),
+            ]);
+    }
+
+    /**
+     * Update dictionary item.
+     *
+     * @param string $alias
+     * @param int|string|null $id
+     * @param Request $request
+     *
+     * @return ApiResponse
+     */
+    public function update(string $alias, int|string|null $id, Request $request): ApiResponse
+    {
+        try {
+            /** @var DictionaryInterface $dictionaryClass */
+            $dictionaryClass = $this->getDictionaryClass($alias);
+
+            $current = Current::init($request);
+
+            // $dictionary = $dictionaryClass::list($current);
+
+        } catch (Exception $exception) {
+            return $this->exceptionResponse($exception);
+        }
+
+        return $class::update($request, $name);
+    }
+
+    /**
      * @param string|null $alias
      *
      * @return string
@@ -161,67 +223,16 @@ class DictionaryController extends ApiController
      * TODO refactor this:
      */
 
-
-    /**
-     * Get editing data for dictionary entry.
-     *
-     * @param Request $request
-     *
-     * @return ApiResponse
-     */
-    public function get(Request $request): ApiResponse
-    {
-        $name = $request->input('dictionary');
-        $current = Current::init($request);
-
-        try {
-            $dictionary = $this->getDictionaryRecord($name, $current, false, true);
-        } catch (DictionaryNotFoundException $exception) {
-            return APIResponse::notFound($exception->getMessage());
-        } catch (DictionaryForbiddenException $exception) {
-            return APIResponse::forbidden($exception->getMessage());
-        }
-
-        /** @var Dictionary $class */
-        $class = $dictionary['class'];
-
-        return $class::get($request);
-    }
-
-    /**
-     * Update dictionary item.
-     *
-     * @param Request $request
-     *
-     * @return ApiResponse
-     */
-    public function update(Request $request): ApiResponse
-    {
-        $name = $request->input('dictionary');
-        $current = Current::init($request);
-
-        try {
-            $dictionary = $this->getDictionaryRecord($name, $current, false, true);
-        } catch (DictionaryNotFoundException $exception) {
-            return APIResponse::notFound($exception->getMessage());
-        } catch (DictionaryForbiddenException $exception) {
-            return APIResponse::forbidden($exception->getMessage());
-        }
-
-        /** @var Dictionary $class */
-        $class = $dictionary['class'];
-
-        return $class::update($request, $name);
-    }
-
     /**
      * Delete dictionary item.
      *
+     * @param string $alias
+     * @param int|string $id
      * @param Request $request
      *
      * @return ApiResponse
      */
-    public function delete(Request $request): ApiResponse
+    public function delete(string $alias, int|string $id, Request $request): ApiResponse
     {
         $name = $request->input('dictionary');
         $current = Current::init($request);
@@ -243,11 +254,13 @@ class DictionaryController extends ApiController
     /**
      * Toggle dictionary item state.
      *
+     * @param string $alias
+     * @param int|string $id
      * @param Request $request
      *
      * @return ApiResponse
      */
-    public function toggle(Request $request): ApiResponse
+    public function toggle(string $alias, int|string $id, Request $request): ApiResponse
     {
         $name = $request->input('dictionary');
         $current = Current::init($request);
@@ -273,7 +286,7 @@ class DictionaryController extends ApiController
      *
      * @return ApiResponse
      */
-    public function sync(Request $request): ApiResponse
+    public function sync(string $alias, Request $request): ApiResponse
     {
         $name = $request->input('dictionary');
         $current = Current::init($request);

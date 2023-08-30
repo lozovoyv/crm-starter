@@ -14,6 +14,7 @@ namespace App\Dictionaries\Base;
 
 use App\Current;
 use App\Exceptions\Dictionary\DictionaryForbiddenException;
+use App\Exceptions\Dictionary\DictionaryNotFoundException;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\HistoryAction;
 use App\Utils\Casting;
@@ -27,7 +28,7 @@ use Illuminate\Support\Facades\Validator;
 
 abstract class EloquentDictionary extends Dictionary implements DictionaryInterface
 {
-    protected static string $dictionaryClass = Model::class;
+    protected static string $dictionaryModel = Model::class;
 
     protected static bool $orderable = true;
 
@@ -49,6 +50,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
                 'required' => 'validation.required',
                 'unique' => 'validation.unique',
             ],
+            'options' => [], // additional options for edit form
             'show' => true, // show column in editor list
             'edit' => true, // show field in edit form
         ],
@@ -62,7 +64,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     public static function query(): Builder
     {
         /** @var Model $class */
-        $class = static::$dictionaryClass;
+        $class = static::$dictionaryModel;
 
         $fields = array_filter([
             static::$id_field . ' as id',
@@ -169,7 +171,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     public static function listQuery(): Builder
     {
         /** @var Model $class */
-        $class = static::$dictionaryClass;
+        $class = static::$dictionaryModel;
 
         $fields = [
             static::$id_field . ' as id',
@@ -236,46 +238,70 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     }
 
     /**
-     * TODO refactor:
-     */
-
-    /**
-     * Get dictionary record data for editing.
+     * Get dictionary record data for editing form.
      *
-     * @param Request $request
+     * @param int|string|null $id
+     * @param Current $current
      *
-     * @return  ApiResponse
+     * @return DictionaryEditInterface
+     * @throws DictionaryNotFoundException
+     * @throws DictionaryForbiddenException
      */
-    public static function get(Request $request): ApiResponse
+    public static function get(int|string|null $id, Current $current): DictionaryEditInterface
     {
-        $id = $request->input('id'); // todo refactor
+        if (!static::canEdit($current)) {
+            throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
+        }
 
         /** @var Model $class */
-        $class = static::$dictionaryClass;
+        $class = static::$dictionaryModel;
 
         /** @var Model $item */
         if ($id === null) {
-            $item = new static::$dictionaryClass();
+            $item = new $class();
         } else {
             $item = $class::query()->where(static::$id_field, $id)->first();
             if ($item === null) {
-                // todo refactor
-                return ApiResponse::notFound(static::messageItemNotFound());
+                throw new DictionaryNotFoundException(static::messageItemNotFound());
             }
         }
 
-        return ApiResponse::form()
-            ->title(static::message($item->exists ? static::$localizations['form edit title'] : static::$localizations['form create title'], $item->name))
-            ->values(static::getValues($item))
-            ->rules(static::getRules($item))
-            ->titles(static::getTitles())
-            ->messages(static::getMessages())
-            ->hash(method_exists($item, 'getHash') ? $item->getHash() : null)
-            ->payload([
-                'types' => static::getTypes(),
-                'id' => $item->id,
-            ]);
+        return new DictionaryEdit(
+            $item->{static::$id_field},
+            $item->exists ? static::titleFormEdit($item->{static::$name_field}) : static::titleFormCreate(),
+            static::getValues($item),
+            static::fieldRules(),
+            static::fieldTitles(false, true),
+            static::fieldMessages(),
+            method_exists($item, 'getHash') ? $item->getHash() : null,
+            static::fieldTypes(false, true),
+            static::fieldOptions(),
+        );
     }
+
+    /**
+     * Get item values array for editing form.
+     *
+     * @param Model $item
+     *
+     * @return array
+     */
+    protected static function getValues(Model $item): array
+    {
+        $values = [];
+
+        foreach (static::$fields as $key => $record) {
+            if(isset($record['edit']) && $record['edit']) {
+                $values[$key] = $item->getAttribute($record['column'] ?? $key);
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * TODO refactor:
+     */
 
     /**
      * Update dictionary record.
@@ -288,7 +314,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
     public static function update(Request $request, string $alias): ApiResponse
     {
         /** @var AbstractDictionary|Model $class */
-        $class = static::$dictionaryClass;
+        $class = static::$dictionaryModel;
 
         $id = $request->input('id');
 
@@ -337,7 +363,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         static::addHistory($alias, $item, $action, $current)->addChanges($changes);
 
         if (static::$orderable) {
-            ModelOrder::fix(static::$dictionaryClass, static::$order_field);
+            ModelOrder::fix(static::$dictionaryModel, static::$order_field);
         }
 
         return ApiResponse::success(
@@ -362,7 +388,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         $id = $request->input('id');
 
         /** @var AbstractDictionary|Model $class */
-        $class = static::$dictionaryClass;
+        $class = static::$dictionaryModel;
 
         /** @var AbstractDictionary|Model $item */
         $item = $class::query()->where('id', $id)->first();
@@ -384,7 +410,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
 
         $item->delete();
 
-        ModelOrder::fix(static::$dictionaryClass, static::$order_field);
+        ModelOrder::fix(static::$dictionaryModel, static::$order_field);
 
         return ApiResponse::success(static::message(static::$localizations['item deleted'], $item->{static::$name_field}))
             ->payload(['id' => $item->id]);
@@ -403,7 +429,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         $id = $request->input('id');
 
         /** @var AbstractDictionary|Model $class */
-        $class = static::$dictionaryClass;
+        $class = static::$dictionaryModel;
 
         /** @var AbstractDictionary|Model $item */
         $item = $class::query()
@@ -496,7 +522,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         try {
             DB::transaction(static function () use ($update, $updatedIds, &$lastOrder) {
                 /** @var AbstractDictionary $class */
-                $class = static::$dictionaryClass;
+                $class = static::$dictionaryModel;
 
                 $processing = $class::query()->whereIn('id', $updatedIds)->get();
                 foreach ($processing as $item) {
@@ -519,21 +545,4 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
         return APIResponse::success("Справочник " . static::$title . " обновлён");
     }
 
-    /**
-     * Get values array for item editing form.
-     *
-     * @param Model $item
-     *
-     * @return array
-     */
-    protected static function getValues(Model $item): array
-    {
-        $values = [];
-
-        foreach (static::$fields as $key => $record) {
-            $values[$key] = $item->getAttribute($record['column'] ?? $key);
-        }
-
-        return $values;
-    }
 }
