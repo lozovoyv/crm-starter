@@ -96,6 +96,15 @@ class DictionaryBaseTest extends TestCase
         ], TestingDictionary::fieldTypes(false, true));
     }
 
+    public function test_dictionary_get_options(): void
+    {
+        $this->assertEquals([], TestingDictionary::fieldOptions());
+
+        $this->assertEquals([
+            'value' => 'string',
+        ], TestingDictionary::fieldTypes(false, true));
+    }
+
     public function test_dictionary_get_rules(): void
     {
         $this->assertEquals([

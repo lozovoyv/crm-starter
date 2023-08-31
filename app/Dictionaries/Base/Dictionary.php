@@ -51,7 +51,9 @@ abstract class Dictionary
                 'required' => 'validation.required',
                 'unique' => 'validation.unique',
             ],
+            'options' => [],
             'show' => true,
+            'edit' => true,
         ],
     ];
 
