@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,12 +17,11 @@ return new class extends Migration
         Schema::create('histories', static function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
             $table->unsignedSmallInteger('action_id');
-            $table->unsignedBigInteger('history_line_id')->nullable();
 
-            $table->string('entry_title')->nullable();
-            $table->string('entry_name', 40);
-            $table->string('entry_type', 40)->nullable();
+            $table->string('entry_type')->nullable();
             $table->unsignedBigInteger('entry_id')->nullable();
+            $table->string('entry_caption')->nullable();
+            $table->string('entry_tag', 40)->nullable();
 
             $table->string('description')->nullable();
 
@@ -29,8 +29,8 @@ return new class extends Migration
 
             $table->dateTime('timestamp');
 
-            $table->foreign('history_line_id')->references('id')->on('history_lines')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreign('action_id')->references('id')->on('history_actions')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreign('position_id')->references('id')->on('positions')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 

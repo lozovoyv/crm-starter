@@ -22,14 +22,11 @@ return new class extends Migration
 
             $table->boolean('locked')->default(false)->nullable();
 
-            $table->unsignedBigInteger('history_line_id')->nullable();
-
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnDelete();
             $table->foreign('status_id')->references('id')->on('position_statuses')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreign('type_id')->references('id')->on('position_types')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreign('history_line_id')->references('id')->on('history_lines')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 

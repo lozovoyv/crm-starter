@@ -12,16 +12,16 @@ declare(strict_types=1);
 
 namespace Tests\Assets\Resources;
 
-use App\Models\EntryScope;
 use App\Models\History\History;
+use App\Models\Users\User;
 use App\Resources\HistoryResource as BaseHistoryResource;
 
-class HistoryResource extends BaseHistoryResource
+class HistoryTestResource extends BaseHistoryResource
 {
     public function __construct()
     {
         $this->query = History::query()
             ->withCount(['comments', 'links', 'changes'])
-            ->where('entry_name', EntryScope::user);
+            ->where('entry_type', User::class);
     }
 }

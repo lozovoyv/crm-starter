@@ -6,7 +6,6 @@ namespace App\Http\Controllers\API\System\StaffPositions;
 use App\Current;
 use App\Http\Controllers\ApiController;
 use App\Http\Responses\ApiResponse;
-use App\Models\EntryScope;
 use App\Models\History\HistoryAction;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionType;
@@ -161,18 +160,17 @@ class StaffCreateController extends ApiController
             $positionChanges = [];
             $this->set($position, 'user_id', $user->id, Casting::int, $positionChanges);
             $this->set($position, 'status_id', $data['status_id'], Casting::int, $positionChanges);
-            $position->history_line_id = $user->history_line_id;
             $position->save();
             $position->roles()->sync($data['roles']);
             $positionChanges[] = ['parameter' => 'roles', 'type' => Casting::array, 'old' => null, 'new' => $data['roles']];
             $position
                 ->addHistory(HistoryAction::staff_position_created, $current->positionId())
                 ->addChanges($positionChanges)
-                ->addLink($user->compactName, EntryScope::user, $user->id);
+                ->addLink(User::class, $user->id, $user->compactName, 'user');
 
             $user
                 ->addHistory(HistoryAction::user_staff_attached, $current->positionId())
-                ->addLink($user->compactName, EntryScope::position, $position->id, PositionType::typeToString(PositionType::staff));
+                ->addLink(Position::class, $position->id, $user->compactName, PositionType::typeToString(PositionType::staff));
         });
 
         return APIResponse::success('Сотрудник зарегистрирован')->payload(['id' => $position->id]);

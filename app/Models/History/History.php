@@ -15,47 +15,48 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * @property int $id
  * @property int $action_id
- * @property int|null $history_line_id
- * @property string|null $entry_title
- * @property string|null $entry_name
  * @property string|null $entry_type
  * @property int|null $entry_id
+ * @property string|null $entry_caption
+ * @property string|null $entry_tag
  * @property string|null $description
  * @property int|null $position_id
  * @property Carbon $timestamp
  *
- * @property Position $position
- * @property Model $entry
+ * @property-read int entry_count
+ * @property-read int changes_count
+ * @property-read int comments_count
+ *
+ * @property Position|null $position
+ * @property Model|null $entry
  * @property HistoryAction $action
- * @property Collection|null $comments
- * @property Collection|null $links
- * @property Collection|null $changes
+ * @property Collection<HistoryChanges>|null $changes
+ * @property Collection<HistoryLink>|null $links
+ * @property Collection<HistoryComment>|null $comments
  */
 class History extends Model
 {
     /** @var bool No need timestamps here. Record created once, time is stored in timestamp property. */
     public $timestamps = false;
 
-    /** @var array Attribute casting */
     protected $casts = [
         'timestamp' => 'datetime',
     ];
 
-    /** @var array Fillable attributes */
     protected $fillable = [
         'action_id',
-        'history_line_id',
-        'entry_title',
-        'entry_name',
         'entry_type',
         'entry_id',
+        'entry_caption',
+        'entry_tag',
         'description',
         'position_id',
         'timestamp',
     ];
 
-    /** @var string[] Eager load relation */
-    protected $with = ['action', 'comments', 'links', 'changes', 'position', 'entry'];
+    protected $with = ['action', 'links'];
+
+    protected $withCount = ['changes', 'comments'];
 
     /**
      * History record action.
@@ -84,7 +85,7 @@ class History extends Model
      */
     public function entry(): MorphTo
     {
-        return $this->morphTo(__FUNCTION__, 'entry_name', 'entry_id');
+        return $this->morphTo();
     }
 
     /**
@@ -134,22 +135,22 @@ class History extends Model
     /**
      * Add history link.
      *
-     * @param string $entryTitle
-     * @param string|null $entryName
-     * @param int|null $entryId
      * @param string|null $entryType
+     * @param int|null $entryId
+     * @param string|null $entryCaption
+     * @param string|null $entryMark
      *
      * @return  $this
      *
      * @see HistoryLink
      */
-    public function addLink(string $entryTitle, ?string $entryName = null, ?int $entryId = null, ?string $entryType = null): self
+    public function addLink(?string $entryType = null, ?int $entryId = null, ?string $entryCaption = null, ?string $entryMark = null): self
     {
         $this->links()->create([
-            'entry_title' => $entryTitle,
-            'entry_name' => $entryName,
-            'entry_id' => $entryId,
             'entry_type' => $entryType,
+            'entry_id' => $entryId,
+            'entry_caption' => $entryCaption,
+            'entry_mark' => $entryMark,
         ]);
 
         return $this;
@@ -197,7 +198,7 @@ class History extends Model
         $this->loadMissing('changes');
 
         return $this->getRelation('changes')->map(function (HistoryChanges $change) {
-            return $change->toArray($this->entry_name);
+            return $change->toArray($this->entry_type);
         });
     }
 
@@ -211,12 +212,12 @@ class History extends Model
         return [
             'id' => $this->id,
             'timestamp' => $this->timestamp,
-            'has_entry' => !empty($this->entry),
+            'has_entry' => $this->entry_count > 0,
 
-            'entry_title' => $this->entry_title,
-            'entry_name' => $this->entry_name,
             'entry_type' => $this->entry_type,
             'entry_id' => $this->entry_id,
+            'entry_caption' => $this->entry_caption,
+            'entry_tag' => $this->entry_tag,
 
             'action' => $this->action->name,
             'description' => $this->description,
@@ -225,9 +226,9 @@ class History extends Model
             'position' => $this->position?->user->compactName,
 
             'links' => $this->links,
-            'links_count' => $this->getAttribute('links_count') ?? $this->comments()->count(),
-            'changes_count' => $this->getAttribute('changes_count') ?? $this->links()->count(),
-            'comments_count' => $this->getAttribute('comments_count') ?? $this->changes()->count(),
+
+            'changes_count' => $this->changes_count,
+            'comments_count' => $this->comments_count,
         ];
     }
 }

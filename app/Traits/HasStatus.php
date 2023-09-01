@@ -12,22 +12,23 @@ trait HasStatus
      * Check and set new status for the model.
      *
      * @param string $class
-     * @param int $status_id
+     * @param int|string $id
+     * @param string $field
+     *
      * @param bool $save
-     * @param string $name
      *
      * @return  void
      */
-    protected function checkAndSetStatus(string $class, int $status_id, string $name = 'status_id', bool $save = false): void
+    protected function checkAndSetStatus(string $class, int|string $id, string $field = 'status_id', bool $save = false): void
     {
         /** @var Model $class */
-        $statusEntry = $class::query()->find($status_id);
-        // todo check enabled ??? vis dictionaries ????
+        $statusEntry = $class::query()->find($id);
+
         if ($statusEntry === null || !$statusEntry->exists) {
             throw new InvalidArgumentException('Неверный статус.');
         }
 
-        $this->setAttribute($name, $status_id);
+        $this->setAttribute($field, $id);
 
         if ($save) {
             $this->save();

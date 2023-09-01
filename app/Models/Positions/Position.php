@@ -5,12 +5,11 @@ namespace App\Models\Positions;
 
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
-use App\Models\EntryScope;
 use App\Models\Model;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
 use App\Models\Users\User;
-use App\Traits\HasHistoryLine;
+use App\Traits\HasHistory;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,8 +25,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
- * @property int|null $history_line_id
- *
  * @property PositionType $type
  * @property PositionStatus $status
  * @property User $user
@@ -36,7 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Position extends Model implements Statusable, Historical
 {
-    use HasStatus, HasHistoryLine;
+    use HasStatus, HasHistory;
 
     /** @var array Attribute casting. */
     protected $casts = [
@@ -187,11 +184,11 @@ class Position extends Model implements Statusable, Historical
     }
 
     /**
-     * History entry title.
+     * History entry caption.
      *
      * @return  string
      */
-    public function historyEntryTitle(): string
+    public function historyEntryCaption(): string
     {
         $this->loadMissing('user');
 
@@ -199,39 +196,12 @@ class Position extends Model implements Statusable, Historical
     }
 
     /**
-     * History entry name.
-     *
-     * @return  string
-     */
-    public function historyEntryName(): string
-    {
-        return EntryScope::position;
-    }
-
-    /**
-     * History entry name.
+     * History entry tag.
      *
      * @return  string|null
      */
-    public function historyEntryType(): ?string
+    public function historyEntryTag(): ?string
     {
         return PositionType::typeToString($this->type_id);
-    }
-
-    /**
-     * Cast as array.
-     *
-     * @return  array
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'active' => $this->hasStatus(PositionStatus::active),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'hash' => $this->getHash(),
-            'user' => $this->user->toArray(),
-        ];
     }
 }

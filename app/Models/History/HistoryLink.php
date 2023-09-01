@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property int $history_id
- * @property string $entry_title
- * @property string|null $entry_name
- * @property int|null $entry_id
  * @property string|null $entry_type
+ * @property int|null $entry_id
+ * @property string|null $entry_caption
+ * @property string|null $entry_mark
  */
 class HistoryLink extends Model
 {
@@ -20,10 +20,10 @@ class HistoryLink extends Model
 
     /** @var string[] Fillable attributes. */
     protected $fillable = [
-        'entry_title',
-        'entry_name',
         'entry_type',
         'entry_id',
+        'entry_caption',
+        'entry_mark',
     ];
 
     /**
@@ -34,11 +34,10 @@ class HistoryLink extends Model
     public function toArray(): array
     {
         return [
-            'entry_title' => $this->entry_title,
-            'entry_name' => $this->entry_name,
-            'entry_id' => $this->entry_id,
             'entry_type' => $this->entry_type,
+            'entry_id' => $this->entry_id,
+            'entry_caption' => $this->entry_caption,
+            'entry_mark' => $this->entry_mark,
         ];
     }
-
 }

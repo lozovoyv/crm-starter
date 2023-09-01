@@ -3,15 +3,17 @@ declare(strict_types=1);
 
 namespace App\Models\History;
 
-use App\Models\EntryScope;
+use App\Exceptions\CastingException;
 use App\Models\History\Formatters\FormatterInterface;
 use App\Models\History\Formatters\PermissionGroupChangesFormatter;
 use App\Models\History\Formatters\PositionChangesFormatter;
 use App\Models\History\Formatters\UserChangesFormatter;
+use App\Models\Permissions\PermissionGroup;
+use App\Models\Positions\Position;
+use App\Models\Users\User;
 use App\Utils\Casting;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use JsonException;
 
 /**
  * @property int $id
@@ -30,9 +32,9 @@ class HistoryChanges extends Model
     protected $fillable = ['parameter', 'type', 'old', 'new'];
 
     protected array $formatters = [
-        EntryScope::permission_group => PermissionGroupChangesFormatter::class,
-        EntryScope::position => PositionChangesFormatter::class,
-        EntryScope::user => UserChangesFormatter::class,
+        PermissionGroup::class => PermissionGroupChangesFormatter::class,
+        Position::class => PositionChangesFormatter::class,
+        User::class => UserChangesFormatter::class,
     ];
 
     /**
@@ -47,7 +49,7 @@ class HistoryChanges extends Model
     {
         try {
             return $value !== null ? Casting::fromString($value, $this->type) : null;
-        } catch (JsonException) {
+        } catch (CastingException) {
             return null;
         }
     }
@@ -64,7 +66,7 @@ class HistoryChanges extends Model
     {
         try {
             $this->attributes['old'] = $value !== null ? Casting::toString($value, $this->type) : null;
-        } catch (JsonException) {
+        } catch (CastingException) {
             return;
         }
     }
@@ -81,7 +83,7 @@ class HistoryChanges extends Model
     {
         try {
             return $value !== null ? Casting::fromString($value, $this->type) : null;
-        } catch (JsonException) {
+        } catch (CastingException) {
             return null;
         }
     }
@@ -98,7 +100,7 @@ class HistoryChanges extends Model
     {
         try {
             $this->attributes['new'] = $value !== null ? Casting::toString($value, $this->type) : null;
-        } catch (JsonException) {
+        } catch (CastingException) {
             return;
         }
     }

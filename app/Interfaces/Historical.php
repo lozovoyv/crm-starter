@@ -1,40 +1,42 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace App\Interfaces;
 
 use App\Models\History\History;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 interface Historical
 {
     /**
-     * History entry title.
+     * History entry caption.
      *
      * @return  string
      */
-    public function historyEntryTitle(): string;
+    public function historyEntryCaption(): string;
 
     /**
-     * History entry name.
+     * History entry tag.
      *
-     * @return  string
+     * @return string|null
      */
-    public function historyEntryName(): string;
-
-    /**
-     * History entry type.
-     *
-     * @return  string|null
-     */
-    public function historyEntryType(): ?string;
+    public function historyEntryTag(): ?string;
 
     /**
      * Related history.
      *
-     * @return  HasMany
+     * @return MorphMany
      */
-    public function history(): HasMany;
+    public function history(): MorphMany;
 
     /**
      * Add record to history.

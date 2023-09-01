@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Permissions;
 
-use App\Models\EntryScope;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionScope;
 use App\Models\Permissions\PermissionGroup;
@@ -87,15 +86,14 @@ class PermissionBaseTest extends TestCase
         $this->assertEquals(1, $permission->groups->count());
         $this->assertEquals(0, $permission2->groups->count());
 
-        $this->assertEquals('test role', $group->historyEntryTitle());
-        $this->assertEquals(EntryScope::permission_group, $group->historyEntryName());
-        $this->assertEquals(null, $group->historyEntryType());
+        $this->assertEquals('test role', $group->historyEntryCaption());
+        $this->assertNull( $group->historyEntryTag());
         $this->assertIsString($group->hash());
         $this->assertEquals('test role', $group->name);
         $this->assertEquals(1, $group->permissions->count());
         $this->assertEquals(null, $group->description);
-        $this->assertEquals(true, $group->active);
-        $this->assertEquals(false, $group->locked);
+        $this->assertTrue($group->active);
+        $this->assertFalse($group->locked);
         $this->assertEquals(md5($now->toString()), $group->getHash());
     }
 }

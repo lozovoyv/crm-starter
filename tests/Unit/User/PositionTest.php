@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\User;
 
-use App\Models\EntryScope;
 use App\Models\Positions\Position;
 use App\Models\Positions\PositionStatus;
 use App\Models\Positions\PositionType;
@@ -49,9 +48,8 @@ class PositionTest extends TestCase
         $position->refresh();
         $this->assertEquals(PositionStatus::blocked, $position->status->id);
 
-        $this->assertEquals('Base P.T.', $position->historyEntryTitle());
-        $this->assertEquals(EntryScope::position, $position->historyEntryName());
-        $this->assertEquals('staff', $position->historyEntryType());
+        $this->assertEquals('Base P.T.', $position->historyEntryCaption());
+        $this->assertEquals('staff', $position->historyEntryTag());
         $this->assertEquals($user->id, $position->user_id);
     }
 

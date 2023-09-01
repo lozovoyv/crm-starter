@@ -14,10 +14,9 @@ namespace App\Models\Permissions;
 
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
-use App\Models\EntryScope;
 use App\Models\Model;
 use App\Traits\HashCheck;
-use App\Traits\HasSimpleHistory;
+use App\Traits\HasHistory;
 use App\Traits\SetAttributeWithChanges;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,7 +35,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class PermissionGroup extends Model implements Historical, HashCheckable
 {
-    use HashCheck, HasSimpleHistory, SetAttributeWithChanges;
+    use HashCheck, HasHistory, SetAttributeWithChanges;
 
     /** @var array Attributes casting. */
     protected $casts = [
@@ -57,29 +56,9 @@ class PermissionGroup extends Model implements Historical, HashCheckable
      *
      * @return  string
      */
-    public function historyEntryTitle(): string
+    public function historyEntryCaption(): string
     {
         return $this->name;
-    }
-
-    /**
-     * History entry name.
-     *
-     * @return  string
-     */
-    public function historyEntryName(): string
-    {
-        return EntryScope::permission_group;
-    }
-
-    /**
-     * History entry name.
-     *
-     * @return  string|null
-     */
-    public function historyEntryType(): ?string
-    {
-        return null;
     }
 
     /**

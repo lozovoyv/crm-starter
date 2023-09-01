@@ -18,10 +18,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id', true);
             $table->unsignedBigInteger('history_id');
 
-            $table->string('entry_title');
-            $table->string('entry_name', 40)->nullable();
-            $table->string('entry_type', 40)->nullable();
+            $table->string('entry_type')->nullable();
             $table->unsignedBigInteger('entry_id')->nullable();
+            $table->string('entry_caption')->nullable();
+            $table->string('entry_mark')->nullable();
 
             $table->foreign('history_id')->references('id')->on('histories')->cascadeOnDelete()->cascadeOnUpdate();
         });

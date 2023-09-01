@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,8 +14,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('histories', static function (Blueprint $table) {
-            $table->foreign('position_id')->references('id')->on('positions')->restrictOnDelete()->cascadeOnUpdate();
+        Schema::create('history_actions', static function (Blueprint $table) {
+            $table->unsignedSmallInteger('id', true);
+            $table->string('name');
+
+            $table->timestamps();
         });
     }
 
@@ -24,8 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('histories', static function (Blueprint $table) {
-            $table->dropForeign(['position_id']);
-        });
+        Schema::dropIfExists('history_actions');
     }
 };

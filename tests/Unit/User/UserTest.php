@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\User;
 
-use App\Models\EntryScope;
 use App\Models\Users\UserStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -35,9 +34,8 @@ class UserTest extends TestCase
         $this->assertTrue($user->hasStatus(UserStatus::blocked));
         $this->assertEquals(UserStatus::blocked, $user->status->id);
 
-        $this->assertEquals('Тестовый Т.Т.', $user->historyEntryTitle());
-        $this->assertEquals(EntryScope::user, $user->historyEntryName());
-        $this->assertEquals(null, $user->historyEntryType());
+        $this->assertEquals('Тестовый Т.Т.', $user->historyEntryCaption());
+        $this->assertNull($user->historyEntryTag());
 
         $user->firstname = 'Иван';
         $user->patronymic = null;

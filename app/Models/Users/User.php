@@ -6,12 +6,12 @@ namespace App\Models\Users;
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
-use App\Models\EntryScope;
 use App\Models\Positions\Position;
 use App\Traits\HashCheck;
-use App\Traits\HasHistoryLine;
+use App\Traits\HasHistory;
 use App\Traits\HasStatus;
 use App\Traits\SetAttributeWithChanges;
+use App\Utils\Name;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,14 +36,12 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @property string|null $display_name
  *
- * @property Carbon $email_verified_at
- * @property Carbon $phone_verified_at
+ * @property Carbon|null $email_verified_at
+ * @property Carbon|null $phone_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
- * @property string $remember_token
- *
- * @property int|null $history_line_id
+ * @property string|null $remember_token
  *
  * @property UserStatus $status
  * @property UserInfo $info
@@ -54,7 +52,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable implements Statusable, Historical, HashCheckable
 {
-    use HasApiTokens, HasFactory, HasStatus, HashCheck, HasHistoryLine, SetAttributeWithChanges;
+    use HasApiTokens, HasFactory, HasStatus, HashCheck, HasHistory, SetAttributeWithChanges;
 
     /** @var string Referenced table. */
     protected $table = 'users';
@@ -97,7 +95,6 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
      * User's status.
      *
      * @return  HasOne
-     * @noinspection PhpUnused
      */
     public function status(): HasOne
     {
@@ -131,7 +128,6 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
      * User's profile.
      *
      * @return  HasOne
-     * @noinspection PhpUnused
      */
     public function info(): HasOne
     {
@@ -142,98 +138,20 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
      * Accessor for full name generation.
      *
      * @return  string|null
-     * @noinspection PhpUnused
      */
     public function getFullNameAttribute(): ?string
     {
-        return $this->getFullName();
+        return Name::full($this->lastname, $this->firstname, $this->patronymic);
     }
 
     /**
      * Accessor for compact name generation.
      *
      * @return  string|null
-     * @noinspection PhpUnused
      */
     public function getCompactNameAttribute(): ?string
     {
-        return $this->getCompactName();
-    }
-
-    /**
-     * Return lastname.
-     *
-     * @return  string|null
-     */
-    public function getLastName(): ?string
-    {
-        return $this->format('lastname', true);
-    }
-
-    /**
-     * Return firstname in full or short mode.
-     *
-     * @param bool $full
-     *
-     * @return  string|null
-     */
-    public function getFirstName(bool $full = true): ?string
-    {
-        return $this->format('firstname', $full);
-    }
-
-    /**
-     * Return patronymic in full or short mode.
-     *
-     * @param bool $full
-     *
-     * @return  string|null
-     */
-    public function getPatronymic(bool $full = true): ?string
-    {
-        return $this->format('patronymic', $full);
-    }
-
-    /**
-     * Return fathers name in full or short mode.
-     *
-     * @return  string|null
-     */
-    public function getFullName(): ?string
-    {
-        $value = trim(implode(' ', [$this->getLastName(), $this->getFirstName(), $this->getPatronymic()]));
-
-        return empty($value) ? null : $value;
-    }
-
-    /**
-     * Return fathers name in full or short mode.
-     *
-     * @return  string|null
-     */
-    public function getCompactName(): ?string
-    {
-        $value = trim(sprintf('%s %s%s', $this->getLastName(), $this->getFirstName(false), $this->getPatronymic(false)));
-
-        return empty($value) ? null : $value;
-    }
-
-    /**
-     * Format string in full or short mode.
-     *
-     * @param bool $full
-     * @param string|null $attribute
-     *
-     * @return  string|null
-     */
-    protected function format(?string $attribute, bool $full): ?string
-    {
-        $value = $this->getAttribute($attribute);
-        if (empty($value)) {
-            return null;
-        }
-
-        return $full ? mb_strtoupper(mb_substr($value, 0, 1)) . mb_strtolower(mb_substr($value, 1)) : mb_strtoupper(mb_substr($value, 0, 1)) . '.';
+        return Name::compact($this->lastname, $this->firstname, $this->patronymic);
     }
 
     /**
@@ -241,28 +159,8 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
      *
      * @return  string
      */
-    public function historyEntryTitle(): string
+    public function historyEntryCaption(): string
     {
         return $this->compactName;
-    }
-
-    /**
-     * History entry name.
-     *
-     * @return  string
-     */
-    public function historyEntryName(): string
-    {
-        return EntryScope::user;
-    }
-
-    /**
-     * History entry name.
-     *
-     * @return  string|null
-     */
-    public function historyEntryType(): ?string
-    {
-        return null;
     }
 }

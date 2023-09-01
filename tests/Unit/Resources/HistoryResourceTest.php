@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Resources;
 
-use App\Models\EntryScope;
 use App\Models\History\History;
 use App\Models\History\HistoryAction;
 use App\Models\Positions\PositionType;
+use App\Models\Users\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Assets\Resources\HistoryResource;
+use Tests\Assets\Resources\HistoryTestResource;
 use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
@@ -28,23 +28,23 @@ class HistoryResourceTest extends TestCase
 
         $history = $user->addHistory(HistoryAction::user_created, $admin->id, 'testing');
 
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
         $entry = $resource->forEntry($user->id)->retrieveRecord($history->id);
         $this->assertNotNull($entry);
         $this->assertEquals($user->id, $entry->entry_id);
         $this->assertEquals($admin->id, $entry->position_id);
 
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
         $entry = $resource->forOperator($admin->id)->retrieveRecord($history->id);
         $this->assertNotNull($entry);
         $this->assertEquals($user->id, $entry->entry_id);
         $this->assertEquals($admin->id, $entry->position_id);
 
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
         $entry = $resource->forEntry(100)->retrieveRecord($history->id);
         $this->assertNull($entry);
 
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
         $entry = $resource->forOperator(100)->retrieveRecord($history->id);
         $this->assertNull($entry);
     }
@@ -58,20 +58,20 @@ class HistoryResourceTest extends TestCase
         $history = $user->addHistory(HistoryAction::user_deactivated, $admin->id, 'testing');
         $user->addHistory(HistoryAction::user_activated, $admin->id, 'testing');
 
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
         $entries = $resource->filter(['action_ids' => '[' . HistoryAction::user_deactivated . ']'])->get();
         $this->assertEquals(1, $entries->count());
         /** @var History $entry */
         $entry = $entries->first();
         $this->assertEquals($admin->id, $entry->position_id);
         $this->assertEquals($user->id, $entry->entry_id);
-        $this->assertEquals(EntryScope::user, $entry->entry_name);
+        $this->assertEquals(User::class, $entry->entry_type);
         $this->assertEquals(HistoryAction::user_deactivated, $entry->action_id);
     }
 
     public function test_get_list_titles(): void
     {
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
 
         $this->assertEquals([
             'timestamp' => 'Дата',
@@ -85,7 +85,7 @@ class HistoryResourceTest extends TestCase
 
     public function test_get_orderable_columns(): void
     {
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
 
         $this->assertEquals([
             'timestamp',
@@ -94,7 +94,7 @@ class HistoryResourceTest extends TestCase
 
     public function test_get_changes_titles(): void
     {
-        $resource = new HistoryResource();
+        $resource = new HistoryTestResource();
 
         $this->assertEquals([
             'Параметр',

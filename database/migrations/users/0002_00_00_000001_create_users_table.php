@@ -33,8 +33,6 @@ return new class extends Migration {
 
             $table->string('display_name')->nullable();
 
-            $table->unsignedBigInteger('history_line_id')->nullable();
-
             $table->rememberToken();
 
             $table->dateTime('email_verified_at')->nullable();
@@ -42,7 +40,6 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('status_id')->references('id')->on('user_statuses')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreign('history_line_id')->references('id')->on('history_lines')->restrictOnDelete()->cascadeOnUpdate();
         });
     }
 
