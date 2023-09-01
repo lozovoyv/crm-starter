@@ -4,16 +4,11 @@ declare(strict_types=1);
 namespace App\Models\History;
 
 use App\Exceptions\CastingException;
-use App\Models\History\Formatters\FormatterInterface;
-use App\Models\History\Formatters\PermissionGroupChangesFormatter;
-use App\Models\History\Formatters\PositionChangesFormatter;
-use App\Models\History\Formatters\UserChangesFormatter;
-use App\Models\Permissions\PermissionGroup;
-use App\Models\Positions\Position;
-use App\Models\Users\User;
+use App\HistoryFormatters\FormatterInterface;
 use App\Utils\Casting;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @property int $id
@@ -31,19 +26,12 @@ class HistoryChanges extends Model
     /** @var string[] Fillable attributes. */
     protected $fillable = ['parameter', 'type', 'old', 'new'];
 
-    protected array $formatters = [
-        PermissionGroup::class => PermissionGroupChangesFormatter::class,
-        Position::class => PositionChangesFormatter::class,
-        User::class => UserChangesFormatter::class,
-    ];
-
     /**
      * Convert old value from store value to real type.
      *
      * @param string|null $value
      *
      * @return  string|array|bool|int|Carbon|null
-     * @noinspection PhpUnused
      */
     public function getOldAttribute(?string $value): string|array|bool|int|null|Carbon
     {
@@ -60,7 +48,6 @@ class HistoryChanges extends Model
      * @param string|array|bool|int|Carbon|null $value
      *
      * @return  void
-     * @noinspection PhpUnused
      */
     public function setOldAttribute(string|array|bool|int|null|Carbon $value): void
     {
@@ -77,7 +64,6 @@ class HistoryChanges extends Model
      * @param string|null $value
      *
      * @return  string|array|bool|int|Carbon|null
-     * @noinspection PhpUnused
      */
     public function getNewAttribute(?string $value): string|array|bool|int|null|Carbon
     {
@@ -94,7 +80,6 @@ class HistoryChanges extends Model
      * @param string|array|bool|int|Carbon|null $value
      *
      * @return  void
-     * @noinspection PhpUnused
      */
     public function setNewAttribute(string|array|bool|int|null|Carbon $value): void
     {
@@ -108,22 +93,22 @@ class HistoryChanges extends Model
     /**
      * Cast to array using formatter.
      *
-     * @param string|null $forScope
+     * @param string|null $entryType
      *
      * @return array
      */
-    public function toArray(?string $forScope = null): array
+    public function toArray(?string $entryType = null): array
     {
-        if ($forScope === null || !isset($this->formatters[$forScope])) {
+        /** @var FormatterInterface|null $formatter */
+        $formatter = Config::get("history.formatters.$entryType");
+
+        if ($entryType === null || $formatter === null) {
             return [
                 'parameter' => $this->parameter,
                 'old' => $this->old,
                 'new' => $this->new,
             ];
         }
-
-        /** @var FormatterInterface $formatter */
-        $formatter = $this->formatters[$forScope];
 
         return $formatter::format($this);
     }
