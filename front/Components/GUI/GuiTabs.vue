@@ -81,66 +81,86 @@ function setTab(newTab: string | number | symbol | null, initial: boolean = fals
 </script>
 
 <style lang="scss">
+@use "sass:math";
 @import "@/variables.scss";
 
 .tabs {
     width: 100%;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap-reverse;
     box-sizing: border-box;
-    padding: 0 3px 15px;
+    padding: 0 math.div($base_size_unit, 2) 0 0;
+    margin-bottom: $base_size_unit * 2;
+    align-items: flex-start;
     @include no_selection();
 
     &__tab {
-        font-size: 15px;
-        font-family: $project_font;
-        height: $base_size_unit;
-        line-height: $base_size_unit;
-        white-space: nowrap;
-        box-sizing: border-box;
-        padding: 0 12px;
+        border-color: transparentize($color_gray_lighten_2, 0.25);
+        border-radius: $base_size_unit $base_size_unit 0 0;
         border-style: solid;
-        color: $color_default;
-        border-color: $color_gray_lighten_2;
         border-width: 1px 1px 0;
-        border-radius: 4px 4px 0 0;
-        margin: 3px 2px 0;
-        background-color: transparentize($color_gray_lighten_2, 0.75);
+        box-sizing: border-box;
+        color: transparentize($color_default, 0.3);
         cursor: pointer;
-        transition: color $animation $animation_time;
+        font-family: $project_font;
+        font-size: 15px;
+        height: $base_size_unit * 3 + 2px + math.div($base_size_unit, 2);
+        line-height: line_height($base_size_unit * 3.5);
+        margin: 4px 2px 0;
+        padding: 2px $base_size_unit * 1.5 0;
         position: relative;
+        transition: color $animation $animation_time;
+        white-space: nowrap;
 
         &:before, &:after {
             content: '';
             display: block;
-            height: 1px;
-            background-color: $color_gray_lighten_2;
+            height: math.div($base_size_unit, 2);
+            border-color: $color_gray_lighten_2;
+            border-style: solid;
             position: absolute;
             bottom: 0;
+
         }
 
         &:before {
-            width: calc(50% + 6px);
+            width: calc(50% + 3px);
             left: -3px;
+            border-width: 0 0 1px 0;
         }
 
         &:after {
-            width: calc(50% + 6px);
+            width: calc(50% + 3px);
             right: -3px;
+            border-width: 0 0 1px 0;
         }
 
         &:not(&-active):hover {
-            color: $color_default_lighten_1;
+            color: $color_default_lighten_2;
         }
 
         &-active {
             color: $color_text_black;
             background-color: $color_white;
             cursor: default;
+            height: $base_size_unit * 3 + 1px;
+            border-color: $color_gray_lighten_2;
+            margin-bottom: math.div($base_size_unit, 2) + 1px;
 
-            &:before, &:after {
-                width: 3px;
+            &:before {
+                width: math.div($base_size_unit, 2);
+                left: - math.div($base_size_unit, 2) - 1px;
+                border-width: 0 1px 1px 0;
+                border-radius: 0 0 math.div($base_size_unit, 2) 0;
+                transform: translateY(100%);
+            }
+
+            &:after {
+                width: math.div($base_size_unit, 2);
+                right: - math.div($base_size_unit, 2) - 1px;
+                border-width: 0 0 1px 1px;
+                border-radius: 0 0 0 math.div($base_size_unit, 2);
+                transform: translateY(100%);
             }
         }
     }
@@ -148,6 +168,7 @@ function setTab(newTab: string | number | symbol | null, initial: boolean = fals
     &__spacer {
         border-bottom: 1px solid $color_gray_lighten_2;
         flex-grow: 1;
+        align-self: flex-end;
     }
 }
 </style>

@@ -71,7 +71,7 @@ function close(): void {
 @use "sass:math";
 @import "@/variables.scss";
 
-$menu_height: $base_size_unit * 1.5;
+$menu_height: $base_size_unit * 5;
 
 .application__user-menu {
     position: relative;
@@ -142,7 +142,7 @@ $menu_height: $base_size_unit * 1.5;
 
         &-toggle {
             height: $menu_height;
-            width: math.div($base_size_unit, 2);
+            width: $base_size_unit * 2;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -150,7 +150,7 @@ $menu_height: $base_size_unit * 1.5;
             &-icon {
                 color: inherit;
                 transition: transform $animation $animation_time;
-                width: math.div($base_size_unit, 3);
+                width: $base_size_unit;
 
                 &-dropped {
                     transform: rotate(-180deg);

@@ -39,10 +39,12 @@ const nodesCount = computed((): number => {
     font-family: $project_font;
     font-size: 14px;
     margin: 16px 0;
-    line-height: 14px;
+    line-height: line_height(14px);
+    display: flex;
+    align-items: center;
 
     &__text {
-        color: $color_gray_darken_2;
+        color: $color_text_black;
         white-space: nowrap;
     }
 

@@ -19,7 +19,7 @@
                             </template>
                         -->
                     </div>
-                    <div class="layout-page__header-actions" v-if="canViewPage && ($slots.actions)">
+                    <div class="layout-page__header-actions" v-if="canViewPage && ($slots.actions || link)">
                         <div class="layout-page__header-actions-link" v-if="link">
                             <GuiLink :route="link.route" :name="link.name"/>
                         </div>
@@ -29,7 +29,9 @@
                 <div class="layout-page__prologue" v-if="canViewPage && $slots.header">
                     <slot name="header"/>
                 </div>
+                <!--
                 <div class="layout-page__divider"></div>
+                -->
                 <div class="layout-page__body">
                     <slot v-if="canViewPage"/>
                     <div v-else-if="isForbidden" class="layout-page__body-error">
@@ -83,6 +85,7 @@ const canViewPage = computed((): boolean => {
 </script>
 
 <style lang="scss">
+@use "sass:math";
 @import "@/variables";
 
 .layout-page {
@@ -92,10 +95,10 @@ const canViewPage = computed((): boolean => {
 
     &__wrapper {
         background-color: $color_white;
-        box-shadow: $shadow_1;
-        border-radius: 2px;
+        box-shadow: $shadow_2;
+        border-radius: math.div($base_size_unit, 2);
         box-sizing: border-box;
-        padding: 16px;
+        padding: $base_size_unit * 2;
         margin: 10px auto 30px;
     }
 
@@ -113,7 +116,8 @@ const canViewPage = computed((): boolean => {
         box-sizing: content-box;
         display: flex;
         flex-direction: row;
-        margin: 0 0 16px 0;
+        margin: 0 0 8px 0;
+        min-height: $base_size_unit * 4;
 
         &-main {
             flex-grow: 1;
@@ -123,10 +127,11 @@ const canViewPage = computed((): boolean => {
                 font-family: $project_font;
                 font-size: 20px;
                 margin: 0;
-                line-height: $base_size_unit;
+                line-height: line_height($base_size_unit * 2.5);
                 font-weight: 600;
                 box-sizing: border-box;
                 padding-left: 6px;
+                padding-top: 2px;
             }
         }
 
@@ -136,7 +141,7 @@ const canViewPage = computed((): boolean => {
             display: flex;
 
             &-link {
-                line-height: $base_size_unit;
+                line-height: line_height($base_size_unit * 2.5);
                 font-size: 14px;
                 margin-right: 10px;
             }

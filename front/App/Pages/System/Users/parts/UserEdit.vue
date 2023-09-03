@@ -1,7 +1,7 @@
 <template>
     <LayoutPage :title="form.title"
-                :is-forbidden="form.is_forbidden"
-                :is-not-found="form.is_not_found"
+                :is-forbidden="form.state.is_forbidden"
+                :is-not-found="form.state.is_not_found"
                 :breadcrumbs="[
                     {name: 'Учётные записи', route: {name: 'users'}},
                     {name: form.title, route: userId? {name: 'user_view', params: {id: userId}} : undefined},
@@ -70,7 +70,9 @@ function saved(response: { values: { [index: string]: any }, payload: { [index: 
 }
 
 function canceled(): void {
-    if (props.userId) {
+    if (router.options.history.state.back) {
+        router.back();
+    } else if (props.userId) {
         router.push({name: 'user_view', params: {id: props.userId}});
     } else {
         router.push({name: 'users'});

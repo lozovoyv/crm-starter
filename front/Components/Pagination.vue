@@ -64,7 +64,7 @@ const emit = defineEmits<{
 
 const optionsList = computed((): Array<number> => {
     if (typeof props.options !== "undefined") return props.options;
-    return [10, 25, 50, 100, 250];
+    return [5, 10, 25, 50, 100, 250];
 });
 
 const showOptions = ref<boolean>(false);
@@ -178,7 +178,7 @@ function updatePagination(page: number, perPage: number): void {
 .pagination {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
+    margin-top: $base_size_unit * 2;
     @include no_selection;
 
     &__info {
@@ -192,6 +192,7 @@ function updatePagination(page: number, perPage: number): void {
             flex-shrink: 0;
             font-family: $project_font;
             font-size: 14px;
+            color: $color_text_black;
         }
 
         &-shown {
@@ -222,18 +223,19 @@ function updatePagination(page: number, perPage: number): void {
                     opacity: 0;
                     visibility: hidden;
                     z-index: 20;
+                    border: 1px solid $color_gray_lighten_1;
 
                     &:before {
                         content: '';
                         display: block;
-                        background-color: $color_white;
+                        background-color: inherit;
                         width: 6px;
                         height: 6px;
                         position: absolute;
                         left: 50%;
                         bottom: -4px;
                         transform: translate(-50%, 0) rotate(45deg);
-                        border-color: #e9e9e9;
+                        border-color: inherit;
                         border-style: solid;
                         border-width: 0 1px 1px 0;
                     }
@@ -249,15 +251,15 @@ function updatePagination(page: number, perPage: number): void {
                         transition: color $animation $animation_time;
                         line-height: 20px;
 
-                        &:hover, &-selected {
+                        &:hover {
                             color: $color_default;
+                        }
+
+                        &-selected {
+                            color: $color_default_hover;
                         }
                     }
                 }
-            }
-
-            &-text {
-
             }
         }
     }
@@ -266,13 +268,14 @@ function updatePagination(page: number, perPage: number): void {
         flex-grow: 1;
         display: flex;
         justify-content: center;
-        line-height: $base_size_unit;
+        line-height: line_height($base_size_unit * 4);
         font-family: $project_font;
+        font-size: 15px;
 
         &-spacer {
-            width: math.div($base_size_unit, 2);
-            height: $base_size_unit;
-            line-height: $base_size_unit;
+            width: $base_size_unit * 2;
+            height: $base_size_unit * 4;
+            line-height: line_height($base_size_unit * 4);
             text-align: center;
             cursor: default;
             color: $color_gray;
@@ -280,13 +283,13 @@ function updatePagination(page: number, perPage: number): void {
         }
 
         &-button {
-            width: $base_size_unit;
-            height: $base_size_unit;
-            line-height: $base_size_unit;
+            width: $base_size_unit * 4;
+            height: $base_size_unit * 4;
+            line-height: $base_size_unit * 4 - 2px;
             text-align: center;
             cursor: default;
-            border-radius: 2px;
-            box-sizing: content-box;
+            border-radius: 50%;
+            box-sizing: border-box;
             color: $color_gray_lighten_2;
             border: 1px solid transparent;
             background-color: transparent;
@@ -299,9 +302,10 @@ function updatePagination(page: number, perPage: number): void {
                 cursor: pointer;
                 color: $color_text_black;
                 border: 1px solid transparentize($color_gray_lighten_2, 0.5);
+                transition: box-shadow $animation $animation_time;
 
                 &:not(&-active):hover {
-                    border-color: $color_default_lighten_2;
+                    box-shadow: $shadow_hover;
                 }
 
                 &-active {
@@ -318,8 +322,8 @@ function updatePagination(page: number, perPage: number): void {
                 align-items: center;
 
                 & > svg {
-                    width: math.div($base_size_unit, 2);
-                    height: math.div($base_size_unit, 2);
+                    width: $base_size_unit * 2;
+                    height: $base_size_unit * 2;
                 }
             }
         }

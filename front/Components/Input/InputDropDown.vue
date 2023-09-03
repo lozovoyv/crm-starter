@@ -267,7 +267,7 @@ function updateHeight(): void {
 @import "@/variables.scss";
 
 .input-dropdown {
-    min-height: $base_size_unit;
+    min-height: $base_size_unit * 4;
     position: relative;
     cursor: pointer;
 
@@ -285,11 +285,11 @@ function updateHeight(): void {
         font-family: $project_font;
         font-size: 16px;
         height: 100%;
-        line-height: calc(#{$base_size_unit} - 2px);
+        line-height: line_height($base_size_unit * 4) - 2px;
         overflow: hidden;
 
         &-placeholder {
-            padding: 0 0 0 math.div($base_size_unit, 4);
+            padding: 0 0 0 $base_size_unit;
             display: block;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -298,7 +298,7 @@ function updateHeight(): void {
         }
 
         &-single {
-            padding: 0 0 0 math.div($base_size_unit, 4);
+            padding: 0 0 0 $base_size_unit;
             display: block;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -376,8 +376,8 @@ function updateHeight(): void {
         flex-grow: 0;
         flex-shrink: 0;
         justify-content: center;
-        padding: math.div($base_size_unit, 4);
-        width: $base_size_unit;
+        padding: $base_size_unit * 0.75;
+        width: $base_size_unit * 3;
         position: relative;
 
         & > svg {
@@ -400,7 +400,7 @@ function updateHeight(): void {
         display: flex;
         flex-direction: column;
         left: -1px;
-        max-height: $base_size_unit * 8;
+        max-height: $base_size_unit * 32;
         width: 100%;
         position: absolute;
         transform: translateY(100%);
@@ -453,7 +453,7 @@ function updateHeight(): void {
             }
 
             &-item {
-                padding: 3px 10px;
+                padding: 5px 10px;
                 box-sizing: border-box;
                 cursor: pointer;
                 display: block;

@@ -1,5 +1,5 @@
 <template>
-    <ListTable :list="history">
+    <ListTable :list="history" :external-state="externalState">
         <ListTableRow v-for="record in history.list">
             <ListTableCell style="white-space: nowrap">{{ toDatetime(record.timestamp, true) }}</ListTableCell>
             <ListTableCell style="width: 100%;">
@@ -38,12 +38,14 @@ import {toDatetime} from "@/Core/Helpers/DateTime";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import HistoryChanges from "@/Components/History/HistoryChanges.vue";
 import {useRouter} from "vue-router";
+import {CommunicationState} from "@/Core/Types/Communications";
 
 const props = defineProps<{
     url: string,
     prefix?: string,
     options?: { [index: string]: any },
     emptyMessage?: string,
+    externalState?: CommunicationState,
 }>()
 
 type HistoryLink = {

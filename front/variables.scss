@@ -1,52 +1,86 @@
-$color_default_lighten_2: #6DA6DD; //#4B7DDF;
-$color_default_lighten_1: #3581CB; //#1359E4;
-$color_default: #0c6dcb; //#0540B4;
-$color_default_darken_1: #0b57a1; //#042F84;
-$color_default_darken_2: #032C52; //#021E55;
+@use "sass:math";
+$lighten_value: 5%;
 
-$color_success_lighten_2: #3EDF49;
-$color_success_lighten_1: #00E20F;
-$color_success: #00B60C;
-$color_success_darken_1: #008809;
-$color_success_darken_2: #005005;
+$color_default_lighten_2: #0082ca;
+$color_default_lighten_1: #0075b6;
+$color_default: #006194;
+$color_default_darken_1: #004a73;
+$color_default_darken_2: #003552;
+$color_default_hover_lighten_2: lighten($color_default_lighten_2, $lighten_value);
+$color_default_hover_lighten_1: lighten($color_default_lighten_1, $lighten_value);
+$color_default_hover: lighten($color_default, $lighten_value);
+$color_default_hover_darken_1: lighten($color_default_darken_1, $lighten_value);
+$color_default_hover_darken_2: lighten($color_default_darken_2, $lighten_value);
 
-$color_info_lighten_2: #FFBF6C;
-$color_info_lighten_1: #FF9F21;
-$color_info: #FF9000;
-$color_info_darken_1: #E78200;
-$color_info_darken_2: #AD6200;
+$color_success_lighten_2: #a9e03c;
+$color_success_lighten_1: #9acb38;
+$color_success: #6f991c;
+$color_success_darken_1: #739e1f;
+$color_success_darken_2: #638c0f;
+$color_success_hover_lighten_2: lighten($color_success_lighten_2, $lighten_value);
+$color_success_hover_lighten_1: lighten($color_success_lighten_1, $lighten_value);
+$color_success_hover: lighten($color_success, $lighten_value);
+$color_success_hover_darken_1: lighten($color_success_darken_1, $lighten_value);
+$color_success_hover_darken_2: lighten($color_success_darken_2, $lighten_value);
 
-$color_error_lighten_2: #FF7E6D;
-$color_error_lighten_1: #FF4128;
-$color_error: #FF1E00;
-$color_error_darken_1: #C91700;
-$color_error_darken_2: #6B0C00;
+$color_info_lighten_2: #fcb966;
+$color_info_lighten_1: #f6ab4e;
+$color_info: #d37e11;
+$color_info_darken_1: #d98725;
+$color_info_darken_2: #c07629;
+$color_info_hover_lighten_2: lighten($color_info_lighten_2, $lighten_value);
+$color_info_hover_lighten_1: lighten($color_info_lighten_1, $lighten_value);
+$color_info_hover: lighten($color_info, $lighten_value);
+$color_info_hover_darken_1: lighten($color_info_darken_1, $lighten_value);
+$color_info_hover_darken_2: lighten($color_info_darken_2, $lighten_value);
+
+$color_error_lighten_2: #f96553;
+$color_error_lighten_1: #ef3c26;
+$color_error: #c9401f;
+$color_error_darken_1: #c80f00;
+$color_error_darken_2: #b00c00;
+$color_error_hover_lighten_2: lighten($color_error_lighten_2, $lighten_value);
+$color_error_hover_lighten_1: lighten($color_error_lighten_1, $lighten_value);
+$color_error_hover: lighten($color_error, $lighten_value);
+$color_error_hover_darken_1: lighten($color_error_darken_1, $lighten_value);
+$color_error_hover_darken_2: lighten($color_error_darken_2, $lighten_value);
 
 $color_gray_lighten_2: #d7d7d7;
 $color_gray_lighten_1: #bdbdbd;
 $color_gray: #858585;
 $color_gray_darken_1: #656565;
 $color_gray_darken_2: #444444;
+$color_gray_hover_lighten_2: lighten($color_gray_lighten_2, $lighten_value);
+$color_gray_hover_lighten_1: lighten($color_gray_lighten_1, $lighten_value);
+$color_gray_hover: lighten($color_gray, $lighten_value);
+$color_gray_hover_darken_1: lighten($color_gray_darken_1, $lighten_value);
+$color_gray_hover_darken_2: lighten($color_gray_darken_2, $lighten_value);
 
-$color_white: #FFFFFF;
+$color_white: #ffffff;
 $color_black: #101010;
-$color_text_black: #2f2f2f;
+$color_text_black: #1f191f;
+
+$page_background: #fdfcfb;
 
 @import "./assets/fonts/source-sans-pro";
+//@import "./assets/fonts/overpass";
+//$project_font: 'Source Sans Pro';
+//@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 $project_font: 'Source Sans Pro';
 
-$base_size_unit: 32px;
+$base_size_unit: 8px;
 
 $animation_time: 150ms;
 $animation: cubic-bezier(0.24, 0.19, 0.28, 1.29);
 $animation_bounce: cubic-bezier(0.24, 0.19, 0.63, 2.26);
 
-$shadow_1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-$shadow_2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-$shadow_3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-$shadow_4: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-$shadow_5: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
-$shadow_hover: 0 2px 4px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
+$shadow_1: 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+$shadow_2: 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+$shadow_3: 0 8px 17px 2px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+$shadow_4: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -7px rgba(0, 0, 0, 0.2);
+$shadow_5: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.2);
+$shadow_hover: $shadow_2;
 
 /* Disable selection */
 @mixin no_selection($classes: '&, & *') {
@@ -58,4 +92,9 @@ $shadow_hover: 0 2px 4px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
         user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
+}
+
+/* Fix line height according to selected project font */
+@function line_height($base) {
+    @return $base;
 }

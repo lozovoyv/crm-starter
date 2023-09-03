@@ -13,6 +13,7 @@
             />
             <div class="application__menu-root-hidden">
                 <ApplicationMenuRootItem v-if="hiddenMenu"
+                                         :is_hidden="true"
                                          :item="hiddenMenu"
                                          :expanded="is_expanded"
                                          :right="true"
@@ -156,11 +157,11 @@ function clicked(): void {
             display: flex;
             flex-grow: 0;
             flex-shrink: 0;
-            width: $base_size_unit * 1.5;
+            width: $base_size_unit * 5;
             height: 100%;
 
             &-button {
-                width: $base_size_unit * 1.2;
+                width: $base_size_unit * 4;
                 height: 100%;
                 padding: 0 30%;
                 box-sizing: border-box;

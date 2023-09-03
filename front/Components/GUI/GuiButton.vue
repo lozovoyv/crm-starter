@@ -7,21 +7,29 @@
 <script setup lang="ts">
 import {computed} from "vue";
 
-const props = defineProps<{
+interface Props {
     identifier?: string,
     disabled?: boolean,
-    type?: 'success' | 'info' | 'error' | 'default',
-}>();
+    type?: 'success' | 'info' | 'error' | 'default' | 'unset',
+    uppercase?: boolean,
+}
 
-const emit = defineEmits<{ (e: 'clicked', identifier: string | null): void }>()
-
-const classProxy = computed((): string => {
-    return (props.type ? 'button__' + props.type : '') + (props.disabled ? ' button__disabled' : '');
+const props = withDefaults(defineProps<Props>(), {
+    type: 'default',
+    uppercase: false,
 });
 
-function click() {
+const emit = defineEmits<{ (e: 'click', identifier: string | null): void }>()
+
+const classProxy = computed((): string => {
+    return (props.type !== 'unset' ? 'button__' + props.type : '') + (props.disabled ? ' button__disabled' : '') + (props.uppercase ? ' button__uppercase' : '');
+});
+
+function click(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
     if (!props.disabled) {
-        emit('clicked', props.identifier ? props.identifier : null);
+        emit('click', props.identifier ? props.identifier : null);
     }
 }
 </script>
@@ -30,53 +38,36 @@ function click() {
 @use "sass:math";
 @import "@/variables";
 
-$button_default_color: $color_white !default;
-$button_default_hover_color: $color_white !default;
-$button_default_text_color: $color_text_black !default;
-$button_primary_color: $color_default !default;
-$button_primary_hover_color: lighten($color_default, 5%) !default;
-$button_primary_text_color: $color_white !default;
-$button_success_color: $color_success_darken_1 !default;
-$button_success_hover_color: lighten($color_success_darken_1, 5%) !default;
-$button_success_text_color: $color_white !default;
-$button_info_color: $color_info_darken_1 !default;
-$button_info_hover_color: lighten($color_info_darken_1, 5%) !default;
-$button_info_text_color: $color_white !default;
-$button_error_color: $color_error_darken_1 !default;
-$button_error_hover_color: lighten($color_error_darken_1, 5%) !default;
-$button_error_text_color: $color_white !default;
-$button_disabled_color: $color_gray !default;
-$button_disabled_text_color: $color_white !default;
 
 .button {
-    text-rendering: geometricPrecision;
-    display: inline-block;
-    text-decoration: none;
-    height: $base_size_unit;
-    line-height: $base_size_unit;
-    text-align: center;
+    background-color: $color_white;
+    border-radius: math.div($base_size_unit * 4, 2);
+    border: 1px solid lighten($color_text_black, 50%);
+    box-sizing: border-box;
+    color: $color_text_black;
     cursor: pointer;
-    border-radius: 2px;
-    padding: 0 math.div($base_size_unit, 1.5);
-    letter-spacing: 0.02rem;
-    color: $button_default_text_color;
-    border: 1px solid #efefef;
-    background-color: $button_default_color;
-    transition: background-color $animation $animation_time, border-color $animation $animation_time, box-shadow $animation $animation_time;
+    display: inline-block;
     font-family: $project_font;
     font-size: 16px;
-    box-shadow: $shadow_1;
-    box-sizing: content-box;
+    height: $base_size_unit * 4;
+    letter-spacing: 0.01rem;
+    line-height: $base_size_unit * 4 - 2px;
+    padding: 0 $base_size_unit * 2.5;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    text-rendering: geometricPrecision;
+    transition: background-color $animation $animation_time, border-color $animation $animation_time, box-shadow $animation $animation_time;
     white-space: nowrap;
     @include no_selection;
 
     &:not(:last-child) {
-        margin-right: 15px;
+        margin-right: 8px;
     }
 
     &:hover {
         box-shadow: $shadow_hover;
-        background-color: $button_default_hover_color;
+        background-color: $color_white;
         border-color: #c1c1c1;
     }
 
@@ -84,64 +75,60 @@ $button_disabled_text_color: $color_white !default;
         box-shadow: none;
     }
 
+    &__uppercase {
+        text-transform: uppercase;
+    }
+
     &__disabled {
-        background-color: $button_disabled_color !important;
-        border-color: $button_disabled_color !important;
+        background-color: $color_gray_lighten_1 !important;
+        border-color: $color_gray_lighten_1 !important;
+        color: $color_white;
         cursor: not-allowed;
-        box-shadow: $shadow_1 !important;
-        color: $button_disabled_text_color;
-
-        &:hover {
-        }
+        box-shadow: unset !important;
     }
 
-    &:hover {
-        box-shadow: $shadow_hover;
-        background-color: $button_default_hover_color;
-        border-color: #efefef;
-    }
 
     &__success {
-        background-color: $button_success_color;
-        border-color: $button_success_color;
-        color: $button_success_text_color;
+        background-color: $color_success;
+        border-color: $color_success;
+        color: $color_white;
 
         &:hover {
-            background-color: $button_success_hover_color;
-            border-color: $button_success_hover_color;
+            background-color: $color_success_hover;
+            border-color: $color_success_hover;
         }
     }
 
     &__info {
-        background-color: $button_info_color;
-        border-color: $button_info_color;
-        color: $button_info_text_color;
+        background-color: $color_info;
+        border-color: $color_info;
+        color: $color_white;
 
         &:hover {
-            background-color: $button_info_hover_color;
-            border-color: $button_info_hover_color;
+            background-color: $color_info_hover;
+            border-color: $color_info_hover;
         }
     }
 
     &__error {
-        background-color: $button_error_color;
-        border-color: $button_error_color;
-        color: $button_error_text_color;
+        background-color: $color_error;
+        border-color: $color_error;
+        color: $color_white;
 
         &:hover {
-            background-color: $button_error_hover_color;
-            border-color: $button_error_hover_color;
+            background-color: $color_error_hover;
+            border-color: $color_error_hover;
         }
     }
 
     &__default {
-        background-color: $button_primary_color;
-        border-color: $button_primary_color;
-        color: $button_primary_text_color;
+        background-color: $color_default;
+        border-color: $color_default;
+        color: $color_white;
 
         &:hover {
-            background-color: $button_primary_hover_color;
-            border-color: $button_primary_hover_color;
+            background-color: $color_default_hover;
+            border-color: $color_default_hover;
         }
     }
 }

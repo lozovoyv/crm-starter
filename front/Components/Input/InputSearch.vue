@@ -75,15 +75,15 @@ defineExpose({
 @import "@/variables.scss";
 
 .input-search {
-    height: $base_size_unit + 2px;
+    height: $base_size_unit * 4;
     box-sizing: content-box;
 
     &__input {
         border: none !important;
         outline: none !important;
         box-sizing: border-box;
-        height: $base_size_unit;
-        line-height: $base_size_unit;
+        height: $base_size_unit * 4;
+        line-height: line_height($base_size_unit * 4);
         font-family: $project_font;
         font-size: 16px;
         color: inherit;
@@ -97,9 +97,9 @@ defineExpose({
 
         &-icon {
             color: $color_gray_lighten_1;
-            width: math.div($base_size_unit, 1.7);
-            height: $base_size_unit;
-            margin-left: math.div($base_size_unit, 5);
+            width: $base_size_unit * 2;
+            height: $base_size_unit * 4;
+            margin-left: $base_size_unit;
             flex-shrink: 0;
 
             & > svg {

@@ -64,7 +64,7 @@ export class Form {
      * @param options
      * @param use_toaster
      */
-    constructor(url: string, title: string | undefined = undefined, options: { [index: string]: any } = {}, use_toaster: boolean = true) {
+    constructor(url: string|null, title: string | undefined = undefined, options: { [index: string]: any } = {}, use_toaster: boolean = true) {
         this.title = title;
         this.url_load = url;
         this.url_save = url;

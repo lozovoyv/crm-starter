@@ -27,6 +27,7 @@
              ref="subMenu"
         >
             <ApplicationMenuItem v-for="menuItem in item.items"
+                                 :is_hidden="is_hidden"
                                  :item="menuItem"
                                  :toggleState="toggle_state_internal"
                                  @clicked="clicked"
@@ -49,6 +50,7 @@ const props = defineProps<{
     expanded: boolean,
     toggleState: boolean,
     resizeState: boolean,
+    is_hidden?: boolean,
 }>();
 
 const emit = defineEmits<{

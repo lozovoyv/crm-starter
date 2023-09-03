@@ -167,18 +167,20 @@ function edit() {
 function remove() {
     const id: DropDownValueType = (!props.multi && props.modelValue) ? props.modelValue : null;
     if (id && typeof id !== "object") {
-
         const item = store.getters['dictionaries/item'](props.dictionary, id);
 
-        if (item === undefined || item.hash === undefined) {
+        if (item === undefined) { //} || item.hash === undefined) {
             return;
         }
 
-        processEntry('Удаление', `Удалить запись "${item.name}"?`, dialog.button('yes', 'Удалить', 'error'),
-            '/api/dictionaries/delete', {dictionary: props.dictionary, id: id, hash: item.hash},
-            p => {
-            }
-        ).then(() => {
+        processEntry({
+            title: 'Удаление',
+            question: `Удалить запись "${item.name}"?`,
+            button: dialog.button('yes', 'Удалить', 'error'),
+            method: 'delete',
+            url: `/api/dictionaries/${props.dictionary}/${id}`,
+            options: {hash: item.hash},
+        }).then(() => {
             proxyValue.value = null;
             refresh(true);
         });
@@ -192,5 +194,6 @@ defineExpose({});
 .input-dictionary-additional > .actions-menu__button {
     border: none !important;
     border-radius: 0;
+    padding: 0 8px;
 }
 </style>

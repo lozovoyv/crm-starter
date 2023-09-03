@@ -19,7 +19,7 @@
                 </div>
                 <div class="login__actions">
                     <span class="link" @click="forgot">Забыл пароль</span>
-                    <GuiButton type="default" @clicked="login">Войти</GuiButton>
+                    <GuiButton type="default" @click="login">Войти</GuiButton>
                 </div>
             </LoadingProgress>
         </div>

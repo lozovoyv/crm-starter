@@ -29,7 +29,7 @@ export type ErrorResponse = {
         exception?: string,
         file?: string,
         line?: string,
-        trace?: { file: string, line: string }[],
+        trace?: { file: string, line: string, is_vendor?: boolean }[],
     }
 }
 
@@ -157,7 +157,11 @@ class Http {
         if (error.data.trace) {
             message += '<br/><br/><b>Trace:</b>'
             error.data.trace.map(item => {
-                message += '<br/>' + item.file + ':' + item.line;
+                if (item.is_vendor) {
+                    message += '<br/>' + item.file + ':' + item.line;
+                } else {
+                    message += '<br/><b>' + item.file + ':' + item.line + '</b>';
+                }
             })
         }
         dialog.show('Ошибка сервера', message, [dialog.button('copy', 'Скопировать и закрыть'), dialog.button('close', 'Закрыть', 'default')], 'error')
@@ -170,7 +174,11 @@ class Http {
                     if (error.data.trace) {
                         message += 'Trace:\n'
                         error.data.trace.map(item => {
+                            if(item.is_vendor) {
+                            message += '<i>' + item.file + ':' + item.line + '</i>' + '\n';
+                            } else {
                             message += item.file + ':' + item.line + '\n';
+                            }
                         })
                     }
                     navigator.clipboard.writeText(message).catch(clipboard_error => {

@@ -70,7 +70,7 @@ const emit = defineEmits<{
 }>()
 
 const canChange = computed((): boolean => {
-    return can('system.users.change');
+    return can('system__users_change');
 });
 
 const processing = ref<boolean>(false);

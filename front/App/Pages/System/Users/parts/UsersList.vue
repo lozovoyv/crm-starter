@@ -61,7 +61,7 @@ const users = ref<List<User>>(new List<User>('/api/system/users', {}, {
 }));
 
 const canChange = computed((): boolean => {
-    return can('system.users.change');
+    return can('system__users_change');
 })
 
 users.value.load();

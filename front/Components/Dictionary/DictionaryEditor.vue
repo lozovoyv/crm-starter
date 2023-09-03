@@ -2,7 +2,7 @@
     <LoadingProgress :loading="list.is_loading || processing">
         <GuiTitle style="display: flex; align-items: center">
             <span style="flex-grow: 1">{{ title }}</span>
-            <GuiButton :type="'default'" @clicked="edit(null)">Добавить</GuiButton>
+            <GuiButton :type="'default'" @click="edit(null)">Добавить</GuiButton>
         </GuiTitle>
 
         <DictionaryEditorForm ref="form" :dictionary="dictionary"/>
@@ -52,18 +52,33 @@ const props = defineProps<{
     dictionary: string,
 }>();
 
-const list = ref<List<{ id: number, enabled?: boolean, order?: number | null, locked?: boolean, hash: string | null, [index: string]: string | number | boolean | undefined | null }>>(new List('/api/dictionaries/list', {dictionary: props.dictionary}, {without_pagination: true}));
+
+const list = ref<List<{
+    id: number,
+    enabled?: boolean,
+    order?: number | null,
+    locked?: boolean,
+    hash: string | null,
+    [index: string]: string | number | boolean | undefined | null
+}>>(new List(`/api/dictionaries/${props.dictionary}`, {}, {without_pagination: true}));
 const form = ref<InstanceType<typeof DictionaryEditorForm> | undefined>(undefined);
 const processing = ref<boolean>(false);
 
 const title = computed((): string => {
-    if (list.value.is_loaded) {
+    if (list.value.state.is_loaded) {
         return list.value.payload['title'];
     }
     return '...';
 });
 
-const items = computed((): Array<{ id: number, enabled?: boolean, order?: number | null, locked?: boolean, hash: string | null, [index: string]: string | number | boolean | undefined | null }> => {
+const items = computed((): Array<{
+    id: number,
+    enabled?: boolean,
+    order?: number | null,
+    locked?: boolean,
+    hash: string | null,
+    [index: string]: string | number | boolean | undefined | null
+}> => {
     return list.value.list.sort((itemA, itemB): -1 | 0 | 1 => {
         const orderA = itemA.order ? itemA.order : null;
         const orderB = itemB.order ? itemB.order : null;
@@ -78,16 +93,19 @@ const items = computed((): Array<{ id: number, enabled?: boolean, order?: number
 init();
 
 const orderable = computed((): boolean => {
-    return list.value.is_loaded && list.value.payload['orderable'] ? list.value.payload['orderable'] : false;
+    return list.value.state.is_loaded && list.value.payload['orderable'] ? list.value.payload['orderable'] : false;
 })
 
 const switchable = computed((): boolean => {
-    return list.value.is_loaded && list.value.payload['switchable'] ? list.value.payload['switchable'] : false;
+    return list.value.state.is_loaded && list.value.payload['switchable'] ? list.value.payload['switchable'] : false;
 })
 
 const dragging = ref<number | undefined>(undefined);
 
-watch(() => props.dictionary, () => init());
+watch(() => props.dictionary, () => {
+    list.value.url = `/api/dictionaries/${props.dictionary}`;
+    init();
+});
 
 function init(): void {
     list.value.load();
@@ -158,10 +176,14 @@ function edit(id: number | null) {
 function remove(id: number | null) {
     const item = list.value.list.find(item => item.id === id);
 
-    processEntry('Удаление', `Удалить запись "${item?.name}"?`, dialog.button('yes', 'Удалить', 'error'),
-        '/api/dictionaries/delete', {dictionary: props.dictionary, id: id, hash: item?.hash},
-        p => processing.value = p
-    ).then(() => {
+    processEntry({
+        title: 'Удаление',
+        question: `Удалить запись "${item?.name}"?`,
+        button: dialog.button('yes', 'Удалить', 'error'),
+        method: 'delete',
+        url: `/api/dictionaries/${props.dictionary}/${id}`,
+        options: {}
+    }).then(() => {
         init();
     });
 }

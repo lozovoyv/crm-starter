@@ -61,7 +61,7 @@ function clear() {
 @import "@/variables.scss";
 
 .input-box {
-    min-height: $base_size_unit;
+    min-height: $base_size_unit * 4;
     display: flex;
     box-sizing: content-box;
     width: 100%;
@@ -106,7 +106,7 @@ function clear() {
 
     &__clear {
         color: $color_gray;
-        width: $base_size_unit;
+        width: $base_size_unit * 3;
         height: 100%;
         position: relative;
         flex-grow: 0;
@@ -116,8 +116,8 @@ function clear() {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: math.div($base_size_unit, 3);
-            height: math.div($base_size_unit, 3);
+            width: $base_size_unit * 1.5;
+            height: $base_size_unit * 1.5;
             transform: translate(-50%, -50%);
         }
 

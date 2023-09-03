@@ -7,9 +7,9 @@
             </div>
         </LoadingProgress>
         <div class="form__actions" v-if="!hideButtons">
-            <GuiButton type="default" @clicked="save" :disabled="disabled">{{ saveButton ? saveButton : 'Сохранить' }}</GuiButton>
-            <GuiButton @clicked="clear" :disabled="disabled">Сбросить</GuiButton>
-            <GuiButton @clicked="cancel">Отмена</GuiButton>
+            <GuiButton type="unset" @click="cancel">Отмена</GuiButton>
+            <GuiButton type="unset" @click="clear" :disabled="disabled">Сбросить</GuiButton>
+            <GuiButton @click="save" :disabled="disabled">{{ saveButton ? saveButton : 'Сохранить' }}</GuiButton>
         </div>
     </div>
 </template>

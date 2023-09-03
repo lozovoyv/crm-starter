@@ -125,7 +125,7 @@ class DictionaryController extends ApiController
      *
      * @return ApiResponse
      */
-    public function get(string $alias, int|string|null $id, Request $request): ApiResponse
+    public function get(Request $request, string $alias, int|string|null $id = null): ApiResponse
     {
         try {
             /** @var DictionaryInterface $dictionaryClass */

@@ -20,4 +20,5 @@ return [
     'user_statuses' =>  UserStatusDictionary::class,
     'position_statuses' => PositionStatusDictionary::class,
     'roles' => PermissionRoleDictionary::class,
+    'test' => \App\Dictionaries\TestDictionary::class,
 ];

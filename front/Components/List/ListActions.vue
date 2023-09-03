@@ -58,7 +58,7 @@ function close() {
         align-items: center;
         justify-content: center;
         font-family: $project_font;
-        color: $color_gray_darken_2;
+        color: $color_default;
         font-size: 15px;
         cursor: pointer;
         width: 16px;
@@ -68,8 +68,8 @@ function close() {
 
         &:hover, &-active {
             color: $color_white;
-            border-color: $color_default_lighten_1;
-            background-color: $color_default_lighten_1;
+            border-color: $color_default_hover;
+            background-color: $color_default_hover;
         }
 
         & > svg {
@@ -80,35 +80,36 @@ function close() {
 
     &__actions {
         position: absolute;
-        left: -8px;
+        left: -6px;
         top: 0;
         transform: translate(-100%, 0);
         box-sizing: border-box;
         padding: 8px 16px;
-        border-radius: 2px;
+        border-radius: math.div($base_size_unit, 2);
         min-width: 100%;
         z-index: 9;
         background-color: $color_white;
         box-shadow: $shadow_1;
+        border: 1px solid $color_gray_lighten_1;
         display: flex;
         flex-direction: column;
         line-height: 24px;
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
-        font-size: 14px;
+        font-size: 16px;
 
         &:before {
             content: '';
             display: block;
-            background-color: $color_white;
+            background-color: inherit;
             width: 6px;
             height: 6px;
             position: absolute;
             right: -4px;
             top: 8px;
             transform: rotate(45deg);
-            border-color: #e9e9e9;
+            border-color: inherit;
             border-style: solid;
             border-width: 1px 1px 0 0;
         }

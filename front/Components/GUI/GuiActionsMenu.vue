@@ -47,42 +47,45 @@ function close() {
 </script>
 
 <style lang="scss">
+@use "sass:math";
 @import "@/variables.scss";
 
 .actions-menu {
     display: inline-block;
     flex-grow: 0;
     flex-shrink: 0;
-    height: $base_size_unit;
-    line-height: $base_size_unit;
-    box-sizing: border-box;
+    height: $base_size_unit * 4;
     position: relative;
     text-align: left;
 
     &__button {
         border: 1px solid $color_default;
         box-sizing: content-box;
-        border-radius: 2px;
-        padding: 0 8px;
+        border-radius: $base_size_unit * 2;
+        padding: 0 14px;
         display: inline-flex;
         flex-direction: row;
         align-items: center;
         font-family: $project_font;
         color: $color_default;
-        font-size: 15px;
+        font-size: 16px;
         cursor: pointer;
-        height: 100%;
+        height: $base_size_unit * 4 - 2px;
         background-color: transparent;
         transition: color $animation $animation_time, background-color $animation $animation_time, border-color $animation $animation_time;
 
         &:hover, &-active {
             color: $color_white;
-            border-color: $color_default;
-            background-color: $color_default;
+            border-color: $color_default_hover;
+            background-color: $color_default_hover;
         }
 
         &-title {
             margin: 0 8px 0 0;
+            display: flex;
+            align-items: center;
+            position: relative;
+            top: -1px;
             @media screen and (max-width: 450px) {
                 display: none;
             }
@@ -100,34 +103,35 @@ function close() {
 
     &__actions {
         position: absolute;
-        right: 0;
-        top: $base_size_unit + 8px;
+        right: 6px;
+        top: $base_size_unit * 4 + 5px;
         box-sizing: border-box;
         padding: 12px 20px;
-        border-radius: 2px;
+        border-radius: math.div($base_size_unit, 2);
         min-width: 100%;
         z-index: 50;
         background-color: $color_white;
         box-shadow: $shadow_1;
+        border: 1px solid $color_gray_lighten_1;
         display: flex;
         flex-direction: column;
         line-height: 24px;
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
-        font-size: 15px;
+        font-size: 16px;
 
         &:before {
             content: '';
             display: block;
-            background-color: $color_white;
+            background-color: inherit;
             width: 6px;
             height: 6px;
             position: absolute;
             right: 12px;
             top: -4px;
             transform: rotate(45deg);
-            border-color: #e9e9e9;
+            border-color: inherit;
             border-style: solid;
             border-width: 1px 0 0 1px;
         }

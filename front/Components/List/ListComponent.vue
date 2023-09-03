@@ -8,7 +8,7 @@
                 <slot name="search"/>
             </div>
         </div>
-        <LoadingProgress :loading="list?.state.is_loading">
+        <LoadingProgress :loading="list?.state.is_loading && !externalState?.is_loading">
             <template v-if="!notification">
                 <table class="list-table" v-if="!list || list?.list && list?.list.length > 0">
                     <slot name="header" v-if="$slots.header"/>
@@ -18,7 +18,7 @@
                     </tbody>
                 </table>
                 <div v-else-if="list?.state.is_loading" class="list-table-container__message">
-                    Загрузка
+                    Загрузка...
                 </div>
                 <div v-else-if="$slots.empty" class="list-table-container__message">
                     <slot name="empty"/>
@@ -41,11 +41,13 @@ import {List} from "@/Core/List";
 import ListPagination from "@/Components/List/ListPagination.vue";
 import {computed} from "vue";
 import LoadingProgress from "@/Components/LoadingProgress.vue";
+import {CommunicationState} from "@/Core/Types/Communications";
 
 const props = defineProps<{
     actions?: boolean,
     list?: List<any>,
     message?: string,
+    externalState?: CommunicationState,
 }>();
 
 const error = computed((): boolean => {
@@ -84,16 +86,16 @@ const notification = computed((): string | null => {
     &__message {
         font-family: $project_font;
         font-size: 20px;
-        font-weight: 300;
+        font-weight: 400;
         color: $color_text_black;
         text-align: center;
         padding: 40px 0;
-        border: 1px solid transparentize($color_gray_lighten_2, 0.5);
+        border: 1px solid transparentize($color_gray_lighten_2, 0.6);
         border-radius: 2px;
 
         &-error {
             color: $color_error;
-            border: 1px solid transparentize($color_error_lighten-2, 0.5);
+            border: 1px solid transparentize($color_error_lighten-2, 0.6);
         }
     }
 }

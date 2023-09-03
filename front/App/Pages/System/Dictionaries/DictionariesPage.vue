@@ -24,7 +24,7 @@ const tabs = computed((): { [index: string]: string } => {
     return tabs;
 });
 
-const dictionaries = ref<List<{ name: string, title: string }>>(new List('/api/dictionaries/index', {}, {without_pagination: true}));
+const dictionaries = ref<List<{ [index: string]: string }>>(new List('/api/dictionaries', {}, {without_pagination: true}));
 
 dictionaries.value.load();
 

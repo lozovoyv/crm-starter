@@ -62,7 +62,7 @@ const menu = computed((): Menu => {
 })
 
 function logout(): void {
-    dialog.show('Подтверждение', 'Выйти из системы?', [dialog.button('ok', 'Выйти', 'default'), dialog.button('cancel', 'Отмена')])
+    dialog.show('Подтверждение', 'Выйти из системы?', [dialog.button('cancel', 'Отмена'), dialog.button('ok', 'Выйти', 'default')])
         .then(result => {
             if (result === 'ok') {
                 http.post('/api/auth/logout', {})
@@ -112,7 +112,7 @@ function filterMenuItem(item: MenuItem): MenuItem | null {
 @use "sass:math";
 @import "@/variables.scss";
 
-$header_height: $base_size_unit * 1.5;
+$header_height: $base_size_unit * 5;
 html {
     min-height: 100%;
     display: flex;
@@ -132,7 +132,7 @@ body, html {
 #application {
     width: 100%;
     height: 100%;
-    background-color: #f0f0f3;
+    background-color: $page_background;
     display: flex;
     flex-direction: column;
 }
@@ -140,7 +140,7 @@ body, html {
 .application {
     &__header {
         height: $header_height;
-        box-shadow: $shadow_1;
+        box-shadow: $shadow_2;
         flex-shrink: 0;
         flex-grow: 0;
         background-color: $color_white;

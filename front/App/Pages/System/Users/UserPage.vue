@@ -8,7 +8,7 @@
                     {name: title},
                 ]"
     >
-        <template v-slot:actions v-if="can('system.users.change') && user.state.is_loaded">
+        <template v-slot:actions v-if="can('system__users_change') && user.state.is_loaded">
             <GuiActionsMenu title="Действия" v-if="!user.data.locked">
                 <GuiLink name="Редактировать" :route="{name: 'user_edit', params: {id: userID}}"/>
                 <GuiLink name="Удалить" @click="remove"/>
@@ -18,7 +18,7 @@
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
         <UserView v-if="tab === 'user'" :user-id="userID" :user-data="user.data" @update="update"/>
-        <UserHistory v-if="tab === 'history'" :user-id="userID" ref="history"/>
+        <UserHistory v-if="tab === 'history'" :user-id="userID" ref="history" :external-state="user.state"/>
     </LayoutPage>
 </template>
 

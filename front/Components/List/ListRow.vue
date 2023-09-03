@@ -27,12 +27,12 @@ const props = defineProps<{
 
     // regular even if enabled
     &:not(&-no-even-odd):nth-child(even) {
-        background-color: transparentize($color_gray_lighten_2, 0.85);
+        background-color: transparentize($color_gray_lighten_2, 0.9);
     }
 
     // hover highlighting if enabled
     &:not(&-no-highlight):hover {
-        background-color: transparentize($color_default_lighten_2, 0.85);
+        background-color: transparentize($color_info_lighten_2, 0.9);
     }
 }
 </style>

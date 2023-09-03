@@ -3,7 +3,7 @@
     <tr class="list-table__header-row">
         <th class="list-table__header-cell" v-for="item in items">
             <div class="list-table__header-cell-inner" :class="{'list-table__header-cell-inner-ordered': item.ordering}" @click="changeOrder(item)">
-                <span class="list-table__header-cell-inner-title">{{ item.title }}</span>
+                <span class="list-table__header-cell-inner-title" :class="{'list-table__header-cell-inner-title-ordered':item.ordered}">{{ item.title }}</span>
                 <span class="list-table__header-cell-inner-order" v-if="item.ordering">
                 <span class="list-table__header-cell-inner-order-desc" :class="{'list-table__header-cell-inner-order-desc-active':item.ordered && item.order === 'asc'}">
                     <IconSortUp/>
@@ -115,8 +115,12 @@ function changeOrder(item: HeaderItem): void {
                 cursor: pointer;
 
                 &:hover {
-                    color: $color_default_lighten_1;
+                    color: $color_default_hover;
                 }
+            }
+
+            &-title-ordered {
+                color: $color_default;
             }
 
             &-order {
@@ -130,12 +134,11 @@ function changeOrder(item: HeaderItem): void {
                     display: block;
                     width: 8px;
                     height: 5px;
-                    color: $color_gray_lighten_2;
+                    color: transparentize($color_info, 0.75);
                     position: relative;
 
                     & > svg {
                         width: 100%;
-                        vertical-align: middle;
                         display: block;
                         position: absolute;
                         left: 0;
@@ -144,7 +147,7 @@ function changeOrder(item: HeaderItem): void {
                     }
 
                     &-active {
-                        color: $color_default;
+                        color: $color_info;
                     }
                 }
             }

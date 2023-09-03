@@ -20,14 +20,15 @@ const props = defineProps<{
 
 const popup = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);
 
-const form = ref<Form>(new Form(undefined, '/api/dictionaries/get', '/api/dictionaries/update'));
+const form = ref<Form>(new Form(null));
 
 function show(id: number | null) {
-    return popup.value?.show({dictionary: props.dictionary, id: id});
+    form.value.url_load = `/api/dictionaries/${props.dictionary}/item`;
+    return popup.value?.show(id);
 }
 
 const fields = computed((): { [index: string]: string } | undefined => {
-    if (form.value.is_loaded) {
+    if (form.value.state.is_loaded) {
         return form.value.payload['types'];
     }
     return undefined;

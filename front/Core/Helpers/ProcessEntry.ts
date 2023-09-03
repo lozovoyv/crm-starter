@@ -15,7 +15,7 @@ export type ProcessEntryConfig = {
 function processEntry(config: ProcessEntryConfig) {
     return new Promise((resolve) => {
 
-        dialog.show(config.title, config.question, [config.button, dialog.button('cancel', 'Отмена')])
+        dialog.show(config.title, config.question, [dialog.button('cancel', 'Отмена'), config.button])
             .then(result => {
                 if (result !== 'cancel' && result !== null) {
                     if (config.progress) {
