@@ -63,13 +63,13 @@ function clear() {
 .input-box {
     min-height: $base_size_unit * 4;
     display: flex;
-    box-sizing: content-box;
+    box-sizing: border-box;
     width: 100%;
     cursor: text;
 
     &__border {
         background-color: $color_white;
-        border-radius: 2px;
+        border-radius: 4px;
         border: 1px solid $color_gray_lighten_1;
         box-sizing: content-box;
         color: $color_text_black;
@@ -82,15 +82,15 @@ function clear() {
         flex-grow: 1;
 
         &:not(&-disabled):hover {
-            border-color: $color_default_lighten_2;
+            border-color: $color_default_hover;
         }
 
         &:not(&-disabled):focus-within, &-focus:not(&-disabled) {
-            border-color: $color_default_lighten_1 !important;
+            border-color: $color_default !important;
         }
 
         &-dirty {
-            background-color: transparentize($color_default_lighten_2, 0.9);
+            background-color: transparentize($color_info, 0.95);
         }
 
         &-error {
@@ -106,7 +106,7 @@ function clear() {
 
     &__clear {
         color: $color_gray;
-        width: $base_size_unit * 3;
+        width: $base_size_unit * 4;
         height: 100%;
         position: relative;
         flex-grow: 0;

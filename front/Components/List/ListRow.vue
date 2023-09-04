@@ -18,7 +18,7 @@ const props = defineProps<{
 @import "@/variables.scss";
 
 .list-table__row {
-    border-bottom: 1px solid transparentize($color_gray_lighten_2, 0.6);
+    border-bottom: 1px solid transparentize($color_gray_lighten_2, 0.75);
 
     // regular odd if enabled
     &:not(&-no-even-odd):nth-child(odd) {
@@ -32,7 +32,7 @@ const props = defineProps<{
 
     // hover highlighting if enabled
     &:not(&-no-highlight):hover {
-        background-color: transparentize($color_info_lighten_2, 0.9);
+        background-color: transparentize($color_success, 0.92);
     }
 }
 </style>

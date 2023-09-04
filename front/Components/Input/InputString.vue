@@ -16,20 +16,13 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import InputBox from "@/Components/Input/Helpers/InputBox.vue";
+import {InputCommonProps, InputStringCustomizableProps} from "@/Components/Input/Helpers/Types";
 
-const props = defineProps<{
-    // common props
-    name?: string,
+interface InputStringProps extends InputCommonProps, InputStringCustomizableProps {
     modelValue?: string | null,
     original?: string | null,
-    disabled?: boolean,
-    hasErrors?: boolean,
-    clearable?: boolean,
-    // string props
-    type?: string,
-    autocomplete?: string,
-    placeholder?: string | null,
-}>();
+}
+const props = defineProps<InputStringProps>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | null): void,
@@ -73,19 +66,19 @@ defineExpose({
 @import "@/variables.scss";
 
 .input-string {
-    height: $base_size_unit + 2px;
-    box-sizing: content-box;
+    height: $base_size_unit * 4;
+    box-sizing: border-box;
 
     &__input {
         border: none !important;
         outline: none !important;
         box-sizing: border-box;
-        height: $base_size_unit;
-        line-height: $base_size_unit;
+        height: $base_size_unit * 4 - 2px;
+        line-height: $base_size_unit * 4 - 2px;
         font-family: $project_font;
         font-size: 16px;
         color: inherit;
-        padding: 0 10px;
+        padding: 0 0 0 8px;
         flex-grow: 1;
         flex-shrink: 1;
         width: 100%;
@@ -113,6 +106,7 @@ defineExpose({
             -webkit-text-fill-color: inherit;
             -webkit-box-shadow: 0 0 0 1000px transparent inset;
             transition: background-color 5000s ease-in-out 0s;
+            font-size: 16px;
         }
     }
 }

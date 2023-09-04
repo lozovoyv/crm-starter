@@ -107,7 +107,7 @@ function setTab(newTab: string | number | symbol | null, initial: boolean = fals
         height: $base_size_unit * 3 + 2px + math.div($base_size_unit, 2);
         line-height: line_height($base_size_unit * 3.5);
         margin: 4px 2px 0;
-        padding: 2px $base_size_unit * 1.5 0;
+        padding: 1px $base_size_unit * 1.5 0;
         position: relative;
         transition: color $animation $animation_time;
         white-space: nowrap;
