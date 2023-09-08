@@ -33,7 +33,7 @@
         </PopUpForm>
 
         <PopUpForm :form="form_email" ref="ref_form_email" :hide-errors="true" :width="{width: '400px'}">
-            <FormString :form="form_email" name="email" :clearable="true" :hide-title="true"/>
+            <FormString :form="form_email" name="email" :clearable="true" :without-title="true"/>
             <FormCheckBox :form="form_email" name="email_confirmation_need" :hide-title="true" :disabled="form_email.values['email'] === null || form_email.values['email'] === form_email.originals['email']"/>
             <GuiHint v-if="form_email.values['email_confirmation_need']">* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты поменяется на новый
                 только после его подтверждения.
@@ -87,9 +87,9 @@ function block(): void {
         title: 'Блокировка',
         question: `Заблокировать учётную запись "${name}"?`,
         button: dialog.button('yes', 'Заблокировать', 'default'),
-        method: 'put',
+        method: 'patch',
         url: `/api/system/users/user/${props.userData.id}/status`,
-        options: {disable: true, hash: props.userData.hash},
+        options: {disabled: true, hash: props.userData.hash},
         progress: p => processing.value = p
     }).then(() => {
         emit('update');
@@ -102,9 +102,9 @@ function activate(): void {
         title: 'Активация',
         question: `Активировать учётную запись "${name}"?`,
         button: dialog.button('yes', 'Активировать', 'default'),
-        method: 'put',
+        method: 'patch',
         url: `/api/system/users/user/${props.userData.id}/status`,
-        options: {hash: props.userData.hash},
+        options: {disabled: false, hash: props.userData.hash},
         progress: p => processing.value = p
     }).then(() => {
         emit('update');

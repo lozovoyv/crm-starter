@@ -32,7 +32,7 @@ const props = defineProps<{
 
     // hover highlighting if enabled
     &:not(&-no-highlight):hover {
-        background-color: transparentize($color_success, 0.92);
+        background-color: transparentize($color_info, 0.92);
     }
 }
 </style>

@@ -16,11 +16,11 @@
 
 <script setup lang="ts">
 
-import {FormFieldCommonProps, FormFieldCustomizableProps} from "@/Components/Form/Helpers/Types";
+import {FormFieldBaseProps, FormFieldProps} from "@/Components/Form/Helpers/Types";
 
-interface FieldProps extends FormFieldCommonProps, FormFieldCustomizableProps {}
+interface Props extends FormFieldBaseProps, FormFieldProps {}
 
-const props = defineProps<FieldProps>();
+const props = defineProps<Props>();
 </script>
 
 <style lang="scss">

@@ -39,8 +39,8 @@ const props = defineProps<{
 
 const popUpButtons = computed((): DialogButtons => {
     return [
-        dialog.button('save', props.saveButtonCaption ? props.saveButtonCaption : 'Сохранить', props.saveButtonType ? props.saveButtonType : 'default'),
         dialog.button('cancel', 'Отмена'),
+        dialog.button('save', props.saveButtonCaption ? props.saveButtonCaption : 'Сохранить', props.saveButtonType ? props.saveButtonType : 'default'),
     ];
 });
 

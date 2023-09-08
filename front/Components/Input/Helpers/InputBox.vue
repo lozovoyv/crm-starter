@@ -2,26 +2,26 @@
     <div class="input-box">
         <label class="input-box__border" v-if="label" :class="classList">
             <slot/>
+            <span class="input-box__additional" v-if="$slots.additional">
+                <slot name="additional"/>
+            </span>
             <span class="input-box__clear" v-if="clearable && !disabled" :class="{'input-box__clear-disabled': disabled || isEmpty}" @click="clear">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
                     <polygon fill="currentColor"
                              points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
                 </svg>
-            </span>
-            <span class="input-box__additional" v-if="$slots.additional">
-                <slot name="additional"/>
             </span>
         </label>
         <div class="input-box__border" v-else :class="classList">
             <slot/>
+            <span class="input-box__additional" v-if="$slots.additional">
+                <slot name="additional"/>
+            </span>
             <span class="input-box__clear" v-if="clearable && !disabled" :class="{'input-box__clear-disabled': disabled || isEmpty}" @click="clear">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
                     <polygon fill="currentColor"
                              points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
                 </svg>
-            </span>
-            <span class="input-box__additional" v-if="$slots.additional">
-                <slot name="additional"/>
             </span>
         </div>
     </div>
@@ -81,16 +81,16 @@ function clear() {
         width: 100%;
         flex-grow: 1;
 
+        &-dirty:not(&-disabled) {
+            background-color: transparentize($color_default_lighten_2, 0.96);
+        }
+
         &:not(&-disabled):hover {
             border-color: $color_default_hover;
         }
 
         &:not(&-disabled):focus-within, &-focus:not(&-disabled) {
             border-color: $color_default !important;
-        }
-
-        &-dirty {
-            background-color: transparentize($color_info, 0.95);
         }
 
         &-error {
@@ -132,6 +132,16 @@ function clear() {
             &:hover > svg {
                 transform: translate(-50%, -50%) scale(1.2);
             }
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            width: 1px;
+            height: 60%;
+            background-color: $color_gray_lighten_2;
         }
     }
 

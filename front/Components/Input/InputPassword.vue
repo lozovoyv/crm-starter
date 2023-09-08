@@ -22,19 +22,13 @@ import {computed, ref} from "vue";
 import InputBox from "@/Components/Input/Helpers/InputBox.vue";
 import IconEye from "@/Icons/IconEye.vue";
 import IconEyeSlash from "@/Icons/IconEyeSlash.vue";
+import {InputBaseProps, InputPasswordProps} from "@/Components/Input/Helpers/Types";
 
-const props = defineProps<{
-    // common props
-    name?: string,
+interface Props extends InputBaseProps, InputPasswordProps {
     modelValue?: string | null,
     original?: string | null,
-    disabled?: boolean,
-    hasErrors?: boolean,
-    clearable?: boolean,
-    // password props
-    autocomplete?: string,
-    placeholder?: string | null,
-}>();
+}
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | null): void,
@@ -80,15 +74,15 @@ defineExpose({
 @import "@/variables";
 
 .input-password {
-    height: $base_size_unit + 2px;
-    box-sizing: content-box;
+    height: $base_size_unit * 4;
+    box-sizing: border-box;
 
     &__input {
         border: none !important;
         outline: none !important;
         box-sizing: border-box;
-        height: $base_size_unit;
-        line-height: $base_size_unit;
+        height: $base_size_unit * 4 - 2px;
+        line-height: $base_size_unit * 4 - 2px;
         font-family: $project_font;
         font-size: 16px;
         color: inherit;
@@ -124,7 +118,7 @@ defineExpose({
     }
 
     &__button {
-        width: $base_size_unit;
+        width: $base_size_unit * 4;
         height: 100%;
         position: relative;
         cursor: pointer;
@@ -133,16 +127,26 @@ defineExpose({
         flex-shrink: 0;
 
         &:hover {
-            color: $color_default_lighten_1;
+            color: $color_default_hover;
         }
 
         & > svg {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: math.div($base_size_unit, 1.6);
-            height: math.div($base_size_unit, 1.6);
+            width: $base_size_unit * 2;
+            height: $base_size_unit * 2;
             transform: translate(-50%, -50%);
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            width: 1px;
+            height: 60%;
+            background-color: $color_gray_lighten_2;
         }
     }
 }

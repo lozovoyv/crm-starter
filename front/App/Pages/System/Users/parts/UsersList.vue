@@ -78,9 +78,9 @@ function block(user: User): void {
         title: 'Блокировка',
         question: `Заблокировать учётную запись "${name}"?`,
         button: dialog.button('yes', 'Заблокировать', 'default'),
-        method: 'put',
+        method: 'patch',
         url: `/api/system/users/user/${user.id}/status`,
-        options: {disable: true, hash: user.hash},
+        options: {disabled: true, hash: user.hash},
         progress: p => processing.value = p
     }).then(() => {
         reload();
@@ -93,9 +93,9 @@ function activate(user: User): void {
         title: 'Активация',
         question: `Активировать учётную запись "${name}"?`,
         button: dialog.button('yes', 'Активировать', 'default'),
-        method: 'put',
+        method: 'patch',
         url: `/api/system/users/user/${user.id}/status`,
-        options: {hash: user.hash},
+        options: {disabled: false, hash: user.hash},
         progress: p => processing.value = p
     }).then(() => {
         reload();

@@ -91,8 +91,8 @@ function clear() {
             padding: 4px 8px;
             line-height: 16px;
             margin: 0 0 5px;
-            border: 1px solid transparentize($color_error, 0.9);
-            background-color: transparentize($color_error, 0.95);
+            border: 1px solid transparentize($color_error, 0.5);
+            background-color: transparentize($color_error, 0.85);
             color: $color_text_black;
             border-radius: 2px;
             font-size: 14px;

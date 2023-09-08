@@ -16,13 +16,13 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import InputBox from "@/Components/Input/Helpers/InputBox.vue";
-import {InputCommonProps, InputStringCustomizableProps} from "@/Components/Input/Helpers/Types";
+import {InputBaseProps, InputStringProps} from "@/Components/Input/Helpers/Types";
 
-interface InputStringProps extends InputCommonProps, InputStringCustomizableProps {
+interface Props extends InputBaseProps, InputStringProps {
     modelValue?: string | null,
     original?: string | null,
 }
-const props = defineProps<InputStringProps>();
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | null): void,

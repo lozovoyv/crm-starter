@@ -4,15 +4,32 @@ export type DropDownDisplayOption = { key: number | string, caption: string, hin
 export type DropDownDisplayOptions = Array<DropDownDisplayOption>;
 export type DropDownValueType = string | number | boolean | null | Array<string | number>;
 
-export interface InputCommonProps {
+/**
+ * Common props for all inputs
+ */
+export interface InputBaseProps {
     name?: string,
     hasErrors?: boolean,
 }
 
-export interface InputStringCustomizableProps {
+interface InputCommonProps {
     disabled?: boolean,
     clearable?: boolean,
+}
+
+export interface InputStringProps extends InputCommonProps {
     type?: string,
+    autocomplete?: string,
+    placeholder?: string | null,
+}
+
+export interface InputPasswordProps extends InputCommonProps {
+    autocomplete?: string,
+    placeholder?: string | null,
+}
+
+export interface InputPhoneProps extends InputCommonProps {
+    mask?: string,
     autocomplete?: string,
     placeholder?: string | null,
 }

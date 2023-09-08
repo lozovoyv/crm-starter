@@ -25,26 +25,25 @@
 </template>
 
 <script setup lang="ts">
-import FieldString from "@/Components/Fields/FieldString.vue";
 import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
 import FormFieldWrapper from "@/Components/Form/Helpers/FormFieldWrapper.vue";
 import InputString from "@/Components/Input/InputString.vue";
-import {FormFieldCustomizableProps} from "@/Components/Form/Helpers/Types";
-import {InputStringCustomizableProps} from "@/Components/Input/Helpers/Types";
+import {FormFieldProps} from "@/Components/Form/Helpers/Types";
+import {InputStringProps} from "@/Components/Input/Helpers/Types";
 
-interface FormStringProps extends FormFieldCustomizableProps, InputStringCustomizableProps {
+interface Props extends FormFieldProps, InputStringProps {
     form: Form,
     name: string,
     defaultValue?: any,
 }
 
-const props = defineProps<FormStringProps>();
+const props = defineProps<Props>();
 
 const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
 
-const input = ref<InstanceType<typeof FieldString> | undefined>(undefined);
+const input = ref<InstanceType<typeof InputString> | undefined>(undefined);
 
 const title = computed(() => {
     return getTitle(props.form, props.name);

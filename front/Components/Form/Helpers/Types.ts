@@ -7,14 +7,14 @@
  * file that was distributed with this source code.
  */
 
-export interface FormFieldCommonProps {
+export interface FormFieldBaseProps {
     title?: string | null,
     hasErrors?: boolean,
     errors?: string[],
     required?: boolean,
 }
 
-export interface FormFieldCustomizableProps {
+export interface FormFieldProps {
     withoutTitle?: boolean,
     hideTitle?: boolean,
     vertical?: boolean,

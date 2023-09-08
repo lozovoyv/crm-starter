@@ -1,52 +1,53 @@
 <template>
-    <FieldPhone
-        :name="name"
-        :model-value="modelValue"
-        :original="original"
-        :disabled="disabled"
-        :has-errors="!valid"
-        :clearable="clearable"
+    <FormFieldWrapper
         :title="title"
-        :required="required"
+        :has-errors="!valid"
         :errors="errors"
+        :required="required"
         :hide-title="hideTitle"
-        :empty-title="emptyTitle"
+        :without-title="withoutTitle"
         :vertical="vertical"
-        :type="type"
-        :autocomplete="autocomplete"
-        :placeholder="title"
-        @change="change"
-        ref="input"
-    />
+    >
+        <InputPhone
+            :model-value="modelValue"
+            :original="original"
+            :name="name"
+            :disabled="disabled"
+            :has-errors="!valid"
+            :clearable="clearable"
+            :autocomplete="autocomplete"
+            :placeholder="placeholderProxy"
+            :mask="mask"
+            @change="change"
+            ref="input"
+        />
+    </FormFieldWrapper>
 </template>
 
 <script setup lang="ts">
 import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
-import FieldPhone from "@/Components/Fields/FieldPhone.vue";
+import {FormFieldProps} from "@/Components/Form/Helpers/Types";
+import {InputPhoneProps} from "@/Components/Input/Helpers/Types";
+import InputPhone from "@/Components/Input/InputPhone.vue";
+import FormFieldWrapper from "@/Components/Form/Helpers/FormFieldWrapper.vue";
 
-const props = defineProps<{
-    // common props
-    name: string,
-    disabled?: boolean,
-    clearable?: boolean,
-    // field props
-    hideTitle?: boolean,
-    emptyTitle?: boolean,
-    vertical?: boolean,
-    // form props
+interface Props extends FormFieldProps, InputPhoneProps {
     form: Form,
+    name: string,
     defaultValue?: any,
-    // string props
-    type?: string,
-    autocomplete?: string | 'off',
-}>();
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<{ (e: 'change', value: string | null, name: string, payload: any): void }>()
 
-const input = ref<InstanceType<typeof FieldPhone> | undefined>(undefined);
+const input = ref<InstanceType<typeof InputPhone> | undefined>(undefined);
 
+const placeholderProxy = computed(() => {
+    return props.placeholder !== undefined ? props.placeholder : title.value;
+});
 const title = computed(() => {
     return getTitle(props.form, props.name);
 });
