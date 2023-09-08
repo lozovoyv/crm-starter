@@ -142,8 +142,12 @@ class UserEditController extends ApiController
     public function status(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
     {
         try {
+            $disabled = $request->input('disabled');
+            $data['status_id'] = null;
+            if ($disabled !== null) {
+                $data['status_id'] = $disabled ? UserStatus::blocked : UserStatus::active;
+            }
             $user = $resource->get($userID, $request->hash(), true);
-            $data = $resource->filterData($request->data(), ['status_id']);
             if ($errors = $resource->validate($data, $user, ['status_id'])) {
                 return APIResponse::validationError($errors);
             }
