@@ -4,6 +4,7 @@
                v-model="proxyValue"
                :value="value"
                :disabled="disabled"
+               ref="input"
         >
         <span class="checkbox__check" :class="{'checkbox__check-dirty': dirty}">
             <IconCheck class="checkbox__check-checked"/>
@@ -15,7 +16,7 @@
 
 <script setup lang="ts">
 import IconCheck from "@/Icons/IconCheck.vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 
 const props = defineProps<{
     modelValue?: boolean | number | string | Array<number | string>,
@@ -30,6 +31,8 @@ const emit = defineEmits<{
     (e: 'update:modelValue', value: boolean | number | string | Array<number | string>): void,
 }>();
 
+const input = ref<HTMLInputElement | undefined>(undefined);
+
 const proxyValue = computed({
     get: (): boolean | number | string | Array<number | string> => {
         return props.modelValue || false;
@@ -37,6 +40,15 @@ const proxyValue = computed({
     set: (value: boolean | number | string | Array<number | string>) => {
         emit('update:modelValue', value);
     }
+});
+
+function focus(): void {
+    input.value?.focus();
+}
+
+defineExpose({
+    input,
+    focus,
 });
 </script>
 
@@ -84,7 +96,7 @@ const proxyValue = computed({
         }
 
         &-dirty {
-            background-color: transparentize($color_default_lighten_2, 0.9);
+            background-color: transparentize($color_default_lighten_2, 0.96);
         }
     }
 

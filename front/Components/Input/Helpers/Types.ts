@@ -17,6 +17,12 @@ interface InputCommonProps {
     clearable?: boolean,
 }
 
+export interface InputCheckboxProps {
+    value?: number | string,
+    disabled?: boolean,
+    placeholder?: string | null,
+}
+
 export interface InputStringProps extends InputCommonProps {
     type?: string,
     autocomplete?: string,

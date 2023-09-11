@@ -1,53 +1,54 @@
 <template>
-    <FieldCheckBox
-        :name="name"
-        :model-value="modelValue"
-        :original="original"
-        :disabled="disabled"
+    <FormFieldWrapper
+        :title="title"
         :has-errors="!valid"
-        :clearable="clearable"
-        :title="label ? title : ''"
-        :required="required"
         :errors="errors"
+        :required="required"
         :hide-title="hideTitle"
-        :empty-title="emptyTitle"
+        :without-title="withoutTitle"
         :vertical="vertical"
-        :placeholder="title"
-        :label="label !== undefined ? label : title"
-        :value="value"
-        @change="change"
     >
-        <slot/>
-    </FieldCheckBox>
+        <InputCheckbox
+            :model-value="modelValue"
+            :original="original"
+            :name="name"
+            :disabled="disabled"
+            :has-errors="!valid"
+            :placeholder="placeholderProxy"
+            @change="change"
+            ref="input"
+        >
+            <slot/>
+        </InputCheckbox>
+    </FormFieldWrapper>
 </template>
 
 <script setup lang="ts">
 import {Form} from "@/Core/Form";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
-import FieldCheckBox from "@/Components/Fields/FieldCheckBox.vue";
+import FormFieldWrapper from "@/Components/Form/Helpers/FormFieldWrapper.vue";
+import InputCheckbox from "@/Components/Input/InputCheckbox.vue";
+import {FormFieldProps} from "@/Components/Form/Helpers/Types";
+import {InputCheckboxProps} from "@/Components/Input/Helpers/Types";
 
-const props = defineProps<{
-    // common props
-    name: string,
-    disabled?: boolean,
-    clearable?: boolean,
-    // field props
-    hideTitle?: boolean,
-    emptyTitle?: boolean,
-    vertical?: boolean,
-    // form props
+interface Props extends FormFieldProps, InputCheckboxProps {
     form: Form,
+    name: string,
     defaultValue?: any,
-    // string props
-    label?: string,
-    value?: number | string,
-}>();
+}
+
+const props = withDefaults(defineProps<Props>(), {hideTitle: true});
 
 const emit = defineEmits<{ (e: 'change', value: boolean | Array<number | string>, name: string, payload: any): void }>()
 
+const input = ref<InstanceType<typeof InputCheckbox> | undefined>(undefined);
+
 const title = computed(() => {
     return getTitle(props.form, props.name);
+});
+const placeholderProxy = computed(() => {
+    return props.placeholder !== undefined ? props.placeholder : title.value;
 });
 const modelValue = computed((): boolean | Array<number | string> => {
     return getValue(props.form, props.name, null);
@@ -67,9 +68,18 @@ const required = computed((): boolean => {
 });
 
 function change(value: boolean | Array<number | string>, name: string | undefined) {
-    if(name) {
+    if (name) {
         props.form.update(name, value);
         emit('change', value, name, null);
     }
 }
+
+function focus(): void {
+    input.value?.focus();
+}
+
+defineExpose({
+    input,
+    focus,
+})
 </script>

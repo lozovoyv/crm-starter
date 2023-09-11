@@ -4,9 +4,10 @@
                   :value="value"
                   v-model="proxyValue"
                   :has-errors="hasErrors"
-                  :label="label"
+                  :label="placeholder"
                   :disabled="disabled"
                   :dirty="isDirty"
+                  ref="input"
         >
             <slot/>
         </CheckBox>
@@ -15,24 +16,22 @@
 
 <script setup lang="ts">
 import CheckBox from "@/Components/Input/Helpers/CheckBox.vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
+import {InputBaseProps, InputCheckboxProps} from "@/Components/Input/Helpers/Types";
 
-const props = defineProps<{
-    // common props
-    name?: string,
+interface Props extends InputBaseProps, InputCheckboxProps {
     modelValue: boolean | Array<number | string> | null,
     original?: boolean | Array<number | string> | null,
-    disabled?: boolean,
-    hasErrors?: boolean,
-    // checkbox props
-    label?: string | null,
-    value?: number | string,
-}>();
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: boolean | Array<number | string>): void,
     (e: 'change', value: boolean | Array<number | string>, name: string | undefined): void,
 }>();
+
+const input = ref<InstanceType<typeof CheckBox> | undefined>(undefined);
 
 const proxyValue = computed({
     get: (): boolean | Array<number | string> => {
@@ -64,13 +63,22 @@ const isDirty = computed((): boolean => {
     }
         return original !== value;
 });
+
+function focus(): void {
+    input.value?.focus();
+}
+
+defineExpose({
+    input,
+    focus,
+});
 </script>
 
 <style lang="scss">
 @import "@/variables";
 
 .input-checkbox {
-    min-height: $base_size_unit;
+    min-height: $base_size_unit * 4;
     display: flex;
     align-items: center;
 

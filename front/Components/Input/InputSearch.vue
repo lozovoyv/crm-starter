@@ -82,12 +82,12 @@ defineExpose({
         border: none !important;
         outline: none !important;
         box-sizing: border-box;
-        height: $base_size_unit * 4;
-        line-height: line_height($base_size_unit * 4);
+        height: $base_size_unit * 4 - 2px;
+        line-height: $base_size_unit * 4 - 2px;
         font-family: $project_font;
         font-size: 16px;
         color: inherit;
-        padding: 0 10px;
+        padding: 0 0 0 8px;
         flex-grow: 1;
         flex-shrink: 1;
         width: 100%;
@@ -99,7 +99,7 @@ defineExpose({
             color: $color_gray_lighten_1;
             width: $base_size_unit * 2;
             height: $base_size_unit * 4;
-            margin-left: $base_size_unit;
+            margin-left: 8px;
             flex-shrink: 0;
 
             & > svg {
