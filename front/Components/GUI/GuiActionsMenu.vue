@@ -119,7 +119,7 @@ function close() {
         opacity: 0;
         visibility: hidden;
         transition: opacity $animation $animation_time, visibility $animation $animation_time;
-        font-size: 16px;
+        font-size: 15px;
 
         &:before {
             content: '';

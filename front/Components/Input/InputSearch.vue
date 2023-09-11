@@ -19,18 +19,13 @@
 import {computed, ref} from "vue";
 import InputBox from "@/Components/Input/Helpers/InputBox.vue";
 import IconSearch from "@/Icons/IconSearch.vue";
+import {InputBaseProps, InputSearchProps} from "@/Components/Input/Helpers/Types";
 
-const props = defineProps<{
-    // common props
-    name?: string,
+interface Props extends InputBaseProps, InputSearchProps{
     modelValue?: string | null,
     original?: string | null,
-    disabled?: boolean,
-    hasErrors?: boolean,
-    clearable?: boolean,
-    // string props
-    placeholder?: string | null,
-}>();
+}
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: string | null): void,

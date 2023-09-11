@@ -31,7 +31,6 @@ const emit = defineEmits<{
 
 const input = ref<HTMLInputElement | undefined>(undefined);
 const mask = ref<InputMask<any> | null>(null);
-const value = ref<string | null>(null);
 
 watch(() => props.modelValue, () => {
     if (mask.value) {

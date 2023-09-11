@@ -1,11 +1,12 @@
 <template>
     <ListBarItem :title="title">
-    <InputSearch
-        v-model="list.search"
-        :clearable="true"
-        :placeholder="placeholder"
-        @change="changeSearch"
-    />
+        <InputSearch
+            v-model="list.search"
+            :clearable="clearable"
+            :placeholder="placeholder"
+            :disabled="disabled"
+            @change="changeSearch"
+        />
     </ListBarItem>
 </template>
 
@@ -13,16 +14,20 @@
 import InputSearch from "@/Components/Input/InputSearch.vue";
 import {List} from "@/Core/List";
 import ListBarItem from "@/Components/List/ListBarItem.vue";
+import {InputSearchProps} from "@/Components/Input/Helpers/Types";
 
-const props = defineProps<{
+interface Props extends InputSearchProps {
     list: List<any>,
     title?: string,
     manual?: boolean,
-    placeholder?: string,
-}>();
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    clearable: true,
+});
 
 function changeSearch(value: string | null): void {
-    if(!props.manual) {
+    if (!props.manual) {
         props.list.search = value;
         props.list.load();
     }

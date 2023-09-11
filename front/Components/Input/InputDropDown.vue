@@ -55,7 +55,7 @@ import {computed, nextTick, ref, watch} from "vue";
 import InputSearch from "@/Components/Input/InputSearch.vue";
 import IconDropdown from "@/Icons/IconDropdown.vue";
 import {highlight} from "@/Core/Highlight/highlight";
-import {DropDownDisplayOption, DropDownDisplayOptions, DropDownOption, DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/InputTypes";
+import {DropDownDisplayOption, DropDownDisplayOptions, DropDownOption, DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/Types";
 
 const props = defineProps<{
     // common props
@@ -285,7 +285,7 @@ function updateHeight(): void {
         font-family: $project_font;
         font-size: 16px;
         height: 100%;
-        line-height: line_height($base_size_unit * 4) - 2px;
+        line-height: $base_size_unit * 4 - 2px;
         overflow: hidden;
 
         &-placeholder {

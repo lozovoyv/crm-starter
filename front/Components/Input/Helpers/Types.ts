@@ -29,6 +29,14 @@ export interface InputStringProps extends InputCommonProps {
     placeholder?: string | null,
 }
 
+export interface InputSearchProps extends InputCommonProps {
+    placeholder?: string | null,
+}
+
+export interface InputTextProps extends InputCommonProps {
+    placeholder?: string | null,
+}
+
 export interface InputPasswordProps extends InputCommonProps {
     autocomplete?: string,
     placeholder?: string | null,
