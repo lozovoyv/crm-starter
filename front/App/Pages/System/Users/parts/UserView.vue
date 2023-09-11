@@ -28,13 +28,13 @@
         </GuiGroupBox>
 
         <PopUpForm :form="form_password" ref="ref_form_password" :width="{width: '400px'}">
-            <FormPassword :form="form_password" name="new_password" :clearable="true" :hide-title="true" :disabled="form_password.values['clear_password']"/>
-            <FormCheckBox :form="form_password" name="clear_password" :hide-title="true" :disabled="!userData.has_password"/>
+            <FormPassword :form="form_password" name="new_password" :clearable="true" :without-title="true" :disabled="form_password.values['clear_password']"/>
+            <FormCheckBox :form="form_password" name="clear_password" :without-title="true" :disabled="!userData.has_password"/>
         </PopUpForm>
 
         <PopUpForm :form="form_email" ref="ref_form_email" :hide-errors="true" :width="{width: '400px'}">
             <FormString :form="form_email" name="email" :clearable="true" :without-title="true"/>
-            <FormCheckBox :form="form_email" name="email_confirmation_need" :hide-title="true" :disabled="form_email.values['email'] === null || form_email.values['email'] === form_email.originals['email']"/>
+            <FormCheckBox :form="form_email" name="email_confirmation_need" :without-title="true" :disabled="form_email.values['email'] === null || form_email.values['email'] === form_email.originals['email']"/>
             <GuiHint v-if="form_email.values['email_confirmation_need']">* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты поменяется на новый
                 только после его подтверждения.
             </GuiHint>
