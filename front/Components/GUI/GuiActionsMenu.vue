@@ -59,7 +59,7 @@ function close() {
     text-align: left;
 
     &__button {
-        border: 1px solid $color_default;
+        border: 1px solid transparentize($color_default, 0.75);
         box-sizing: content-box;
         border-radius: $base_size_unit * 2;
         padding: 0 14px;

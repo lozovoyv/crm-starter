@@ -69,6 +69,7 @@ $loader_animation_time: 2s;
         height: 100%;
         max-width: $max_size;
         max-height: $max_size;
+        opacity: 0.5;
         animation: loading-progress $loader_animation_time cubic-bezier(0.5, 0, 0.5, 1) infinite;
 
         & > svg {

@@ -6,6 +6,8 @@
                     {name: 'Учётные записи', route: {name: 'users'}},
                     {name: form.title, route: userId? {name: 'user_view', params: {id: userId}} : undefined},
                 ]"
+                :reload="true"
+                @reload="form.load()"
     >
         <FormBox :form="form" @save="saved" @cancel="canceled">
             <FormString :form="form" name="lastname" :clearable="true" autocomplete="off"/>

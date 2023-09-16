@@ -3,6 +3,8 @@
                 :is-processing="user.state.is_loading"
                 :is-forbidden="user.state.is_forbidden"
                 :is-not-found="user.state.is_not_found"
+                :reload="true"
+                @reload="callReload"
                 :breadcrumbs="[
                     {name: 'Учётные записи', route: {name: 'users'}},
                     {name: title},
@@ -17,8 +19,8 @@
 
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
 
-        <UserView v-if="tab === 'user'" :user-id="userID" :user-data="user.data" @update="update"/>
-        <UserHistory v-if="tab === 'history'" :user-id="userID" ref="history" :external-state="user.state"/>
+        <UserView v-if="tab === 'user'" :user-id="userID" :user-data="user.data" @update="update" ref="view"/>
+        <UserHistory v-if="tab === 'history'" :user-id="userID" :external-state="user.state" ref="history"/>
     </LayoutPage>
 </template>
 
@@ -44,7 +46,7 @@ const userID = computed((): number => {
     return Number(route.params['id']);
 })
 
-const tab = ref<string | undefined>(undefined);
+const tab = ref<'user' | 'history' | undefined>(undefined);
 
 const tabs = computed((): { [index: string]: string } => {
     return {user: 'Учётная запись', history: 'История'};
@@ -58,13 +60,22 @@ const title = computed((): string => {
     return user.value.state.is_loaded ? user.value.data.name : '...';
 });
 
-const history = ref<InstanceType<typeof UserView> | undefined>(undefined);
-const operations = ref<InstanceType<typeof UserHistory> | undefined>(undefined);
+const view = ref<InstanceType<typeof UserView> | undefined>(undefined);
+const history = ref<InstanceType<typeof UserHistory> | undefined>(undefined);
 
 const processing = ref<boolean>(false);
 
 function update(): void {
     user.value.load();
+}
+
+function callReload(): void {
+    if (tab.value === 'user') {
+        update();
+    }
+    if (tab.value === 'history' && history.value !== undefined) {
+        history.value.reload();
+    }
 }
 
 function remove(): void {

@@ -19,11 +19,14 @@
                             </template>
                         -->
                     </div>
-                    <div class="layout-page__header-actions" v-if="canViewPage && ($slots.actions || link)">
+                    <div class="layout-page__header-actions" v-if="($slots.actions || link || reload)">
                         <div class="layout-page__header-actions-link" v-if="link">
                             <GuiLink :route="link.route" :name="link.name"/>
                         </div>
-                        <slot name="actions" v-if="$slots.actions"/>
+                        <div class="layout-page__header-actions-reload" v-if="reload" @click="callReload">
+                            <IconReload/>
+                        </div>
+                        <slot name="actions" v-if="$slots.actions && canViewPage"/>
                     </div>
                 </div>
                 <div class="layout-page__prologue" v-if="canViewPage && $slots.header">
@@ -60,6 +63,7 @@ import LoadingProgress from "@/Components/LoadingProgress.vue";
 import {computed} from "vue";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
 import Breadcrumbs from "@/Components/Layout/Breadcrumbs.vue";
+import IconReload from "@/Icons/IconReload.vue";
 
 const props = defineProps<{
     isProcessing?: boolean,
@@ -69,7 +73,10 @@ const props = defineProps<{
     breadcrumbs?: Array<{ name?: string, route?: { name: string, params?: { id: number } } }>,
     title?: string,
     wide?: boolean,
+    reload?: boolean,
 }>();
+
+const emit = defineEmits<{ (e: 'reload'): void }>();
 
 const canViewPage = computed((): boolean => {
     return !props.isForbidden && !props.isNotFound;
@@ -82,6 +89,10 @@ const canViewPage = computed((): boolean => {
 // }
 // return passed;
 // }
+
+function callReload(): void {
+    emit('reload');
+}
 </script>
 
 <style lang="scss">
@@ -144,6 +155,35 @@ const canViewPage = computed((): boolean => {
                 line-height: line_height($base_size_unit * 2.5);
                 font-size: 14px;
                 margin-right: 10px;
+            }
+
+            &-reload {
+                display: inline-block;
+                flex-grow: 0;
+                flex-shrink: 0;
+                height: $base_size_unit * 4;
+                width: $base_size_unit * 4;
+                position: relative;
+                border: 1px solid transparentize($color_default, 0.75);
+                box-sizing: border-box;
+                border-radius: $base_size_unit * 2;
+                padding: $base_size_unit * 0.75;
+                color: $color_default;
+                cursor: pointer;
+
+                & > svg {
+                    color: inherit;
+                }
+
+                &:hover {
+                    color: $color_white;
+                    border-color: $color_default_hover;
+                    background-color: $color_default_hover;
+                }
+
+                &:not(:last-child) {
+                    margin-right: $base_size_unit;
+                }
             }
         }
     }
