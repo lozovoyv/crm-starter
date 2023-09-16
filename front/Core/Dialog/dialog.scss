@@ -56,6 +56,7 @@
         box-shadow: $shadow_3;
         min-width: 300px;
         max-width: 98%;
+        transition: width $animation $animation_time, height $animation $animation_time;
 
         &-header {
             display: flex;

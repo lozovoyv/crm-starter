@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace App\Models\Users;
 
 use App\Models\Model;
+use App\Resources\Users\UserEntryResource;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 /**
  * @property int $id
@@ -68,7 +70,6 @@ class UserEmailConfirmation extends Model
      * User this info belongs to.
      *
      * @return  BelongsTo
-     * @noinspection PhpUnused
      */
     public function user(): BelongsTo
     {
@@ -89,11 +90,13 @@ class UserEmailConfirmation extends Model
      * Apply new email to user.
      *
      * @return void
+     * @throws InvalidArgumentException
      */
     public function applyNewEmail(): void
     {
         $this->loadMissing('user');
-        $this->user->confirmNewEmail($this->new_email);
+        $resource = new UserEntryResource();
+        $resource->confirmNewEmail($this->user, ['email' => $this->new_email]);
         $this->delete();
     }
 }

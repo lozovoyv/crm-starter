@@ -17,12 +17,12 @@
             </GuiValue>
             <GuiValue dots title="Пароль для входа:">
                 {{ userData.has_password ? '******' : 'не задан' }}
-                <GuiLink  v-if="canChange && !userData.locked" @click="changePassword" name="изменить пароль" style="font-size: 14px;"/>
+                <GuiLink v-if="canChange && !userData.locked" @click="changePassword" name="изменить пароль" style="font-size: 14px;"/>
             </GuiValue>
             <GuiValue dots title="Логин:">{{ userData.username ? userData.username : '—' }}</GuiValue>
             <GuiValue dots title="Адрес электронной почты:">
                 {{ userData.email ? userData.email : '—' }}
-                <GuiLink  v-if="canChange && !userData.locked" @click="changeEmail" name="изменить адрес" style="font-size: 14px;"/>
+                <GuiLink v-if="canChange && !userData.locked" @click="changeEmail" name="изменить адрес" style="font-size: 14px;"/>
             </GuiValue>
             <GuiValue dots title="Телефон:">{{ formatPhone(userData.phone) }}</GuiValue>
         </GuiGroupBox>
@@ -34,8 +34,10 @@
 
         <PopUpForm :form="form_email" ref="ref_form_email" :hide-errors="true" :width="{width: '400px'}">
             <FormString :form="form_email" name="email" :clearable="true" :without-title="true"/>
-            <FormCheckBox :form="form_email" name="email_confirmation_need" :without-title="true" :disabled="form_email.values['email'] === null || form_email.values['email'] === form_email.originals['email']"/>
-            <GuiHint v-if="form_email.values['email_confirmation_need']">* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес электронной почты поменяется на новый
+            <FormCheckBox :form="form_email" name="email_confirmation_need" :without-title="true"
+                          :disabled="form_email.values['email'] === null || form_email.values['email'] === form_email.originals['email']"/>
+            <GuiHint v-if="form_email.values['email_confirmation_need']">* На указанную электронную почту будет отправлено письмо со ссылкой для подтверждения адреса. Адрес
+                электронной почты поменяется на новый
                 только после его подтверждения.
             </GuiHint>
         </PopUpForm>
@@ -59,6 +61,7 @@ import FormCheckBox from "@/Components/Form/FormCheckBox.vue";
 import FormString from "@/Components/Form/FormString.vue";
 import GuiHint from "@/Components/GUI/GuiHint.vue";
 import {can} from "@/Core/Can";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const props = defineProps<{
     userId: number,
@@ -75,8 +78,12 @@ const canChange = computed((): boolean => {
 
 const processing = ref<boolean>(false);
 
-const form_password = ref<Form>(new Form( `/api/system/users/user/${props.userId}/password`, 'Изменение пароля'));
-const form_email = ref<Form>(new Form( `/api/system/users/user/${props.userId}/email`, 'Изменение адреса электронной почты'));
+const form_password = ref<Form>(new Form({
+    save_url: apiEndPoint('patch', '/api/system/users/user/{userID}/password', {userID: props.userId})
+}, 'Изменение пароля'));
+const form_email = ref<Form>(new Form({
+    save_url: apiEndPoint('patch', '/api/system/users/user/{userID}/email', {userID: props.userId})
+}, 'Изменение адреса электронной почты'));
 
 const ref_form_password = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);
 const ref_form_email = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);

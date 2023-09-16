@@ -17,12 +17,12 @@ class UserEditController extends ApiController
     /**
      * Get user data.
      *
-     * @param int|null $userID
      * @param UserEntryResource $resource
+     * @param int|null $userID
      *
      * @return ApiResponse
      */
-    public function get(?int $userID, UserEntryResource $resource): ApiResponse
+    public function get(UserEntryResource $resource, ?int $userID = null): ApiResponse
     {
         /** @var User $user */
         try {
@@ -44,14 +44,13 @@ class UserEditController extends ApiController
     /**
      * Update user data.
      *
-     * @param int|null $userID
-     * @param APIRequest $request
      * @param UserEntryResource $resource
+     * @param APIRequest $request
+     * @param int|null $userID
      *
      * @return  ApiResponse
-     * @noinspection DuplicatedCode
      */
-    public function save(?int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
+    public function save(UserEntryResource $resource, APIRequest $request, ?int $userID = null): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true, false);
@@ -77,13 +76,13 @@ class UserEditController extends ApiController
     /**
      * Change user password.
      *
-     * @param int $userID
-     * @param APIRequest $request
      * @param UserEntryResource $resource
+     * @param APIRequest $request
+     * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function password(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
+    public function password(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);
@@ -104,13 +103,13 @@ class UserEditController extends ApiController
     /**
      * Change user password.
      *
-     * @param int $userID
-     * @param APIRequest $request
      * @param UserEntryResource $resource
+     * @param APIRequest $request
+     * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function email(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
+    public function email(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);
@@ -133,13 +132,13 @@ class UserEditController extends ApiController
     /**
      * Change user status.
      *
-     * @param int $userID
-     * @param APIRequest $request
      * @param UserEntryResource $resource
+     * @param APIRequest $request
+     * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function status(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
+    public function status(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
     {
         try {
             $disabled = $request->input('disabled');
@@ -164,13 +163,13 @@ class UserEditController extends ApiController
     /**
      * Delete user.
      *
-     * @param int $userID
-     * @param APIRequest $request
      * @param UserEntryResource $resource
+     * @param APIRequest $request
+     * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function remove(int $userID, APIRequest $request, UserEntryResource $resource): ApiResponse
+    public function remove(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
     {
         try {
             $user = $resource->get($userID, $request->hash(), true);

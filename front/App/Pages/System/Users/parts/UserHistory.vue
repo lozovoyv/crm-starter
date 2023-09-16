@@ -1,7 +1,8 @@
 <template>
     <HistoryList
         :url="`/api/system/users/user/${userId}/history`"
-        prefix="system_users_history"
+        method="get"
+        remember-prefix="system_user_history"
         empty-message="Нет истории изменения учётной записи"
         ref="history"
         :external-state="externalState"

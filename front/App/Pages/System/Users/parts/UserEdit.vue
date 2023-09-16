@@ -54,6 +54,7 @@ import FieldWrapper from "@/Components/Fields/Helpers/FieldWrapper.vue";
 import GuiHint from "@/Components/GUI/GuiHint.vue";
 import FieldString from "@/Components/Fields/FieldString.vue";
 import FormPhone from "@/Components/Form/FormPhone.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const props = defineProps<{
     userId?: number,
@@ -61,9 +62,12 @@ const props = defineProps<{
 
 const router = useRouter();
 
-const form = ref<Form>(new Form('/api/system/users/user'));
+const form = ref<Form>(new Form({
+    load_url: apiEndPoint('get', '/api/system/users/user/{userID}', {userID: props.userId ?? null}),
+    save_url: apiEndPoint('put', '/api/system/users/user/{userID}', {userID: props.userId ?? null})
+}));
 
-form.value.load(props.userId);
+form.value.load();
 
 function saved(response: { values: { [index: string]: any }, payload: { [index: string]: any } }): void {
     router.push({name: 'user_view', params: {id: response.payload.id}});

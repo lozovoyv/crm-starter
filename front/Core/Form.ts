@@ -150,7 +150,7 @@ export class Form {
 
             this.state.is_saving = true;
 
-            let data = clone(options);
+            let data = options ? clone(options) : {};
             data['hash'] = this.hash;
             data['data'] = this.values;
 

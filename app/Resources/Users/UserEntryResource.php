@@ -345,6 +345,7 @@ class UserEntryResource extends EntryResource
      * @param array $data
      *
      * @return void
+     * @throws InvalidArgumentException
      */
     public function confirmNewEmail(User $user, array $data): void
     {

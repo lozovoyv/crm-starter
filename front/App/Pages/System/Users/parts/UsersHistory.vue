@@ -1,7 +1,8 @@
 <template>
     <HistoryList
         url="/api/system/users/history"
-        prefix="system_users_history"
+        method="get"
+        remember-prefix="system_users_history"
         empty-message="Нет истории изменения учётных записей"
         ref="history"
     />
