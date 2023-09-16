@@ -47,13 +47,10 @@ if(token !== null) {
 @import "@/variables.scss";
 
 .email-confirmation-message {
-    font-family: $project_font;
-    font-size: 20px;
-    font-weight: 300;
+    @include font(20px, 400);
     color: $color_text_black;
     text-align: center;
     padding: 40px 0;
-    border-radius: 2px;
 
     &-error {
         color: $color_error;

@@ -23,9 +23,7 @@ const props = defineProps<{
 @import "@/variables.scss";
 
 .route-link {
-    font-family: $project_font;
-    font-weight: normal;
-    font-size: 1em;
+    @include font(1em);
     color: $color_default;
     text-decoration: none;
     cursor: pointer;

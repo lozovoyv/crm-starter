@@ -176,9 +176,7 @@ body, html {
             }
 
             &-text {
-                font-family: $project_font;
-                font-size: 16px;
-                font-weight: bold;
+                @include font(16px, 600);
                 color: $color_text_black;
                 line-height: $header_height;
             }
@@ -191,14 +189,6 @@ body, html {
         &-menu {
             flex-grow: 1;
             flex-shrink: 1;
-        }
-
-        &-widgets {
-            //width: 50px;
-        }
-
-        &-user-menu {
-
         }
     }
 

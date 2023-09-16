@@ -125,15 +125,13 @@ $menu_height: $base_size_unit * 5;
             }
 
             &-title {
-                font-family: $project_font;
-                font-size: 14px;
+                @include font(14px);
                 height: math.div($menu_height - 10px, 2);
                 color: inherit;
             }
 
             &-description {
-                font-family: $project_font;
-                font-size: 12px;
+                @include font(12px);
                 height: math.div($menu_height - 10px, 2);
                 color: inherit;
                 opacity: 0.75;
@@ -172,10 +170,10 @@ $menu_height: $base_size_unit * 5;
         box-shadow: $shadow_1;
         border-radius: 0 0 2px 2px;
         z-index: 250;
-        font-family: $project_font;
         color: $color_text_black;
         cursor: default;
         min-width: 200px;
+        @include font(14px);
 
         &:before {
             content: '';

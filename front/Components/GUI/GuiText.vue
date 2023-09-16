@@ -12,10 +12,9 @@ export default {}
 @import "@/variables.scss";
 
 .text {
-    font-family: $project_font;
+    @include font(15px);
     text-align: left;
     box-sizing: border-box;
-    font-size: 15px;
     color: $color_text_black;
 }
 </style>

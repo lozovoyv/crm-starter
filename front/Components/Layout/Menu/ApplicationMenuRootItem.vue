@@ -150,8 +150,7 @@ function adjust(): void {
 .application__menu-root {
     &-item-wrapper {
         flex-grow: 0;
-        font-family: $project_font;
-        font-size: 15px;
+        @include font(15px);
         position: relative;
         color: $color_text_black;
         transition: color $animation $animation_time, background-color $animation $animation_time;

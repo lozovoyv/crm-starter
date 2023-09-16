@@ -33,7 +33,6 @@ const style = computed((): StyleValue => {
 @import "@/variables.scss";
 
 .group-box {
-    font-family: $project_font;
     padding: 8px 24px;
     position: relative;
     box-sizing: border-box;
@@ -56,8 +55,7 @@ const style = computed((): StyleValue => {
         position: absolute;
         left: 10px;
         top: -7px;
-        font-family: $project_font;
-        font-size: 15px;
+        @include font(15px);
         color: $color_gray;
         height: 15px;
         line-height: 15px;

@@ -21,9 +21,7 @@
         color: $color_text_black;
         cursor: default;
         display: inline-flex;
-        font-family: $project_font;
-        font-size: 15px;
-        font-weight: normal;
+        @include font(16px);
         height: auto;
         justify-content: space-between;
         letter-spacing: 0.05rem;

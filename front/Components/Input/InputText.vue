@@ -74,8 +74,7 @@ defineExpose({
         box-sizing: border-box;
         min-height: $base_size_unit;
         line-height: 18px;
-        font-family: $project_font;
-        font-size: 16px;
+        @include font(16px);
         color: inherit;
         padding: 8px 10px;
         flex-grow: 1;

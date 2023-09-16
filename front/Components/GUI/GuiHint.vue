@@ -12,8 +12,7 @@ export default {}
 @import "@/variables.scss";
 
 .hint {
-    font-family: $project_font;
-    font-size: 13px;
+    @include font(14px);
     color: $color_gray_darken_1;
 }
 </style>

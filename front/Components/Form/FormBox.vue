@@ -85,17 +85,16 @@ function clear() {
     &__errors {
         margin: 10px 0;
         box-sizing: border-box;
-        font-family: $project_font;
 
         &-error {
             padding: 4px 8px;
             line-height: 16px;
             margin: 0 0 5px;
             border: 1px solid transparentize($color_error, 0.5);
-            background-color: transparentize($color_error, 0.85);
+            background-color: transparentize($color_error, 0.9);
             color: $color_text_black;
             border-radius: 2px;
-            font-size: 14px;
+            @include font(16px);
         }
     }
 

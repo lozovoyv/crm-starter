@@ -63,9 +63,6 @@ $color_text_black: #1f191f;
 $page_background: #eeeeee;
 
 @import "./assets/fonts/source-sans-pro";
-//@import "./assets/fonts/overpass";
-//$project_font: 'Source Sans Pro';
-//@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 $project_font: 'Source Sans Pro';
 
@@ -97,4 +94,11 @@ $shadow_hover: $shadow_2;
 /* Fix line height according to selected project font */
 @function line_height($base) {
     @return $base;
+}
+
+@mixin font($size: 16px, $weight: 400) {
+    font-family: $project_font;
+    font-size: $size;
+    font-weight: $weight;
+    text-rendering: geometricPrecision;
 }

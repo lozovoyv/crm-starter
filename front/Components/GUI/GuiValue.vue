@@ -32,7 +32,6 @@ export default {
     display: flex;
     flex-direction: row;
     margin: 8px 0;
-    font-family: $project_font;
 
     &__dotted {
         border-bottom: 1px dashed transparentize($color_gray_lighten_2, 0.5);
@@ -41,7 +40,7 @@ export default {
     &__title {
         width: 180px;
         flex-shrink: 0;
-        font-size: 14px;
+        @include font(14px);
         color: transparentize($color_text_black, 0.25);
         display: flex;
         align-items: center;
@@ -49,7 +48,7 @@ export default {
 
     &__value {
         flex-grow: 1;
-        font-size: 16px;
+        @include font(16px);
         color: $color_text_black;
     }
 }

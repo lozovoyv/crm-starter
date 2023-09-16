@@ -120,8 +120,7 @@ defineExpose({
 
     &__label {
         margin: 0 7px 0 7px;
-        font-size: 15px;
-        font-family: $project_font;
+        @include font(16px);
         display: inline-block;
         color: $color_text_black;
         position: relative;

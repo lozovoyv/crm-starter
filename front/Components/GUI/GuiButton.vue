@@ -47,8 +47,7 @@ function click(event: MouseEvent) {
     color: $color_text_black;
     cursor: pointer;
     display: inline-block;
-    font-family: $project_font;
-    font-size: 16px;
+    @include font(16px);
     height: $base_size_unit * 4;
     letter-spacing: 0.01rem;
     line-height: $base_size_unit * 4 - 2px;
@@ -56,7 +55,6 @@ function click(event: MouseEvent) {
     position: relative;
     text-align: center;
     text-decoration: none;
-    text-rendering: geometricPrecision;
     transition: background-color $animation $animation_time, border-color $animation $animation_time, box-shadow $animation $animation_time;
     white-space: nowrap;
     @include no_selection;

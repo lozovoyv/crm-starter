@@ -1,9 +1,7 @@
 @import "@/variables.scss";
 
 .entry-link {
-    font-family: $project_font;
-    font-weight: normal;
-    font-size: 1em;
+    @include font(1em, 400);
     color: $color_default;
     text-decoration: none;
     cursor: pointer;

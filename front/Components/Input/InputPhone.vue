@@ -80,8 +80,7 @@ defineExpose({
         box-sizing: border-box;
         height: $base_size_unit * 4 - 2px;
         line-height: $base_size_unit * 4 - 2px;
-        font-family: $project_font;
-        font-size: 16px;
+        @include font(16px);
         color: inherit;
         padding: 0 10px;
         flex-grow: 1;

@@ -90,9 +90,7 @@
             }
 
             &-title {
-                font-family: $project_font;
-                font-size: 16px;
-                font-weight: 800;
+                @include font(16px, 800);
                 letter-spacing: 0.01em;
                 flex-grow: 1;
                 box-sizing: border-box;
@@ -129,8 +127,7 @@
         }
 
         &-message {
-            font-family: $project_font;
-            font-size: 16px;
+            @include font(16px);
             line-height: 20px;
             letter-spacing: 0.01em;
             text-rendering: geometricPrecision;
@@ -161,8 +158,7 @@
                 color: $color_text_black;
                 cursor: pointer;
                 display: inline-block;
-                font-family: $project_font;
-                font-size: 16px;
+                @include font(16px);
                 height: $base_size_unit * 4;
                 letter-spacing: 0.01rem;
                 line-height: $base_size_unit * 4 - 2px;

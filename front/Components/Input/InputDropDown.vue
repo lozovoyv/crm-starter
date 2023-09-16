@@ -282,8 +282,7 @@ function updateHeight(): void {
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
-        font-family: $project_font;
-        font-size: 16px;
+        @include font(16px);
         height: 100%;
         line-height: $base_size_unit * 4 - 2px;
         overflow: hidden;
@@ -317,8 +316,7 @@ function updateHeight(): void {
             &-item {
                 display: inline-flex;
                 align-items: center;
-                font-size: 14px;
-                font-family: $project_font;
+                @include font(14px);
                 color: inherit;
                 border: 1px solid transparentize($color_default, 0.5);
                 background-color: $color_white;
@@ -457,13 +455,12 @@ function updateHeight(): void {
                 box-sizing: border-box;
                 cursor: pointer;
                 display: block;
-                font-family: $project_font;
                 transition: color $animation $animation_time;
                 @include no_selection();
 
                 &-caption {
+                    @include font(15px);
                     color: inherit;
-                    font-size: 16px;
                     line-height: 16px;
                     display: block;
                 }
@@ -471,11 +468,9 @@ function updateHeight(): void {
                 &-hint {
                     margin-top: 2px;
                     color: $color_text_black;
-                    font-size: 14px;
                     line-height: 16px;
                     display: block;
-                    font-family: $project_font;
-                    font-weight: 300;
+                    @include font(14px, 300);
                 }
 
                 &-current, &:hover {

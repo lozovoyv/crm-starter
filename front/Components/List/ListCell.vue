@@ -25,8 +25,7 @@ const colspan = computed((): number => {
     box-sizing: border-box;
     padding: 8px 15px;
     vertical-align: top;
-    font-family: $project_font;
-    font-size: 15px;
+    @include font(15px);
     color: $color_text_black;
 
     &-nowrap {

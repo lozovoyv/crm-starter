@@ -26,10 +26,6 @@ const props = defineProps<Props>();
 <style lang="scss">
 @import "@/variables.scss";
 
-$field_title_color: $color_text_black !default;
-$field_required_color: $color_error !default;
-$field_error_color: $color_error !default;
-
 .form-field {
     display: inline-flex;
     flex-direction: row;
@@ -42,13 +38,12 @@ $field_error_color: $color_error !default;
     }
 
     &__title {
-        font-family: $project_font;
-        font-size: 16px;
+        @include font(15px);
         width: 150px;
         box-sizing: border-box;
         flex-shrink: 0;
         line-height: 15px;
-        color: $field_title_color;
+        color: $color_text_black;
         display: flex;
         align-items: flex-start;
 
@@ -73,7 +68,7 @@ $field_error_color: $color_error !default;
 
     &__required &__title-wrapper:after {
         content: '*';
-        color: $field_required_color;
+        color: $color_error;
         margin-left: 3px;
     }
 
@@ -92,11 +87,10 @@ $field_error_color: $color_error !default;
         min-height: 2px;
 
         &-error {
-            font-family: $project_font;
-            font-size: 12px;
+            @include font(13px);
             margin-top: 2px;
             text-transform: lowercase;
-            color: $field_error_color;
+            color: $color_error;
             padding-left: 2px;
             box-sizing: border-box;
         }

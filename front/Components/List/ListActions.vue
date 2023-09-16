@@ -57,7 +57,6 @@ function close() {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-family: $project_font;
         color: $color_default;
         font-size: 15px;
         cursor: pointer;

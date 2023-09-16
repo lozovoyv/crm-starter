@@ -66,9 +66,8 @@ function close() {
         display: inline-flex;
         flex-direction: row;
         align-items: center;
-        font-family: $project_font;
+        @include font(16px);
         color: $color_default;
-        font-size: 16px;
         cursor: pointer;
         height: $base_size_unit * 4 - 2px;
         background-color: transparent;

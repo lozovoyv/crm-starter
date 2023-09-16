@@ -76,16 +76,14 @@ defineExpose({
 @import "@/variables";
 
 .history-change-table {
-    font-family: $project_font;
+    @include font(16px);
     color: $color_text_black;
-    font-size: 16px;
     margin: 16px 0;
     border-collapse: collapse;
     width: 100%;
 
     &__head {
-        font-weight: 400;
-        font-size: 14px;
+        @include font(14px);
         color: $color_gray_darken_2;
     }
 

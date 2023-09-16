@@ -74,7 +74,6 @@ function clear() {
         box-sizing: content-box;
         color: $color_text_black;
         display: flex;
-        font-family: $project_font;
         position: relative;
         cursor: inherit;
         transition: border-color $animation $animation_time;

@@ -38,10 +38,8 @@ function expand(): void {
 @import "@/variables.scss";
 
 .heading {
-    font-family: $project_font;
+    @include font(16px, 600);
     width: 100%;
-    font-size: 16px;
-    font-weight: bold;
     color: $color_text_black;
     margin: 10px 0;
 

@@ -102,8 +102,7 @@ function setTab(newTab: string | number | symbol | null, initial: boolean = fals
         box-sizing: border-box;
         color: transparentize($color_default, 0.3);
         cursor: pointer;
-        font-family: $project_font;
-        font-size: 14px;
+        @include font(15px);
         height: $base_size_unit * 3 + 2px + math.div($base_size_unit, 2);
         line-height: line_height($base_size_unit * 3.5);
         margin: 4px 2px 0;

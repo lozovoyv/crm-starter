@@ -84,9 +84,7 @@ const notification = computed((): string | null => {
     }
 
     &__message {
-        font-family: $project_font;
-        font-size: 20px;
-        font-weight: 400;
+        @include font(20px);
         color: $color_text_black;
         text-align: center;
         padding: 40px 0;

@@ -190,8 +190,7 @@ function updatePagination(page: number, perPage: number): void {
         &-shown, &-per-page {
             flex-grow: 0;
             flex-shrink: 0;
-            font-family: $project_font;
-            font-size: 14px;
+            @include font(14px);
             color: $color_text_black;
         }
 
@@ -269,8 +268,7 @@ function updatePagination(page: number, perPage: number): void {
         display: flex;
         justify-content: center;
         line-height: line_height($base_size_unit * 4);
-        font-family: $project_font;
-        font-size: 15px;
+        @include font(14px);
 
         &-spacer {
             width: $base_size_unit * 2;

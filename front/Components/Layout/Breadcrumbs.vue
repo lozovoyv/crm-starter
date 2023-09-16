@@ -36,8 +36,7 @@ const nodesCount = computed((): number => {
 @import "@/variables";
 
 .breadcrumbs {
-    font-family: $project_font;
-    font-size: 14px;
+    @include font(14px);
     margin: 16px 0;
     line-height: line_height(14px);
     display: flex;

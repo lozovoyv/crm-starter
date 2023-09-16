@@ -131,20 +131,18 @@ function forgot() {
         }
 
         &-text {
-            font-family: $project_font;
             color: $color_text_black;
             box-sizing: border-box;
             padding-left: 10px;
             flex-grow: 1;
 
             &-title {
-                font-size: 20px;
-                font-weight: bold;
+                @include font(20px, 600);
             }
 
             &-description {
                 margin-top: 5px;
-                font-size: 16px;
+                @include font(16px);
             }
         }
     }
@@ -174,8 +172,7 @@ function forgot() {
     color: $color_default;
     cursor: pointer;
     transition: color $animation $animation_time;
-    font-family: $project_font;
-    font-size: 15px;
+    @include font(15px);
 
     &__bold {
         font-weight: bold;

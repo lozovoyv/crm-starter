@@ -20,11 +20,10 @@ const props = defineProps<{
 
     &-title {
         white-space: nowrap;
-        font-family: $project_font;
+        @include font(14px);
         color: $color_text_black;
         height: 24px;
         line-height: 24px;
-        font-size: 14px;
         display: block;
     }
 }

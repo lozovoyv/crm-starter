@@ -12,11 +12,9 @@ export default {}
 @import "@/variables.scss";
 
 .title {
-    font-family: $project_font;
+    @include font(16px, 600);
     text-align: left;
     box-sizing: border-box;
-    font-size: 16px;
-    font-weight: bold;
     color: $color_text_black;
     margin: 12px 0;
 }

@@ -135,11 +135,9 @@ function callReload(): void {
 
             &-title {
                 color: $color_text_black;
-                font-family: $project_font;
-                font-size: 20px;
+                @include font(20px, 600);
                 margin: 0;
                 line-height: line_height($base_size_unit * 2.5);
-                font-weight: 600;
                 box-sizing: border-box;
                 padding-left: 6px;
                 padding-top: 2px;
@@ -190,9 +188,7 @@ function callReload(): void {
 
     &__body {
         &-error {
-            font-family: $project_font;
-            font-size: 20px;
-            font-weight: 300;
+            @include font(20px);
             text-align: center;
             padding: 40px 0;
             border: 1px solid transparentize($color_error_lighten-2, 0.5);
