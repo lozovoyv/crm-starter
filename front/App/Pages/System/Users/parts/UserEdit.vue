@@ -17,7 +17,6 @@
             <FormPhone :form="form" name="phone" :clearable="true" autocomplete="off"/>
             <GuiBreak/>
             <FormDictionary :form="form" name="status_id" dictionary="user_statuses"/>
-            <FormString :form="form" name="username" :clearable="true" autocomplete="off"/>
             <FormString :form="form" name="email" :clearable="true" autocomplete="off"/>
             <template v-if="form.values['email'] !== form.originals['email']">
                 <FormCheckBox :form="form" name="email_confirmation_need"/>
@@ -30,6 +29,7 @@
                     </GuiHint>
                 </FieldWrapper>
             </template>
+            <FormString :form="form" name="username" :clearable="true" autocomplete="off"/>
             <FieldString v-if="userId" title="Пароль" :disabled="true" :model-value="form.payload['has_password'] ? '******' : 'Не задан'"/>
             <FormPassword :form="form" name="new_password" :clearable="true" :disabled="form.values['clear_password']" autocomplete="new-password"/>
             <FieldWrapper>

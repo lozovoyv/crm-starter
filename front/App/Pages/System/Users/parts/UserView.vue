@@ -5,6 +5,7 @@
             <GuiValue dots title="Имя:">{{ userData.firstname ?? '—' }}</GuiValue>
             <GuiValue dots title="Отчество:">{{ userData.patronymic ?? '—' }}</GuiValue>
             <GuiValue dots title="Отображаемое имя:">{{ userData.display_name ? userData.display_name : '—' }}</GuiValue>
+            <GuiValue dots title="Телефон:">{{ formatPhone(userData.phone) }}</GuiValue>
         </GuiGroupBox>
         <GuiGroupBox>
             <GuiValue dots title="Статус учётной записи:">
@@ -15,16 +16,15 @@
                     <GuiLink @click="activate" v-if="!userData.is_active" name="активировать" style="font-size: 14px; margin-left: 5px;"/>
                 </template>
             </GuiValue>
-            <GuiValue dots title="Пароль для входа:">
-                {{ userData.has_password ? '******' : 'не задан' }}
-                <GuiLink v-if="canChange && !userData.locked" @click="changePassword" name="изменить пароль" style="font-size: 14px;"/>
-            </GuiValue>
-            <GuiValue dots title="Логин:">{{ userData.username ? userData.username : '—' }}</GuiValue>
             <GuiValue dots title="Адрес электронной почты:">
                 {{ userData.email ? userData.email : '—' }}
                 <GuiLink v-if="canChange && !userData.locked" @click="changeEmail" name="изменить адрес" style="font-size: 14px;"/>
             </GuiValue>
-            <GuiValue dots title="Телефон:">{{ formatPhone(userData.phone) }}</GuiValue>
+            <GuiValue dots title="Логин:">{{ userData.username ? userData.username : '—' }}</GuiValue>
+            <GuiValue dots title="Пароль для входа:">
+                {{ userData.has_password ? '******' : 'не задан' }}
+                <GuiLink v-if="canChange && !userData.locked" @click="changePassword" name="изменить пароль" style="font-size: 14px;"/>
+            </GuiValue>
         </GuiGroupBox>
 
         <PopUpForm :form="form_password" ref="ref_form_password" :width="{width: '400px'}">

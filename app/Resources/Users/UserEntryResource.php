@@ -31,13 +31,13 @@ class UserEntryResource extends EntryResource
         'firstname' => 'required',
         'patronymic' => 'nullable',
         'display_name' => 'required_without:lastname',
-        'username' => 'required_without:lastname',
         'phone' => 'nullable|string|size:11',
         'status_id' => 'required',
-        'new_password' => 'nullable|min:6',
-        'clear_password' => 'nullable',
-        'email' => 'required_without:lastname|email',
+        'email' => 'required_without:username|email|nullable',
         'email_confirmation_need' => 'nullable',
+        'username' => 'required_without:lastname,email',
+        'clear_password' => 'nullable',
+        'new_password' => 'nullable|min:6',
     ];
 
     protected array $titles = [
@@ -156,7 +156,7 @@ class UserEntryResource extends EntryResource
             'status_id' => $user->status_id,
             'username' => $user->username,
             'email' => $user->email,
-            'email_confirmation_need' => true,
+            'email_confirmation_need' => false,
             'new_password' => null,
             'clear_password' => false,
             'phone' => $user->phone,
@@ -175,9 +175,9 @@ class UserEntryResource extends EntryResource
     public function validate(array $data, User $user, array $only = []): ?array
     {
         $rules = $this->rules;
-        $rules['email'] = ['bail', 'email', Rule::unique('users', 'email')->ignore($user)];
+        $rules['email'] = [...explode('|', $rules['email']), Rule::unique('users', 'email')->ignore($user)];
         $rules['phone'] = [...explode('|', $rules['phone']), Rule::unique('users', 'phone')->ignore($user)];
-        $rules['username'] = [Rule::unique('users', 'username')->ignore($user)];
+        $rules['username'] = [...explode('|', $rules['username']), Rule::unique('users', 'username')->ignore($user)];
 
         if (!empty($only)) {
             $rules = Arr::only($rules, $only);

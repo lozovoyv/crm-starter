@@ -168,7 +168,7 @@ function callReload(): void {
                 box-sizing: border-box;
                 border-radius: $base_size_unit * 2;
                 padding: $base_size_unit * 0.75;
-                color: $color_default;
+                color: transparentize($color_default, 0.5);
                 cursor: pointer;
 
                 & > svg {

@@ -278,7 +278,7 @@ export class Form {
             });
             return all;
         }
-        if (empty(this.rules) || Object.keys(this.rules[name]).length === 0) {
+        if (empty(this.rules) || this.rules[name] === undefined || Object.keys(this.rules[name]).length === 0) {
             this.errors[name] = [];
             this.valid[name] = true;
             return true;
@@ -317,9 +317,11 @@ export class Form {
      * Reset form changes to originals.
      */
     clear(except: null | Array<string> = null) {
-        Object.keys(this.originals).map(key => {
-            if (except === null || except?.indexOf(key) === -1) {
-                this.update(key, this.originals[key]);
+        Object.keys(this.originals).map(name => {
+            if (except === null || except?.indexOf(name) === -1) {
+                this.update(name, this.originals[name]);
+                this.errors[name] = [];
+                this.valid[name] = true;
             }
         });
     };
