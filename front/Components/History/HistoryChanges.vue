@@ -53,18 +53,24 @@ const _date = ref<string | undefined>(undefined);
 const _message = ref<string | undefined>(undefined);
 
 function show(recordID: number, date: string, message?: string) {
-    if (!popup.value) {
+    if (popup.value === undefined) {
         return;
     }
     _date.value = date;
     _message.value = message;
     list.value.clear();
     popup.value.show();
+    popup.value.process(true);
     list.value.setConfig({
         load_url: apiEndPoint('get', props.url + '/{recordID}/changes', {recordID: recordID}),
         use_pagination: false,
     });
-    list.value.load();
+    list.value.load()
+        .then(() => {
+            if (popup.value !== undefined) {
+                popup.value.process(false);
+            }
+        });
 }
 
 defineExpose({

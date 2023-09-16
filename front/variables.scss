@@ -101,4 +101,6 @@ $shadow_hover: $shadow_2;
     font-size: $size;
     font-weight: $weight;
     text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

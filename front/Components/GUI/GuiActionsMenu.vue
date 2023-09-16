@@ -60,7 +60,7 @@ function close() {
 
     &__button {
         border: 1px solid transparentize($color_default, 0.75);
-        box-sizing: content-box;
+        box-sizing: border-box;
         border-radius: $base_size_unit * 2;
         padding: 0 14px;
         display: inline-flex;
@@ -69,7 +69,7 @@ function close() {
         @include font(16px);
         color: $color_default;
         cursor: pointer;
-        height: $base_size_unit * 4 - 2px;
+        height: $base_size_unit * 4;
         background-color: transparent;
         transition: color $animation $animation_time, background-color $animation $animation_time, border-color $animation $animation_time;
 
@@ -84,6 +84,7 @@ function close() {
             display: flex;
             align-items: center;
             position: relative;
+            line-height: $base_size_unit * 4 - 2px;
             top: -1px;
             @media screen and (max-width: 450px) {
                 display: none;
