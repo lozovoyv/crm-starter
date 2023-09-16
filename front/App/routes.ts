@@ -1,36 +1,5 @@
-import {NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from 'vue-router'
-import store from "@/store";
-
-function getUser() {
-    return new Promise((resolve) => {
-        const user = store.getters['user/user'];
-        if (user === undefined) {
-            store.dispatch('user/refresh').then(user => {
-                resolve(user);
-            });
-        } else {
-            resolve(user);
-        }
-    });
-}
-
-async function auth(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
-    const user = await getUser();
-    if (user === null) {
-        next({name: 'login'});
-    } else {
-        next();
-    }
-}
-
-async function guest(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
-    const user = await getUser();
-    if (user !== null) {
-        next({name: 'home'});
-    } else {
-        next();
-    }
-}
+import {RouteRecordRaw} from 'vue-router'
+import {auth, guest} from "@/Core/Middlewres";
 
 const routes: Array<RouteRecordRaw> = [
     {path: '/', name: 'home', component: () => import("./Pages/Welcome.vue"), beforeEnter: [auth]},

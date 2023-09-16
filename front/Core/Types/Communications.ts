@@ -14,3 +14,14 @@ export type CommunicationError = {
     message: string,
     response: ErrorResponse | null
 }
+
+export function initialCommunicationState(): CommunicationState {
+    return {
+        is_loading: false,
+        is_loaded: false,
+        is_saving: false,
+        is_saved: false,
+        is_forbidden: false,
+        is_not_found: false,
+    }
+}

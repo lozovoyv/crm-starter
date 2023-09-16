@@ -6,6 +6,8 @@ export function notify(message: string, delay: number, type: 'success' | 'info' 
     } else {
         if (type === 'error') {
             console.error(message);
+        } else if (type === 'info') {
+            console.info(message);
         } else {
             console.log(message);
         }

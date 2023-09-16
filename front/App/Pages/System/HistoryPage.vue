@@ -2,9 +2,9 @@
     <LayoutPage title="Журнал операций" :breadcrumbs="[{name: 'Журнал операций'}]">
         <HistoryList
             url="/api/system/history"
-            prefix="system_history"
+            method="get"
+            remember-prefix="system_history"
             empty-message="Нет истории операций"
-            ref="history"
         />
     </LayoutPage>
 </template>

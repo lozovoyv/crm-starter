@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int|null $position_id
  * @property Carbon $timestamp
  *
- * @property-read int entry_count
  * @property-read int changes_count
  * @property-read int comments_count
  *
@@ -54,7 +53,7 @@ class History extends Model
         'timestamp',
     ];
 
-    protected $with = ['action', 'links'];
+    protected $with = ['action', 'links', 'entry'];
 
     protected $withCount = ['changes', 'comments'];
 
@@ -138,19 +137,21 @@ class History extends Model
      * @param string|null $entryType
      * @param int|null $entryId
      * @param string|null $entryCaption
-     * @param string|null $entryMark
+     * @param string|null $entryTag
+     * @param string|null $key
      *
      * @return  $this
      *
      * @see HistoryLink
      */
-    public function addLink(?string $entryType = null, ?int $entryId = null, ?string $entryCaption = null, ?string $entryMark = null): self
+    public function addLink(string $entryType = null, int $entryId = null, string $entryCaption = null, ?string $entryTag = null, ?string $key = null): self
     {
         $this->links()->create([
             'entry_type' => $entryType,
             'entry_id' => $entryId,
             'entry_caption' => $entryCaption,
-            'entry_mark' => $entryMark,
+            'entry_tag' => $entryTag,
+            'key' => $key,
         ]);
 
         return $this;
@@ -212,7 +213,7 @@ class History extends Model
         return [
             'id' => $this->id,
             'timestamp' => $this->timestamp,
-            'has_entry' => $this->entry_count > 0,
+            'has_entry' => $this->entry !== null,
 
             'entry_type' => $this->entry_type,
             'entry_id' => $this->entry_id,

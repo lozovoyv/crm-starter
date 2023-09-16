@@ -7,7 +7,6 @@ enum StatusCode {
     TokenExpired = 419,
     ValidationError = 422,
     InternalServerError = 500,
-
     Forbidden = 403,
     NotFound = 404,
     Error = 406,

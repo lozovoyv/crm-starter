@@ -55,9 +55,16 @@ import {can} from "@/Core/Can";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
 import {formatPhone} from "@/Core/Helpers/Phone";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
-const users = ref<List<User>>(new List<User>('/api/system/users', {}, {
-    prefix: 'system_users', remember: {filters: ['status_id'], pagination: true, order: true}
+const users = ref<List<User>>(new List<User>({
+    load_url: apiEndPoint('get', '/api/system/users'),
+    remember: {
+        prefix: 'system_users',
+        filters: ['status_id'],
+        pagination: true,
+        order: true
+    }
 }));
 
 const canChange = computed((): boolean => {

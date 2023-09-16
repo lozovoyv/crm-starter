@@ -21,7 +21,9 @@ return new class extends Migration
             $table->string('entry_type')->nullable();
             $table->unsignedBigInteger('entry_id')->nullable();
             $table->string('entry_caption')->nullable();
-            $table->string('entry_mark')->nullable();
+            $table->string('entry_tag')->nullable();
+
+            $table->string('key')->nullable();
 
             $table->foreign('history_id')->references('id')->on('histories')->cascadeOnDelete()->cascadeOnUpdate();
         });

@@ -17,6 +17,7 @@ import {List} from "@/Core/List";
 import ListComponent from "@/Components/List/ListComponent.vue";
 import ListRow from "@/Components/List/ListRow.vue";
 import ListCell from "@/Components/List/ListCell.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 type HistoryChange = {
     parameter: string,
@@ -30,17 +31,21 @@ const props = defineProps<{
 
 const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
-const list = ref<List<HistoryChange>>(new List(props.url, {}, {without_pagination: true}));
+const list = ref<List<HistoryChange>>(new List());
 
 const popUpTitle = ref<string | undefined>(undefined);
 
-function show(recordId: number, title: string) {
+function show(recordID: number, title: string) {
     if (!popup.value) {
         return;
     }
     popUpTitle.value = title;
     popup.value.show();
-    list.value.load(undefined,  undefined, `/${recordId}/changes`);
+    list.value.setConfig({
+        load_url: apiEndPoint('get', props.url + '/{recordID}/changes', {recordID: recordID}),
+        use_pagination: false,
+    });
+    list.value.load();
 }
 
 defineExpose({

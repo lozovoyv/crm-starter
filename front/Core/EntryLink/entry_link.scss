@@ -1,0 +1,19 @@
+@import "@/variables.scss";
+
+.entry-link {
+    font-family: $project_font;
+    font-weight: normal;
+    font-size: 1em;
+    color: $color_default;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color $animation $animation_time;
+
+    &__underline {
+        text-decoration: underline;
+    }
+
+    &:hover {
+        color: $color_default_hover;
+    }
+}

@@ -38,6 +38,7 @@ import FormPassword from "@/Components/Form/FormPassword.vue";
 import FormCheckBox from "@/Components/Form/FormCheckBox.vue";
 import GuiButton from "@/Components/GUI/GuiButton.vue";
 import {useStore} from "vuex";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const props = defineProps<{
     message?: string,
@@ -49,7 +50,7 @@ const route = useRoute();
 const login_input = ref<InstanceType<typeof FormString> | undefined>(undefined);
 const password_input = ref<InstanceType<typeof FormPassword> | undefined>(undefined);
 
-const form = ref<Form>(new Form('/api/auth/login'));
+const form = ref<Form>(new Form({save_url: apiEndPoint('post', '/api/auth/login')}));
 
 form.value.set('username', null, 'required', 'Адрес электронной почты / логин', true);
 form.value.set('password', null, 'required', 'Пароль', true);
@@ -74,7 +75,7 @@ function login() {
     if (form.value.state.is_saving || !form.value.validate()) {
         return;
     }
-    form.value.save(null, true, true)
+    form.value.save(undefined, true)
         .then(() => {
             store.dispatch('user/refresh').then(() => {
                 if (route.redirectedFrom) {

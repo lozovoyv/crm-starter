@@ -36,7 +36,7 @@ const props = defineProps<{
     }
 
     &:hover {
-        color: $color_default_lighten_1;
+        color: $color_default_hover;
     }
 }
 </style>

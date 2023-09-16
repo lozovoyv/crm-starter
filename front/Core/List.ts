@@ -1,8 +1,9 @@
 import clone from "./Helpers/Clone";
 import {ErrorResponse, http} from "./Http/Http";
 import {LocalStore} from "@/Core/LocalStore";
-import {CommunicationError, CommunicationState} from "@/Core/Types/Communications";
+import {CommunicationError, CommunicationState, initialCommunicationState} from "@/Core/Types/Communications";
 import {notify} from "@/Core/Notify";
+import {ApiEndPoint, isApiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 export type ListPagination = {
     current_page: number,
@@ -14,10 +15,11 @@ export type ListPagination = {
 }
 
 export type ListConfig = {
-    prefix?: string,
-    without_pagination?: boolean,
-    without_toaster?: boolean,
+    load_url?: ApiEndPoint,
+    use_pagination?: boolean,
+    use_toaster?: boolean,
     remember?: {
+        prefix?: string,
         pagination?: boolean,
         filters?: Array<string>,
         order?: boolean,
@@ -42,13 +44,10 @@ export type ListResponse = {
 
 export class List<Type> {
 
-    /** Url to load form data */
-    url: string | undefined = undefined;
-
     /** Default options to pass to request */
     options: ListOptions | undefined = undefined;
 
-    config: ListConfig | undefined = undefined;
+    config: ListConfig;
 
     list: Type[] = [];
     pagination: ListPagination | undefined = undefined;
@@ -61,21 +60,22 @@ export class List<Type> {
     orderable: null | { [index: string]: any } = null;
     payload: { [index: string]: any } = {};
 
-    state: CommunicationState = {
-        is_loading: false,
-        is_loaded: false,
-        is_forbidden: false,
-        is_not_found: false,
+    state: CommunicationState = initialCommunicationState();
+
+    constructor(config: ListConfig = {}, options: ListOptions = {}) {
+        this.config = clone(config);
+        this.setConfig();
+        this.options = options;
     }
 
-    use_toaster: boolean = true;
-
-    constructor(url: string, options: ListOptions = {}, config: ListConfig | undefined = undefined) {
-        this.url = url;
-        this.options = options;
-        this.config = config;
-
-        if (!config || !config.without_pagination) {
+    setConfig(config: ListConfig | undefined = undefined) {
+        if (config) {
+            this.config = clone(config);
+        }
+        if (this.config.use_pagination === undefined) {
+            this.config.use_pagination = true;
+        }
+        if (this.config.use_pagination) {
             this.pagination = {
                 current_page: 1,
                 last_page: 1,
@@ -85,18 +85,16 @@ export class List<Type> {
                 per_page: 10,
             };
         }
-        if (!config || !config.without_toaster) {
-            this.use_toaster = false;
+        if (this.config.use_toaster === undefined) {
+            this.config.use_toaster = true;
         }
-
         // get remembered
-        if (config && config.prefix && config.remember) {
-            const prefix: string = config.prefix;
-            if (config.remember.pagination && this.pagination) {
-                this.pagination.per_page = Number(LocalStore.get(prefix + '::per_page'));
+        if (this.config.remember && this.config.remember.prefix) {
+            if (this.config.remember.pagination && this.pagination) {
+                this.pagination.per_page = Number(LocalStore.get(this.config.remember.prefix + '::per_page'));
             }
-            if (config.remember.filters) {
-                let json: string | null = LocalStore.get(prefix + '::filters');
+            if (this.config.remember.filters) {
+                let json: string | null = LocalStore.get(this.config.remember.prefix + '::filters');
                 if (json !== null) {
                     let filters: { [index: string]: any } = JSON.parse(json);
                     Object.keys(filters).map((key: string) => {
@@ -104,9 +102,9 @@ export class List<Type> {
                     })
                 }
             }
-            if (config.remember.order) {
-                this.order_by = LocalStore.get(prefix + '::order_by');
-                let order = LocalStore.get(prefix + '::order');
+            if (this.config.remember.order) {
+                this.order_by = LocalStore.get(this.config.remember.prefix + '::order_by');
+                let order = LocalStore.get(this.config.remember.prefix + '::order');
                 if (order === 'asc') {
                     this.order = 'asc';
                 } else if (order === 'desc') {
@@ -130,13 +128,12 @@ export class List<Type> {
      *
      * @param page
      * @param perPage
-     * @param suffix
      */
-    load(page: number = 1, perPage: number | null = null, suffix: string|undefined = undefined) {
+    load(page: number = 1, perPage: number | null = null) {
         return new Promise((resolve: (response: ListResponse) => void, reject: (error: CommunicationError) => void) => {
-            if (!this.url) {
+            if (!isApiEndPoint(this.config.load_url)) {
                 this.notify('Can not load list. Load URL is not defined.', 0, 'error');
-                reject({code: 0, message: 'Can not load data. Load URL is not defined.', response: null});
+                reject({code: 0, message: 'Can not load list. Load URL is not defined.', response: null});
                 return;
             }
 
@@ -144,9 +141,13 @@ export class List<Type> {
 
             let options = this.prepareOptions(page, perPage);
 
-            const url = this.url + (suffix ? `${suffix}` : '');
+            const url = <ApiEndPoint>this.config.load_url;
 
-            http.get<ListResponse>(url, {params: options})
+            http.request<ListResponse>({
+                url: url.url,
+                method: url.method,
+                params: options,
+            })
                 .then(response => {
                     this.list = [];
                     Object.keys(response.data.list).map(key => {
@@ -204,7 +205,7 @@ export class List<Type> {
         if (page !== 1) {
             options['page'] = page;
         }
-        if (!this.config || !this.config?.without_pagination) {
+        if (this.config.use_pagination) {
             if (perPage !== null) {
                 options['per_page'] = perPage;
             } else {
@@ -212,21 +213,20 @@ export class List<Type> {
             }
         }
         // remember options
-        if (this.config && this.config.prefix && this.config.remember) {
-            const prefix: string = this.config.prefix;
+        if (this.config.remember && this.config.remember.prefix) {
             if (this.config.remember.pagination && this.pagination) {
-                LocalStore.set(prefix + '::per_page', options['per_page']);
+                LocalStore.set(this.config.remember.prefix + '::per_page', options['per_page']);
             }
             if (this.config.remember.filters) {
                 let filters: { [index: string]: any } = {};
                 this.config.remember.filters.map((filter: string) => {
                     filters[filter] = this.filters[filter];
                 });
-                LocalStore.set(prefix + '::filters', JSON.stringify(filters));
+                LocalStore.set(this.config.remember.prefix + '::filters', JSON.stringify(filters));
             }
             if (this.config.remember.order) {
-                LocalStore.set(prefix + '::order', options['order']);
-                LocalStore.set(prefix + '::order_by', options['order_by']);
+                LocalStore.set(this.config.remember.prefix + '::order', options['order']);
+                LocalStore.set(this.config.remember.prefix + '::order_by', options['order_by']);
             }
         }
 
@@ -238,7 +238,7 @@ export class List<Type> {
      */
     clear() {
         this.list = [];
-        this.pagination = !this.config || this.config.without_pagination ? undefined : {
+        this.pagination = !this.config.use_pagination ? undefined : {
             current_page: 1,
             last_page: 1,
             from: 0,
@@ -270,6 +270,6 @@ export class List<Type> {
      * @param type
      */
     notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null) {
-        notify(message, delay, type, this.use_toaster);
+        notify(message, delay, type, this.config.use_toaster);
     }
 }

@@ -7,7 +7,7 @@
                 <span v-if="record.description"> ({{ record.description }})</span>
             </ListTableCell>
             <ListTableCell>
-                <div v-for="link in record.links" style="white-space: nowrap" v-html="formatLink(link, true)"/>
+                <div v-for="link in record.links" style="white-space: nowrap" v-html="formatLink(link)"/>
             </ListTableCell>
             <ListTableCell style="text-align: center">
                 <template v-if="record.comments_count === 0">{{ record.comments_count ? record.comments_count : '—' }}</template>
@@ -39,46 +39,53 @@ import GuiLink from "@/Components/GUI/GuiLink.vue";
 import HistoryChanges from "@/Components/History/HistoryChanges.vue";
 import {useRouter} from "vue-router";
 import {CommunicationState} from "@/Core/Types/Communications";
+import {apiEndPoint, ApiEndPointMethod} from "@/Core/Http/ApiEndPoints";
+import {makeLink} from "@/Core/EntryLink/EntryLink";
 
 const props = defineProps<{
     url: string,
-    prefix?: string,
-    options?: { [index: string]: any },
+    method: ApiEndPointMethod,
+    rememberPrefix?: string,
     emptyMessage?: string,
     externalState?: CommunicationState,
 }>()
 
 type HistoryLink = {
-    entry_title: string | null,
-    entry_name: string | null,
     entry_type: string | null,
-    entry_id: number | null,
+    entry_id: number | string | null,
+    entry_caption: string | null,
+    entry_tag: string | null,
+    has_entry: boolean,
+    key: string | null,
 };
 
 type History = {
     id: number,
-    timestamp: string,
-    entry_title: string | null,
-    entry_name: string | null,
-    entry_type: string | null,
-    entry_id: number | null,
-    has_entry: boolean,
     action: string,
     description: string | null,
-    position_id: number | null,
-    position: string | null,
+    entry_type: string | null,
+    entry_id: number | string | null,
+    entry_tag: string | null,
+    entry_caption: string | null,
+    has_entry: boolean,
     links: Array<HistoryLink>,
-    changes: null,
-    comments: null,
-    links_count: number,
-    changes_count: number,
+    position: string | null,
+    position_id: number | null,
+    timestamp: string,
     comments_count: number,
+    changes_count: number,
 };
 
 const router = useRouter();
 
-const history = ref<List<History>>(new List<History>(props.url, props.options ? props.options : {}, {
-    prefix: props.prefix ? props.prefix : undefined, remember: {filters: ['active'], pagination: true, order: true}
+const history = ref<List<History>>(new List<History>({
+    load_url: apiEndPoint(props.method, props.url),
+    remember: {
+        prefix: props.rememberPrefix,
+        filters: ['active'],
+        pagination: true,
+        order: true
+    }
 }));
 
 const changes = ref<InstanceType<typeof HistoryChanges> | undefined>(undefined);
@@ -90,52 +97,15 @@ function reload(): void {
 }
 
 function formatAction(history: History): string {
-    let entry: string | null = null;
-
-    if (history.has_entry) {
-        entry = formatLink(history);
-    }
-
-    if (entry === null) {
-        entry = history.entry_title;
-    }
+    const entry: string | undefined = makeLink(history.entry_caption, history.entry_type, history.entry_id, history.entry_tag, history.has_entry);
 
     return history.action.replace(':entry', entry ? entry : '');
 }
 
-function formatLink(entry: History | HistoryLink, withPrefix: boolean = false): string {
-    let link: string | null = null;
-    let title: string | undefined = undefined;
-    let prefix: string | undefined = undefined;
+function formatLink(link: HistoryLink):string {
+    const entry: string | undefined =  makeLink(link.entry_caption, link.entry_type, link.entry_id, link.entry_tag, link.has_entry, true);
 
-    switch (entry.entry_name) {
-        case 'user':
-            link = entry.entry_id ? router.resolve({name: 'user_view', params: {id: entry.entry_id}}).href : null;
-            title = entry.entry_title ? entry.entry_title : entry.entry_name;
-            prefix = withPrefix ? 'Учётная запись' : undefined;
-            break;
-        case 'position':
-            switch (entry.entry_type) {
-                case 'staff':
-                    link = entry.entry_id ? router.resolve({name: 'staff_view', params: {id: entry.entry_id}}).href : null;
-                    title = entry.entry_title ? entry.entry_title : entry.entry_name;
-                    prefix = withPrefix ? 'Сотрудник' : undefined;
-                    break;
-            }
-            break;
-    }
-
-    if (title === undefined) {
-        if (entry.entry_title) {
-            title = entry.entry_title;
-        } else if (entry.entry_name) {
-            title = entry.entry_name + (entry.entry_id ? ' [' + entry.entry_id + ']' : '');
-        } else {
-            title = 'Ссылка не определена';
-        }
-    }
-
-    return (prefix ? prefix + ' ' : '') + (link ? ('<a class="history-link" href="' + link + '">' + title + '</a>') : title);
+    return entry ?? '***'
 }
 
 function showComments(record: History): void {
@@ -143,28 +113,10 @@ function showComments(record: History): void {
 }
 
 function showChanges(record: History): void {
-    changes.value?.show(record.id, record.action.replace(':entry', record.entry_title ? record.entry_title : '') + ' — ' + toDatetime(record.timestamp));
+    changes.value?.show(record.id, record.action.replace(':entry', record.entry_caption ? record.entry_caption : '') + ' — ' + toDatetime(record.timestamp));
 }
 
 defineExpose({
     reload,
 });
 </script>
-
-<style lang="scss">
-@import "@/variables.scss";
-
-.history-link {
-    font-family: $project_font;
-    font-weight: normal;
-    font-size: 1em;
-    color: $color_default;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color $animation $animation_time;
-
-    &__underline {
-        text-decoration: underline;
-    }
-}
-</style>

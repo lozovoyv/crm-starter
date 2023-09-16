@@ -1,11 +1,21 @@
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 import clone from "./Helpers/Clone";
 import empty from "./Helpers/Empty";
 import {FieldRules, ParseFieldRules} from "./Validator/ParseRules";
 import {validate} from "./Validator/Validate";
 import formatErrorMessage from "./Validator/Message";
 import {ErrorResponse, http} from "./Http/Http";
-import {CommunicationError, CommunicationState} from "@/Core/Types/Communications";
+import {CommunicationError, CommunicationState, initialCommunicationState} from "@/Core/Types/Communications";
 import {notify} from "@/Core/Notify";
+import {ApiEndPoint, isApiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 export type FormResponse = {
     values: { [index: string]: any },
@@ -18,72 +28,58 @@ export type FormResponse = {
     payload?: { [index: string]: any },
 }
 
+export type FormConfig = {
+    load_url?: ApiEndPoint,
+    save_url?: ApiEndPoint,
+    use_toaster?: boolean,
+    validate_on_update?: boolean,
+}
+
 export class Form {
+    /** Form config */
+    config: FormConfig;
 
-    /** Url to load form data */
-    url_load: string | null = null;
-
-    /** Url to save form data */
-    url_save: string | null = null;
-
-    /** Model ID */
-    id: number | undefined;
-
-    /** Default options to pass to request */
-    options: { [index: string]: any } = {};
+    title: string | undefined = undefined;
 
     values: { [index: string]: any } = {};
-    title: string | undefined = undefined;
-    titles: { [index: string]: string } = {};
-    rules: { [index: string]: FieldRules } = {};
-    messages: { [index: string]: string } = {};
+    originals: { [index: string]: any } = {};
     hash: string | null | undefined = undefined;
     payload: { [index: string]: any } = {};
 
-    originals: { [index: string]: any } = {};
+    titles: { [index: string]: string } = {};
+    rules: { [index: string]: FieldRules } = {};
+    messages: { [index: string]: string } = {};
+
     valid: { [index: string]: boolean } = {};
     errors: { [index: string]: string[] } = {};
 
-    state: CommunicationState = {
-        is_loading: false,
-        is_loaded: false,
-        is_saving: false,
-        is_saved: false,
-        is_forbidden: false,
-        is_not_found: false,
-    }
-
-    use_toaster: boolean = true;
-    validate_on_update: boolean = false;
+    state: CommunicationState;
 
     /**
      * Constructor
      *
+     * @param config
      * @param title
-     * @param url
-     * @param options
-     * @param use_toaster
      */
-    constructor(url: string|null, title: string | undefined = undefined, options: { [index: string]: any } = {}, use_toaster: boolean = true) {
+    constructor(config: FormConfig, title: string | undefined = undefined) {
+        this.config = config;
+        if (this.config.use_toaster === undefined) {
+            this.config.use_toaster = true;
+        }
+        if (this.config.validate_on_update === undefined) {
+            this.config.validate_on_update = true;
+        }
         this.title = title;
-        this.url_load = url;
-        this.url_save = url;
-        this.options = options;
-        this.use_toaster = use_toaster;
+        this.state = initialCommunicationState();
     };
 
     /**
      * Load form data.
-     *
-     * @param id
-     * @param options Options to pass to load request. Overrides form default options if not null.
      */
-    load(id: number | undefined, options: { [index: string]: any } | null = null) {
-
-        this.id = id;
+    load() {
 
         return new Promise((resolve: (response: FormResponse) => void, reject: (error: CommunicationError) => void) => {
-            if (this.url_load === null || this.url_load === '') {
+            if (!isApiEndPoint(this.config.load_url)) {
                 this.notify('Can not load form. Load URL is not defined.', 0, 'error');
                 reject({code: 0, message: 'Can not load form. Load URL is not defined.', response: null});
                 return;
@@ -91,9 +87,7 @@ export class Form {
 
             this.state = {is_loaded: false, is_loading: true, is_saving: false, is_not_found: false};
 
-            const url = this.url_load + (this.id ? `/${this.id}` : '');
-
-            http.get(url, {params: options !== null ? options : this.options})
+            http.request(<ApiEndPoint>this.config.load_url)
                 .then(response => {
                     this.values = response.data.values;
                     this.originals = clone(this.values);
@@ -139,11 +133,10 @@ export class Form {
      *
      * @param options Options to pass to load request. Overrides form default options if not null.
      * @param silent Disable notifications for this operation.
-     * @param use_post Use post method.
      */
-    save(options = null, silent: boolean = false, use_post: boolean = false) {
+    save(options = undefined, silent: boolean = false) {
         return new Promise((resolve: (response: FormResponse) => void, reject: (error: CommunicationError) => void) => {
-            if (this.url_save === null) {
+            if (!isApiEndPoint(this.config.save_url)) {
                 this.notify('Can not save form. Save URL is not defined.', 0, 'error');
                 reject({code: 0, message: 'Can not save form. Save URL is not defined.', response: null});
                 return;
@@ -157,30 +150,26 @@ export class Form {
 
             this.state.is_saving = true;
 
-            let _options = clone(options !== null ? options : this.options);
-            _options['hash'] = this.hash;
-            _options['data'] = this.values;
+            let data = clone(options);
+            data['hash'] = this.hash;
+            data['data'] = this.values;
 
-            const url = this.url_save + (this.id ? `/${this.id}` : '');
-            let promise;
-
-            if (use_post) {
-                promise = http.post(url, _options);
-            } else {
-                promise = http.put(url, _options);
-            }
-
-            promise.then(response => {
-                this.state.is_forbidden = false;
-                if (!silent) {
-                    this.notify(response.data.message, 5000, 'success');
-                }
-                this.originals = clone(this.values);
-                if (!empty(response.data.payload)) {
-                    this.payload = response.data.payload;
-                }
-                resolve({values: this.values, payload: this.payload});
+            http.request({
+                url: this.config.save_url?.url,
+                method: this.config.save_url?.method,
+                data: data
             })
+                .then(response => {
+                    this.state.is_forbidden = false;
+                    if (!silent) {
+                        this.notify(response.data.message, 5000, 'success');
+                    }
+                    this.originals = clone(this.values);
+                    if (!empty(response.data.payload)) {
+                        this.payload = response.data.payload;
+                    }
+                    resolve({values: this.values, payload: this.payload});
+                })
                 .catch((error: ErrorResponse) => {
                     this.state.is_forbidden = error.status === 403;
                     this.state.is_not_found = error.status === 404;
@@ -229,7 +218,7 @@ export class Form {
      * @param type
      */
     notify(message: string, delay: number, type: 'success' | 'info' | 'error' | null): void {
-        notify(message, delay, type, this.use_toaster);
+        notify(message, delay, type, this.config.use_toaster);
     };
 
     /**
@@ -267,7 +256,7 @@ export class Form {
      */
     update(name: string, value: any, validate: boolean = false) {
         this.values[name] = value;
-        if (validate || this.validate_on_update) {
+        if (validate || this.config.validate_on_update) {
             this.validate(name);
         } else {
             this.errors[name] = [];
@@ -346,11 +335,7 @@ export class Form {
         this.rules = {};
         this.valid = {};
         this.errors = {};
-        this.state.is_loaded = false;
-        this.state.is_loading = false;
-        this.state.is_saving = false;
-        this.state.is_saved = false;
-        this.state.is_forbidden = false;
+        this.state = initialCommunicationState();
     };
 
     /**
