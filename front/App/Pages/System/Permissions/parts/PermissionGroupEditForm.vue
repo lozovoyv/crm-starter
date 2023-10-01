@@ -31,10 +31,11 @@ import GuiHeading from "@/Components/GUI/GuiHeading.vue";
 import ListTable from "@/Components/List/ListComponent.vue";
 import ListTableRow from "@/Components/List/ListRow.vue";
 import ListTableCell from "@/Components/List/ListCell.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const popup = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);
 
-const form = ref<Form>(new Form('/api/system/permissions/group'));
+const form = ref<Form>(new Form({load_url: apiEndPoint('get', '/api/system/permissions/group')}));
 
 const emit = defineEmits<{
     (e: 'update'): void,

@@ -49,10 +49,10 @@ const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
 const list = ref<List<HistoryChange>>(new List());
 
-const _date = ref<string | undefined>(undefined);
-const _message = ref<string | undefined>(undefined);
+const _date = ref<string | null>(null);
+const _message = ref<string | null>(null);
 
-function show(recordID: number, date: string, message?: string) {
+function show(recordID: number, date: string | null, message: string | null) {
     if (popup.value === undefined) {
         return;
     }

@@ -13,6 +13,7 @@ import GuiTabs from "@/Components/GUI/GuiTabs.vue";
 import {computed, ref} from "vue";
 import {List} from "@/Core/List";
 import DictionaryEditor from "@/Components/Dictionary/DictionaryEditor.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const dictionary = ref<string | undefined>(undefined);
 
@@ -24,7 +25,10 @@ const tabs = computed((): { [index: string]: string } => {
     return tabs;
 });
 
-const dictionaries = ref<List<{ [index: string]: string }>>(new List('/api/dictionaries', {}, {without_pagination: true}));
+const dictionaries = ref<List<{ [index: string]: string }>>(new List({
+    load_url:apiEndPoint('get','/api/dictionaries'),
+    use_pagination: false
+}));
 
 dictionaries.value.load();
 

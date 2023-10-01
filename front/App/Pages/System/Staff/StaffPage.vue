@@ -1,8 +1,8 @@
 <template>
     <LayoutPage :title="title"
-                :is-processing="staff.is_loading"
-                :is-forbidden="staff.is_forbidden"
-                :is-not-found="staff.is_not_found"
+                :is-processing="staff.state.is_loading"
+                :is-forbidden="staff.state.is_forbidden"
+                :is-not-found="staff.state.is_not_found"
                 :breadcrumbs="[
                     {name: 'Сотрудники', route: {name: 'staff'}},
                     {name: title},
@@ -52,7 +52,7 @@ const staff = ref<Data<StaffInfo>>(new Data<StaffInfo>('/api/system/staff/view',
 staff.value.load();
 
 const title = computed((): string => {
-    return staff.value.is_loaded ? staff.value.data.name : '...';
+    return staff.value.state.is_loaded ? staff.value.data.name : '...';
 });
 
 const history = ref<InstanceType<typeof StaffHistory> | undefined>(undefined);

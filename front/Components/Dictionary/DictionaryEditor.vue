@@ -1,5 +1,5 @@
 <template>
-    <LoadingProgress :loading="list.is_loading || processing">
+    <LoadingProgress :loading="list.state.is_loading || processing">
         <GuiTitle style="display: flex; align-items: center">
             <span style="flex-grow: 1">{{ title }}</span>
             <GuiButton :type="'default'" @click="edit(null)">Добавить</GuiButton>
@@ -47,6 +47,7 @@ import {http} from "@/Core/Http/Http";
 import toaster from "@/Core/Toaster/Toaster";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const props = defineProps<{
     dictionary: string,
@@ -60,7 +61,10 @@ const list = ref<List<{
     locked?: boolean,
     hash: string | null,
     [index: string]: string | number | boolean | undefined | null
-}>>(new List(`/api/dictionaries/${props.dictionary}`, {}, {without_pagination: true}));
+}>>(new List({
+    load_url: apiEndPoint('get', `/api/dictionaries/${props.dictionary}`),
+    use_pagination: false
+}));
 const form = ref<InstanceType<typeof DictionaryEditorForm> | undefined>(undefined);
 const processing = ref<boolean>(false);
 
@@ -103,7 +107,7 @@ const switchable = computed((): boolean => {
 const dragging = ref<number | undefined>(undefined);
 
 watch(() => props.dictionary, () => {
-    list.value.url = `/api/dictionaries/${props.dictionary}`;
+    list.value.config.load_url = apiEndPoint('get', `/api/dictionaries/${props.dictionary}`);
     init();
 });
 

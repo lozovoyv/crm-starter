@@ -23,6 +23,7 @@ import ListTableRow from "@/Components/List/ListRow.vue";
 import ListTableCell from "@/Components/List/ListCell.vue";
 import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 type Permission = {
     key: string,
@@ -31,7 +32,7 @@ type Permission = {
     description: string | null,
 };
 
-const permissions = ref<List<Permission>>(new List<Permission>('/api/system/permissions', {}, {without_pagination: true}));
+const permissions = ref<List<Permission>>(new List<Permission>({load_url: apiEndPoint('get', '/api/system/permissions'), use_pagination: false}));
 
 permissions.value.load();
 </script>

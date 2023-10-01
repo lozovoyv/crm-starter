@@ -54,9 +54,8 @@ function show(id: number | undefined, options: { [index: string]: any } = {}, sk
         return;
     }
     popup.value?.show();
-    props.form.options = options;
     if (!skipLoading) {
-        props.form.load(id, options)
+        props.form.load()
             .catch(() => {
                 popup.value?.hide();
             });

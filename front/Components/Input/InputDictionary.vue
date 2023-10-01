@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/InputTypes";
+import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/Types";
 import InputDropDown from "@/Components/Input/InputDropDown.vue";
 import {computed, ref} from "vue";
 import {useStore} from "vuex";
@@ -157,7 +157,7 @@ function add() {
 function edit() {
     const id: DropDownValueType = (!props.multi && props.modelValue) ? props.modelValue : null;
     if (id && form.value) {
-        form.value.show(id)
+        form.value.show(null)
             ?.then(() => {
                 refresh(true);
             });

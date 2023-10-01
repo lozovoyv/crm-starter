@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import {List} from "@/Core/List";
-import {DropDownValueType} from "@/Components/Input/Helpers/InputTypes";
+import {DropDownValueType} from "@/Components/Input/Helpers/Types";
 import ListBarItem from "@/Components/List/ListBarItem.vue";
 import InputDictionary from "@/Components/Input/InputDictionary.vue";
 

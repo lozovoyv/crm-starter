@@ -1,7 +1,8 @@
 <template>
     <HistoryList
         url="/api/system/permissions/history"
-        prefix="system_permissions_history"
+        method="get"
+        remember-prefix="system_permissions_history"
         empty-message="Нет истории изменения прав"
         ref="history"
     />

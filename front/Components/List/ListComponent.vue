@@ -26,7 +26,7 @@
                 <div v-else class="list-table-container__message">
                     Ничего не найдено
                 </div>
-                <ListPagination :list="list" v-if="list && !list.config?.without_pagination"/>
+                <ListPagination :list="list" v-if="list && list.config.use_pagination"/>
             </template>
             <div v-else class="list-table-container__message" :class="{'list-table-container__message-error': error}">
                 {{ notification }}

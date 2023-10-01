@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import {List} from "@/Core/List";
 import InputDropDown from "@/Components/Input/InputDropDown.vue";
-import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/InputTypes";
+import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/Types";
 import ListBarItem from "@/Components/List/ListBarItem.vue";
 
 const props = defineProps<{

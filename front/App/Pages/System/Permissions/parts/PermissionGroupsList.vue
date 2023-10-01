@@ -54,6 +54,7 @@ import ListSearch from "@/Components/List/ListSearch.vue";
 import {highlight} from "@/Core/Highlight/highlight";
 import ListFilterDropdown from "@/Components/List/ListFilterDropdown.vue";
 import PermissionGroupEditForm from "@/App/Pages/System/Permissions/parts/PermissionGroupEditForm.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const form = ref<InstanceType<typeof PermissionGroupEditForm> | undefined>(undefined);
 
@@ -68,8 +69,14 @@ type PermissionGroup = {
     updated_at: string,
 };
 
-const groups = ref<List<PermissionGroup>>(new List<PermissionGroup>('/api/system/permissions/groups', {}, {
-    prefix: 'system_permissions_groups', remember: {filters: ['active'], pagination: true, order: true}
+const groups = ref<List<PermissionGroup>>(new List<PermissionGroup>({
+    load_url: apiEndPoint('get', '/api/system/permissions/groups'),
+    remember: {
+        prefix: 'system_permissions_groups',
+        filters: ['active'],
+        pagination: true,
+        order: true
+    }
 }));
 
 groups.value.load();

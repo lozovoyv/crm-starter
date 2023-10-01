@@ -1,9 +1,8 @@
 <template>
     <HistoryList
         url="/api/system/staff/history"
-        commentsUrl="/api/system/staff/history/comments"
-        changesUrl="/api/system/staff/history/changes"
-        prefix="system_staff_all_history"
+        method="get"
+        remember-prefix="system_staff_all_history"
         empty-message="Нет истории изменения сотрудников"
         ref="history"
     />

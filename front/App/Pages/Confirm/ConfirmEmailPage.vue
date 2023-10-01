@@ -26,7 +26,7 @@ const is_processing = ref<boolean>(token !== null);
 const is_error = ref<boolean>(token === null);
 
 if(token !== null) {
-    http.post('/api/auth/confirm/email', {token: token})
+    http.post<any>('/api/auth/confirm/email', {token: token})
         .then(response => {
             is_error.value = false;
             console.log(response);

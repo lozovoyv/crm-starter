@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import FieldWrapper from "@/Components/Fields/Helpers/FieldWrapper.vue";
 import {computed, ref} from "vue";
-import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/InputTypes";
+import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/Types";
 import InputDropDown from "@/Components/Input/InputDropDown.vue";
 
 const props = defineProps<{

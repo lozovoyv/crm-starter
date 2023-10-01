@@ -1,14 +1,14 @@
 <template>
     <LayoutPage :title="staff.title"
-                :is-forbidden="staff.is_forbidden"
-                :is-not-found="staff.is_not_found"
+                :is-forbidden="staff.state.is_forbidden"
+                :is-not-found="staff.state.is_not_found"
                 :breadcrumbs="[
                     {name: 'Сотрудники', route: {name: 'staff'}},
                     {name: staff.title},
                 ]"
     >
 
-        <FormBox :form="staff" :save-disabled="staff.values['mode'] === null" @save="saved" @cancel="canceled" @clear="cleared" save-button="Зарегистрировать">
+        <FormBox :form="staff" :save-disabled="staff.values['mode'] === null" @cancel="canceled" @clear="cleared" save-button="Зарегистрировать">
             <div style="width: 50%; min-width: 350px; display: inline-block; vertical-align: top">
 
                 <FormDropdown :form="staff" name="mode"
@@ -84,8 +84,12 @@ import GuiAccessIndicator from "@/Components/GUI/GuiAccessIndicator.vue";
 import {formatPhone} from "@/Core/Helpers/Phone";
 import FieldWrapper from "@/Components/Fields/Helpers/FieldWrapper.vue";
 import FormDropdown from "@/Components/Form/FormDropdown.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
-const staff = ref<Form>(new Form('Добавление сотрудника', '/api/system/staff/get', '/api/system/staff/create'));
+const staff = ref<Form>(new Form({
+    load_url: apiEndPoint('get', '/api/system/staff/get'),
+    save_url: apiEndPoint('post', '/api/system/staff/create')
+}, 'Добавление сотрудника'));
 
 const router = useRouter();
 

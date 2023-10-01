@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import LayoutPage from "@/Components/Layout/LayoutPage.vue";
 import {ref} from "vue";
-import {Form} from "@/Core/Form";
+import {Form, FormResponse} from "@/Core/Form";
 import FormString from "@/Components/Form/FormString.vue";
 import FormBox from "@/Components/Form/FormBox.vue";
 import {useRouter} from "vue-router";
@@ -71,8 +71,8 @@ const form = ref<Form>(new Form({
 
 form.value.load();
 
-function saved(response: { values: { [index: string]: any }, payload: { [index: string]: any } }): void {
-    router.push({name: 'user_view', params: {id: response.payload.id}});
+function saved(response: FormResponse): void {
+    router.push({name: 'user_view', params: {id: response.payload?.id}});
 }
 
 function canceled(): void {

@@ -113,7 +113,9 @@ function showComments(record: History): void {
 }
 
 function showChanges(record: History): void {
-    changes.value?.show(record.id, toDatetime(record.timestamp, true), record.action.replace(':entry', record.entry_caption ? record.entry_caption : ''));
+    const timestamp = toDatetime(record.timestamp, true);
+    const action = record.action.replace(':entry', record.entry_caption ? record.entry_caption : '');
+    changes.value?.show(record.id, timestamp, action);
 }
 
 defineExpose({

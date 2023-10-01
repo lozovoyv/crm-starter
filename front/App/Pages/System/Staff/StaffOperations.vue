@@ -1,9 +1,8 @@
 <template>
     <HistoryList
         :url="'/api/system/staff/' + staffId + '/operations'"
-        :commentsUrl="'/api/system/staff/' + staffId + '/operations/comments'"
-        :changesUrl="'/api/system/staff/' + staffId + '/operations/changes'"
-        prefix="system_staff_history"
+        method="get"
+        remember-prefix="system_staff_history"
         empty-message="Нет истории действий сотрудника"
         ref="history"
     />

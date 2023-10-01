@@ -34,7 +34,7 @@ import {Form} from "@/Core/Form";
 import {computed, ref} from "vue";
 import {getErrors, getOriginal, getTitle, getValue, isRequired, isValid} from "./utils";
 import FieldDropDown from "@/Components/Fields/FieldDropDown.vue";
-import {DropDownOptions} from "@/Components/Input/Helpers/InputTypes";
+import {DropDownOptions} from "@/Components/Input/Helpers/Types";
 
 const props = defineProps<{
     // common props

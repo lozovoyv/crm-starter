@@ -48,12 +48,19 @@ import {toDatetime} from "@/Core/Helpers/DateTime";
 import {highlight} from "@/Core/Highlight/highlight";
 import {Position} from "@/App/types";
 import GuiLink from "@/Components/GUI/GuiLink.vue";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
-const staffs = ref<List<Position>>(new List<Position>('/api/system/staff', {}, {
-    prefix: 'system_staffs', remember: {filters: ['status_id'], pagination: true, order: true}
+const staffs = ref<List<Position>>(new List<Position>({
+    load_url: apiEndPoint('get', '/api/system/staff'),
+    remember: {
+        prefix: 'system_staffs',
+        filters: ['status_id'],
+        pagination: true,
+        order: true
+    }
 }));
 
-staffs.value.initial();
+staffs.value.load();
 
 function reload(): void {
     staffs.value.reload();

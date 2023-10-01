@@ -1,6 +1,6 @@
 <template>
     <LayoutPage title="Профиль"
-                :is-processing="data.is_loading"
+                :is-processing="data.state.is_loading"
     >
         <GuiTabs :tabs="{
             info: 'Информация',
