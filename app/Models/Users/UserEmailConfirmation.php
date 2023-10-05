@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Models\Users;
 
+use App\Actions\Users\UserEmailSetConfirmedAction;
 use App\Models\Model;
-use App\Resources\Users\UserEntryResource;
+use App\Resources\Users\UserResource;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
@@ -95,8 +96,8 @@ class UserEmailConfirmation extends Model
     public function applyNewEmail(): void
     {
         $this->loadMissing('user');
-        $resource = new UserEntryResource();
-        $resource->confirmNewEmail($this->user, ['email' => $this->new_email]);
+        $action = new UserEmailSetConfirmedAction();
+        $action->execute($this->user, $this->new_email);
         $this->delete();
     }
 }

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Arr;
+
 class APIRequest extends APIBaseRequest
 {
     /**
@@ -18,11 +20,19 @@ class APIRequest extends APIBaseRequest
     /**
      * Get data from request.
      *
+     * @param array|null $only
+     *
      * @return array
      */
-    public function data(): array
+    public function data(?array $only = null): array
     {
-        return $this->input('data', []);
+        $data = $this->input('data', []);
+
+        if ($only !== null) {
+            $data = Arr::only($data, $only);
+        }
+
+        return $data;
     }
 
     /**

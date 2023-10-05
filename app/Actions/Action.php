@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of Opxx Starter project
  *
@@ -8,11 +9,16 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
+namespace App\Actions;
 
-namespace App\Exceptions\Model;
+use App\Current;
 
-class ModelDeleteBlockedException extends ModelException
+class Action
 {
+    protected ?Current $current;
 
+    public function __construct(?Current $current = null)
+    {
+        $this->current = $current;
+    }
 }

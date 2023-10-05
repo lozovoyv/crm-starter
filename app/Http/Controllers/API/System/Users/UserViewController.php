@@ -6,7 +6,7 @@ namespace App\Http\Controllers\API\System\Users;
 use App\Exceptions\Model\ModelNotFoundException;
 use App\Http\Controllers\ApiController;
 use App\Http\Responses\ApiResponse;
-use App\Resources\Users\UserEntryResource;
+use App\Resources\Users\UserResource;
 use Exception;
 
 class UserViewController extends ApiController
@@ -15,11 +15,11 @@ class UserViewController extends ApiController
      * User view.
      *
      * @param int $userID
-     * @param UserEntryResource $resource
+     * @param UserResource $resource
      *
      * @return ApiResponse
      */
-    public function view(int $userID, UserEntryResource $resource): ApiResponse
+    public function view(int $userID, UserResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID);
@@ -29,7 +29,7 @@ class UserViewController extends ApiController
             return ApiResponse::error($exception->getMessage());
         }
 
-        $data = UserEntryResource::format($user);
+        $data = UserResource::format($user);
         $data['name'] = $user->compactName;
 
         return APIResponse::common($data);

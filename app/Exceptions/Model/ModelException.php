@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace App\Exceptions\Model;
 
-class ModelDeleteBlockedException extends ModelException
+use Exception;
+
+class ModelException extends Exception
 {
 
 }

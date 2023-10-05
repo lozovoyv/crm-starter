@@ -3,13 +3,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
+use App\Actions\Users\UserPasswordChangeAction;
+use App\Actions\Users\UserEmailChangeAction;
+use App\Actions\Users\UserRemoveAction;
+use App\Actions\Users\UserStatusChangeAction;
+use App\Actions\Users\UserUpdateAction;
 use App\Current;
+use App\Exceptions\Model\ModelException;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
-use App\Resources\Users\UserEntryResource;
+use App\Resources\Users\UserResource;
+use App\VDTO\UserVDTO;
 use Exception;
 
 class UserEditController extends ApiController
@@ -17,26 +24,42 @@ class UserEditController extends ApiController
     /**
      * Get user data.
      *
-     * @param UserEntryResource $resource
      * @param int|null $userID
      *
      * @return ApiResponse
      */
-    public function get(UserEntryResource $resource, ?int $userID = null): ApiResponse
+    public function get(?int $userID = null): ApiResponse
     {
+
         /** @var User $user */
         try {
-            $user = $resource->get($userID, null, false, false);
+            $resource = UserResource::init($userID, null, false, false);
         } catch (Exception $exception) {
             return APIResponse::error($exception->getMessage());
         }
 
+        $vdto = new UserVDTO();
+
+        $fields = [
+            'lastname',
+            'firstname',
+            'patronymic',
+            'display_name',
+            'username',
+            'phone',
+            'status_id',
+            'new_password',
+            'clear_password',
+            'email',
+            'email_confirmation_need',
+        ];
+
         return ApiResponse::form()
             ->title($user->exists ? $user->fullName : 'Создание учётной записи')
-            ->values($resource->getValues($user))
-            ->rules($resource->getValidationRules())
-            ->titles($resource->getTitles())
-            ->messages($resource->getValidationMessages())
+            ->values($resource->values($fields))
+            ->rules($vdto->getValidationRules($fields))
+            ->titles($vdto->getTitles($fields))
+            ->messages($vdto->getValidationMessages($fields))
             ->hash($resource->getHash($user))
             ->payload(['has_password' => !empty($user->password)]);
     }
@@ -44,29 +67,54 @@ class UserEditController extends ApiController
     /**
      * Update user data.
      *
-     * @param UserEntryResource $resource
      * @param APIRequest $request
      * @param int|null $userID
      *
      * @return  ApiResponse
      */
-    public function save(UserEntryResource $resource, APIRequest $request, ?int $userID = null): ApiResponse
+    public function save(APIRequest $request, ?int $userID = null): ApiResponse
     {
-        try {
-            $user = $resource->get($userID, $request->hash(), true, false);
-            $data = $resource->filterData($request->data());
-            if ($errors = $resource->validate($data, $user)) {
-                return APIResponse::validationError($errors);
-            }
-            $current = Current::init($request);
-            $user = $resource->update($user, $data, $current);
-            $user = $resource->updateStatus($user, $data, $current);
-            $user = $resource->updatePassword($user, $data, $current);
-            $user = $resource->updateEmail($user, $data, $current);
 
-        } catch (Exception $exception) {
+        try {
+            $resource = UserResource::init($userID, $request->hash(), true, false);
+        } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
+
+        $vdto = new UserVDTO(
+            $request->data([
+                'lastname',
+                'firstname',
+                'patronymic',
+                'display_name',
+                'username',
+                'phone',
+                'status_id',
+                'new_password',
+                'clear_password',
+                'email',
+                'email_confirmation_need',
+            ])
+        );
+
+        if ($errors = $vdto->validate([], $resource->user())) {
+            return APIResponse::validationError($errors);
+        }
+
+        $current = Current::init($request);
+        $user = $resource->user();
+
+        $action = new UserUpdateAction($current);
+        $action->execute($user, $vdto);
+
+        $action = new UserStatusChangeAction($current);
+        $action->execute($user, $vdto);
+
+        $action = new UserPasswordChangeAction($current);
+        $action->execute($user, $data['new_password'] ?? null, $data['clear_password'] ?? false);
+
+        $action = new UserEmailChangeAction($current);
+        $action->execute($user, $data['email'] ?? null, $data['email_confirmation_need'] ?? false);
 
         return APIResponse::success()
             ->message($user->wasRecentlyCreated ? 'Учётная запись добавлена' : 'Учётная запись сохранена')
@@ -76,26 +124,30 @@ class UserEditController extends ApiController
     /**
      * Change user password.
      *
-     * @param UserEntryResource $resource
      * @param APIRequest $request
      * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function password(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
+    public function password(APIRequest $request, int $userID): ApiResponse
     {
-        try {
-            $user = $resource->get($userID, $request->hash(), true);
-            $data = $resource->filterData($request->data(), ['new_password', 'clear_password']);
-            if ($errors = $resource->validate($data, $user, ['new_password', 'clear_password'])) {
-                return APIResponse::validationError($errors);
-            }
-            $current = Current::init($request);
-            $resource->updatePassword($user, $data, $current);
 
-        } catch (Exception $exception) {
+        try {
+            $resource = UserResource::init($userID, $request->hash(), true);
+        } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
+
+        $vdto = new UserVDTO($request->data(['new_password', 'clear_password']));
+
+        if ($errors = $vdto->validate(['new_password', 'clear_password'], $resource->user())) {
+            return APIResponse::validationError($errors);
+        }
+
+        $current = Current::init($request);
+
+        $action = new UserPasswordChangeAction($current);
+        $action->execute($resource->user(), $vdto);
 
         return APIResponse::success('Пароль сохранён');
     }
@@ -103,26 +155,29 @@ class UserEditController extends ApiController
     /**
      * Change user password.
      *
-     * @param UserEntryResource $resource
      * @param APIRequest $request
      * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function email(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
+    public function email(APIRequest $request, int $userID): ApiResponse
     {
         try {
-            $user = $resource->get($userID, $request->hash(), true);
-            $data = $resource->filterData($request->data(), ['email', 'email_confirmation_need']);
-            if ($errors = $resource->validate($data, $user, ['email', 'email_confirmation_need'])) {
-                return APIResponse::validationError($errors);
-            }
-            $current = Current::init($request);
-            $resource->updateEmail($user, $data, $current);
-
-        } catch (Exception $exception) {
-            return APIResponse::error($exception->getMessage());
+            $resource = UserResource::init($userID, $request->hash(), true);
+        } catch (ModelException $exception) {
+            return ApiResponse::error($exception->getMessage());
         }
+
+        $vdto = new UserVDTO($request->data(['email', 'email_confirmation_need']));
+
+        if ($errors = $vdto->validate(['email', 'email_confirmation_need'], $resource->user())) {
+            return APIResponse::validationError($errors);
+        }
+
+        $current = Current::init($request);
+
+        $action = new UserEmailChangeAction($current);
+        $action->execute($resource->user(), $vdto);
 
         return APIResponse::success(
             ($data['email_confirmation_need'] ?? false) && !empty($data['email']) ? 'Запрос на подтверждение адреса электронной почты отправлен' : 'Адрес электронной почты сохранён'
@@ -132,54 +187,58 @@ class UserEditController extends ApiController
     /**
      * Change user status.
      *
-     * @param UserEntryResource $resource
      * @param APIRequest $request
      * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function status(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
+    public function status(APIRequest $request, int $userID): ApiResponse
     {
-        try {
-            $disabled = $request->input('disabled');
-            $data['status_id'] = null;
-            if ($disabled !== null) {
-                $data['status_id'] = $disabled ? UserStatus::blocked : UserStatus::active;
-            }
-            $user = $resource->get($userID, $request->hash(), true);
-            if ($errors = $resource->validate($data, $user, ['status_id'])) {
-                return APIResponse::validationError($errors);
-            }
-            $current = Current::init($request);
-            $user = $resource->updateStatus($user, $data, $current);
 
-        } catch (Exception $exception) {
+        try {
+            $resource = UserResource::init($userID, $request->hash(), true);
+        } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
 
-        return APIResponse::success($user->hasStatus(UserStatus::active) ? 'Учётная запись активирована' : 'Учётная запись заблокирована');
+        $disabled = $request->input('disabled');
+        $statusID = null;
+        if ($disabled !== null) {
+            $statusID = $disabled ? UserStatus::blocked : UserStatus::active;
+        }
+
+        $vdto = new UserVDTO(['status_id' => $statusID]);
+
+        $current = Current::init($request);
+
+        $action = new UserStatusChangeAction($current);
+        $action->execute($resource->user(), $vdto);
+
+        return APIResponse::success($resource->user()->hasStatus(UserStatus::active) ? 'Учётная запись активирована' : 'Учётная запись заблокирована');
     }
 
     /**
      * Delete user.
      *
-     * @param UserEntryResource $resource
      * @param APIRequest $request
      * @param int $userID
      *
      * @return  ApiResponse
      */
-    public function remove(UserEntryResource $resource, APIRequest $request, int $userID): ApiResponse
+    public function remove(APIRequest $request, int $userID): ApiResponse
     {
+
+        $current = Current::init($request);
+        $action = new UserRemoveAction($current);
+
         try {
-            $user = $resource->get($userID, $request->hash(), true);
-            $current = Current::init($request);
-            if ($current->userId() === $user->id) {
+            $resource = UserResource::init($userID, $request->hash(), true);
+
+            if ($current->userId() === $resource->user()->id) {
                 return APIResponse::error('Вы не можете удалить собственную учётную запись');
             }
-            $resource->remove($user, $current);
-
-        } catch (Exception $exception) {
+            $action->execute($resource->user());
+        } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
 
