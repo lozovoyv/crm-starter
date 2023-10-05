@@ -217,8 +217,9 @@ class CurrentTest extends TestCase
             return $user;
         });
         $current = Current::init($request, true);
-
-        $this->assertEquals([Permission::system__act_as_other, Permission::system__history], array_values($current->permissions()));
+        $permissions = array_values($current->permissions());
+        sort($permissions);
+        $this->assertEquals([Permission::system__act_as_other, Permission::system__history], $permissions);
     }
 
     public function test_current_proxy_permissions(): void
