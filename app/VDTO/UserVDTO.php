@@ -36,7 +36,7 @@ class UserVDTO extends VDTO implements VDTOInterface
         'patronymic' => 'nullable',
         'display_name' => 'required_without:lastname',
         'phone' => 'nullable|string|size:11',
-        'status_id' => 'required',
+        'status_id' => 'required|exists:user_statuses,id',
         'email' => 'required_without:username|email|nullable',
         'email_confirmation_need' => 'nullable',
         'username' => 'required_without:lastname,email',

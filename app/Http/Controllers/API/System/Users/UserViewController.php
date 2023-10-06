@@ -6,11 +6,22 @@ namespace App\Http\Controllers\API\System\Users;
 use App\Exceptions\Model\ModelNotFoundException;
 use App\Http\Controllers\ApiController;
 use App\Http\Responses\ApiResponse;
+use App\Models\Permissions\Permission;
+use App\Models\Positions\PositionType;
 use App\Resources\Users\UserResource;
 use Exception;
 
 class UserViewController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware([
+            'auth:sanctum',
+            PositionType::middleware(PositionType::admin, PositionType::staff),
+            Permission::middleware(Permission::system__users),
+        ]);
+    }
+
     /**
      * User view.
      *
@@ -19,7 +30,7 @@ class UserViewController extends ApiController
      *
      * @return ApiResponse
      */
-    public function view(int $userID, UserResource $resource): ApiResponse
+    public function __invoke(int $userID, UserResource $resource): ApiResponse
     {
         try {
             $user = $resource->get($userID);

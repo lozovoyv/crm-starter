@@ -6,10 +6,21 @@ namespace App\Http\Controllers\API\System\Users;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
+use App\Models\Permissions\Permission;
+use App\Models\Positions\PositionType;
 use App\Resources\Users\UserHistoryResource;
 
 class UserHistoryController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware([
+            'auth:sanctum',
+            PositionType::middleware(PositionType::admin, PositionType::staff),
+            Permission::middleware(Permission::system__users),
+        ]);
+    }
+
     /**
      * All users history list.
      *
