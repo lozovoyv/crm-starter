@@ -32,46 +32,5 @@ class UserEditGetController extends ApiController
         ]);
     }
 
-    /**
-     * Get user data.
-     *
-     * @param int|null $userID
-     *
-     * @return ApiResponse
-     */
-    public function __invoke(?int $userID = null): ApiResponse
-    {
 
-        /** @var User $user */
-        try {
-            $resource = UserResource::init($userID, null, false, false);
-        } catch (Exception $exception) {
-            return APIResponse::error($exception->getMessage());
-        }
-
-        $vdto = new UserVDTO();
-
-        $fields = [
-            'lastname',
-            'firstname',
-            'patronymic',
-            'display_name',
-            'username',
-            'phone',
-            'status_id',
-            'new_password',
-            'clear_password',
-            'email',
-            'email_confirmation_need',
-        ];
-
-        return ApiResponse::form()
-            ->title($user->exists ? $user->fullName : 'Создание учётной записи')
-            ->values($resource->values($fields))
-            ->rules($vdto->getValidationRules($fields))
-            ->titles($vdto->getTitles($fields))
-            ->messages($vdto->getValidationMessages($fields))
-            ->hash($resource->getHash($user))
-            ->payload(['has_password' => !empty($user->password)]);
-    }
 }

@@ -23,10 +23,11 @@ use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
+use App\Models\Users\User;
 use App\Resources\Users\UserResource;
 use App\VDTO\UserVDTO;
 
-class UserEditPutController extends ApiController
+class UserEditController extends ApiController
 {
     public function __construct()
     {
@@ -38,6 +39,49 @@ class UserEditPutController extends ApiController
     }
 
     /**
+     * Get user data.
+     *
+     * @param int|null $userID
+     *
+     * @return ApiResponse
+     */
+    public function get(?int $userID = null): ApiResponse
+    {
+
+        /** @var User $user */
+        try {
+            $resource = UserResource::init($userID, null, false, false);
+        } catch (ModelException $exception) {
+            return APIResponse::error($exception->getMessage());
+        }
+
+        $vdto = new UserVDTO();
+
+        $fields = [
+            'lastname',
+            'firstname',
+            'patronymic',
+            'display_name',
+            'username',
+            'phone',
+            'status_id',
+            'new_password',
+            'clear_password',
+            'email',
+            'email_confirmation_need',
+        ];
+
+        return ApiResponse::form()
+            ->title($user->exists ? $user->fullName : 'Создание учётной записи')
+            ->values($resource->values($fields))
+            ->rules($vdto->getValidationRules($fields))
+            ->titles($vdto->getTitles($fields))
+            ->messages($vdto->getValidationMessages($fields))
+            ->hash($resource->getHash($user))
+            ->payload(['has_password' => !empty($user->password)]);
+    }
+
+    /**
      * Update user data.
      *
      * @param APIRequest $request
@@ -45,7 +89,7 @@ class UserEditPutController extends ApiController
      *
      * @return  ApiResponse
      */
-    public function __invoke(APIRequest $request, ?int $userID = null): ApiResponse
+    public function put(APIRequest $request, ?int $userID = null): ApiResponse
     {
 
         try {
@@ -84,10 +128,10 @@ class UserEditPutController extends ApiController
         $action->execute($user, $vdto);
 
         $action = new UserPasswordChangeAction($current);
-        $action->execute($user, $data['new_password'] ?? null, $data['clear_password'] ?? false);
+        $action->execute($user, $vdto);
 
         $action = new UserEmailChangeAction($current);
-        $action->execute($user, $data['email'] ?? null, $data['email_confirmation_need'] ?? false);
+        $action->execute($user, $vdto);
 
         return APIResponse::success()
             ->message($user->wasRecentlyCreated ? 'Учётная запись добавлена' : 'Учётная запись сохранена')
