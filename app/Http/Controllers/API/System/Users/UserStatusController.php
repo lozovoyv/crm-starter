@@ -46,7 +46,7 @@ class UserStatusController extends ApiController
     public function __invoke(APIRequest $request, int $userID): ApiResponse
     {
         try {
-            $resource = UserResource::init($userID, $request->hash(), true);
+            $resource = UserResource::make($userID, $request->hash(), true);
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }

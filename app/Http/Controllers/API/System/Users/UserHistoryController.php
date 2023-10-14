@@ -25,12 +25,13 @@ class UserHistoryController extends ApiController
      * All users history list.
      *
      * @param APIListRequest $request
-     * @param UserHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function list(APIListRequest $request, UserHistoryResource $resource): ApiResponse
+    public function list(APIListRequest $request): ApiResponse
     {
+        $resource = new UserHistoryResource();
+
         $list = $resource
             ->filter($request->filters())
             ->order($request->orderBy('timestamp'), $request->order())
@@ -46,12 +47,13 @@ class UserHistoryController extends ApiController
      * All users history entry comments.
      *
      * @param int $historyID
-     * @param UserHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function comments(int $historyID, UserHistoryResource $resource): ApiResponse
+    public function comments(int $historyID): ApiResponse
     {
+        $resource = new UserHistoryResource();
+
         $history = $resource->retrieveRecord($historyID);
 
         if ($history === null) {
@@ -65,12 +67,13 @@ class UserHistoryController extends ApiController
      * All users history entry changes.
      *
      * @param int $historyID
-     * @param UserHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function changes(int $historyID, UserHistoryResource $resource): ApiResponse
+    public function changes(int $historyID): ApiResponse
     {
+        $resource = new UserHistoryResource();
+
         $history = $resource->retrieveRecord($historyID);
 
         if ($history === null) {
@@ -87,12 +90,13 @@ class UserHistoryController extends ApiController
      *
      * @param int $userID
      * @param APIListRequest $request
-     * @param UserHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function listForUser(int $userID, APIListRequest $request, UserHistoryResource $resource): ApiResponse
+    public function listForUser(int $userID, APIListRequest $request): ApiResponse
     {
+        $resource = new UserHistoryResource();
+
         $history = $resource
             ->forEntry($userID)
             ->filter($request->filters())
@@ -110,12 +114,13 @@ class UserHistoryController extends ApiController
      *
      * @param int $userID
      * @param int $historyID
-     * @param UserHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function commentsForUser(int $userID, int $historyID, UserHistoryResource $resource): ApiResponse
+    public function commentsForUser(int $userID, int $historyID): ApiResponse
     {
+        $resource = new UserHistoryResource();
+
         $history = $resource->forEntry($userID)->retrieveRecord($historyID);
 
         if ($history === null) {
@@ -130,12 +135,13 @@ class UserHistoryController extends ApiController
      *
      * @param int $userID
      * @param int $historyID
-     * @param UserHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function changesForUser(int $userID, int $historyID, UserHistoryResource $resource): ApiResponse
+    public function changesForUser(int $userID, int $historyID): ApiResponse
     {
+        $resource = new UserHistoryResource();
+
         $history = $resource->forEntry($userID)->retrieveRecord($historyID);
 
         if ($history === null) {

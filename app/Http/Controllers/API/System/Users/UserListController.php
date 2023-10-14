@@ -9,6 +9,7 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
 use App\Models\Users\User;
+use App\Models\Users\UserStatus;
 use App\Resources\Users\UserListResource;
 
 class UserListController extends ApiController
@@ -26,12 +27,13 @@ class UserListController extends ApiController
      * Get users list.
      *
      * @param APIListRequest $request
-     * @param UserListResource $resource
      *
      * @return  ApiResponse
      */
-    public function __invoke(APIListRequest $request, UserListResource $resource): ApiResponse
+    public function __invoke(APIListRequest $request): ApiResponse
     {
+        $resource = new UserListResource();
+
         $users = $resource
             ->filter($request->filters())
             ->search($request->search())
@@ -39,7 +41,23 @@ class UserListController extends ApiController
             ->paginate($request->page(), $request->perPage());
 
         $users->transform(function (User $user) {
-            return UserListResource::format($user);
+            return [
+                'id' => $user->id,
+                'is_active' => $user->hasStatus(UserStatus::active),
+                'locked' => $user->locked,
+                'status' => $user->status->name,
+                'lastname' => $user->lastname,
+                'firstname' => $user->firstname,
+                'patronymic' => $user->patronymic,
+                'display_name' => $user->display_name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'has_password' => !empty($user->password),
+                'phone' => $user->phone,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'hash' => $user->getHash(),
+            ];
         });
 
         return ApiResponse::list($users)

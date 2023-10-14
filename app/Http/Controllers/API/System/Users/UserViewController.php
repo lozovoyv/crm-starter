@@ -8,6 +8,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
+use App\Models\Users\UserStatus;
 use App\Resources\Users\UserResource;
 use Exception;
 
@@ -26,22 +27,39 @@ class UserViewController extends ApiController
      * User view.
      *
      * @param int $userID
-     * @param UserResource $resource
      *
      * @return ApiResponse
      */
-    public function __invoke(int $userID, UserResource $resource): ApiResponse
+    public function __invoke(int $userID): ApiResponse
     {
         try {
-            $user = $resource->get($userID);
+            $resource = UserResource::make($userID);
         } catch (ModelNotFoundException $exception) {
             return ApiResponse::notFound($exception->getMessage());
         } catch (Exception $exception) {
             return ApiResponse::error($exception->getMessage());
         }
 
-        $data = UserResource::format($user);
-        $data['name'] = $user->compactName;
+        $user = $resource->user();
+
+        $data = [
+            'id' => $user->id,
+            'locked' => $user->locked,
+            'lastname' => $user->lastname,
+            'firstname' => $user->firstname,
+            'patronymic' => $user->patronymic,
+            'username' => $user->username,
+            'display_name' => $user->display_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+            'is_active' => $user->hasStatus(UserStatus::active),
+            'status' => $user->status->name,
+            'has_password' => !empty($user->password),
+            'name' => $user->compactName,
+            'hash' => $user->getHash(),
+        ];
 
         return APIResponse::common($data);
     }

@@ -47,10 +47,8 @@ class UserEditController extends ApiController
      */
     public function get(?int $userID = null): ApiResponse
     {
-
-        /** @var User $user */
         try {
-            $resource = UserResource::init($userID, null, false, false);
+            $resource = UserResource::make($userID, null, false, false);
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
@@ -72,13 +70,13 @@ class UserEditController extends ApiController
         ];
 
         return ApiResponse::form()
-            ->title($user->exists ? $user->fullName : 'Создание учётной записи')
+            ->title($resource->user()->exists ? $resource->user()->fullName : 'Создание учётной записи')
             ->values($resource->values($fields))
             ->rules($vdto->getValidationRules($fields))
             ->titles($vdto->getTitles($fields))
             ->messages($vdto->getValidationMessages($fields))
-            ->hash($resource->getHash($user))
-            ->payload(['has_password' => !empty($user->password)]);
+            ->hash($resource->getHash())
+            ->payload(['has_password' => !empty($resource->user()->password)]);
     }
 
     /**
@@ -93,7 +91,7 @@ class UserEditController extends ApiController
     {
 
         try {
-            $resource = UserResource::init($userID, $request->hash(), true, false);
+            $resource = UserResource::make($userID, $request->hash(), true, false);
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }

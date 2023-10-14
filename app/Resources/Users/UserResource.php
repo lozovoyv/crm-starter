@@ -7,7 +7,6 @@ use App\Exceptions\Model\ModelLockedException;
 use App\Exceptions\Model\ModelNotFoundException;
 use App\Exceptions\Model\ModelWrongHashException;
 use App\Models\Users\User;
-use App\Models\Users\UserStatus;
 use App\Resources\EntryResource;
 
 class UserResource extends EntryResource
@@ -33,7 +32,7 @@ class UserResource extends EntryResource
      * @throws ModelNotFoundException
      * @throws ModelWrongHashException
      */
-    public static function init(?int $id, ?string $hash = null, bool $check = false, bool $onlyExisting = true): self
+    public static function make(?int $id, ?string $hash = null, bool $check = false, bool $onlyExisting = true): self
     {
         /** @var User|null $user */
         if ($id === null) {
@@ -82,38 +81,9 @@ class UserResource extends EntryResource
         $values = [];
 
         foreach ($fields as $field) {
-            $values = $this->user->getAttribute($field);
+            $values[$field] = $this->user->getAttribute($field);
         }
 
         return $values;
-    }
-
-    /**
-     * Cast user to array.
-     *
-     * @param User $user
-     *
-     * @return  array
-     * @noinspection DuplicatedCode
-     */
-    public static function format(User $user): array
-    {
-        return [
-            'id' => $user->id,
-            'is_active' => $user->hasStatus(UserStatus::active),
-            'locked' => $user->locked,
-            'status' => $user->status->name,
-            'lastname' => $user->lastname,
-            'firstname' => $user->firstname,
-            'patronymic' => $user->patronymic,
-            'display_name' => $user->display_name,
-            'username' => $user->username,
-            'email' => $user->email,
-            'has_password' => !empty($user->password),
-            'phone' => $user->phone,
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at,
-            'hash' => $user->getHash(),
-        ];
     }
 }

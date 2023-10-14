@@ -110,33 +110,4 @@ class UserListResource extends ListSearchableResource
 
         return $this;
     }
-
-    /**
-     * Format record.
-     *
-     * @param User $user
-     *
-     * @return array
-     * @noinspection DuplicatedCode
-     */
-    public static function format(User $user): array
-    {
-        return [
-            'id' => $user->id,
-            'is_active' => $user->hasStatus(UserStatus::active),
-            'locked' => $user->locked,
-            'status' => $user->status->name,
-            'lastname' => $user->lastname,
-            'firstname' => $user->firstname,
-            'patronymic' => $user->patronymic,
-            'display_name' => $user->display_name,
-            'username' => $user->username,
-            'email' => $user->email,
-            'has_password' => !empty($user->password),
-            'phone' => $user->phone,
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at,
-            'hash' => $user->getHash(),
-        ];
-    }
 }

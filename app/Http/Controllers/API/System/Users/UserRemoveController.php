@@ -48,7 +48,7 @@ class UserRemoveController extends ApiController
         $action = new UserRemoveAction($current);
 
         try {
-            $resource = UserResource::init($userID, $request->hash(), true);
+            $resource = UserResource::make($userID, $request->hash(), true);
 
             if ($current->userId() === $resource->user()->id) {
                 return APIResponse::error('Вы не можете удалить собственную учётную запись');

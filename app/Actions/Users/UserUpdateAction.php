@@ -38,6 +38,8 @@ class UserUpdateAction extends Action
         $changes[] = $user->setAttributeWithChanges('username', $vdto->username, Casting::string);
         $changes[] = $user->setAttributeWithChanges('phone', $vdto->phone, Casting::string);
 
+        $changes = array_filter($changes);
+
         if (!empty($changes)) {
             $user->save();
             $user
