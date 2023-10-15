@@ -1,35 +1,22 @@
 <?php
 declare(strict_types=1);
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-namespace App\Resources\Users;
+namespace App\Builders;
 
-use App\Models\Users\User;
-use App\Models\Users\UserStatus;
-use App\Resources\ListSearchableResource;
 use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class UserListResource extends ListSearchableResource
+class UserBuilder extends Builder
 {
-    protected array $titles = [
-        'id' => 'users/user.id',
-        'name' => 'users/user.name',
-        'email' => 'users/user.email',
-        'phone' => 'users/user.phone',
-        'created_at' => 'users/user.created_at',
-        'updated_at' => 'users/user.updated_at',
-    ];
-
-    protected array $orderableColumns = ['id', 'name', 'email', 'phone', 'created_at', 'updated_at'];
-
-    /**
-     * Initialize.
-     */
-    public function __construct()
-    {
-        $this->query = User::query()->with('status');
-    }
-
     /**
      * Apply filters.
      *
@@ -39,13 +26,11 @@ class UserListResource extends ListSearchableResource
      */
     public function filter(?array $filters): self
     {
-        $filters = $this->castFilters($filters, ['status_id' => Casting::int]);
+        $filters = Casting::castArray($filters, ['status_id' => Casting::int]);
 
         if (isset($filters['status_id'])) {
-            $this->query->where('status_id', $filters['status_id']);
+            $this->where('status_id', $filters['status_id']);
         }
-
-        parent::filter($filters);
 
         return $this;
     }
@@ -59,10 +44,20 @@ class UserListResource extends ListSearchableResource
      */
     public function search(?string $search): self
     {
-        $terms = $this->explodeSearch($search);
+        if (empty($search)) {
+            return $this;
+        }
+
+        $terms = array_values(
+            array_filter(
+                array_map(static function ($term) {
+                    return str_replace('*', '%', trim($term));
+                }, explode(' ', $search))
+            )
+        );
 
         if (!empty($terms)) {
-            $this->query->where(function (Builder $query) use ($terms) {
+            $this->where(function (UserBuilder $query) use ($terms) {
                 foreach ($terms as $term) {
                     $query
                         ->orWhere('id', 'like', "%$term%")
@@ -76,8 +71,6 @@ class UserListResource extends ListSearchableResource
                 }
             });
         }
-
-        parent::search($search);
 
         return $this;
     }
@@ -106,8 +99,19 @@ class UserListResource extends ListSearchableResource
                 $this->query->orderBy('lastname', $order);
         }
 
-        parent::order($orderBy, $order);
-
         return $this;
+    }
+
+    /**
+     * Get paginated list.
+     *
+     * @param int $page
+     * @param int $perPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function paginating(int $page, int $perPage): LengthAwarePaginator
+    {
+        return $this->paginate($perPage, ['*'], null, $page);
     }
 }

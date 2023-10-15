@@ -34,7 +34,7 @@ class UserHistoryController extends ApiController
 
         $list = $resource
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->order())
+            ->order($request->orderBy('timestamp'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         return ApiResponse::list($list)
@@ -100,7 +100,7 @@ class UserHistoryController extends ApiController
         $history = $resource
             ->forEntry($userID)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->order())
+            ->order($request->orderBy('timestamp'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         return ApiResponse::list($history)

@@ -24,7 +24,7 @@ class PermissionListController extends ApiController
         $permissions = $resource
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy('order'), $request->order())
+            ->order($request->orderBy('order'), $request->orderDirection())
             ->get();
 
         $permissions->transform(function (Permission $permission) {

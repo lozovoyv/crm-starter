@@ -24,7 +24,7 @@ class PermissionGroupListController extends ApiController
         $groups = $resource
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy('id'), $request->order())
+            ->order($request->orderBy('id'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         $groups->transform(function (PermissionGroup $permissionGroup) {

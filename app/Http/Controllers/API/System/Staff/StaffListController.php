@@ -24,7 +24,7 @@ class StaffListController extends ApiController
         $positions = $resource
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy(), $request->order())
+            ->order($request->orderBy(), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         $positions->transform(function (Position $position) {

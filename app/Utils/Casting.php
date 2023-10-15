@@ -112,4 +112,28 @@ class Casting
 
         return $value;
     }
+
+    /**
+     * Cast filters from string.
+     *
+     * @param array|null $array
+     * @param array $casting
+     *
+     * @return array
+     */
+    public static function castArray(?array $array, array $casting = []): array
+    {
+        if (empty($array)) {
+            $array = [];
+        }
+
+        foreach ($casting as $key => $type) {
+            if (isset($array[$key])) {
+                $array[$key] = self::fromString($array[$key], $type);
+            } else {
+                $array[$key] = null;
+            }
+        }
+        return $array;
+    }
 }

@@ -71,7 +71,7 @@ class APIListRequest extends APIBaseRequest
      *
      * @return  string|null
      */
-    public function order(string $default = 'asc'): ?string
+    public function orderDirection(string $default = 'asc'): ?string
     {
         $order = strtolower($this->input('order') ?? $default);
 

@@ -114,13 +114,13 @@ class APIListRequestTest extends TestCase
         $request = app()->make(APIListRequest::class);
 
         $request->merge(['order' => 'ASC']);
-        $this->assertEquals('asc', $request->order());
+        $this->assertEquals('asc', $request->orderDirection());
 
         $request->merge(['order' => 'desc']);
-        $this->assertEquals('desc', $request->order());
+        $this->assertEquals('desc', $request->orderDirection());
 
         $request->merge(['order' => 'test']);
-        $this->assertEquals('asc', $request->order());
+        $this->assertEquals('asc', $request->orderDirection());
     }
 
     /**

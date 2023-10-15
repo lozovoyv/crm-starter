@@ -10,10 +10,21 @@ use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
 use App\Models\Users\User;
 use App\Models\Users\UserStatus;
-use App\Resources\Users\UserListResource;
+use App\Utils\Translate;
 
 class UserListController extends ApiController
 {
+    protected array $titles = [
+        'id' => 'users/user.id',
+        'name' => 'users/user.name',
+        'email' => 'users/user.email',
+        'phone' => 'users/user.phone',
+        'created_at' => 'users/user.created_at',
+        'updated_at' => 'users/user.updated_at',
+    ];
+
+    protected array $orderableColumns = ['id', 'name', 'email', 'phone', 'created_at', 'updated_at'];
+
     public function __construct()
     {
         $this->middleware([
@@ -32,13 +43,14 @@ class UserListController extends ApiController
      */
     public function __invoke(APIListRequest $request): ApiResponse
     {
-        $resource = new UserListResource();
+        $orderBy = $request->orderBy('name');
+        $orderDirection = $request->orderDirection('asc');
 
-        $users = $resource
+        $users = User::query()
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy(), $request->order())
-            ->paginate($request->page(), $request->perPage());
+            ->order($orderBy, $orderDirection)
+            ->paginating($request->page(), $request->perPage());
 
         $users->transform(function (User $user) {
             return [
@@ -61,8 +73,8 @@ class UserListController extends ApiController
         });
 
         return ApiResponse::list($users)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+            ->titles(Translate::array($this->titles))
+            ->order($orderBy, $orderDirection)
+            ->orderable($this->orderableColumns);
     }
 }

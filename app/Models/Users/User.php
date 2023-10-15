@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Users;
 
+use App\Builders\UserBuilder;
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -90,6 +92,31 @@ class User extends Authenticatable implements Statusable, Historical, HashChecka
 
     /** @var array The accessors to append to the model's array. */
     protected $appends = ['fullName', 'compactName'];
+
+    /**
+     * Begin querying the model.
+     *
+     * @return UserBuilder
+     */
+    public static function query(): UserBuilder
+    {
+        /** @var UserBuilder $query */
+        $query = parent::query();
+
+        return $query;
+    }
+
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param Builder $query
+     *
+     * @return UserBuilder
+     */
+    public function newEloquentBuilder($query): UserBuilder
+    {
+        return new UserBuilder($query);
+    }
 
     /**
      * User's status.

@@ -19,9 +19,9 @@ class ApiResponseList extends ApiResponse
     protected ?string $title;
     protected ?array $titles;
     protected ?string $search;
-    protected ?string $order;
+    protected ?string $orderDirection;
     protected ?string $orderBy;
-    protected ?array $ordering;
+    protected ?array $orderable;
 
     /**
      * Get response.
@@ -62,8 +62,8 @@ class ApiResponseList extends ApiResponse
                 'filters' => $this->filters ?? null,
                 'search' => $this->search ?? null,
                 'order_by' => $this->orderBy ?? null,
-                'order' => $this->order ?? null,
-                'orderable' => $this->ordering ?? null,
+                'order' => $this->orderDirection ?? null,
+                'orderable' => $this->orderable ?? null,
                 'message' => $this->message ?? null,
                 'payload' => $this->payload ?? null,
             ]), $this->statusCode, $this->getHeaders()
@@ -144,13 +144,13 @@ class ApiResponseList extends ApiResponse
      * List applied order.
      *
      * @param string|null $orderBy
-     * @param string|null $order
+     * @param string|null $orderDirection
      *
      * @return  $this
      */
-    public function order(?string $orderBy, ?string $order): ApiResponseList
+    public function order(?string $orderBy, ?string $orderDirection): ApiResponseList
     {
-        $this->order = $order;
+        $this->orderDirection = $orderDirection;
         $this->orderBy = $orderBy;
 
         return $this;
@@ -159,13 +159,13 @@ class ApiResponseList extends ApiResponse
     /**
      * List ordering options.
      *
-     * @param array|null $ordering
+     * @param array|null $orderable
      *
      * @return  $this
      */
-    public function orderable(?array $ordering): ApiResponseList
+    public function orderable(?array $orderable): ApiResponseList
     {
-        $this->ordering = $ordering;
+        $this->orderable = $orderable;
 
         return $this;
     }

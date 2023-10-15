@@ -22,7 +22,7 @@ class PermissionGroupHistoryController extends ApiController
     {
         $list = $resource
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->order())
+            ->order($request->orderBy('timestamp'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         return ApiResponse::list($list)

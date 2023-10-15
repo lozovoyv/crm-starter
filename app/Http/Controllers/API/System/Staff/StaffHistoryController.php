@@ -23,7 +23,7 @@ class StaffHistoryController extends ApiController
     {
         $list = $resource
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->order())
+            ->order($request->orderBy('timestamp'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         return ApiResponse::list($list)
@@ -86,7 +86,7 @@ class StaffHistoryController extends ApiController
         $history = $resource
             ->forEntry($positionID)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->order())
+            ->order($request->orderBy('timestamp'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         return ApiResponse::list($history)
@@ -151,7 +151,7 @@ class StaffHistoryController extends ApiController
         $history = $resource
             ->forOperator($positionID)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->order())
+            ->order($request->orderBy('timestamp'), $request->orderDirection())
             ->paginate($request->page(), $request->perPage());
 
         return ApiResponse::list($history)
