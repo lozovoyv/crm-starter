@@ -5,7 +5,6 @@ namespace App\Models\Positions;
 
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
-use App\Models\Model;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
 use App\Models\Users\User;
@@ -13,6 +12,7 @@ use App\Traits\HasHistory;
 use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 

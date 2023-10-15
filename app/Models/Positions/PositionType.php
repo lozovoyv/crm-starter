@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Models\Positions;
 
-use App\Models\Model;
 use Database\Seeders\Seeders\PositionTypesSeeder;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 /**

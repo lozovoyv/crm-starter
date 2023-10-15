@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Positions;
 
-use App\Models\Model;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id

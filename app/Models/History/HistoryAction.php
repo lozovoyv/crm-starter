@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace App\Models\History;
 
-use App\Models\Model;
 use Database\Seeders\Seeders\HistoryActionsSeeder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id

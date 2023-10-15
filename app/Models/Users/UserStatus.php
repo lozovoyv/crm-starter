@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Models\Users;
 
-use App\Models\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id

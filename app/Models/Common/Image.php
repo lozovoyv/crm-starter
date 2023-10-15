@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Common;
 
-use App\Models\Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 

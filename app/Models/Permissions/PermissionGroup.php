@@ -14,12 +14,12 @@ namespace App\Models\Permissions;
 
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
-use App\Models\Model;
 use App\Traits\HashCheck;
 use App\Traits\HasHistory;
 use App\Traits\SetAttributeWithChanges;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**

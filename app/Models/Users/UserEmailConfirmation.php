@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Models\Users;
 
 use App\Actions\Users\UserEmailSetConfirmedAction;
-use App\Models\Model;
 use App\Resources\Users\UserResource;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;

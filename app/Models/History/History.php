@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Models\History;
 
-use App\Models\Model;
 use App\Models\Positions\Position;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
