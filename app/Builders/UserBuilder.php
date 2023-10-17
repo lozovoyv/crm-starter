@@ -91,12 +91,12 @@ class UserBuilder extends Builder
             case 'phone':
             case 'created_at':
             case 'updated_at':
-                $this->query->orderBy($orderBy, $order);
+                $this->orderBy($orderBy, $order);
                 break;
             case 'name':
             default:
                 $orderBy = 'name';
-                $this->query->orderBy('lastname', $order);
+                $this->orderBy('lastname', $order);
         }
 
         return $this;
@@ -110,7 +110,7 @@ class UserBuilder extends Builder
      *
      * @return LengthAwarePaginator
      */
-    public function paginating(int $page, int $perPage): LengthAwarePaginator
+    public function pagination(int $page, int $perPage): LengthAwarePaginator
     {
         return $this->paginate($perPage, ['*'], null, $page);
     }

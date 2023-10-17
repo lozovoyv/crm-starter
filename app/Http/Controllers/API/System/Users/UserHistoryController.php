@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\API\HistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
+use App\Models\History\History;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
-use App\Resources\Users\UserHistoryResource;
+use App\Models\Users\User;
+use App\Utils\Translate;
 
-class UserHistoryController extends ApiController
+class UserHistoryController extends HistoryController
 {
     public function __construct()
     {
@@ -30,17 +32,15 @@ class UserHistoryController extends ApiController
      */
     public function list(APIListRequest $request): ApiResponse
     {
-        $resource = new UserHistoryResource();
-
-        $list = $resource
+        $list = History::query()
+            ->whereEntryType(User::class)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->orderDirection())
-            ->paginate($request->page(), $request->perPage());
+            ->order($request->orderBy('timestamp'), $request->orderDirection('desc'))
+            ->pagination($request->page(), $request->perPage());
 
         return ApiResponse::list($list)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
     }
 
     /**
@@ -52,9 +52,11 @@ class UserHistoryController extends ApiController
      */
     public function comments(int $historyID): ApiResponse
     {
-        $resource = new UserHistoryResource();
-
-        $history = $resource->retrieveRecord($historyID);
+        $history = History::query()
+            ->withComments()
+            ->whereEntryType(User::class)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
@@ -72,17 +74,18 @@ class UserHistoryController extends ApiController
      */
     public function changes(int $historyID): ApiResponse
     {
-        $resource = new UserHistoryResource();
-
-        $history = $resource->retrieveRecord($historyID);
+        $history = History::query()
+            ->withChanges()
+            ->whereEntryType(User::class)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
         }
 
-        return ApiResponse::list()
-            ->items($history->getChanges())
-            ->titles($resource->getChangesTitles());
+        return ApiResponse::list($history->getChanges())
+            ->titles(Translate::array($this->changesTitles));
     }
 
     /**
@@ -95,18 +98,16 @@ class UserHistoryController extends ApiController
      */
     public function listForUser(int $userID, APIListRequest $request): ApiResponse
     {
-        $resource = new UserHistoryResource();
-
-        $history = $resource
-            ->forEntry($userID)
+        $list = History::query()
+            ->whereEntryType(User::class)
+            ->whereEntryID($userID)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->orderDirection())
-            ->paginate($request->page(), $request->perPage());
+            ->order($request->orderBy('timestamp'), $request->orderDirection('desc'))
+            ->pagination($request->page(), $request->perPage());
 
-        return ApiResponse::list($history)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+        return ApiResponse::list($list)
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
     }
 
     /**
@@ -119,9 +120,12 @@ class UserHistoryController extends ApiController
      */
     public function commentsForUser(int $userID, int $historyID): ApiResponse
     {
-        $resource = new UserHistoryResource();
-
-        $history = $resource->forEntry($userID)->retrieveRecord($historyID);
+        $history = History::query()
+            ->withComments()
+            ->whereEntryType(User::class)
+            ->whereEntryID($userID)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
@@ -140,16 +144,18 @@ class UserHistoryController extends ApiController
      */
     public function changesForUser(int $userID, int $historyID): ApiResponse
     {
-        $resource = new UserHistoryResource();
-
-        $history = $resource->forEntry($userID)->retrieveRecord($historyID);
+        $history = History::query()
+            ->withChanges()
+            ->whereEntryType(User::class)
+            ->whereEntryID($userID)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
         }
 
-        return ApiResponse::list()
-            ->items($history->getChanges())
-            ->titles($resource->getChangesTitles());
+        return ApiResponse::list($history->getChanges())
+            ->titles(Translate::array($this->changesTitles));
     }
 }

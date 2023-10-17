@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\History;
 
+use App\Builders\HistoryBuilder;
 use App\Models\Positions\Position;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Query\Builder;
 
 /**
  * @property int $id
@@ -56,6 +58,31 @@ class History extends Model
     protected $with = ['action', 'links', 'entry'];
 
     protected $withCount = ['changes', 'comments'];
+
+    /**
+     * Begin querying the model.
+     *
+     * @return HistoryBuilder
+     */
+    public static function query(): HistoryBuilder
+    {
+        /** @var HistoryBuilder $query */
+        $query = parent::query();
+
+        return $query;
+    }
+
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param Builder $query
+     *
+     * @return HistoryBuilder
+     */
+    public function newEloquentBuilder($query): HistoryBuilder
+    {
+        return new HistoryBuilder($query);
+    }
 
     /**
      * History record action.

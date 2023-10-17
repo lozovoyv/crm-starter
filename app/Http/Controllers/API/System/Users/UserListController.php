@@ -50,7 +50,7 @@ class UserListController extends ApiController
             ->filter($request->filters())
             ->search($request->search())
             ->order($orderBy, $orderDirection)
-            ->paginating($request->page(), $request->perPage());
+            ->pagination($request->page(), $request->perPage());
 
         $users->transform(function (User $user) {
             return [

@@ -23,7 +23,6 @@ use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
-use App\Models\Users\User;
 use App\Resources\Users\UserResource;
 use App\VDTO\UserVDTO;
 
