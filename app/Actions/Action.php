@@ -13,7 +13,7 @@ namespace App\Actions;
 
 use App\Current;
 
-class Action
+abstract class Action
 {
     protected ?Current $current;
 
