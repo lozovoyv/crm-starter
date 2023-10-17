@@ -13,7 +13,6 @@ namespace App\Builders;
 
 use App\Models\History\History;
 use App\Utils\Casting;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -127,7 +126,7 @@ class HistoryBuilder extends Builder
      */
     public function order(string $orderBy = 'timestamp', string $order = 'asc'): self
     {
-        $this->orderBy('timestamp', $order);
+        $this->orderBy($orderBy, $order);
 
         return $this;
     }
@@ -153,18 +152,5 @@ class HistoryBuilder extends Builder
         $history = parent::first($columns);
 
         return $history;
-    }
-
-    /**
-     * Get paginated list.
-     *
-     * @param int $page
-     * @param int $perPage
-     *
-     * @return LengthAwarePaginator
-     */
-    public function pagination(int $page, int $perPage): LengthAwarePaginator
-    {
-        return $this->paginate($perPage, ['*'], null, $page);
     }
 }

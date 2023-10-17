@@ -11,13 +11,25 @@ declare(strict_types=1);
 
 namespace App\Builders;
 
-use App\Models\Users\User;
+use App\Models\Permissions\Permission;
+use App\Models\Permissions\PermissionGroup;
 use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
-class UserBuilder extends Builder
+class PermissionGroupBuilder extends Builder
 {
+    /**
+     * Append permissions count.
+     *
+     * @return $this
+     */
+    public function withCountPermissions(): self
+    {
+        $this->withCount('permissions');
+
+        return $this;
+    }
+
     /**
      * Apply filters.
      *
@@ -27,10 +39,10 @@ class UserBuilder extends Builder
      */
     public function filter(?array $filters): self
     {
-        $filters = Casting::castArray($filters, ['status_id' => Casting::int]);
+        $filters = Casting::castArray($filters, ['active' => Casting::bool]);
 
-        if (isset($filters['status_id'])) {
-            $this->where('status_id', $filters['status_id']);
+        if (isset($filters['active'])) {
+            $this->where('active', $filters['active']);
         }
 
         return $this;
@@ -48,17 +60,11 @@ class UserBuilder extends Builder
         $terms = $this->explodeSearchTerms($search, true);
 
         if (!empty($terms)) {
-            $this->where(function (UserBuilder $query) use ($terms) {
+            $this->where(function (PermissionGroupBuilder $query) use ($terms) {
                 foreach ($terms as $term) {
                     $query
                         ->orWhere('id', 'like', "%$term%")
-                        ->orWhere('lastname', 'like', "%$term%")
-                        ->orWhere('firstname', 'like', "%$term%")
-                        ->orWhere('patronymic', 'like', "%$term%")
-                        ->orWhere('display_name', 'like', "%$term%")
-                        ->orWhere('username', 'like', "%$term%")
-                        ->orWhere('email', 'like', "%$term%")
-                        ->orWhere('phone', 'like', "%$term%");
+                        ->orWhere('name', 'like', "%$term%");
                 }
             });
         }
@@ -69,25 +75,21 @@ class UserBuilder extends Builder
     /**
      * Apply order.
      *
-     * @param string|null $orderBy
-     * @param string|null $order
+     * @param string $orderBy
+     * @param string $order
      *
      * @return $this
      */
-    public function order(?string $orderBy = 'name', ?string $order = 'asc'): self
+    public function order(string $orderBy = 'order', string $order = 'asc'): self
     {
         switch ($orderBy) {
-            case 'id':
-            case 'email':
-            case 'phone':
-            case 'created_at':
+            case 'active':
             case 'updated_at':
-                $this->orderBy($orderBy, $order);
-                break;
             case 'name':
+                $this->query->orderBy($orderBy, $order);
+                break;
             default:
-                $orderBy = 'name';
-                $this->orderBy('lastname', $order);
+                $this->query->orderBy('id', $order);
         }
 
         return $this;
@@ -96,7 +98,7 @@ class UserBuilder extends Builder
     /**
      * @param array $columns
      *
-     * @return Collection<User>
+     * @return Collection<PermissionGroup>
      */
     public function get($columns = ['*']): Collection
     {
@@ -106,13 +108,13 @@ class UserBuilder extends Builder
     /**
      * @param array $columns
      *
-     * @return User|null
+     * @return PermissionGroup|null
      */
-    public function first($columns = ['*']): ?User
+    public function first($columns = ['*']): ?PermissionGroup
     {
-        /** @var User|null $user */
-        $user = parent::first($columns);
+        /** @var PermissionGroup|null $group */
+        $group = parent::first($columns);
 
-        return $user;
+        return $group;
     }
 }

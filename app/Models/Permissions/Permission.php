@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace App\Models\Permissions;
 
+use App\Builders\PermissionBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Query\Builder;
 
 /**
  * @property int $id
@@ -81,7 +83,7 @@ class Permission extends Model
         ],
         self::system__act_as_other => [
             'name' => 'Просмотр системы от лица другого пользователя',
-            'description' => 'Просмотр системы и совершение операция от лица другого пользователя.',
+            'description' => 'Просмотр системы и совершение операций от лица другого пользователя.',
         ],
     ];
 
@@ -90,6 +92,31 @@ class Permission extends Model
         'scope_name',
         'name',
     ];
+
+    /**
+     * Begin querying the model.
+     *
+     * @return PermissionBuilder
+     */
+    public static function query(): PermissionBuilder
+    {
+        /** @var PermissionBuilder $query */
+        $query = parent::query();
+
+        return $query;
+    }
+
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param Builder $query
+     *
+     * @return PermissionBuilder
+     */
+    public function newEloquentBuilder($query): PermissionBuilder
+    {
+        return new PermissionBuilder($query);
+    }
 
     /**
      * Get permission by key.

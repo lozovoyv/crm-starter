@@ -35,4 +35,12 @@ type Permission = {
 const permissions = ref<List<Permission>>(new List<Permission>({load_url: apiEndPoint('get', '/api/system/permissions'), use_pagination: false}));
 
 permissions.value.load();
+
+function reload(): void {
+    permissions.value.reload();
+}
+
+defineExpose({
+    reload,
+})
 </script>

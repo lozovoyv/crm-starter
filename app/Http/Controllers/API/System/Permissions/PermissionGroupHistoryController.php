@@ -3,45 +3,60 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Permissions;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\API\HistoryController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
-use App\Resources\Permissions\PermissionGroupsHistoryResource;
+use App\Models\History\History;
+use App\Models\Permissions\Permission;
+use App\Models\Permissions\PermissionGroup;
+use App\Models\Positions\PositionType;
+use App\Utils\Translate;
 
-class PermissionGroupHistoryController extends ApiController
+class PermissionGroupHistoryController extends HistoryController
 {
-    /**
-     * All users history list.
-     *
-     * @param APIListRequest $request
-     * @param PermissionGroupsHistoryResource $resource
-     *
-     * @return ApiResponse
-     */
-    public function list(APIListRequest $request, PermissionGroupsHistoryResource $resource): ApiResponse
+    public function __construct()
     {
-        $list = $resource
-            ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->orderDirection())
-            ->paginate($request->page(), $request->perPage());
-
-        return ApiResponse::list($list)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+        $this->middleware([
+            'auth:sanctum',
+            PositionType::middleware(PositionType::admin, PositionType::staff),
+            Permission::middleware(Permission::system__permissions),
+        ]);
     }
 
     /**
-     * All users history entry comments.
+     * Permissions groups history list.
      *
-     * @param int $historyID
-     * @param PermissionGroupsHistoryResource $resource
+     * @param APIListRequest $request
      *
      * @return ApiResponse
      */
-    public function comments(int $historyID, PermissionGroupsHistoryResource $resource): ApiResponse
+    public function list(APIListRequest $request): ApiResponse
     {
-        $history = $resource->retrieveRecord($historyID);
+        $list = History::query()
+            ->whereEntryType(PermissionGroup::class)
+            ->filter($request->filters())
+            ->order($request->orderBy('timestamp'), $request->orderDirection('desc'))
+            ->pagination($request->page(), $request->perPage());
+
+        return ApiResponse::list($list)
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
+    }
+
+    /**
+     * Permissions group history comments.
+     *
+     * @param int $historyID
+     *
+     * @return ApiResponse
+     */
+    public function comments(int $historyID): ApiResponse
+    {
+        $history = History::query()
+            ->withComments()
+            ->whereEntryType(PermissionGroup::class)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
@@ -51,23 +66,25 @@ class PermissionGroupHistoryController extends ApiController
     }
 
     /**
-     * All users history entry changes.
+     * Permissions group history changes.
      *
      * @param int $historyID
-     * @param PermissionGroupsHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function changes(int $historyID, PermissionGroupsHistoryResource $resource): ApiResponse
+    public function changes(int $historyID): ApiResponse
     {
-        $history = $resource->retrieveRecord($historyID);
+        $history = History::query()
+            ->withChanges()
+            ->whereEntryType(PermissionGroup::class)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
         }
 
-        return ApiResponse::list()
-            ->items($history->getChanges())
-            ->titles($resource->getChangesTitles());
+        return ApiResponse::list($history->getChanges())
+            ->titles(Translate::array($this->changesTitles));
     }
 }

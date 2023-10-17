@@ -60,6 +60,7 @@ Route::prefix('/api/system/staff')->middleware(
     Route::get('/position/{positionID}/operations/{historyID}/changes', [StaffHistoryController::class, 'changesByStaff']);
 });
 
+// Users
 Route::get('/api/system/users', UserListController::class);
 Route::get('/api/system/users/history', [UserHistoryController::class, 'list']);
 Route::get('/api/system/users/history/{historyID}/comments', [UserHistoryController::class, 'comments']);
@@ -75,24 +76,24 @@ Route::get('/api/system/users/user/{userID}/history/{historyID}/comments', [User
 Route::get('/api/system/users/user/{userID}/history/{historyID}/changes', [UserHistoryController::class, 'changesForUser']);
 Route::get('/api/system/users/{userID}', UserViewController::class);
 
+// Permissions
+Route::get('/api/system/permissions', PermissionListController::class);
+Route::get('/api/system/permissions/groups', PermissionGroupListController::class);
+
+Route::get('/api/system/permissions/history', [PermissionGroupHistoryController::class, 'list']);
+Route::get('/api/system/permissions/history/{historyID}/comments', [PermissionGroupHistoryController::class, 'comments']);
+Route::get('/api/system/permissions/history/{historyID}/changes', [PermissionGroupHistoryController::class, 'changes']);
+
 Route::prefix('/api/system/permissions')->middleware(
     ['auth:sanctum', PositionType::middleware(PositionType::admin, PositionType::staff), Permission::middleware(Permission::system__permissions)]
 )->group(function () {
-    Route::get('/', [PermissionListController::class, 'list']);
-    Route::get('/groups', [PermissionGroupListController::class, 'list']);
     Route::get('/group/{groupID?}', [PermissionGroupEditController::class, 'get']);
     Route::put('/group/{groupID?}', [PermissionGroupEditController::class, 'save']);
     Route::delete('/group/{groupID}', [PermissionGroupEditController::class, 'remove']);
     Route::patch('/group/{groupID}/status', [PermissionGroupEditController::class, 'status']);
-    Route::get('/history', [PermissionGroupHistoryController::class, 'list']);
-    Route::get('/history/{historyID}/comments', [PermissionGroupHistoryController::class, 'comments']);
-    Route::get('/history/{historyID}/changes', [PermissionGroupHistoryController::class, 'changes']);
 });
 
-Route::prefix('/api/system/history')->middleware(
-    ['auth:sanctum', PositionType::middleware(PositionType::admin, PositionType::staff), Permission::middleware(Permission::system__history)]
-)->group(function () {
-    Route::get('/', [HistoryController::class, 'list']);
-    Route::get('/{historyID}/comments', [HistoryController::class, 'comments']);
-    Route::get('/{historyID}/changes', [HistoryController::class, 'changes']);
-});
+// Common history
+Route::get('/api/system/history', [HistoryController::class, 'list']);
+Route::get('/api/system/history/{historyID}/comments', [HistoryController::class, 'comments']);
+Route::get('/api/system/history/{historyID}/changes', [HistoryController::class, 'changes']);

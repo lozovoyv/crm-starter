@@ -43,13 +43,10 @@ class UserListController extends ApiController
      */
     public function __invoke(APIListRequest $request): ApiResponse
     {
-        $orderBy = $request->orderBy('name');
-        $orderDirection = $request->orderDirection('asc');
-
         $users = User::query()
             ->filter($request->filters())
             ->search($request->search())
-            ->order($orderBy, $orderDirection)
+            ->order($request->orderBy('name'), $request->orderDirection('asc'))
             ->pagination($request->page(), $request->perPage());
 
         $users->transform(function (User $user) {
@@ -74,7 +71,6 @@ class UserListController extends ApiController
 
         return ApiResponse::list($users)
             ->titles(Translate::array($this->titles))
-            ->order($orderBy, $orderDirection)
             ->orderable($this->orderableColumns);
     }
 }

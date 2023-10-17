@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Models\Permissions;
 
+use App\Builders\PermissionGroupBuilder;
 use App\Interfaces\HashCheckable;
 use App\Interfaces\Historical;
 use App\Traits\HashCheck;
@@ -21,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Query\Builder;
 
 /**
  * @property int $id
@@ -50,6 +52,31 @@ class PermissionGroup extends Model implements Historical, HashCheckable
         'locked' => false,
         'active' => true,
     ];
+
+    /**
+     * Begin querying the model.
+     *
+     * @return PermissionGroupBuilder
+     */
+    public static function query(): PermissionGroupBuilder
+    {
+        /** @var PermissionGroupBuilder $query */
+        $query = parent::query();
+
+        return $query;
+    }
+
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param Builder $query
+     *
+     * @return PermissionGroupBuilder
+     */
+    public function newEloquentBuilder($query): PermissionGroupBuilder
+    {
+        return new PermissionGroupBuilder($query);
+    }
 
     /**
      * History entry title.

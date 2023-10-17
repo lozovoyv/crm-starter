@@ -1,5 +1,10 @@
 <template>
-    <LayoutPage title="Права" :breadcrumbs="[{name: 'Права'}]">
+    <LayoutPage
+        title="Права"
+        :breadcrumbs="[{name: 'Права'}]"
+        :reload="true"
+        @reload="callReload"
+    >
         <template v-slot:actions>
             <GuiActionsMenu title="Действия">
                 <GuiLink name="Добавить группу прав" @click="create()"/>
@@ -8,7 +13,7 @@
 
         <GuiTabs v-model="tab" :tabs="tabs" tab-key="tab"/>
         <PermissionGroupsList v-if="tab === 'groups'" ref="groups"/>
-        <PermissionsList v-if="tab === 'permissions'"/>
+        <PermissionsList v-if="tab === 'permissions'" ref="permissions"/>
         <PermissionsHistory v-if="tab === 'history'" ref="history"/>
 
         <PermissionGroupEditForm ref="form"/>
@@ -32,12 +37,13 @@ const tabs = computed((): { [index: string]: string } => {
     return {groups: 'Группы прав', permissions: 'Права', history: 'История'};
 });
 
-const groups = ref<InstanceType<typeof PermissionGroupsList> | undefined>(undefined);
 const form = ref<InstanceType<typeof PermissionGroupEditForm> | undefined>(undefined);
+const groups = ref<InstanceType<typeof PermissionGroupsList> | undefined>(undefined);
+const permissions = ref<InstanceType<typeof PermissionsList> | undefined>(undefined);
 const history = ref<InstanceType<typeof PermissionsHistory> | undefined>(undefined);
 
 function create(): void {
-    if(form.value) {
+    if (form.value) {
         form.value.show(0)
             ?.then(() => {
                 if (tab.value === 'groups' && groups.value) {
@@ -47,6 +53,18 @@ function create(): void {
                     history.value?.reload();
                 }
             });
+    }
+}
+
+function callReload(): void {
+    if (tab.value === 'groups' && groups.value !== undefined) {
+        groups.value.reload();
+    }
+    if (tab.value === 'permissions' && permissions.value !== undefined) {
+        permissions.value.reload();
+    }
+    if (tab.value === 'history' && history.value !== undefined) {
+        history.value.reload();
     }
 }
 </script>

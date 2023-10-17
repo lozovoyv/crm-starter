@@ -7,33 +7,57 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
-use App\Resources\Permissions\PermissionListResource;
+use App\Models\Positions\PositionType;
+use App\Utils\Translate;
 
 class PermissionListController extends ApiController
 {
+    protected array $titles = [
+        'scope_name' =>'permissions/permission.scope',
+        'name' => 'permissions/permission.name',
+        'description' => 'permissions/permission.description',
+        'key' => 'permissions/permission.key',
+    ];
+
+    protected array $orderableColumns = ['scope_name', 'name', 'key'];
+
+    public function __construct()
+    {
+        $this->middleware([
+            'auth:sanctum',
+            PositionType::middleware(PositionType::admin, PositionType::staff),
+            Permission::middleware(Permission::system__permissions),
+        ]);
+    }
+
     /**
-     * Permissions list.
+     * Get permissions list.
      *
      * @param APIListRequest $request
-     * @param PermissionListResource $resource
      *
      * @return  ApiResponse
      */
-    public function list(APIListRequest $request, PermissionListResource $resource): ApiResponse
+    public function __invoke(APIListRequest $request): ApiResponse
     {
-        $permissions = $resource
+        $list = Permission::query()
+            ->withScope()
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy('order'), $request->orderDirection())
+            ->order($request->orderBy('order'), $request->orderDirection('asc'))
             ->get();
 
-        $permissions->transform(function (Permission $permission) {
-            return PermissionListResource::format($permission);
+        $list->transform(function (Permission $permission) {
+            return [
+                'id' => $permission->id,
+                'key' => $permission->key,
+                'scope' => $permission->scope->name,
+                'name' => $permission->name,
+                'description' => $permission->description,
+            ];
         });
 
-        return ApiResponse::list($permissions)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+        return ApiResponse::list($list)
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
     }
 }

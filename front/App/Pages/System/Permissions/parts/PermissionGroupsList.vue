@@ -17,6 +17,7 @@
             <ListTableCell style="white-space: nowrap" v-html="highlight(group.name, groups.search)"/>
             <ListTableCell style="text-align: center">{{ group.count ? group.count : '—' }}</ListTableCell>
             <ListTableCell style="width: 100%;">{{ group.description }}</ListTableCell>
+            <ListTableCell style="white-space: nowrap">{{ toDatetime(group.created_at, true) }}</ListTableCell>
             <ListTableCell style="white-space: nowrap">{{ toDatetime(group.updated_at, true) }}</ListTableCell>
             <ListTableCell :action="true">
                 <ListActions v-if="!group.locked">
@@ -66,6 +67,7 @@ type PermissionGroup = {
     active: boolean,
     locked: boolean,
     hash: string | null,
+    created_at: string,
     updated_at: string,
 };
 
