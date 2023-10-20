@@ -9,7 +9,6 @@ use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
-use App\Resources\History\CommonHistoryResource;
 use App\Utils\Translate;
 
 class HistoryController extends BaseHistoryController

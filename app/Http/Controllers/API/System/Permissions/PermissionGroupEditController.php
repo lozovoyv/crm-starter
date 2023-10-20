@@ -3,49 +3,73 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Permissions;
 
+use App\Actions\Permission\PermissionGroupUpdateAction;
 use App\Current;
+use App\Exceptions\Model\ModelException;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
-use App\Models\History\HistoryAction;
-use App\Resources\Permissions\PermissionGroupEntryResource;
-use Exception;
-use Illuminate\Http\Request;
+use App\Models\Permissions\Permission;
+use App\Models\Positions\PositionType;
+use App\Resources\Permissions\PermissionGroupResource;
+use App\VDTO\PermissionGroupVDTO;
 
 class PermissionGroupEditController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware([
+            'auth:sanctum',
+            PositionType::middleware(PositionType::admin, PositionType::staff),
+            Permission::middleware(Permission::system__permissions),
+        ]);
+    }
+
     /**
      * Get permission group data for edit.
      *
-     * @param int|null $groupID
      * @param APIRequest $request
-     * @param PermissionGroupEntryResource $resource
+     * @param int|null $groupID
      *
      * @return  ApiResponse
      */
-    public function get(?int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
+    public function get(APIRequest $request, ?int $groupID = null): ApiResponse
     {
-        if ($groupID === null) {
-            $groupID = $request->integer('from_group_id');
-        }
-        $groupID = $groupID ?: null;
+        $fromGroupID = $request->integer('from_group_id');
 
         try {
-            $group = $resource->get($groupID, null, false, false);
-        } catch (Exception $exception) {
+            $resource = PermissionGroupResource::get($groupID ?? $fromGroupID, null, false, false);
+        } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
 
+        $vdto = new PermissionGroupVDTO();
+
+        $fields = [
+            'name',
+            'active',
+            'description',
+        ];
+
+        $titles = array_merge(
+            $vdto->getTitles($fields),
+            $resource->getPermissionsNames()
+        );
+
+        $values = array_merge(
+            $resource->values($fields),
+            $resource->getPermissionsValues()
+        );
+
         return ApiResponse::form()
-            ->title($group->exists ? $group->name : 'Добавление группы прав')
-            ->values($resource->getValues($group))
-            ->rules($resource->getValidationRules())
-            ->titles($resource->getTitles())
-            ->messages($resource->getValidationMessages())
-            ->hash($resource->getHash($group))
+            ->title($groupID ? $resource->group()->name : 'Создание группы прав')
+            ->values($values)
+            ->rules($vdto->getValidationRules($fields))
+            ->titles($titles)
+            ->messages($vdto->getValidationMessages($fields))
+            ->hash($resource->getHash())
             ->payload([
                 'scopes' => $resource->getPermissionsScopes(),
-                'permissions' => $resource->getPermissionsIds(),
                 'descriptions' => $resource->getPermissionsDescriptions(),
             ]);
     }
@@ -55,78 +79,30 @@ class PermissionGroupEditController extends ApiController
      *
      * @param int|null $groupID
      * @param APIRequest $request
-     * @param PermissionGroupEntryResource $resource
      *
      * @return  ApiResponse
-     *
-     * @noinspection DuplicatedCode
      */
-    public function save(?int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
+    public function put(APIRequest $request, ?int $groupID = null): ApiResponse
     {
         try {
-            $group = $resource->get($groupID, $request->hash(), true, false);
-            $data = $resource->filterData($request->data());
-            if ($errors = $resource->validate($data, $group)) {
-                return APIResponse::validationError($errors);
-            }
-            $current = Current::init($request);
-            $group = $resource->update($group, $data, $current);
-
-        } catch (Exception $exception) {
+            $resource = PermissionGroupResource::get($groupID, $request->hash(), true, false);
+        } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
+
+        $vdto = new PermissionGroupVDTO($request->data());
+
+        if ($errors = $vdto->validate([], $resource->group())) {
+            return APIResponse::validationError($errors);
+        }
+
+        $current = Current::init($request);
+
+        $action = new PermissionGroupUpdateAction($current);
+        $action->execute($resource->group(), $vdto);
 
         return APIResponse::success()
-            ->message($group->wasRecentlyCreated ? 'Группа прав добавлена' : 'Группа прав сохранена')
-            ->payload(['id' => $group->id]);
-    }
-
-    /**
-     * Change permission group status.
-     *
-     * @param int $groupID
-     * @param APIRequest $request
-     * @param PermissionGroupEntryResource $resource
-     *
-     * @return  ApiResponse
-     */
-    public function status(int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
-    {
-        try {
-            $group = $resource->get($groupID, $request->hash(), true);
-            $data = $resource->filterData($request->data(), ['active']);
-            if ($errors = $resource->validate($data, $group, ['active'])) {
-                return APIResponse::validationError($errors);
-            }
-            $current = Current::init($request);
-            $group = $resource->updateStatus($group, $data, $current);
-
-        } catch (Exception $exception) {
-            return APIResponse::error($exception->getMessage());
-        }
-
-        return APIResponse::success($group->active ? 'Группа прав включена' : 'Группа прав отключена');
-    }
-
-    /**
-     * Delete permission group.
-     *
-     * @param int $groupID
-     * @param APIRequest $request
-     * @param PermissionGroupEntryResource $resource
-     *
-     * @return  ApiResponse
-     */
-    public function remove(int $groupID, APIRequest $request, PermissionGroupEntryResource $resource): ApiResponse
-    {
-        try {
-            $group = $resource->get($groupID, $request->hash(), true);
-            $current = Current::init($request);
-            $resource->remove($group, $current);
-        } catch (Exception $exception) {
-            return APIResponse::error($exception->getMessage());
-        }
-
-        return ApiResponse::success('Группа прав удалена');
+            ->message($resource->group()->wasRecentlyCreated ? 'Группа прав добавлена' : 'Группа прав сохранена')
+            ->payload(['id' => $resource->group()]);
     }
 }

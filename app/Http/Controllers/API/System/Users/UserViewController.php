@@ -33,7 +33,7 @@ class UserViewController extends ApiController
     public function __invoke(int $userID): ApiResponse
     {
         try {
-            $resource = UserResource::make($userID);
+            $resource = UserResource::get($userID);
         } catch (ModelNotFoundException $exception) {
             return ApiResponse::notFound($exception->getMessage());
         } catch (Exception $exception) {

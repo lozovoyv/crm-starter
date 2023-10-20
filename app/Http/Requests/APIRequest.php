@@ -44,4 +44,19 @@ class APIRequest extends APIBaseRequest
     {
         return $this->input('hash', null);
     }
+
+    /**
+     * Retrieve input as an integer value or null.
+     *
+     * @param string $key
+     * @param int $default
+     *
+     * @return int|null
+     */
+    public function integer($key, $default = null): ?int
+    {
+        $val = $this->input($key);
+
+        return $val === null ? null : (int)$val;
+    }
 }

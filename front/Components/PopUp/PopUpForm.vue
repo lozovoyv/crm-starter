@@ -48,7 +48,7 @@ const popup = ref<InstanceType<typeof PopUp> | undefined>(undefined);
 
 let internalResolveFunction: undefined | { (value: unknown): void } = undefined;
 
-function show(id: number | undefined, options: { [index: string]: any } = {}, skipLoading: boolean = false) {
+function show(skipLoading: boolean = false) {
     if (!popup.value) {
         console.error('Popup instance not set');
         return;

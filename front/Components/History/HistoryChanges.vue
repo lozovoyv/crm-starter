@@ -21,8 +21,8 @@
             <tbody>
             <tr v-for="change in list.list">
                 <td class="history-change-table__head">{{ change.parameter }}:</td>
-                <td>{{ change.old ? change.old : '—' }}</td>
-                <td>{{ change.new ? change.new : '—' }}</td>
+                <td class="history-change-table__value" v-html="format(change.old)"/>
+                <td class="history-change-table__value" v-html="format(change.new)"/>
             </tr>
             </tbody>
         </table>
@@ -37,8 +37,8 @@ import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 type HistoryChange = {
     parameter: string,
-    old: unknown,
-    new: unknown,
+    old: number | string | number[] | string[] | null,
+    new: number | string | number[] | string[] | null,
 }
 
 const props = defineProps<{
@@ -73,6 +73,14 @@ function show(recordID: number, date: string | null, message: string | null) {
         });
 }
 
+function format(value: number | string | number[] | string[] | null): string {
+    if (value instanceof Array) {
+        return value.join('<br/>');
+    }
+
+    return value !== null ? String(value) : '—';
+}
+
 defineExpose({
     show,
 })
@@ -93,6 +101,14 @@ defineExpose({
         color: $color_gray_darken_2;
     }
 
+    &__value {
+        padding: 0 8px;
+    }
+
+    & td {
+        vertical-align: baseline;
+    }
+
     & th, & td {
         padding: 4px 8px 4px 0;
     }
@@ -102,7 +118,7 @@ defineExpose({
     }
 
     & td:nth-child(1) {
-        width: 25%;
+        width: 150px;
     }
 }
 </style>

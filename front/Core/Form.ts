@@ -194,6 +194,15 @@ export class Form {
     };
 
     /**
+     * Set form config.
+     *
+     * @param config
+     */
+    setConfig(config: FormConfig):void {
+        this.config = config;
+    }
+
+    /**
      * Set form state is loaded manually.
      */
     setLoaded(): void {

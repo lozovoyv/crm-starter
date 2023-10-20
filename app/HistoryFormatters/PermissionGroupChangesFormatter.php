@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\HistoryFormatters;
 
 use App\Models\History\HistoryChanges;
+use App\Models\Permissions\Permission;
 
 class PermissionGroupChangesFormatter implements FormatterInterface
 {
@@ -42,9 +43,33 @@ class PermissionGroupChangesFormatter implements FormatterInterface
                 break;
             case 'permissions':
                 $result['parameter'] = 'Права';
+                [$result['old'], $result['new']] = self::formatPermissionChange($result['old'] ?? [], $result['new'] ?? []);
                 break;
         }
 
         return $result;
+    }
+
+    protected static function formatPermissionChange($old, $new): array
+    {
+        $removed = array_diff($old, $new);
+        $added = array_diff($new, $old);
+        $changes = array_merge($removed, $added);
+
+        $oldValues = empty($old) ? '—' : Permission::query()->whereIn('id', $old)->withScope()->get()->map(function (Permission $permission) {
+            return $permission->scope->name . ': ' . mb_strtolower($permission->name);
+        })->sort()->values()->toArray();
+
+        $newValues = empty($changes) ? '—' : Permission::query()->whereIn('id', $changes)->withScope()->get()->map(
+            function (Permission $permission) use ($removed) {
+                $sign = in_array($permission->id, $removed, true) ? '-' : '+';
+                return $sign . ' ' . $permission->scope->name . ': ' . mb_strtolower($permission->name);
+            }
+        )->sort()->values()->toArray();
+
+        return [
+            $oldValues,
+            $newValues,
+        ];
     }
 }

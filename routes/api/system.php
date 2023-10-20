@@ -7,6 +7,8 @@ use App\Http\Controllers\API\System\History\HistoryController;
 use App\Http\Controllers\API\System\Permissions\PermissionGroupEditController;
 use App\Http\Controllers\API\System\Permissions\PermissionGroupHistoryController;
 use App\Http\Controllers\API\System\Permissions\PermissionGroupListController;
+use App\Http\Controllers\API\System\Permissions\PermissionGroupRemoveController;
+use App\Http\Controllers\API\System\Permissions\PermissionGroupStatusController;
 use App\Http\Controllers\API\System\Permissions\PermissionListController;
 use App\Http\Controllers\API\System\Staff\StaffHistoryController;
 use App\Http\Controllers\API\System\Staff\StaffListController;
@@ -79,19 +81,13 @@ Route::get('/api/system/users/{userID}', UserViewController::class);
 // Permissions
 Route::get('/api/system/permissions', PermissionListController::class);
 Route::get('/api/system/permissions/groups', PermissionGroupListController::class);
-
+Route::get('/api/system/permissions/group/{groupID?}', [PermissionGroupEditController::class, 'get']);
+Route::put('/api/system/permissions/group/{groupID?}', [PermissionGroupEditController::class, 'put']);
+Route::patch('/api/system/permissions/group/{groupID}/status', PermissionGroupStatusController::class);
+Route::delete('/api/system/permissions/group/{groupID}', PermissionGroupRemoveController::class);
 Route::get('/api/system/permissions/history', [PermissionGroupHistoryController::class, 'list']);
 Route::get('/api/system/permissions/history/{historyID}/comments', [PermissionGroupHistoryController::class, 'comments']);
 Route::get('/api/system/permissions/history/{historyID}/changes', [PermissionGroupHistoryController::class, 'changes']);
-
-Route::prefix('/api/system/permissions')->middleware(
-    ['auth:sanctum', PositionType::middleware(PositionType::admin, PositionType::staff), Permission::middleware(Permission::system__permissions)]
-)->group(function () {
-    Route::get('/group/{groupID?}', [PermissionGroupEditController::class, 'get']);
-    Route::put('/group/{groupID?}', [PermissionGroupEditController::class, 'save']);
-    Route::delete('/group/{groupID}', [PermissionGroupEditController::class, 'remove']);
-    Route::patch('/group/{groupID}/status', [PermissionGroupEditController::class, 'status']);
-});
 
 // Common history
 Route::get('/api/system/history', [HistoryController::class, 'list']);

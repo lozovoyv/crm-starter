@@ -125,7 +125,7 @@ function changePassword(): void {
         form_password.value.set('clear_password', null, null, 'Удалить пароль');
         form_password.value.hash = props.userData.hash;
         form_password.value.setLoaded();
-        ref_form_password.value.show(undefined, {}, true)
+        ref_form_password.value.show(true)
             ?.then(() => {
                 emit('update');
             });
@@ -139,7 +139,7 @@ function changeEmail(): void {
         form_email.value.set('email_confirmation_need', null, null, 'Запросить подтверждение адреса электронной почты');
         form_email.value.hash = props.userData.hash;
         form_email.value.setLoaded();
-        ref_form_email.value.show(undefined, {}, true)
+        ref_form_email.value.show(true)
             ?.then(() => {
                 emit('update');
             });

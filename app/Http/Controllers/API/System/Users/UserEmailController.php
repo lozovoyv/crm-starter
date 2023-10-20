@@ -45,7 +45,7 @@ class UserEmailController extends ApiController
     public function __invoke(APIRequest $request, int $userID): ApiResponse
     {
         try {
-            $resource = UserResource::make($userID, $request->hash(), true);
+            $resource = UserResource::get($userID, $request->hash(), true);
         } catch (ModelException $exception) {
             return ApiResponse::error($exception->getMessage());
         }

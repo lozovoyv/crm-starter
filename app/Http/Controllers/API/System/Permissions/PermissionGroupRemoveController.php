@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\API\System\Users;
+namespace App\Http\Controllers\API\System\Permissions;
 
-use App\Actions\Users\UserRemoveAction;
+use App\Actions\Permission\PermissionGroupRemoveAction;
 use App\Current;
 use App\Exceptions\Model\ModelException;
 use App\Http\Controllers\ApiController;
@@ -20,40 +20,38 @@ use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
-use App\Resources\Users\UserResource;
+use App\Resources\Permissions\PermissionGroupResource;
 
-class UserRemoveController extends ApiController
+class PermissionGroupRemoveController extends ApiController
 {
     public function __construct()
     {
         $this->middleware([
             'auth:sanctum',
             PositionType::middleware(PositionType::admin, PositionType::staff),
-            Permission::middleware(Permission::system__users, Permission::system__users_change),
+            Permission::middleware(Permission::system__permissions),
         ]);
     }
 
     /**
-     * Delete user.
+     * Delete permission group.
      *
      * @param APIRequest $request
-     * @param int $userID
+     * @param int $groupID
      *
      * @return  ApiResponse
      */
-    public function __invoke(APIRequest $request, int $userID): ApiResponse
+    public function __invoke(APIRequest $request, int $groupID): ApiResponse
     {
         $current = Current::init($request);
 
-        $action = new UserRemoveAction($current);
+        $action = new PermissionGroupRemoveAction($current);
 
         try {
-            $resource = UserResource::get($userID, $request->hash(), true);
+            $resource = PermissionGroupResource::get($groupID, $request->hash(), true);
 
-            if ($current->userId() === $resource->user()->id) {
-                return APIResponse::error('Вы не можете удалить собственную учётную запись');
-            }
-            $action->execute($resource->user());
+            $action->execute($resource->group());
+
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }

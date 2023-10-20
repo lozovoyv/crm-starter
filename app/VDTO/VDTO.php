@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\VDTO;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 
 abstract class VDTO
 {
@@ -133,7 +134,7 @@ abstract class VDTO
      */
     protected function validateAttributes(array $data, array $rules = [], array $titles = [], array $messages = []): ?array
     {
-        $validator = \Illuminate\Support\Facades\Validator::make(
+        $validator = Validator::make(
             $data,
             $rules,
             $messages,

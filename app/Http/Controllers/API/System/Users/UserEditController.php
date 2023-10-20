@@ -47,7 +47,7 @@ class UserEditController extends ApiController
     public function get(?int $userID = null): ApiResponse
     {
         try {
-            $resource = UserResource::make($userID, null, false, false);
+            $resource = UserResource::get($userID, null, false, false);
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
@@ -90,7 +90,7 @@ class UserEditController extends ApiController
     {
 
         try {
-            $resource = UserResource::make($userID, $request->hash(), true, false);
+            $resource = UserResource::get($userID, $request->hash(), true, false);
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }

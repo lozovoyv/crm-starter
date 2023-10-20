@@ -18,6 +18,11 @@ class UserResource extends EntryResource
         $this->user = $user;
     }
 
+    public function user(): User
+    {
+        return $this->user;
+    }
+
     /**
      * Get user.
      *
@@ -32,7 +37,7 @@ class UserResource extends EntryResource
      * @throws ModelNotFoundException
      * @throws ModelWrongHashException
      */
-    public static function make(?int $id, ?string $hash = null, bool $check = false, bool $onlyExisting = true): self
+    public static function get(?int $id, ?string $hash = null, bool $check = false, bool $onlyExisting = true): self
     {
         /** @var User|null $user */
         if ($id === null) {
@@ -52,11 +57,6 @@ class UserResource extends EntryResource
         }
 
         return new static($user);
-    }
-
-    public function user(): User
-    {
-        return $this->user;
     }
 
     /**

@@ -10,8 +10,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\API\System\Users;
+namespace App\Http\Controllers\API\System\Permissions;
 
+use App\Actions\Permission\PermissionGroupStatusChangeAction;
 use App\Actions\Users\UserStatusChangeAction;
 use App\Current;
 use App\Exceptions\Model\ModelException;
@@ -21,54 +22,49 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
 use App\Models\Users\UserStatus;
+use App\Resources\Permissions\PermissionGroupResource;
 use App\Resources\Users\UserResource;
+use App\VDTO\PermissionGroupVDTO;
 use App\VDTO\UserVDTO;
 
-class UserStatusController extends ApiController
+class PermissionGroupStatusController extends ApiController
 {
     public function __construct()
     {
         $this->middleware([
             'auth:sanctum',
             PositionType::middleware(PositionType::admin, PositionType::staff),
-            Permission::middleware(Permission::system__users, Permission::system__users_change),
+            Permission::middleware(Permission::system__permissions),
         ]);
     }
 
     /**
-     * Change user status.
+     * Change permission group status.
      *
      * @param APIRequest $request
-     * @param int $userID
+     * @param int $groupID
      *
      * @return  ApiResponse
      */
-    public function __invoke(APIRequest $request, int $userID): ApiResponse
+    public function __invoke(int $groupID, APIRequest $request): ApiResponse
     {
         try {
-            $resource = UserResource::get($userID, $request->hash(), true);
+            $resource = PermissionGroupResource::get($groupID, $request->hash(), true);
         } catch (ModelException $exception) {
             return APIResponse::error($exception->getMessage());
         }
 
-        $disabled = $request->input('disabled');
+        $vdto = new PermissionGroupVDTO($request->data(['active']));
 
-        if ($disabled !== null) {
-            $statusID = $disabled ? UserStatus::blocked : UserStatus::active;
-            $vdto = new UserVDTO(['status_id' => $statusID]);
-        } else {
-            $vdto = new UserVDTO($request->data(['status_id']));
-        }
-
-        if ($errors = $vdto->validate(['status_id'], $resource->user())) {
+        if ($errors = $vdto->validate(['active'], $resource->group())) {
             return APIResponse::validationError($errors);
         }
 
         $current = Current::init($request);
 
-        $action = new UserStatusChangeAction($current);
-        $action->execute($resource->user(), $vdto);
+        $action = new PermissionGroupStatusChangeAction($current);
+        $action->execute($resource->group(), $vdto);
 
-        return APIResponse::success($resource->user()->hasStatus(UserStatus::active) ? 'Учётная запись активирована' : 'Учётная запись заблокирована');
+        return APIResponse::success($resource->group()->active ? 'Группа прав включена' : 'Группа прав отключена');
     }
 }

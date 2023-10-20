@@ -10,6 +10,6 @@ return [
     'position' => 'Operator',
 
     'parameter' => 'Attribute',
-    'old_value' => 'Old value',
-    'new_value' => 'New value',
+    'old_value' => 'Previous value',
+    'new_value' => 'Change',
 ];

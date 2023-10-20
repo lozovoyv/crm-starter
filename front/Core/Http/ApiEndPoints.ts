@@ -14,9 +14,23 @@ export type ApiEndPoint = {
 }
 
 export function apiEndPoint(method: ApiEndPointMethod, url: string, params: { [index: string]: number | string | null } = {}): ApiEndPoint {
+    let query: { [index: string]: string } = {};
     Object.keys(params).map(function (key: string) {
-        url = url.replace('{' + key + '}', params[key] !== null ? String(params[key]) : '');
+        const placeholder: string = '{' + key + '}';
+        if (url.indexOf(placeholder) !== -1) {
+            url = url.replace(placeholder, (params[key] !== null && params[key] !== undefined) ? String(params[key]) : '');
+        } else if (params[key] !== null && params[key] !== undefined) {
+            query[key] = String(params[key]);
+        }
     });
+    if (Object.keys(query).length > 0) {
+        let parts = url.split('?');
+        let searchParams = new URLSearchParams(parts.length === 2 ? parts[1] : {});
+        Object.keys(query).map(name => {
+            searchParams.append(name, query[name]);
+        })
+        url = parts[0] + '?' + searchParams.toString();
+    }
     return {method: method, url: url};
 }
 
