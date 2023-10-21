@@ -1,15 +1,17 @@
 <template>
     <div class="loading-progress">
         <div class="loading-progress__wrapper" v-if="loading" :class="{'loading-progress__wrapper-loading': loading, 'loading-progress__wrapper-transparent': transparent}">
-            <div class="loading-progress__spinner">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" xml:space="preserve">
+            <div class="loading-progress__container">
+                <div class="loading-progress__spinner">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" xml:space="preserve">
                     <polygon class="loading-progress__spinner-part loading-progress__spinner-part-0" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
-                    <polygon class="loading-progress__spinner-part loading-progress__spinner-part-1" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
-                    <polygon class="loading-progress__spinner-part loading-progress__spinner-part-2" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
-                    <polygon class="loading-progress__spinner-part loading-progress__spinner-part-3" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
-                    <polygon class="loading-progress__spinner-part loading-progress__spinner-part-4" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
-                    <polygon class="loading-progress__spinner-part loading-progress__spinner-part-5" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
+                        <polygon class="loading-progress__spinner-part loading-progress__spinner-part-1" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
+                        <polygon class="loading-progress__spinner-part loading-progress__spinner-part-2" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
+                        <polygon class="loading-progress__spinner-part loading-progress__spinner-part-3" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
+                        <polygon class="loading-progress__spinner-part loading-progress__spinner-part-4" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
+                        <polygon class="loading-progress__spinner-part loading-progress__spinner-part-5" points="44.4,30.3 50,27 55.6,30.3 63,17.5 50,10 37,17.5"/>
                 </svg>
+                </div>
             </div>
         </div>
         <slot></slot>
@@ -40,14 +42,11 @@ $loader_animation_time: 2s;
 
     &__wrapper {
         position: absolute;
-        z-index: 9;
+        z-index: 99;
         width: calc(100% + 3px);
         height: calc(100% + 3px);
         top: -3px;
         left: -3px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         background-color: $loader_background_color;
         opacity: 0;
         visibility: hidden;
@@ -62,6 +61,17 @@ $loader_animation_time: 2s;
             opacity: 1;
             visibility: visible;
         }
+    }
+
+    &__container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        max-height: 100%;
+        min-height: 100px;
+        height: 50vh;
     }
 
     &__spinner {

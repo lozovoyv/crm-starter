@@ -26,7 +26,7 @@ class APIRequest extends APIBaseRequest
      */
     public function data(?array $only = null): array
     {
-        $data = $this->input('data', []);
+        $data = Arr::undot($this->input('data', []));
 
         if ($only !== null) {
             $data = Arr::only($data, $only);

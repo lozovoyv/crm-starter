@@ -2,7 +2,7 @@
     <ListTable :list="groups" :actions="true">
         <template v-slot:filters>
             <ListFilterDropdown :list="groups" title="Статус" name="active" :has-null="true" placeholder="Все"
-                                :options="[{id: true,name: 'Включенные'}, {id: false,name: 'Отключенные'}]"
+                                :options="[{id: true, name: 'Включенные'}, {id: false, name: 'Отключенные'}]"
             />
         </template>
         <template v-slot:search>
@@ -84,7 +84,7 @@ const groups = ref<List<PermissionGroup>>(new List<PermissionGroup>({
 groups.value.load();
 
 function edit(group: PermissionGroup | null, fromGroup: PermissionGroup | null = null): void {
-    form.value?.show(group ? group.id : undefined, fromGroup ? fromGroup.id : null)
+    form.value?.show(group ? group.id : null, fromGroup ? fromGroup.id : null)
         ?.then(() => {
             reload();
         });

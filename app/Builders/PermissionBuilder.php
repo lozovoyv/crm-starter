@@ -78,9 +78,12 @@ class PermissionBuilder extends Builder
      *
      * @return $this
      */
-    public function order(string $orderBy = 'order', string $order = 'asc'): self
+    public function order(string $orderBy = 'scope_name', string $order = 'asc'): self
     {
-        $this->orderBy($orderBy, $order)->orderBy('order', 'asc');
+        $this->orderBy($orderBy, $order);
+        if ($orderBy !== 'name') {
+            $this->orderBy('name', 'asc');
+        }
 
         return $this;
     }

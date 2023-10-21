@@ -36,13 +36,8 @@ class PermissionGroupVDTO extends VDTO
     ];
 
     protected array $messages = [
-      'name.unique' => 'Группа прав с такин названием уже существует.',
+      'name.unique' => 'Группа прав с таким названием уже существует.',
     ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct(Arr::undot($attributes));
-    }
 
     /**
      * Validate data and return validation errors.

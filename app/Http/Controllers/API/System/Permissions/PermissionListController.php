@@ -43,7 +43,7 @@ class PermissionListController extends ApiController
             ->withScope()
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy('order'), $request->orderDirection('asc'))
+            ->order($request->orderBy('scope_name'), $request->orderDirection('asc'))
             ->get();
 
         $list->transform(function (Permission $permission) {

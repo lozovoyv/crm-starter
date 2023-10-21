@@ -90,7 +90,14 @@ class PermissionGroupEditController extends ApiController
             return APIResponse::error($exception->getMessage());
         }
 
-        $vdto = new PermissionGroupVDTO($request->data());
+        $vdto = new PermissionGroupVDTO(
+            $request->data([
+                'name',
+                'active',
+                'description',
+                'permission',
+            ])
+        );
 
         if ($errors = $vdto->validate([], $resource->group())) {
             return APIResponse::validationError($errors);
