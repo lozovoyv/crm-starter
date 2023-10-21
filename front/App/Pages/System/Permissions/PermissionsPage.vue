@@ -44,7 +44,7 @@ const history = ref<InstanceType<typeof PermissionsHistory> | undefined>(undefin
 
 function create(): void {
     if (form.value) {
-        form.value.show(undefined)
+        form.value.show(null)
             ?.then(() => {
                 if (tab.value === 'groups' && groups.value) {
                     groups.value?.reload();

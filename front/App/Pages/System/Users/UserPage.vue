@@ -38,6 +38,7 @@ import UserView from "@/App/Pages/System/Users/parts/UserView.vue";
 import {UserInfo} from "@/App/types";
 import {processEntry} from "@/Core/Helpers/ProcessEntry";
 import dialog from "@/Core/Dialog/Dialog";
+import {apiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 const router = useRouter();
 const route = useRoute();
@@ -84,8 +85,7 @@ function remove(): void {
         title: 'Удаление',
         question: `Удалить учётную запись "${name}"?`,
         button: dialog.button('yes', 'Удалить', 'error'),
-        method: 'delete',
-        url: `/api/system/users/user/${userID.value}`,
+        url: apiEndPoint('delete', '/api/system/users/user/{userID}', {userID: userID.value}),
         options: {hash: user.value.data.hash},
         progress: p => processing.value = p
     }).then(() => {

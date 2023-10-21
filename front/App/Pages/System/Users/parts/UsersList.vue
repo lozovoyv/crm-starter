@@ -18,7 +18,7 @@
                 </div>
                 <div v-html="highlight(user.display_name, users.search)"/>
             </ListTableCell>
-            <ListTableCell >
+            <ListTableCell>
                 <div v-html="highlight(user.email ?? '—', users.search)"/>
                 <div v-html="highlight(user.username, users.search)"/>
             </ListTableCell>
@@ -28,8 +28,8 @@
             <ListTableCell :action="true" v-if="canChange">
                 <ListActions v-if="!user.locked">
                     <GuiLink :route="{name: 'user_edit', params: {id: user.id}}">Редактировать</GuiLink>
-                    <GuiLink @click="block(user)" v-if="user.is_active">Заблокировать</GuiLink>
-                    <GuiLink @click="activate(user)" v-if="!user.is_active">Активировать</GuiLink>
+                    <GuiLink @click="block(user, true)" v-if="user.is_active">Заблокировать</GuiLink>
+                    <GuiLink @click="block(user, false)" v-if="!user.is_active">Активировать</GuiLink>
                     <GuiLink @click="remove(user)">Удалить</GuiLink>
                 </ListActions>
             </ListTableCell>
@@ -79,30 +79,14 @@ function reload(): void {
 
 const processing = ref<boolean>(false);
 
-function block(user: User): void {
+function block(user: User, disabled: boolean): void {
     let name = String([user.lastname, user.firstname, user.patronymic].join(' ')).trim();
     processEntry({
-        title: 'Блокировка',
-        question: `Заблокировать учётную запись "${name}"?`,
-        button: dialog.button('yes', 'Заблокировать', 'default'),
-        method: 'patch',
-        url: `/api/system/users/user/${user.id}/status`,
-        options: {disabled: true, hash: user.hash},
-        progress: p => processing.value = p
-    }).then(() => {
-        reload();
-    });
-}
-
-function activate(user: User): void {
-    let name = String([user.lastname, user.firstname, user.patronymic].join(' ')).trim();
-    processEntry({
-        title: 'Активация',
-        question: `Активировать учётную запись "${name}"?`,
-        button: dialog.button('yes', 'Активировать', 'default'),
-        method: 'patch',
-        url: `/api/system/users/user/${user.id}/status`,
-        options: {disabled: false, hash: user.hash},
+        title: disabled ? 'Блокировка' : 'Активация',
+        question: (disabled ? 'Заблокировать' : 'Активировать') + ` учётную запись "${name}"?`,
+        button: dialog.button('yes', disabled ? 'Заблокировать' : 'Активировать', 'default'),
+        url: apiEndPoint('patch', '/api/system/users/user/{userID}/status', {userID: user.id}),
+        options: {disabled: disabled, hash: user.hash},
         progress: p => processing.value = p
     }).then(() => {
         reload();
@@ -115,8 +99,7 @@ function remove(user: User): void {
         title: 'Удаление',
         question: `Удалить учётную запись "${name}"?`,
         button: dialog.button('yes', 'Удалить', 'error'),
-        method: 'delete',
-        url: `/api/system/users/user/${user.id}`,
+        url: apiEndPoint('delete', '/api/system/users/user/{userID}', {userID: user.id}),
         options: {hash: user.hash},
         progress: p => processing.value = p
     }).then(() => {

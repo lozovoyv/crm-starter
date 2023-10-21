@@ -23,8 +23,8 @@
                 <ListActions v-if="!group.locked">
                     <GuiLink @click="edit(group)">Редактировать</GuiLink>
                     <GuiLink @click="edit(null, group)">Создать копию</GuiLink>
-                    <GuiLink @click="deactivate(group)" v-if="group.active">Отключить</GuiLink>
-                    <GuiLink @click="activate(group)" v-if="!group.active">Включить</GuiLink>
+                    <GuiLink @click="activate(group, false)" v-if="group.active">Отключить</GuiLink>
+                    <GuiLink @click="activate(group, true)" v-if="!group.active">Включить</GuiLink>
                     <GuiLink @click="remove(group)">Удалить</GuiLink>
                 </ListActions>
             </ListTableCell>
@@ -92,28 +92,13 @@ function edit(group: PermissionGroup | null, fromGroup: PermissionGroup | null =
 
 const processing = ref<boolean>(false);
 
-function deactivate(group: PermissionGroup): void {
+function activate(group: PermissionGroup, active: boolean): void {
     processEntry({
-        title: 'Отключение',
-        question: `Отключить группу "${group.name}"?`,
-        button: dialog.button('yes', 'Отключить', 'default'),
-        method: 'patch',
-        url: `/api/system/permissions/group/${group.id}/status`,
-        options: {data: {active: false}, hash: group.hash},
-        progress: p => processing.value = p
-    }).then(() => {
-        reload();
-    });
-}
-
-function activate(group: PermissionGroup): void {
-    processEntry({
-        title: 'Включение',
-        question: `Включить группу "${group.name}"?`,
-        button: dialog.button('yes', 'Включить', 'default'),
-        method: 'patch',
-        url: `/api/system/permissions/group/${group.id}/status`,
-        options: {data: {active: true}, hash: group.hash},
+        title: active ? 'Включение' : 'Отключение',
+        question: (active ? 'Включить' : 'Отключить') + ` группу "${group.name}"?`,
+        button: dialog.button('yes', active ? 'Включить' : 'Отключить', 'default'),
+        url: apiEndPoint('patch', '/api/system/permissions/group/{groupID}/status', {groupID: group.id}),
+        options: {data: {active: active}, hash: group.hash},
         progress: p => processing.value = p
     }).then(() => {
         reload();
@@ -125,8 +110,7 @@ function remove(group: PermissionGroup): void {
         title: 'Удаление',
         question: `Удалить группу "${group.name}"?`,
         button: dialog.button('yes', 'Удалить', 'error'),
-        method: 'delete',
-        url: `/api/system/permissions/group/${group.id}`,
+        url: apiEndPoint('delete', '/api/system/permissions/group/{groupID}', {groupID: group.id}),
         options: {hash: group.hash},
         progress: p => processing.value = p
     }).then(() => {

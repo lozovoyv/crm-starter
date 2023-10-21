@@ -12,8 +12,8 @@
                 <GuiAccessIndicator :locked="!userData.is_active"/>
                 {{ userData.status }}
                 <template v-if="canChange && !userData.locked">
-                    <GuiLink @click="block" v-if="userData.is_active" name="заблокировать" style="font-size: 14px; margin-left: 5px;"/>
-                    <GuiLink @click="activate" v-if="!userData.is_active" name="активировать" style="font-size: 14px; margin-left: 5px;"/>
+                    <GuiLink @click="block(true)" v-if="userData.is_active" name="заблокировать" style="font-size: 14px; margin-left: 5px;"/>
+                    <GuiLink @click="block(false)" v-if="!userData.is_active" name="активировать" style="font-size: 14px; margin-left: 5px;"/>
                 </template>
             </GuiValue>
             <GuiValue dots title="Адрес электронной почты:">
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import {UserInfo} from "@/App/types";
+import {User, UserInfo} from "@/App/types";
 import GuiGroupBox from "@/Components/GUI/GuiGroupBox.vue";
 import GuiValue from "@/Components/GUI/GuiValue.vue";
 import GuiAccessIndicator from "@/Components/GUI/GuiAccessIndicator.vue";
@@ -88,30 +88,14 @@ const form_email = ref<Form>(new Form({
 const ref_form_password = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);
 const ref_form_email = ref<InstanceType<typeof PopUpForm> | undefined>(undefined);
 
-function block(): void {
+function block(disabled: boolean): void {
     let name = String([props.userData.lastname, props.userData.firstname, props.userData.patronymic].join(' ')).trim();
     processEntry({
-        title: 'Блокировка',
-        question: `Заблокировать учётную запись "${name}"?`,
-        button: dialog.button('yes', 'Заблокировать', 'default'),
-        method: 'patch',
-        url: `/api/system/users/user/${props.userData.id}/status`,
-        options: {disabled: true, hash: props.userData.hash},
-        progress: p => processing.value = p
-    }).then(() => {
-        emit('update');
-    });
-}
-
-function activate(): void {
-    let name = String([props.userData.lastname, props.userData.firstname, props.userData.patronymic].join(' ')).trim();
-    processEntry({
-        title: 'Активация',
-        question: `Активировать учётную запись "${name}"?`,
-        button: dialog.button('yes', 'Активировать', 'default'),
-        method: 'patch',
-        url: `/api/system/users/user/${props.userData.id}/status`,
-        options: {disabled: false, hash: props.userData.hash},
+        title: disabled ? 'Блокировка' : 'Активация',
+        question: (disabled ? 'Заблокировать' : 'Активировать') + ` учётную запись "${name}"?`,
+        button: dialog.button('yes', disabled ? 'Заблокировать' : 'Активировать', 'default'),
+        url: apiEndPoint('patch', '/api/system/users/user/{userID}/status', {userID: props.userData.id}),
+        options: {disabled: disabled, hash: props.userData.hash},
         progress: p => processing.value = p
     }).then(() => {
         emit('update');

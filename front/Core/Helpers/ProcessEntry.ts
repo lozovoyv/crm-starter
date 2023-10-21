@@ -1,13 +1,13 @@
 import dialog, {DialogButton} from "@/Core/Dialog/Dialog";
 import {http} from "@/Core/Http/Http";
 import toaster from "@/Core/Toaster/Toaster";
+import {ApiEndPoint} from "@/Core/Http/ApiEndPoints";
 
 export type ProcessEntryConfig = {
     title: string,
     question: string,
     button: DialogButton,
-    method: 'put' | 'patch' | 'post' | 'delete',
-    url: string,
+    url: ApiEndPoint,
     options: { [index: string]: any },
     progress?: (e: boolean) => void
 }
@@ -22,23 +22,11 @@ function processEntry(config: ProcessEntryConfig) {
                         config.progress(true);
                     }
 
-                    let promise;
-
-                    switch (config.method) {
-                        case "patch":
-                            promise = http.patch(config.url, config.options);
-                            break;
-                        case "put":
-                            promise = http.put(config.url, config.options);
-                            break;
-                        case "delete":
-                            promise = http.delete(config.url, {data: config.options});
-                            break;
-                        default:
-                            promise = http.post(config.url, config.options);
-                    }
-
-                    promise
+                    http.request({
+                        url: config.url?.url,
+                        method: config.url?.method,
+                        data: config.options
+                    })
                         .then(response => {
                             toaster.success(response.data['message'], 3000);
                             resolve(response);
