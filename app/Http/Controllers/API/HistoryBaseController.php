@@ -13,7 +13,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\ApiController;
 
-abstract class HistoryController extends ApiController
+abstract class HistoryBaseController extends ApiController
 {
     protected array $titles = [
         'timestamp' => 'history/history.timestamp',

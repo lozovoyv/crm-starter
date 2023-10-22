@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Users;
 
-use App\Http\Controllers\API\HistoryController;
+use App\Http\Controllers\API\HistoryBaseController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
@@ -12,7 +12,7 @@ use App\Models\Positions\PositionType;
 use App\Models\Users\User;
 use App\Utils\Translate;
 
-class UserHistoryController extends HistoryController
+class UserHistoryController extends HistoryBaseController
 {
     public function __construct()
     {
@@ -91,12 +91,12 @@ class UserHistoryController extends HistoryController
     /**
      * Certain user history list.
      *
-     * @param int $userID
      * @param APIListRequest $request
+     * @param int $userID
      *
      * @return ApiResponse
      */
-    public function listForUser(int $userID, APIListRequest $request): ApiResponse
+    public function listForUser(APIListRequest $request, int $userID): ApiResponse
     {
         $list = History::query()
             ->whereEntryType(User::class)

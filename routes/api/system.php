@@ -24,42 +24,44 @@ use App\Models\Permissions\Permission;
 use App\Models\Positions\PositionType;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/api/system/admins/history', [AdminHistoryController::class, 'list']);
+Route::get('/api/system/admins/history/{historyID}/comments', [AdminHistoryController::class, 'comments']);
+Route::get('/api/system/admins/history/{historyID}/changes', [AdminHistoryController::class, 'changes']);
+Route::get('/api/system/admins/position/{positionID}/history', [AdminHistoryController::class, 'listForAdmin']);
+Route::get('/api/system/admins/position/{positionID}/history/{historyID}/comments', [AdminHistoryController::class, 'commentsForAdmin']);
+Route::get('/api/system/admins/position/{positionID}/history/{historyID}/changes', [AdminHistoryController::class, 'changesForAdmin']);
+Route::get('/api/system/admins/position/{positionID}/operations', [AdminHistoryController::class, 'listByAdmin']);
+Route::get('/api/system/admins/position/{positionID}/operations/{historyID}/comments', [AdminHistoryController::class, 'commentsByAdmin']);
+Route::get('/api/system/admins/position/{positionID}/operations/{historyID}/changes', [AdminHistoryController::class, 'changesByAdmin']);
+
 Route::prefix('/api/system/admins')->middleware(['auth:sanctum', PositionType::middleware(PositionType::admin)])->group(function () {
     Route::get('/', [AdminListController::class, 'list']);
-    Route::get('/history', [AdminHistoryController::class, 'list']);
-    Route::get('/history/{historyID}/comments', [AdminHistoryController::class, 'comments']);
-    Route::get('/history/{historyID}/changes', [AdminHistoryController::class, 'changes']);
     // todo fix Route::get('/{positionID}', [AdminPositionViewController::class, 'view']);
     // todo fix Route::get('/position/{positionID?}', [AdminPositionCRUDController::class, 'get']);
     // todo fix Route::put('/position/{positionID?}', [AdminPositionCRUDController::class, 'save']);
     // todo fix Route::patch('/position/{positionID}/status', [AdminPositionCRUDController::class, 'status']);
     // todo fix Route::delete('/position/{positionID}', [AdminPositionCRUDController::class, 'remove']);
-    Route::get('/position/{positionID}/history', [AdminHistoryController::class, 'listForAdmin']);
-    Route::get('/position/{positionID}/history/{historyID}/comments', [AdminHistoryController::class, 'commentsForAdmin']);
-    Route::get('/position/{positionID}/history/{historyID}/changes', [AdminHistoryController::class, 'changesForAdmin']);
-    Route::get('/position/{positionID}/operations', [AdminHistoryController::class, 'listByAdmin']);
-    Route::get('/position/{positionID}/operations/{historyID}/comments', [AdminHistoryController::class, 'commentsByAdmin']);
-    Route::get('/position/{positionID}/operations/{historyID}/changes', [AdminHistoryController::class, 'changesByAdmin']);
 });
+
+Route::get('/api/system/staff/history', [StaffHistoryController::class, 'list']);
+Route::get('/api/system/staff/history/{historyID}/comments', [StaffHistoryController::class, 'comments']);
+Route::get('/api/system/staff/history/{historyID}/changes', [StaffHistoryController::class, 'changes']);
+Route::get('/api/system/staff/position/{positionID}/history', [StaffHistoryController::class, 'listForStaff']);
+Route::get('/api/system/staff/position/{positionID}/history/{historyID}/comments', [StaffHistoryController::class, 'commentsForStaff']);
+Route::get('/api/system/staff/position/{positionID}/history/{historyID}/changes', [StaffHistoryController::class, 'changesForStaff']);
+Route::get('/api/system/staff/position/{positionID}/operations', [StaffHistoryController::class, 'listByStaff']);
+Route::get('/api/system/staff/position/{positionID}/operations/{historyID}/comments', [StaffHistoryController::class, 'commentsByStaff']);
+Route::get('/api/system/staff/position/{positionID}/operations/{historyID}/changes', [StaffHistoryController::class, 'changesByStaff']);
 
 Route::prefix('/api/system/staff')->middleware(
     ['auth:sanctum', PositionType::middleware(PositionType::admin, PositionType::staff), Permission::middleware(Permission::system__staff, Permission::system__staff_change)]
 )->group(function () {
     Route::get('/', [StaffListController::class, 'list']);
-    Route::get('/history', [StaffHistoryController::class, 'list']);
-    Route::get('/history/{historyID}/comments', [StaffHistoryController::class, 'comments']);
-    Route::get('/history/{historyID}/changes', [StaffHistoryController::class, 'changes']);
     // todo fix Route::get('/{positionID}', [StaffPositionViewController::class, 'view']);
     // todo fix Route::get('/position/{positionID?}', [StaffPositionCRUDController::class, 'get'])->middleware('permission:system__staff_change');
     // todo fix Route::put('/position/{positionID?}', [StaffPositionCRUDController::class, 'save'])->middleware('permission:system__staff_change');
     // todo fix Route::patch('/position/{positionID}/status', [StaffPositionCRUDController::class, 'status'])->middleware('permission:system__users_change');
     // todo fix Route::delete('/position/{positionID}', [StaffPositionCRUDController::class, 'remove'])->middleware('permission:system__users_change');
-    Route::get('/position/{positionID}/history', [StaffHistoryController::class, 'listForStaff']);
-    Route::get('/position/{positionID}/history/{historyID}/comments', [StaffHistoryController::class, 'commentsForStaff']);
-    Route::get('/position/{positionID}/history/{historyID}/changes', [StaffHistoryController::class, 'changesForStaff']);
-    Route::get('/position/{positionID}/operations', [StaffHistoryController::class, 'listByStaff']);
-    Route::get('/position/{positionID}/operations/{historyID}/comments', [StaffHistoryController::class, 'commentsByStaff']);
-    Route::get('/position/{positionID}/operations/{historyID}/changes', [StaffHistoryController::class, 'changesByStaff']);
 });
 
 // Users

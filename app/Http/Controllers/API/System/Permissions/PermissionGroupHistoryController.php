@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Permissions;
 
-use App\Http\Controllers\API\HistoryController;
+use App\Http\Controllers\API\HistoryBaseController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\History\History;
@@ -12,7 +12,7 @@ use App\Models\Permissions\PermissionGroup;
 use App\Models\Positions\PositionType;
 use App\Utils\Translate;
 
-class PermissionGroupHistoryController extends HistoryController
+class PermissionGroupHistoryController extends HistoryBaseController
 {
     public function __construct()
     {

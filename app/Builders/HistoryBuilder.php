@@ -14,7 +14,6 @@ namespace App\Builders;
 use App\Models\History\History;
 use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class HistoryBuilder extends Builder
 {
@@ -42,6 +41,20 @@ class HistoryBuilder extends Builder
     public function whereEntryID(int $ID): self
     {
         $this->where('entry_id', $ID);
+
+        return $this;
+    }
+
+    /**
+     * Filter by entry tags.
+     *
+     * @param array $tags
+     *
+     * @return $this
+     */
+    public function whereEntryTags(array $tags): self
+    {
+        $this->whereIn('entry_tag', $tags);
 
         return $this;
     }

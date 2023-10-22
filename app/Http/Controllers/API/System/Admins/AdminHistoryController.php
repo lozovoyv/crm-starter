@@ -3,46 +3,60 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Admins;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\API\HistoryBaseController;
 use App\Http\Requests\APIListRequest;
 use App\Http\Responses\ApiResponse;
-use App\Resources\Admins\AdminHistoryResource;
-use App\Resources\History\CommonHistoryResource;
+use App\Models\History\History;
+use App\Models\Positions\Position;
+use App\Models\Positions\PositionType;
+use App\Utils\Translate;
 
-class AdminHistoryController extends ApiController
+class AdminHistoryController extends HistoryBaseController
 {
+    public function __construct()
+    {
+        $this->middleware([
+            'auth:sanctum',
+            PositionType::middleware(PositionType::admin),
+        ]);
+    }
+
     /**
      * All admin history list.
      *
      * @param APIListRequest $request
-     * @param AdminHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function list(APIListRequest $request, AdminHistoryResource $resource): ApiResponse
+    public function list(APIListRequest $request): ApiResponse
     {
-        $list = $resource
+        $list = History::query()
+            ->whereEntryType(Position::class)
+            ->whereEntryTags([PositionType::typeToString(PositionType::admin)])
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->orderDirection())
-            ->paginate($request->page(), $request->perPage());
+            ->order($request->orderBy('timestamp'), $request->orderDirection('desc'))
+            ->pagination($request->page(), $request->perPage());
 
         return ApiResponse::list($list)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
     }
 
     /**
      * All admin history entry comments.
      *
      * @param int $historyID
-     * @param AdminHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function comments(int $historyID, AdminHistoryResource $resource): ApiResponse
+    public function comments(int $historyID): ApiResponse
     {
-        $history = $resource->retrieveRecord($historyID);
+        $history = History::query()
+            ->withComments()
+            ->whereEntryType(Position::class)
+            ->whereEntryTags([PositionType::typeToString(PositionType::admin)])
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
@@ -55,44 +69,47 @@ class AdminHistoryController extends ApiController
      * All admin history entry changes.
      *
      * @param int $historyID
-     * @param AdminHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function changes(int $historyID, AdminHistoryResource $resource): ApiResponse
+    public function changes(int $historyID): ApiResponse
     {
-        $history = $resource->retrieveRecord($historyID);
+        $history = History::query()
+            ->withChanges()
+            ->whereEntryType(Position::class)
+            ->whereEntryTags([PositionType::typeToString(PositionType::admin)])
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
         }
 
-        return ApiResponse::list()
-            ->items($history->getChanges())
-            ->titles($resource->getChangesTitles());
+        return ApiResponse::list($history->getChanges())
+            ->titles(Translate::array($this->changesTitles));
     }
 
     /**
      * Certain admin history list.
      *
-     * @param int $positionID
      * @param APIListRequest $request
-     * @param AdminHistoryResource $resource
+     * @param int $positionID
      *
      * @return ApiResponse
      */
-    public function listForAdmin(int $positionID, APIListRequest $request, AdminHistoryResource $resource): ApiResponse
+    public function listForAdmin(APIListRequest $request, int $positionID): ApiResponse
     {
-        $history = $resource
-            ->forEntry($positionID)
+        $list = History::query()
+            ->whereEntryType(Position::class)
+            ->whereEntryTags([PositionType::typeToString(PositionType::admin)])
+            ->whereEntryID($positionID)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->orderDirection())
-            ->paginate($request->page(), $request->perPage());
+            ->order($request->orderBy('timestamp'), $request->orderDirection('desc'))
+            ->pagination($request->page(), $request->perPage());
 
-        return ApiResponse::list($history)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+        return ApiResponse::list($list)
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
     }
 
     /**
@@ -100,13 +117,18 @@ class AdminHistoryController extends ApiController
      *
      * @param int $positionID
      * @param int $historyID
-     * @param AdminHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function commentsForAdmin(int $positionID, int $historyID, AdminHistoryResource $resource): ApiResponse
+    public function commentsForAdmin(int $positionID, int $historyID): ApiResponse
     {
-        $history = $resource->forEntry($positionID)->retrieveRecord($historyID);
+        $history = History::query()
+            ->withComments()
+            ->whereEntryType(Position::class)
+            ->whereEntryTags([PositionType::typeToString(PositionType::admin)])
+            ->whereEntryID($positionID)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
@@ -120,44 +142,46 @@ class AdminHistoryController extends ApiController
      *
      * @param int $positionID
      * @param int $historyID
-     * @param AdminHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function changesForAdmin(int $positionID, int $historyID, AdminHistoryResource $resource): ApiResponse
+    public function changesForAdmin(int $positionID, int $historyID): ApiResponse
     {
-        $history = $resource->forEntry($positionID)->retrieveRecord($historyID);
+        $history = History::query()
+            ->withChanges()
+            ->whereEntryType(Position::class)
+            ->whereEntryTags([PositionType::typeToString(PositionType::admin)])
+            ->whereEntryID($positionID)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
         }
 
-        return ApiResponse::list()
-            ->items($history->getChanges())
-            ->titles($resource->getChangesTitles());
+        return ApiResponse::list($history->getChanges())
+            ->titles(Translate::array($this->changesTitles));
     }
 
     /**
      * Certain admin operations history list.
      *
-     * @param int $positionID
      * @param APIListRequest $request
-     * @param CommonHistoryResource $resource
+     * @param int $positionID
      *
      * @return ApiResponse
      */
-    public function listByAdmin(int $positionID, APIListRequest $request, CommonHistoryResource $resource): ApiResponse
+    public function listByAdmin(APIListRequest $request, int $positionID): ApiResponse
     {
-        $history = $resource
-            ->forOperator($positionID)
+        $list = History::query()
+            ->whereOperator($positionID)
             ->filter($request->filters())
-            ->order($request->orderBy('timestamp'), $request->orderDirection())
-            ->paginate($request->page(), $request->perPage());
+            ->order($request->orderBy('timestamp'), $request->orderDirection('desc'))
+            ->pagination($request->page(), $request->perPage());
 
-        return ApiResponse::list($history)
-            ->titles($resource->getTitles())
-            ->order($resource->getOrderBy(), $resource->getOrder())
-            ->orderable($resource->getOrderableColumns());
+        return ApiResponse::list($list)
+            ->titles(Translate::array($this->titles))
+            ->orderable($this->orderableColumns);
     }
 
     /**
@@ -165,13 +189,16 @@ class AdminHistoryController extends ApiController
      *
      * @param int $positionID
      * @param int $historyID
-     * @param CommonHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function commentsByAdmin(int $positionID, int $historyID, CommonHistoryResource $resource): ApiResponse
+    public function commentsByAdmin(int $positionID, int $historyID): ApiResponse
     {
-        $history = $resource->forOperator($positionID)->retrieveRecord($historyID);
+        $history = History::query()
+            ->withComments()
+            ->whereOperator($positionID)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
@@ -185,20 +212,22 @@ class AdminHistoryController extends ApiController
      *
      * @param int $positionID
      * @param int $historyID
-     * @param CommonHistoryResource $resource
      *
      * @return ApiResponse
      */
-    public function changesByAdmin(int $positionID, int $historyID, CommonHistoryResource $resource): ApiResponse
+    public function changesByAdmin(int $positionID, int $historyID): ApiResponse
     {
-        $history = $resource->forOperator($positionID)->retrieveRecord($historyID);
+        $history = History::query()
+            ->withChanges()
+            ->whereOperator($positionID)
+            ->whereID($historyID)
+            ->first();
 
         if ($history === null) {
             return ApiResponse::error('Запись не найдена');
         }
 
-        return ApiResponse::list()
-            ->items($history->getChanges())
-            ->titles($resource->getChangesTitles());
+        return ApiResponse::list($history->getChanges())
+            ->titles(Translate::array($this->changesTitles));
     }
 }
