@@ -29,7 +29,7 @@ import InputDropDown from "@/Components/Input/InputDropDown.vue";
 import {DropDownOptions, DropDownValueType} from "@/Components/Input/Helpers/Types";
 import ListBarItem from "@/Components/List/ListBarItem.vue";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     list: List<any>,
     title?: string,
     name: string,
@@ -57,7 +57,9 @@ const props = defineProps<{
     multi?: boolean,
 
     search?: boolean,
-}>();
+}>(), {
+    original: undefined,
+});
 
 if(props.list.filters[props.name] === undefined) {
     props.list.filters[props.name] = null;

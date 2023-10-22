@@ -270,6 +270,7 @@ function updateHeight(): void {
     min-height: $base_size_unit * 4;
     position: relative;
     cursor: pointer;
+    font-family: $project_font;
 
     &:not(&__disabled) {
         cursor: pointer;
