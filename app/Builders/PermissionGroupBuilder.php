@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace App\Builders;
 
-use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
 use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Collection;

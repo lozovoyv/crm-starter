@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Positions;
 
+use App\Builders\PositionBuilder;
 use App\Interfaces\Historical;
 use App\Interfaces\Statusable;
 use App\Models\Permissions\Permission;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\Builder;
 
 /**
  * @property int $id
@@ -49,6 +51,31 @@ class Position extends Model implements Statusable, Historical
 
     /** @var array|null Position permissions cache. */
     protected ?array $permissionsCache = null;
+
+    /**
+     * Begin querying the model.
+     *
+     * @return PositionBuilder
+     */
+    public static function query(): PositionBuilder
+    {
+        /** @var PositionBuilder $query */
+        $query = parent::query();
+
+        return $query;
+    }
+
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param Builder $query
+     *
+     * @return PositionBuilder
+     */
+    public function newEloquentBuilder($query): PositionBuilder
+    {
+        return new PositionBuilder($query);
+    }
 
     /**
      * Position's status.
