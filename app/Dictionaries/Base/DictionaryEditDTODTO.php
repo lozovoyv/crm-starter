@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Dictionaries\Base;
 
-class DictionaryEdit implements DictionaryEditInterface
+class DictionaryEditDTODTO implements DictionaryEditDTOInterface
 {
     protected string|int|null $id;
     protected string $title;

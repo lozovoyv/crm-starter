@@ -15,7 +15,7 @@ namespace App\Dictionaries\Base;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-interface DictionaryViewInterface
+interface DictionaryViewDTOInterface
 {
     /**
      * Dictionary items.

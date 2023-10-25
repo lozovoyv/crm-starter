@@ -14,7 +14,7 @@ namespace App\Dictionaries\Base;
 
 use Illuminate\Support\Collection;
 
-class DictionaryList implements DictionaryListInterface
+class DictionaryListDTO implements DictionaryListDTOInterface
 {
     /** @var Collection|array Dictionary items. */
     protected Collection|array $items;

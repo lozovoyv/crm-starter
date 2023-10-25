@@ -27,20 +27,20 @@ interface DictionaryInterface
      * @param array $filters
      * @param string|null $search
      *
-     * @return DictionaryViewInterface
+     * @return DictionaryViewDTOInterface
      * @throws DictionaryForbiddenException
      */
-    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewInterface;
+    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewDTOInterface;
 
     /**
      * Get dictionary items for editor.
      *
      * @param Current $current
      *
-     * @return DictionaryListInterface
+     * @return DictionaryListDTOInterface
      * @throws DictionaryForbiddenException
      */
-    public static function list(Current $current): DictionaryListInterface;
+    public static function list(Current $current): DictionaryListDTOInterface;
 
     /**
      * Get dictionary record data for editing form.
@@ -48,7 +48,7 @@ interface DictionaryInterface
      * @param int|string|null $id
      * @param Current $current
      *
-     * @return  DictionaryEditInterface
+     * @return  DictionaryEditDTOInterface
      */
-    public static function get(int|string|null $id, Current $current): DictionaryEditInterface;
+    public static function get(int|string|null $id, Current $current): DictionaryEditDTOInterface;
 }

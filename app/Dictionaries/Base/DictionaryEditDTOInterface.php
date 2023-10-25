@@ -15,7 +15,7 @@ namespace App\Dictionaries\Base;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-interface DictionaryEditInterface
+interface DictionaryEditDTOInterface
 {
     /**
      * Item ID.

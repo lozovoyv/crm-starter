@@ -15,7 +15,7 @@ namespace App\Dictionaries\Base;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-class DictionaryView implements DictionaryViewInterface
+class DictionaryViewDTO implements DictionaryViewDTOInterface
 {
     /** @var Collection|array|null Dictionary items. */
     protected Collection|array|null $items;

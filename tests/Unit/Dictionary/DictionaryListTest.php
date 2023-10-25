@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Dictionary;
 
-use App\Dictionaries\Base\DictionaryList;
+use App\Dictionaries\Base\DictionaryListDTO;
 use Tests\TestCase;
 
 class DictionaryListTest extends TestCase
 {
     public function test_dictionary_list(): void
     {
-        $list = new DictionaryList(
+        $list = new DictionaryListDTO(
             ['item'],
             'title',
             ['val' => 'Value'],

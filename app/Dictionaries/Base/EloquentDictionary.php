@@ -126,10 +126,10 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      * @param array $filters
      * @param string|null $search
      *
-     * @return DictionaryViewInterface
+     * @return DictionaryViewDTOInterface
      * @throws DictionaryForbiddenException
      */
-    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewInterface
+    public static function view(Current $current, ?Carbon $ifModifiedSince = null, array $filters = [], ?string $search = null): DictionaryViewDTOInterface
     {
         if (!static::canView($current)) {
             throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
@@ -144,7 +144,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             $actual = Carbon::parse($actual)->setTimezone('GMT');
 
             if ($ifModifiedSince && $ifModifiedSince >= $actual) {
-                return new DictionaryView(null, $actual, true);
+                return new DictionaryViewDTO(null, $actual, true);
             }
         }
 
@@ -160,7 +160,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             return $result;
         });
 
-        return new DictionaryView($items, $actual ?? null, false, $isEditable);
+        return new DictionaryViewDTO($items, $actual ?? null, false, $isEditable);
     }
 
     /**
@@ -197,10 +197,10 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      *
      * @param Current $current
      *
-     * @return DictionaryListInterface
+     * @return DictionaryListDTOInterface
      * @throws DictionaryForbiddenException
      */
-    public static function list(Current $current): DictionaryListInterface
+    public static function list(Current $current): DictionaryListDTOInterface
     {
         if (!static::canEdit($current)) {
             throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
@@ -215,7 +215,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             return $result;
         });
 
-        return new DictionaryList(
+        return new DictionaryListDTO(
             $items,
             static::title(),
             static::fieldTitles(true, false),
@@ -243,11 +243,11 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
      * @param int|string|null $id
      * @param Current $current
      *
-     * @return DictionaryEditInterface
+     * @return DictionaryEditDTOInterface
      * @throws DictionaryNotFoundException
      * @throws DictionaryForbiddenException
      */
-    public static function get(int|string|null $id, Current $current): DictionaryEditInterface
+    public static function get(int|string|null $id, Current $current): DictionaryEditDTOInterface
     {
         if (!static::canEdit($current)) {
             throw new DictionaryForbiddenException(static::messageDictionaryForbidden(static::title()));
@@ -266,7 +266,7 @@ abstract class EloquentDictionary extends Dictionary implements DictionaryInterf
             }
         }
 
-        return new DictionaryEdit(
+        return new DictionaryEditDTODTO(
             $item->{static::$id_field},
             $item->exists ? static::titleFormEdit($item->{static::$name_field}) : static::titleFormCreate(),
             static::getValues($item),

@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Dictionary;
 
-use App\Dictionaries\Base\DictionaryEdit;
+use App\Dictionaries\Base\DictionaryEditDTODTO;
 use Tests\TestCase;
 
 class DictionaryEditTest extends TestCase
 {
     public function test_dictionary_edit(): void
     {
-        $edit = new DictionaryEdit(
+        $edit = new DictionaryEditDTODTO(
             'id',
             'title',
             ['val' => 123],

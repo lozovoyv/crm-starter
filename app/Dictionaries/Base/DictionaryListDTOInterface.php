@@ -14,7 +14,7 @@ namespace App\Dictionaries\Base;
 
 use Illuminate\Support\Collection;
 
-interface DictionaryListInterface
+interface DictionaryListDTOInterface
 {
     /**
      * Dictionary items.
