@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\VDTO;
 
+use App\Utils\Translate;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
@@ -73,7 +74,7 @@ abstract class VDTO
      */
     public function getTitles(?array $only = null): array
     {
-        return $this->filter($this->titles, $only);
+        return Translate::array($this->filter($this->titles, $only));
     }
 
     /**
@@ -95,7 +96,7 @@ abstract class VDTO
      *
      * @return array|null
      */
-    public function validate( array $only = []): ?array
+    public function validate(array $only = []): ?array
     {
         $rules = $this->rules;
 
@@ -105,6 +106,7 @@ abstract class VDTO
 
         return $this->validateAttributes($this->attributes, $rules, $this->titles, $this->messages);
     }
+
     /**
      * Conditionally filter data array.
      *
@@ -181,5 +183,17 @@ abstract class VDTO
     public function __isset(string $key): bool
     {
         return array_key_exists($key, $this->attributes);
+    }
+
+    /**
+     * Unset an attribute is on the VDTO.
+     *
+     * @param string $key
+     *
+     * @return void
+     */
+    public function __unset(string $key): void
+    {
+        unset($this->attributes[$key]);
     }
 }
