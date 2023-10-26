@@ -60,7 +60,7 @@ class PermissionGroupListController extends ApiController
                 'locked' => $permissionGroup->locked,
                 'created_at' => $permissionGroup->created_at,
                 'updated_at' => $permissionGroup->updated_at,
-                'hash' => $permissionGroup->getHash(),
+                'hash' => $permissionGroup->hash(),
             ];
         });
 

@@ -1,9 +1,18 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
-namespace App\Traits;
+namespace App\Models\Traits;
 
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 
 trait SetAttributeWithChanges
 {
@@ -15,16 +24,16 @@ trait SetAttributeWithChanges
      * @param int|null $type
      * @param string|null $historyKey
      *
-     * @return HistoryChanges|null
+     * @return HistoryChange|null
      */
-    public function setAttributeWithChanges(string $key, mixed $value, ?int $type = null, string $historyKey = null): ?HistoryChanges
+    public function setAttributeWithChanges(string $key, mixed $value, ?int $type = null, string $historyKey = null): ?HistoryChange
     {
         $oldValue = $this->{$key};
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($type !== null && $oldValue != $value) {
 
-            $changes = new HistoryChanges([
+            $changes = new HistoryChange([
                 'parameter' => $historyKey ?? $key,
                 'type' => $type,
                 'old' => $this->exists ? $oldValue : null,

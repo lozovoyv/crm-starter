@@ -13,7 +13,7 @@ namespace App\Actions\Permission;
 
 use App\Actions\Action;
 use App\Models\History\HistoryAction;
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 use App\Models\Permissions\PermissionGroup;
 use App\Utils\Casting;
 use App\VDTO\PermissionGroupVDTO;
@@ -47,7 +47,7 @@ class PermissionGroupUpdateAction extends Action
 
         if (count($changed['attached']) || count($changed['updated']) || count($changed['detached'])) {
             $group->touch();
-            $changes[] = new HistoryChanges(['parameter' => 'permissions', 'type' => Casting::array, 'old' => $oldIds, 'new' => $ids]);
+            $changes[] = new HistoryChange(['parameter' => 'permissions', 'type' => Casting::array, 'old' => $oldIds, 'new' => $ids]);
         }
 
         $changes = array_filter($changes);

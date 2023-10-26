@@ -14,7 +14,7 @@ namespace App\Actions\Permission;
 use App\Actions\Action;
 use App\Exceptions\Model\ModelDeleteBlockedException;
 use App\Models\History\HistoryAction;
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 use App\Models\Permissions\PermissionGroup;
 use App\Utils\Casting;
 use Illuminate\Database\QueryException;
@@ -28,10 +28,10 @@ class PermissionGroupRemoveAction extends Action
     {
         try {
             $changes = [
-                new HistoryChanges(['parameter' => 'name', 'type' => Casting::string, 'old' => $group->name, 'new' => null]),
-                new HistoryChanges(['parameter' => 'active', 'type' => Casting::bool, 'old' => $group->active, 'new' => null]),
-                new HistoryChanges(['parameter' => 'description', 'type' => Casting::string, 'old' => $group->description, 'new' => null]),
-                new HistoryChanges(['parameter' => 'permissions', 'type' => Casting::array, 'old' => $group->permissions()->pluck('id')->toArray(), 'new' => null]),
+                new HistoryChange(['parameter' => 'name', 'type' => Casting::string, 'old' => $group->name, 'new' => null]),
+                new HistoryChange(['parameter' => 'active', 'type' => Casting::bool, 'old' => $group->active, 'new' => null]),
+                new HistoryChange(['parameter' => 'description', 'type' => Casting::string, 'old' => $group->description, 'new' => null]),
+                new HistoryChange(['parameter' => 'permissions', 'type' => Casting::array, 'old' => $group->permissions()->pluck('id')->toArray(), 'new' => null]),
             ];
 
             $group

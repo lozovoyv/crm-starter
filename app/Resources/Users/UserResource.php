@@ -66,7 +66,7 @@ class UserResource extends EntryResource
      */
     public function getHash(): ?string
     {
-        return $this->user->getHash();
+        return $this->user->hash();
     }
 
     /**

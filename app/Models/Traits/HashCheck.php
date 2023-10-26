@@ -1,9 +1,17 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
-namespace App\Traits;
+namespace App\Models\Traits;
 
-use BadMethodCallException;
 use Carbon\Carbon;
 
 /**
@@ -12,11 +20,11 @@ use Carbon\Carbon;
 trait HashCheck
 {
     /**
-     * Instance hash.
+     * Get value to hash.
      *
      * @return  string|null
      */
-    public function hash(): ?string
+    public function hashable(): ?string
     {
         if (empty($this->updated_at)) {
             return null;
@@ -30,11 +38,11 @@ trait HashCheck
      *
      * @return string|null
      */
-    public function getHash(): ?string
+    public function hash(): ?string
     {
-        $hash = $this->hash();
+        $hash = $this->hashable();
 
-        return $hash ? md5($this->hash()) : null;
+        return $hash ? md5($this->hashable()) : null;
     }
 
     /**
@@ -46,6 +54,6 @@ trait HashCheck
      */
     public function isHash(?string $hash): bool
     {
-        return $this->getHash() === $hash;
+        return $this->hash() === $hash;
     }
 }

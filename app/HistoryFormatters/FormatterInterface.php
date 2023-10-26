@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace App\HistoryFormatters;
 
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 
 interface FormatterInterface
 {
-    public static function format(HistoryChanges $changes): array;
+    public static function format(HistoryChange $changes): array;
 }

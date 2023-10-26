@@ -65,7 +65,7 @@ class UserListController extends ApiController
                 'phone' => $user->phone,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
-                'hash' => $user->getHash(),
+                'hash' => $user->hash(),
             ];
         });
 

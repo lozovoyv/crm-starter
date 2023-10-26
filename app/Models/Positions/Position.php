@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace App\Models\Positions;
 
 use App\Builders\PositionBuilder;
-use App\Interfaces\Historical;
-use App\Interfaces\Statusable;
+use App\Models\Interfaces\Historical;
+use App\Models\Interfaces\Statusable;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
+use App\Models\Traits\HasHistory;
+use App\Models\Traits\HasStatus;
 use App\Models\Users\User;
-use App\Traits\HasHistory;
-use App\Traits\HasStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

@@ -74,7 +74,7 @@ class StaffHistoryController extends HistoryBaseController
      *
      * @return ApiResponse
      */
-    public function changes(int $historyID): ApiResponse
+    public function change(int $historyID): ApiResponse
     {
         $history = History::query()
             ->withChanges()
@@ -147,7 +147,7 @@ class StaffHistoryController extends HistoryBaseController
      *
      * @return ApiResponse
      */
-    public function changesForStaff(int $positionID, int $historyID): ApiResponse
+    public function changeForStaff(int $positionID, int $historyID): ApiResponse
     {
         $history = History::query()
             ->withChanges()
@@ -217,7 +217,7 @@ class StaffHistoryController extends HistoryBaseController
      *
      * @return ApiResponse
      */
-    public function changesByStaff(int $positionID, int $historyID): ApiResponse
+    public function changeByStaff(int $positionID, int $historyID): ApiResponse
     {
         $history = History::query()
             ->withChanges()

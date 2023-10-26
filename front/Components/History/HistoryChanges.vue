@@ -62,7 +62,7 @@ function show(recordID: number, date: string | null, message: string | null) {
     popup.value.show();
     popup.value.process(true);
     list.value.setConfig({
-        load_url: apiEndPoint('get', props.url + '/{recordID}/changes', {recordID: recordID}),
+        load_url: apiEndPoint('get', props.url + '/{recordID}/change', {recordID: recordID}),
         use_pagination: false,
     });
     list.value.load()

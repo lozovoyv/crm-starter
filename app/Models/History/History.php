@@ -31,7 +31,7 @@ use Illuminate\Database\Query\Builder;
  * @property Position|null $position
  * @property Model|null $entry
  * @property HistoryAction $action
- * @property Collection<HistoryChanges>|null $changes
+ * @property Collection<HistoryChange>|null $changes
  * @property Collection<HistoryLink>|null $links
  * @property Collection<HistoryComment>|null $comments
  */
@@ -141,7 +141,7 @@ class History extends Model
      */
     public function changes(): HasMany
     {
-        return $this->hasMany(HistoryChanges::class, 'history_id', 'id');
+        return $this->hasMany(HistoryChange::class, 'history_id', 'id');
     }
 
     /**
@@ -198,7 +198,7 @@ class History extends Model
     {
         if (is_array($parameter)) {
             foreach ($parameter as $change) {
-                if ($change instanceof HistoryChanges) {
+                if ($change instanceof HistoryChange) {
                     $this->changes()->save($change);
                 } else {
                     $this->changes()->create($parameter);
@@ -225,7 +225,7 @@ class History extends Model
     {
         $this->loadMissing('changes');
 
-        return $this->getRelation('changes')->map(function (HistoryChanges $change) {
+        return $this->getRelation('changes')->map(function (HistoryChange $change) {
             return $change->toArray($this->entry_type);
         });
     }

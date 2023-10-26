@@ -72,7 +72,7 @@ class UserHistoryController extends HistoryBaseController
      *
      * @return ApiResponse
      */
-    public function changes(int $historyID): ApiResponse
+    public function change(int $historyID): ApiResponse
     {
         $history = History::query()
             ->withChanges()
@@ -142,7 +142,7 @@ class UserHistoryController extends HistoryBaseController
      *
      * @return ApiResponse
      */
-    public function changesForUser(int $userID, int $historyID): ApiResponse
+    public function changeForUser(int $userID, int $historyID): ApiResponse
     {
         $history = History::query()
             ->withChanges()

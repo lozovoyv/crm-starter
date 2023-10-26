@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace App\HistoryFormatters;
 
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 use App\Models\Permissions\Permission;
 
-class PermissionGroupChangesFormatter implements FormatterInterface
+class PermissionGroupChangeFormatter implements FormatterInterface
 {
-    public static function format(HistoryChanges $changes): array
+    public static function format(HistoryChange $changes): array
     {
         $result = [
             'parameter' => $changes->parameter,

@@ -58,7 +58,7 @@ class UserViewController extends ApiController
             'status' => $user->status->name,
             'has_password' => !empty($user->password),
             'name' => $user->compactName,
-            'hash' => $user->getHash(),
+            'hash' => $user->hash(),
         ];
 
         return APIResponse::common($data);

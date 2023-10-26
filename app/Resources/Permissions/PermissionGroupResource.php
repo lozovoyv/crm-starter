@@ -72,7 +72,7 @@ class PermissionGroupResource extends EntryResource
      */
     public function getHash(): ?string
     {
-        return $this->group->getHash();
+        return $this->group->hash();
     }
 
     /**

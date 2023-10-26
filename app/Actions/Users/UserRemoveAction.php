@@ -14,7 +14,7 @@ namespace App\Actions\Users;
 use App\Actions\Action;
 use App\Exceptions\Model\ModelDeleteBlockedException;
 use App\Models\History\HistoryAction;
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 use App\Models\Users\User;
 use App\Utils\Casting;
 use Illuminate\Database\QueryException;
@@ -28,13 +28,13 @@ class UserRemoveAction extends Action
     {
         try {
             $changes = [
-                new HistoryChanges(['parameter' => 'lastname', 'type' => Casting::string, 'old' => $user->lastname, 'new' => null]),
-                new HistoryChanges(['parameter' => 'firstname', 'type' => Casting::string, 'old' => $user->firstname, 'new' => null]),
-                new HistoryChanges(['parameter' => 'patronymic', 'type' => Casting::string, 'old' => $user->patronymic, 'new' => null]),
-                new HistoryChanges(['parameter' => 'display_name', 'type' => Casting::string, 'old' => $user->display_name, 'new' => null]),
-                new HistoryChanges(['parameter' => 'email', 'type' => Casting::string, 'old' => $user->email, 'new' => null]),
-                new HistoryChanges(['parameter' => 'phone', 'type' => Casting::string, 'old' => $user->phone, 'new' => null]),
-                new HistoryChanges(['parameter' => 'username', 'type' => Casting::string, 'old' => $user->username, 'new' => null]),
+                new HistoryChange(['parameter' => 'lastname', 'type' => Casting::string, 'old' => $user->lastname, 'new' => null]),
+                new HistoryChange(['parameter' => 'firstname', 'type' => Casting::string, 'old' => $user->firstname, 'new' => null]),
+                new HistoryChange(['parameter' => 'patronymic', 'type' => Casting::string, 'old' => $user->patronymic, 'new' => null]),
+                new HistoryChange(['parameter' => 'display_name', 'type' => Casting::string, 'old' => $user->display_name, 'new' => null]),
+                new HistoryChange(['parameter' => 'email', 'type' => Casting::string, 'old' => $user->email, 'new' => null]),
+                new HistoryChange(['parameter' => 'phone', 'type' => Casting::string, 'old' => $user->phone, 'new' => null]),
+                new HistoryChange(['parameter' => 'username', 'type' => Casting::string, 'old' => $user->username, 'new' => null]),
             ];
 
             $user

@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace App\HistoryFormatters;
 
-use App\Models\History\HistoryChanges;
+use App\Models\History\HistoryChange;
 use App\Models\Permissions\PermissionGroup;
 use App\Models\Positions\PositionStatus;
 use App\Models\Users\User;
 
-class PositionChangesFormatter implements FormatterInterface
+class PositionChangeFormatter implements FormatterInterface
 {
-    public static function format(HistoryChanges $changes): array
+    public static function format(HistoryChange $changes): array
     {
         $result = [
             'parameter' => $changes->parameter,

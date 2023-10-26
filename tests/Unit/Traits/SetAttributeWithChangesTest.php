@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Traits;
 
-use App\Models\History\HistoryChanges;
-use App\Traits\SetAttributeWithChanges;
+use App\Models\History\HistoryChange;
+use App\Models\Traits\SetAttributeWithChanges;
 use App\Utils\Casting;
 use Tests\TestCase;
 
@@ -33,7 +33,7 @@ class SetAttributeWithChangesTest extends TestCase
 
     public function test_set_attribute_with_changes_string_type(): void
     {
-        /** @var HistoryChanges $changes */
+        /** @var HistoryChange $changes */
         $changes = $this->setAttributeWithChanges('value', 'test', Casting::string, null);
 
         $this->assertEquals('value', $changes->parameter);

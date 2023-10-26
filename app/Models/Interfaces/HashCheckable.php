@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces;
+namespace App\Models\Interfaces;
 
 interface HashCheckable
 {
@@ -19,7 +19,7 @@ interface HashCheckable
      *
      * @return  string|null
      */
-    public function getHash(): ?string;
+    public function hash(): ?string;
 
     /**
      * Check hash against given.
@@ -35,5 +35,5 @@ interface HashCheckable
      *
      * @return  string|null
      */
-    public function hash(): ?string;
+    public function hashable(): ?string;
 }

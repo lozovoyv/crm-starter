@@ -88,12 +88,12 @@ class PermissionBaseTest extends TestCase
 
         $this->assertEquals('test role', $group->historyEntryCaption());
         $this->assertNull( $group->historyEntryTag());
-        $this->assertIsString($group->hash());
+        $this->assertIsString($group->hashable());
         $this->assertEquals('test role', $group->name);
         $this->assertEquals(1, $group->permissions->count());
         $this->assertEquals(null, $group->description);
         $this->assertTrue($group->active);
         $this->assertFalse($group->locked);
-        $this->assertEquals(md5($now->toString()), $group->getHash());
+        $this->assertEquals(md5($now->toString()), $group->hash());
     }
 }

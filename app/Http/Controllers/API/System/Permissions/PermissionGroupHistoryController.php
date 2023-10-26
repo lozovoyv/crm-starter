@@ -72,7 +72,7 @@ class PermissionGroupHistoryController extends HistoryBaseController
      *
      * @return ApiResponse
      */
-    public function changes(int $historyID): ApiResponse
+    public function change(int $historyID): ApiResponse
     {
         $history = History::query()
             ->withChanges()

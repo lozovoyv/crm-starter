@@ -10,17 +10,17 @@
 
 declare(strict_types=1);
 
-use App\HistoryFormatters\PermissionGroupChangesFormatter;
-use App\HistoryFormatters\PositionChangesFormatter;
-use App\HistoryFormatters\UserChangesFormatter;
+use App\HistoryFormatters\PermissionGroupChangeFormatter;
+use App\HistoryFormatters\PositionChangeFormatter;
+use App\HistoryFormatters\UserChangeFormatter;
 use App\Models\Permissions\PermissionGroup;
 use App\Models\Positions\Position;
 use App\Models\Users\User;
 
 return [
     'formatters' => [
-        PermissionGroup::class => PermissionGroupChangesFormatter::class,
-        Position::class => PositionChangesFormatter::class,
-        User::class => UserChangesFormatter::class,
+        PermissionGroup::class => PermissionGroupChangeFormatter::class,
+        Position::class => PositionChangeFormatter::class,
+        User::class => UserChangeFormatter::class,
     ]
 ];

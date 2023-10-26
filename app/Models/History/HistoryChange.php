@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Config;
  * @property mixed|null $old
  * @property mixed|null $new
  */
-class HistoryChanges extends Model
+class HistoryChange extends Model
 {
     /** @var bool No need timestamps here. Record created once, time is stored in timestamp property of related history record. */
     public $timestamps = false;

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces;
+namespace App\Models\Interfaces;
 
 use App\Models\History\History;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
