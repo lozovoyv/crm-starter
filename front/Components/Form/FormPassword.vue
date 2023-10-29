@@ -48,7 +48,7 @@ const placeholderProxy = computed(() => {
     return props.placeholder !== undefined ? props.placeholder : title.value;
 });
 const title = computed(() => {
-    return getTitle(props.form, props.name);
+    return getTitle(props.form, props.name, props.title);
 });
 const modelValue = computed((): string | null => {
     return getValue(props.form, props.name, null);

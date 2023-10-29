@@ -46,7 +46,7 @@ const emit = defineEmits<{ (e: 'change', value: string | null, name: string, pay
 const input = ref<InstanceType<typeof InputString> | undefined>(undefined);
 
 const title = computed(() => {
-    return getTitle(props.form, props.name);
+    return getTitle(props.form, props.name, props.title);
 });
 const placeholderProxy = computed(() => {
     return props.placeholder !== undefined ? props.placeholder : title.value;

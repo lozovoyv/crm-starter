@@ -19,20 +19,23 @@ use Illuminate\Validation\Rule;
  * @property string $name
  * @property bool $active
  * @property string|null $description
- * @property array $permission
+ * @property array|null $permissions
  */
 class PermissionGroupVDTO extends VDTO
 {
     protected array $rules = [
         'name' => 'required',
-        'active' => 'required',
+        'active' => 'required|boolean',
         'description' => 'nullable',
+        'permissions' => 'nullable',
+        'permissions.*' => 'required|exists:permissions,id',
     ];
 
     protected array $titles = [
         'name' => 'Название',
         'active' => 'Статус',
         'description' => 'Описание',
+        'permissions' => 'Права',
     ];
 
     protected array $messages = [

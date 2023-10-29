@@ -39,7 +39,13 @@ class PermissionGroup extends Model implements Historical, HashCheckable
 {
     use HashCheck, HasHistory, SetAttributeWithChanges;
 
-    /** @var array Attributes casting. */
+    protected $fillable = [
+        'name',
+        'description',
+        'active',
+        'locked',
+    ];
+
     protected $casts = [
         'active' => 'bool',
         'locked' => 'bool',

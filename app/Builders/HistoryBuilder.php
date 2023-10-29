@@ -13,6 +13,7 @@ namespace App\Builders;
 
 use App\Models\History\History;
 use App\Utils\Casting;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Collection;
 
 class HistoryBuilder extends Builder
@@ -142,6 +143,18 @@ class HistoryBuilder extends Builder
         $this->orderBy($orderBy, $order);
 
         return $this;
+    }
+
+    /**
+     * Add an "order by" clause for a timestamp to the query.
+     *
+     * @param  string|Expression  $column
+     *
+     * @return $this
+     */
+    public function latest($column = 'id'): HistoryBuilder
+    {
+        return parent::latest($column);
     }
 
     /**

@@ -13,6 +13,8 @@ namespace App\Actions\Permission;
 
 use App\Actions\Action;
 use App\Exceptions\Model\ModelDeleteBlockedException;
+use App\Exceptions\Model\ModelLockedException;
+use App\Exceptions\Model\ModelNotFoundException;
 use App\Models\History\HistoryAction;
 use App\Models\History\HistoryChange;
 use App\Models\Permissions\PermissionGroup;
@@ -23,9 +25,18 @@ class PermissionGroupRemoveAction extends Action
 {
     /**
      * @throws ModelDeleteBlockedException
+     * @throws ModelNotFoundException
+     * @throws ModelLockedException
      */
     public function execute(PermissionGroup $group): void
     {
+        if (!$group->exists) {
+            throw new ModelNotFoundException('Группа прав не существует.');
+        }
+        if ($group->locked) {
+            throw new ModelLockedException('Группа прав заблокирована.');
+        }
+
         try {
             $changes = [
                 new HistoryChange(['parameter' => 'name', 'type' => Casting::string, 'old' => $group->name, 'new' => null]),

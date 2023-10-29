@@ -12,6 +12,7 @@
             :model-value="modelValue"
             :original="original"
             :name="name"
+            :value="value"
             :disabled="disabled"
             :has-errors="!valid"
             :placeholder="placeholderProxy"
@@ -45,7 +46,7 @@ const emit = defineEmits<{ (e: 'change', value: boolean | Array<number | string>
 const input = ref<InstanceType<typeof InputCheckbox> | undefined>(undefined);
 
 const title = computed(() => {
-    return getTitle(props.form, props.name);
+    return getTitle(props.form, props.name, props.title);
 });
 const placeholderProxy = computed(() => {
     return props.placeholder !== undefined ? props.placeholder : title.value;

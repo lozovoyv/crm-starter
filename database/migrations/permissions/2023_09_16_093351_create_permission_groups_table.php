@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('permission_groups', static function (Blueprint $table) {
 
-            $table->unsignedSmallInteger('id', true)->from(100);
+            $table->unsignedSmallInteger('id', true)->from(1000);
 
             $table->boolean('active')->default(true);
             $table->boolean('locked')->default(false);

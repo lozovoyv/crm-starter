@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Utils;
 
-use App\Models\Users\User;
-use App\Models\Users\UserStatus;
 use App\Utils\ModelOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Assets\Dictionary\TestingEloquentDictionaryModel;
 use Tests\TestCase;
 
 class ModelOrderTest extends TestCase
@@ -15,20 +14,18 @@ class ModelOrderTest extends TestCase
 
     public function test_util_model_order(): void
     {
-        User::query()->delete();
-
-        UserStatus::query()->delete();
+        TestingEloquentDictionaryModel::up();
 
         for ($i = 0; $i < 5; $i++) {
-            $status = new UserStatus();
-            $status->id = 10 + $i;
-            $status->name = "test_$i";
-            $status->save();
+            $model = new TestingEloquentDictionaryModel();
+            $model->id = 10 + $i;
+            $model->name = "test_$i";
+            $model->save();
         }
 
-        ModelOrder::fix(UserStatus::class, 'order');
+        ModelOrder::fix(TestingEloquentDictionaryModel::class, 'order');
 
-        $test = UserStatus::query()->select(['id', 'name', 'order'])->get()->toArray();
+        $test = TestingEloquentDictionaryModel::query()->select(['id', 'name', 'order'])->get()->toArray();
 
         $this->assertEquals([
             ['id' => 10, 'name' => 'test_0', 'order' => 0],
@@ -37,31 +34,33 @@ class ModelOrderTest extends TestCase
             ['id' => 13, 'name' => 'test_3', 'order' => 3],
             ['id' => 14, 'name' => 'test_4', 'order' => 4],
         ], $test);
+
+        TestingEloquentDictionaryModel::down();
     }
 
     public function test_util_model_order_no_order(): void
     {
-        User::query()->delete();
-
-        UserStatus::query()->delete();
+        TestingEloquentDictionaryModel::up();
 
         for ($i = 0; $i < 5; $i++) {
-            $status = new UserStatus();
+            $status = new TestingEloquentDictionaryModel();
             $status->id = 10 + $i;
             $status->name = "test_$i";
             $status->save();
         }
 
-        UserStatus::query()->update(['order' => 1]);
+        TestingEloquentDictionaryModel::query()->update(['order' => 1]);
 
-        ModelOrder::fix(UserStatus::class, null);
+        ModelOrder::fix(TestingEloquentDictionaryModel::class, null);
 
-        $testMin = UserStatus::query()->min('order');
-        $testMax = UserStatus::query()->max('order');
-        $nullCount = UserStatus::query()->whereNull('order')->count();
+        $testMin = TestingEloquentDictionaryModel::query()->min('order');
+        $testMax = TestingEloquentDictionaryModel::query()->max('order');
+        $nullCount = TestingEloquentDictionaryModel::query()->whereNull('order')->count();
 
         $this->assertEquals(1, $testMin);
         $this->assertEquals(1, $testMax);
         $this->assertEquals(0, $nullCount);
+
+        TestingEloquentDictionaryModel::down();
     }
 }

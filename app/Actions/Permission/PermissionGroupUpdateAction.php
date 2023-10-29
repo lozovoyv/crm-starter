@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Actions\Permission;
 
 use App\Actions\Action;
+use App\Exceptions\Model\ModelLockedException;
 use App\Models\History\HistoryAction;
 use App\Models\History\HistoryChange;
 use App\Models\Permissions\PermissionGroup;
@@ -27,9 +28,14 @@ class PermissionGroupUpdateAction extends Action
      * @param PermissionGroupVDTO $vdto
      *
      * @return void
+     * @throws ModelLockedException
      */
     public function execute(PermissionGroup $group, PermissionGroupVDTO $vdto): void
     {
+        if ($group->locked) {
+            throw new ModelLockedException('Группа прав заблокирована.');
+        }
+
         $changes = [];
 
         $changes[] = $group->setAttributeWithChanges('name', $vdto->name, Casting::string);
@@ -37,7 +43,7 @@ class PermissionGroupUpdateAction extends Action
         $changes[] = $group->setAttributeWithChanges('description', $vdto->description, Casting::string);
         $group->save();
 
-        $ids = array_keys(array_filter($vdto->permission));
+        $ids = $vdto->permissions ?? [];
         $oldIds = $group->permissions()->pluck('id')->toArray();
 
         sort($ids);

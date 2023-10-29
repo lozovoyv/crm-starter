@@ -42,6 +42,7 @@ const props = defineProps<{
     disabled?: boolean,
     clearable?: boolean,
     // field props
+    title?: string | null,
     hideTitle?: boolean,
     emptyTitle?: boolean,
     vertical?: boolean,
@@ -68,7 +69,7 @@ const emit = defineEmits<{ (e: 'change', value: string | number | boolean | null
 const input = ref<InstanceType<typeof FieldDropDown> | undefined>(undefined);
 
 const title = computed(() => {
-    return getTitle(props.form, props.name);
+    return getTitle(props.form, props.name, props.title);
 });
 const modelValue = computed((): string | number | null | Array<string | number> => {
     return getValue(props.form, props.name, null);
@@ -88,7 +89,7 @@ const required = computed((): boolean => {
 });
 
 function change(value: string | number | boolean | null | Array<string | number>, name: string | undefined, payload: any) {
-    if(name) {
+    if (name) {
         props.form.update(name, value);
         emit('change', value, name, payload);
     }

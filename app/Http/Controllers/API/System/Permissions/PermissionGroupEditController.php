@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API\System\Permissions;
 use App\Actions\Permission\PermissionGroupUpdateAction;
 use App\Current;
 use App\Exceptions\Model\ModelException;
+use App\Exceptions\Model\ModelLockedException;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\APIRequest;
 use App\Http\Responses\ApiResponse;
@@ -49,6 +50,7 @@ class PermissionGroupEditController extends ApiController
             'name',
             'active',
             'description',
+            'permissions',
         ];
 
         $titles = array_merge(
@@ -56,14 +58,9 @@ class PermissionGroupEditController extends ApiController
             $resource->getPermissionsNames()
         );
 
-        $values = array_merge(
-            $resource->values($fields),
-            $resource->getPermissionsValues()
-        );
-
         return ApiResponse::form()
             ->title($groupID ? $resource->group()->name : 'Создание группы прав')
-            ->values($values)
+            ->values($resource->values($fields))
             ->rules($vdto->getValidationRules($fields))
             ->titles($titles)
             ->messages($vdto->getValidationMessages($fields))
@@ -95,7 +92,7 @@ class PermissionGroupEditController extends ApiController
                 'name',
                 'active',
                 'description',
-                'permission',
+                'permissions',
             ])
         );
 
@@ -106,7 +103,12 @@ class PermissionGroupEditController extends ApiController
         $current = Current::init($request);
 
         $action = new PermissionGroupUpdateAction($current);
-        $action->execute($resource->group(), $vdto);
+
+        try {
+            $action->execute($resource->group(), $vdto);
+        } catch (ModelException $exception) {
+            return APIResponse::error($exception->getMessage());
+        }
 
         return APIResponse::success()
             ->message($resource->group()->wasRecentlyCreated ? 'Группа прав добавлена' : 'Группа прав сохранена')

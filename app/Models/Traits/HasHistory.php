@@ -14,8 +14,12 @@ namespace App\Models\Traits;
 
 use App\Models\History\History;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property Collection<History> $history
+ */
 trait HasHistory
 {
     /**

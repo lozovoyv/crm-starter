@@ -69,7 +69,7 @@ const emit = defineEmits<{ (e: 'change', value: string | number | boolean | null
 const input = ref<InstanceType<typeof FieldDictionary> | undefined>(undefined);
 
 const title = computed(() => {
-    return getTitle(props.form, props.name);
+    return getTitle(props.form, props.name, props.title);
 });
 const modelValue = computed((): string | number | null | Array<string | number> => {
     return getValue(props.form, props.name, null);

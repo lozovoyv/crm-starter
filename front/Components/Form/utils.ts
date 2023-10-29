@@ -7,7 +7,10 @@ export function getFromForm(form: Form, scope: 'titles' | 'values' | 'originals'
     return typeof form[scope][name] !== "undefined" ? form[scope][name] : defaults;
 }
 
-export function getTitle(form: Form, name: string): string | null {
+export function getTitle(form: Form, name: string, title?: string | null): string | null {
+    if (title !== undefined) {
+        return title;
+    }
     return getFromForm(form, 'titles', name, '...');
 }
 

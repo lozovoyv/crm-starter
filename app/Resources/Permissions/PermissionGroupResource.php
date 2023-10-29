@@ -87,7 +87,11 @@ class PermissionGroupResource extends EntryResource
         $values = [];
 
         foreach ($fields as $field) {
-            $values[$field] = $this->group->getAttribute($field);
+            if ($field === 'permissions') {
+                $values[$field] = $this->group->permissions->pluck('id')->toArray();
+            } else {
+                $values[$field] = $this->group->getAttribute($field);
+            }
         }
 
         return $values;
@@ -109,7 +113,7 @@ class PermissionGroupResource extends EntryResource
                     'permissions' => [],
                 ];
             }
-            $scopes[$permission->scope->id]['permissions'][] = 'permission.' . $permission->id;
+            $scopes[$permission->scope->id]['permissions'][] = $permission->id;
         });
 
         return $scopes;
@@ -135,19 +139,7 @@ class PermissionGroupResource extends EntryResource
     public function getPermissionsDescriptions(): array
     {
         return $this->permissions->mapWithKeys(function (Permission $permission) {
-            return ['permission.' . $permission->id => $permission->description];
-        })->toArray();
-    }
-
-    /**
-     *  Get group permissions values.
-     *
-     * @return array
-     */
-    public function getPermissionsValues(): array
-    {
-        return $this->permissions->mapWithKeys(function (Permission $permission) {
-            return ['permission.' . $permission->id => $this->group->permissions->contains('id', $permission->id)];
+            return [$permission->id => $permission->description];
         })->toArray();
     }
 }

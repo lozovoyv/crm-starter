@@ -8,13 +8,13 @@
  */
 
 export interface FormFieldBaseProps {
-    title?: string | null,
     hasErrors?: boolean,
     errors?: string[],
     required?: boolean,
 }
 
 export interface FormFieldProps {
+    title?: string | null,
     withoutTitle?: boolean,
     hideTitle?: boolean,
     vertical?: boolean,

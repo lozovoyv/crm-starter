@@ -18,7 +18,7 @@
                 <tr v-for="permission in scope['permissions']">
                     <td class="permissions-group-edit__spacer"></td>
                     <td class="permissions-group-edit__check">
-                        <FormCheckBox :form="form" :name="permission" :without-title="true"/>
+                        <FormCheckBox :form="form" name="permissions" :value="permission" :without-title="true" :title="form.titles[`permission.${permission}`]"/>
                     </td>
                     <td class="permissions-group-edit__description"> {{ form.payload['descriptions'][permission] }}</td>
                 </tr>
