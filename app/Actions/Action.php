@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * This file is part of Opxx Starter project
  *
@@ -9,6 +8,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Current;
@@ -17,8 +18,20 @@ abstract class Action
 {
     protected ?Current $current;
 
+    protected ?string $resultMessage = null;
+
     public function __construct(?Current $current = null)
     {
         $this->current = $current;
+    }
+
+    /**
+     * Get result text representation.
+     *
+     * @return string|null
+     */
+    public function getResultMessage(): ?string
+    {
+        return !empty($this->resultMessage) ? trans($this->resultMessage) : null;
     }
 }

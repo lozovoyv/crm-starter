@@ -22,6 +22,7 @@ class PermissionGroupResource extends EntryResource
     {
         $this->group = $group;
         $this->permissions = Permission::query()->withScope()->order('name')->get();
+        $this->formTitle = $group->exists ? $group->name : 'permissions/permission_group.new_group';
     }
 
     public function group(): PermissionGroup
@@ -53,13 +54,13 @@ class PermissionGroupResource extends EntryResource
         }
 
         if ($group === null) {
-            throw new ModelNotFoundException('Группа прав не найдена.');
+            throw new ModelNotFoundException('permissions/permission_group.model_not_found_exception');
         }
         if ($checkHash && $group->exists && !$group->isHash($hash)) {
-            throw new ModelWrongHashException('Группа прав была изменена в другом месте.');
+            throw new ModelWrongHashException('permissions/permission_group.model_wrong_hash_exception');
         }
         if ($checkHash && $group->locked) {
-            throw new ModelLockedException('Эту группу прав нельзя изменить или удалить.');
+            throw new ModelLockedException('permissions/permission_group.model_locked_exception');
         }
 
         return new static($group);

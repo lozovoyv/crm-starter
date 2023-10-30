@@ -56,6 +56,6 @@ class PermissionGroupRemoveController extends ApiController
             return APIResponse::error($exception->getMessage());
         }
 
-        return ApiResponse::success('Учётная запись удалена');
+        return ApiResponse::success($action->getResultMessage());
     }
 }

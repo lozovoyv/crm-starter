@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * This file is part of Opxx Starter project
  *
@@ -8,6 +7,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace App\Actions\Permission;
 
@@ -33,7 +34,7 @@ class PermissionGroupUpdateAction extends Action
     public function execute(PermissionGroup $group, PermissionGroupVDTO $vdto): void
     {
         if ($group->locked) {
-            throw new ModelLockedException('Группа прав заблокирована.');
+            throw new ModelLockedException('permissions/permission_group.model_locked_exception');
         }
 
         $changes = [];
@@ -62,6 +63,11 @@ class PermissionGroupUpdateAction extends Action
             $group
                 ->addHistory($group->wasRecentlyCreated ? HistoryAction::permission_group_created : HistoryAction::permission_group_edited, $this->current?->positionId())
                 ->addChanges($changes);
+
+            $this->resultMessage = $group->wasRecentlyCreated ? 'permissions/permission_group.group_created' : 'permissions/permission_group.group_updated';
+
+        } else {
+            $this->resultMessage = 'permissions/permission_group.group_not_modified';
         }
     }
 }

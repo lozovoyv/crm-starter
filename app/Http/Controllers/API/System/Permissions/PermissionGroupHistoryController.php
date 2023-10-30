@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\API\System\Permissions;
@@ -59,14 +68,14 @@ class PermissionGroupHistoryController extends HistoryBaseController
             ->first();
 
         if ($history === null) {
-            return ApiResponse::error('Запись не найдена');
+            return $this->notFoundResponse();
         }
 
         return APIResponse::list()->items($history->comments);
     }
 
     /**
-     * Permissions group history changes.
+     * Permissions group history change.
      *
      * @param int $historyID
      *
@@ -81,7 +90,7 @@ class PermissionGroupHistoryController extends HistoryBaseController
             ->first();
 
         if ($history === null) {
-            return ApiResponse::error('Запись не найдена');
+            return $this->notFoundResponse();
         }
 
         return ApiResponse::list($history->getChanges())

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Responses\ApiResponse;
 
 abstract class HistoryBaseController extends ApiController
 {
@@ -31,4 +32,9 @@ abstract class HistoryBaseController extends ApiController
         'old_value' => 'history/history.old_value',
         'new_value' => 'history/history.new_value',
     ];
+
+    protected function notFoundResponse():ApiResponse
+    {
+        return ApiResponse::notFound('history/history.not_found');
+    }
 }

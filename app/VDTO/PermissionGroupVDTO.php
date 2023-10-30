@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * This file is part of Opxx Starter project
  *
@@ -8,6 +7,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace App\VDTO;
 
@@ -32,14 +33,14 @@ class PermissionGroupVDTO extends VDTO
     ];
 
     protected array $titles = [
-        'name' => 'Название',
-        'active' => 'Статус',
-        'description' => 'Описание',
-        'permissions' => 'Права',
+        'name' => 'permissions/permission_group.field_name',
+        'active' => 'permissions/permission_group.field_active',
+        'description' => 'permissions/permission_group.field_description',
+        'permissions' => 'permissions/permission_group.field_permissions',
     ];
 
     protected array $messages = [
-      'name.unique' => 'Группа прав с таким названием уже существует.',
+      'name.unique' => 'permissions/permission_group.validation_name_unique',
     ];
 
     /**

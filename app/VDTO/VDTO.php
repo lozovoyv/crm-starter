@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * This file is part of Opxx Starter project
  *
@@ -8,6 +7,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace App\VDTO;
 
@@ -86,7 +87,7 @@ abstract class VDTO
      */
     public function getValidationMessages(?array $only = null): array
     {
-        return Arr::dot($this->filter(Arr::undot($this->messages), $only));
+        return Translate::array(Arr::dot($this->filter(Arr::undot($this->messages), $only)));
     }
 
     /**
