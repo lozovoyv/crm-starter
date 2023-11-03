@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Unit\User;
@@ -6,6 +15,7 @@ namespace Tests\Unit\User;
 use App\Models\Users\UserStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use InvalidArgumentException;
 use Tests\Traits\CreatesUser;
 use Tests\TestCase;
 
@@ -46,7 +56,7 @@ class UserTest extends TestCase
         $this->assertEquals(UserStatus::query()->find(UserStatus::blocked)->id, $user->status_id);
         $this->assertEquals('Тестовый', $user->lastname);
         $this->assertEquals('Иван', $user->firstname);
-        $this->assertEquals(null, $user->patronymic);
+        $this->assertNull($user->patronymic);
         $this->assertEquals('test', $user->display_name);
         $this->assertEquals('test', $user->username);
         $this->assertEquals('test@test.ru', $user->email);
@@ -57,7 +67,7 @@ class UserTest extends TestCase
 
         $this->assertModelMissing($user->info);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $user->setStatus(0);
     }

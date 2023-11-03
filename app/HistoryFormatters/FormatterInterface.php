@@ -16,5 +16,5 @@ use App\Models\History\HistoryChange;
 
 interface FormatterInterface
 {
-    public static function format(HistoryChange $changes): array;
+    public static function format(HistoryChange $change): array;
 }

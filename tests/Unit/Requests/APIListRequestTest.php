@@ -1,11 +1,18 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Unit\Requests;
 
 use App\Http\Requests\APIListRequest;
-use App\Models\Users\User;
-use App\Utils\Casting;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -99,7 +106,7 @@ class APIListRequestTest extends TestCase
     {
         /** @var APIListRequest $request */
         $request = app()->make(APIListRequest::class);
-        $this->assertEquals(null, $request->search());
+        $this->assertNull($request->search());
 
         $request->merge(['search' => 'test']);
         $this->assertEquals('test', $request->search());

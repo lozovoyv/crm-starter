@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Unit\Responses;
@@ -6,10 +15,14 @@ namespace Tests\Unit\Responses;
 use App\Http\Responses\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use JsonException;
 use Tests\TestCase;
 
 class ApiResponseCommonTest extends TestCase
 {
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common(): void
     {
         $request = new Request();
@@ -41,6 +54,9 @@ class ApiResponseCommonTest extends TestCase
         $this->assertTrue($timestamp->is($now->setTimezone('GMT')->toString()), $timestamp->toString() . ' != ' . $now->toString());
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_message(): void
     {
         $request = new Request();
@@ -57,6 +73,9 @@ class ApiResponseCommonTest extends TestCase
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_payload(): void
     {
         $request = new Request();
@@ -71,6 +90,9 @@ class ApiResponseCommonTest extends TestCase
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_array(): void
     {
         $request = new Request();
@@ -85,6 +107,9 @@ class ApiResponseCommonTest extends TestCase
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_arrayable(): void
     {
         $request = new Request();
@@ -99,6 +124,9 @@ class ApiResponseCommonTest extends TestCase
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_null(): void
     {
         $request = new Request();
@@ -113,6 +141,9 @@ class ApiResponseCommonTest extends TestCase
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_bool(): void
     {
         $request = new Request();
@@ -127,6 +158,9 @@ class ApiResponseCommonTest extends TestCase
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function test_http_response_common_string(): void
     {
         $request = new Request();

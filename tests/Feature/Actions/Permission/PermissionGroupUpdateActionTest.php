@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Actions\Permission;
 
-use App\Actions\Permission\PermissionGroupRemoveAction;
 use App\Actions\Permission\PermissionGroupUpdateAction;
 use App\Exceptions\Model\ModelLockedException;
 use App\Models\History\History;
@@ -35,6 +34,9 @@ class PermissionGroupUpdateActionTest extends TestCase
         $this->seed();
     }
 
+    /**
+     * @throws ModelLockedException
+     */
     public function test_execute(): void
     {
         $current = $this->initCurrent(PositionType::admin);

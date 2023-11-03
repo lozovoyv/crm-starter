@@ -33,6 +33,10 @@ class PermissionGroupStatusChangeActionTest extends TestCase
         $this->seed();
     }
 
+    /**
+     * @throws ModelNotFoundException
+     * @throws ModelLockedException
+     */
     public function test_execute(): void
     {
         $current = $this->initCurrent(PositionType::admin);
@@ -74,6 +78,9 @@ class PermissionGroupStatusChangeActionTest extends TestCase
         $this->assertEquals($current->positionId(), $history->position_id);
     }
 
+    /**
+     * @throws ModelLockedException
+     */
     public function test_execute_not_existing(): void
     {
         $current = $this->initCurrent(PositionType::admin);
@@ -87,6 +94,9 @@ class PermissionGroupStatusChangeActionTest extends TestCase
         $action->execute($permissionGroup, $vdto);
     }
 
+    /**
+     * @throws ModelNotFoundException
+     */
     public function test_execute_locked(): void
     {
         $current = $this->initCurrent(PositionType::admin);

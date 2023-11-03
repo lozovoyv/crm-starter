@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace App\Utils;
@@ -55,23 +64,18 @@ class Casting
         }
 
         try {
-            switch ($type) {
-                case self::int:
-                    return $value !== null ? (int)$value : null;
-                case self::bool:
-                    return $value !== null ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : null;
-                case self::datetime:
-                    return $value !== null ? Carbon::parse($value) : null;
-                case self::array:
-                    return !empty($value) ? json_decode($value, true, 512, JSON_THROW_ON_ERROR) : null;
-                case self::string:
-                default:
-            }
+            $casted = match ($type) {
+                self::int => $value !== null ? (int)$value : null,
+                self::bool => $value !== null && $value !== '' ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : null,
+                self::datetime => $value !== null ? Carbon::parse($value) : null,
+                self::array => !empty($value) ? json_decode($value, true, 512, JSON_THROW_ON_ERROR) : null,
+                default => !empty($value) ? $value : null,
+            };
         } catch (Exception $exception) {
             throw new CastingException($exception->getMessage(), 0, $exception);
         }
 
-        return $value;
+        return $casted;
     }
 
     /**
@@ -90,27 +94,16 @@ class Casting
         }
 
         try {
-            switch ($type) {
-                case self::bool:
-                    if ($value !== null) {
-                        $value = $value ? '1' : '0';
-                    }
-                    break;
-                case self::array:
-                    $value = !empty($value) ? json_encode($value, JSON_THROW_ON_ERROR) : null;
-                    break;
-                case self::int:
-                case self::datetime:
-                case self::string:
-                default:
-                    $value = $value !== null ? (string)$value : null;
-                    break;
-            }
+            $casted = match ($type) {
+                self::bool => $value !== null ? ($value ? '1' : '0') : null,
+                self::array => !empty($value) ? json_encode($value, JSON_THROW_ON_ERROR) : null,
+                default => $value !== null && $value !== '' ? (string)$value : null,
+            };
         } catch (Exception $exception) {
             throw new CastingException($exception->getMessage(), 0, $exception);
         }
 
-        return $value;
+        return $casted;
     }
 
     /**

@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Feature\API\Dictionaries;
@@ -43,7 +52,7 @@ class DictionaryListControllerTest extends TestCase
 
     public function test_dictionary_list_editor_forbidden(): void
     {
-        $response = $this->apiActingAs(PositionType::staff, [])->get('/api/dictionaries/testing');
+        $response = $this->apiActingAs(PositionType::staff)->get('/api/dictionaries/testing');
 
         $this->assertEquals(ApiResponse::CODE_FORBIDDEN, $response->status());
     }
@@ -88,7 +97,7 @@ class DictionaryListControllerTest extends TestCase
             'description' => 'string',
         ], $payload['types']);
 
-        $list = array_map(function ($item) {
+        $list = array_map(static function ($item) {
             unset($item['updated_at']);
             return $item;
         }, $content['list']);

@@ -56,7 +56,7 @@ class PermissionGroupListController extends ApiController
             ->withCountPermissions()
             ->filter($request->filters())
             ->search($request->search())
-            ->order($request->orderBy('id'), $request->orderDirection('asc'))
+            ->order($request->orderBy('id'), $request->orderDirection())
             ->pagination($request->page(), $request->perPage());
 
         $list->transform(function (PermissionGroup $permissionGroup) {

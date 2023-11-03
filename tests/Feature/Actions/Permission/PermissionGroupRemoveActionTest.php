@@ -36,6 +36,11 @@ class PermissionGroupRemoveActionTest extends TestCase
         $this->seed();
     }
 
+    /**
+     * @throws ModelNotFoundException
+     * @throws ModelDeleteBlockedException
+     * @throws ModelLockedException
+     */
     public function test_execute(): void
     {
         $current = $this->initCurrent(PositionType::admin);
@@ -60,6 +65,10 @@ class PermissionGroupRemoveActionTest extends TestCase
         $this->assertEquals($current->positionId(), $history->position_id);
     }
 
+    /**
+     * @throws ModelDeleteBlockedException
+     * @throws ModelLockedException
+     */
     public function test_execute_not_existing(): void
     {
         $current = $this->initCurrent(PositionType::admin);
@@ -70,6 +79,10 @@ class PermissionGroupRemoveActionTest extends TestCase
         $action->execute($permissionGroup);
     }
 
+    /**
+     * @throws ModelNotFoundException
+     * @throws ModelDeleteBlockedException
+     */
     public function test_execute_locked(): void
     {
         $current = $this->initCurrent(PositionType::admin);
@@ -81,6 +94,10 @@ class PermissionGroupRemoveActionTest extends TestCase
         $action->execute($permissionGroup);
     }
 
+    /**
+     * @throws ModelNotFoundException
+     * @throws ModelLockedException
+     */
     public function test_execute_blocked(): void
     {
         $current = $this->initCurrent(PositionType::admin);

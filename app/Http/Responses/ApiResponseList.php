@@ -47,7 +47,7 @@ class ApiResponseList extends ApiResponse
         } else if ($this->list instanceof Arrayable) {
             $list = array_values($this->list->toArray());
             $pagination = null;
-        } else if (is_array($this->list)) {
+        } else {
             $list = $this->list;
             $pagination = null;
         }

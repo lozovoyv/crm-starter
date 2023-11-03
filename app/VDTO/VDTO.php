@@ -16,7 +16,7 @@ use App\Utils\Translate;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-abstract class VDTO
+abstract class VDTO implements VDTOInterface
 {
     protected array $rules = [];
     protected array $titles = [];

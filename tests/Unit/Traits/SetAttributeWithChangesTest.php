@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of Opxx Starter project
+ *
+ * (c) Viacheslav Lozovoy <vialoz@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Unit\Traits;
@@ -12,12 +21,12 @@ class SetAttributeWithChangesTest extends TestCase
 {
     use SetAttributeWithChanges;
 
-    protected $value = null;
-    protected $exists = false;
+    protected mixed $value = null;
+    protected bool $exists = false;
 
     public function test_set_attribute_with_changes_null(): void
     {
-        $changes = $this->setAttributeWithChanges('value', null, null, null);
+        $changes = $this->setAttributeWithChanges('value', null);
 
         $this->assertNull($changes);
         $this->assertNull($this->value);
@@ -25,7 +34,7 @@ class SetAttributeWithChangesTest extends TestCase
 
     public function test_set_attribute_with_changes_string_no_type(): void
     {
-        $changes = $this->setAttributeWithChanges('value', 'test', null, null);
+        $changes = $this->setAttributeWithChanges('value', 'test');
 
         $this->assertNull($changes);
         $this->assertEquals('test', $this->value);
@@ -34,11 +43,11 @@ class SetAttributeWithChangesTest extends TestCase
     public function test_set_attribute_with_changes_string_type(): void
     {
         /** @var HistoryChange $changes */
-        $changes = $this->setAttributeWithChanges('value', 'test', Casting::string, null);
+        $changes = $this->setAttributeWithChanges('value', 'test', Casting::string);
 
         $this->assertEquals('value', $changes->parameter);
         $this->assertEquals(Casting::string, $changes->type);
-        $this->assertEquals(null, $changes->old);
+        $this->assertNull($changes->old);
         $this->assertEquals('test', $changes->new);
         $this->assertEquals('test', $this->value);
     }

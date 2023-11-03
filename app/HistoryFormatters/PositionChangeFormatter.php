@@ -19,12 +19,12 @@ use App\Models\Users\User;
 
 class PositionChangeFormatter implements FormatterInterface
 {
-    public static function format(HistoryChange $changes): array
+    public static function format(HistoryChange $change): array
     {
         $result = [
-            'parameter' => $changes->parameter,
-            'old' => $changes->old,
-            'new' => $changes->new,
+            'parameter' => $change->parameter,
+            'old' => $change->old,
+            'new' => $change->new,
         ];
 
         switch ($result['parameter']) {

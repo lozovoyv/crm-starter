@@ -10,26 +10,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\API;
+namespace Tests\Feature\Actions\Users;
 
-use App\Http\Responses\ApiResponse;
-use App\Models\Positions\PositionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\CreatesPosition;
+use Tests\Traits\CreatesUser;
 
-class NotFoundControllerTest extends TestCase
+class UserRemoveActionTest extends TestCase
 {
-    use RefreshDatabase;
+    use CreatesUser, CreatesPosition, RefreshDatabase;
 
     protected function afterRefreshingDatabase(): void
     {
         $this->seed();
     }
 
-    public function test_api_not_found_response(): void
-    {
-        $response = $this->apiActingAs(PositionType::admin, [])->get('/api/testing_not_found_method');
-
-        $this->assertEquals(ApiResponse::CODE_NOT_FOUND, $response->status());
-    }
+//    public function test_execute():void
+//    {
+//
+//    }
 }

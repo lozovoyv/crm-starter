@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * This file is part of Opxx Starter project
  *
@@ -9,9 +8,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace App\VDTO;
+declare(strict_types=1);
 
-use Illuminate\Database\Eloquent\Model;
+namespace App\VDTO;
 
 interface VDTOInterface
 {

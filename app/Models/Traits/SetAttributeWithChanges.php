@@ -30,8 +30,7 @@ trait SetAttributeWithChanges
     {
         $oldValue = $this->{$key};
 
-        /** @noinspection TypeUnsafeComparisonInspection */
-        if ($type !== null && $oldValue != $value) {
+        if ($type !== null && $oldValue !== $value) {
 
             $changes = new HistoryChange([
                 'parameter' => $historyKey ?? $key,

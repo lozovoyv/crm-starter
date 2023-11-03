@@ -14,7 +14,6 @@ namespace App\Builders;
 use App\Models\Users\User;
 use App\Utils\Casting;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserBuilder extends Builder
 {
