@@ -22,7 +22,7 @@ use Illuminate\Validation\Rule;
  * @property string|null $description
  * @property array|null $permissions
  */
-class PermissionGroupVDTO extends VDTO implements VDTOInterface
+class PermissionGroupVDTO extends VDTO
 {
     protected array $rules = [
         'name' => 'required',

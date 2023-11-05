@@ -29,7 +29,7 @@ use Illuminate\Validation\Rule;
  * @property bool $clear_password
  * @property string $new_password
  */
-class UserVDTO extends VDTO implements VDTOInterface
+class UserVDTO extends VDTO
 {
     protected array $rules = [
         'lastname' => 'required_without:display_name',
