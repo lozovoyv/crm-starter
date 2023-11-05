@@ -5,10 +5,14 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Tests\Traits\ApiInteractions;
+use Tests\Traits\CreatesApplication;
 use Tests\Traits\CreatesPosition;
 use Tests\Traits\CreatesUser;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, ApiInteractions, CreatesUser, CreatesPosition;
+    use CreatesApplication,
+        ApiInteractions,
+        CreatesUser,
+        CreatesPosition;
 }

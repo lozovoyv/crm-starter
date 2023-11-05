@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace App\Exceptions\Model;
+namespace App\Exceptions;
 
-use App\Exceptions\SystemException;
+use Exception;
 use Throwable;
 
-class ModelException extends SystemException
+class SystemException extends Exception
 {
     public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
     {

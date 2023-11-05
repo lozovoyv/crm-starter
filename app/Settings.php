@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\CastingException;
+use App\Exceptions\SettingsException;
 use App\Utils\Casting;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -87,11 +88,13 @@ class Settings
      * Save settings.
      *
      * @return  void
+     *
+     * @throws SettingsException
      */
     public static function save(): void
     {
         if (self::$loaded === false) {
-            throw new RuntimeException('System settings must be loaded before saving.');
+            throw new SettingsException('exceptions.system.settings_not_loaded');
         }
         $values = [];
         foreach (self::$settings as $key => $value) {

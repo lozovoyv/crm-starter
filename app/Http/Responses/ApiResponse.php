@@ -149,7 +149,7 @@ abstract class ApiResponse implements Responsable
      *
      * @return  ApiResponseNotFound
      */
-    public static function notFound(string $message = 'Не найдено', int $statusCode = self::CODE_NOT_FOUND, array $headers = []): ApiResponseNotFound
+    public static function notFound(string $message = 'responses.not_found', int $statusCode = self::CODE_NOT_FOUND, array $headers = []): ApiResponseNotFound
     {
         return (new ApiResponseNotFound($statusCode, $headers))->message($message);
     }
@@ -176,7 +176,7 @@ abstract class ApiResponse implements Responsable
      *
      * @return  ApiResponseTokenMismatch
      */
-    public static function tokenMismatch(string $message = 'Неверный токен', int $statusCode = self::CODE_TOKEN_MISMATCH, array $headers = []): ApiResponseTokenMismatch
+    public static function tokenMismatch(string $message = 'responses.token_mismatch', int $statusCode = self::CODE_TOKEN_MISMATCH, array $headers = []): ApiResponseTokenMismatch
     {
         return (new ApiResponseTokenMismatch($statusCode, $headers))->message($message);
     }
@@ -190,7 +190,7 @@ abstract class ApiResponse implements Responsable
      *
      * @return  ApiResponseForbidden
      */
-    public static function forbidden(string $message = 'Доступ запрещён', int $statusCode = self::CODE_FORBIDDEN, array $headers = []): ApiResponseForbidden
+    public static function forbidden(string $message = 'responses.forbidden', int $statusCode = self::CODE_FORBIDDEN, array $headers = []): ApiResponseForbidden
     {
         return (new ApiResponseForbidden($statusCode, $headers))->message($message);
     }
@@ -204,7 +204,7 @@ abstract class ApiResponse implements Responsable
      *
      * @return  ApiResponseUnauthenticated
      */
-    public static function unauthenticated(string $message = 'Доступ запрещён', int $statusCode = self::CODE_UNAUTHENTICATED, array $headers = []): ApiResponseUnauthenticated
+    public static function unauthenticated(string $message = 'responses.unauthenticated', int $statusCode = self::CODE_UNAUTHENTICATED, array $headers = []): ApiResponseUnauthenticated
     {
         return (new ApiResponseUnauthenticated($statusCode, $headers))->message($message);
     }

@@ -95,7 +95,10 @@ class Casting
 
         try {
             $casted = match ($type) {
-                self::bool => $value !== null ? ($value ? '1' : '0') : null,
+                self::bool => match ($value) {
+                    null => null,
+                    default => ($value ? '1' : '0'),
+                },
                 self::array => !empty($value) ? json_encode($value, JSON_THROW_ON_ERROR) : null,
                 default => $value !== null && $value !== '' ? (string)$value : null,
             };
