@@ -46,24 +46,24 @@ class UserVDTO extends VDTO
     ];
 
     protected array $titles = [
-        'lastname' => 'Фамилия',
-        'firstname' => 'Имя',
-        'patronymic' => 'Отчество',
-        'display_name' => 'Отображаемое имя',
-        'username' => 'Логин',
-        'phone' => 'Телефон',
-        'status_id' => 'Статус учётной записи',
-        'new_password' => 'Новый пароль',
-        'clear_password' => 'Удалить пароль',
-        'email' => 'Адрес электронной почты',
-        'email_confirmation_need' => 'Запросить подтверждение адреса электронной почты',
+        'lastname' => 'users/user.field_lastname',
+        'firstname' => 'users/user.field_firstname',
+        'patronymic' => 'users/user.field_patronymic',
+        'display_name' => 'users/user.field_display_name',
+        'username' => 'users/user.field_username',
+        'phone' => 'users/user.field_phone',
+        'status_id' => 'users/user.field_status_id',
+        'new_password' => 'users/user.field_new_password',
+        'clear_password' => 'users/user.field_clear_password',
+        'email' => 'users/user.field_email',
+        'email_confirmation_need' => 'users/user.field_email_confirmation_need',
     ];
 
     protected array $messages = [
-        'username.unique' => 'Данный логин уже занят',
-        'email.unique' => 'Данный адрес электронной почты уже используется',
-        'phone.unique' => 'Данный телефон уже используется',
-        'phone.size' => 'Номер телефона некорректно заполнен',
+        'phone.size' => 'users/user.validation_phone_size',
+        'username.unique' => 'users/user.validation_username_unique',
+        'email.unique' => 'users/user.validation_email_unique',
+        'phone.unique' => 'users/user.validation_phone_unique',
     ];
 
     /**
