@@ -46,6 +46,7 @@ class PermissionGroupUpdateActionTest extends TestCase
         $permissionGroup = new PermissionGroup();
 
         // Create new permission group
+
         $vdto = new PermissionGroupVDTO([
             'name' => 'PermissionGroupUpdateActionTest',
             'active' => true,
@@ -59,6 +60,8 @@ class PermissionGroupUpdateActionTest extends TestCase
         $this->assertTrue($permissionGroup->active);
         $this->assertEquals('Description', $permissionGroup->description);
         $this->assertEmpty($permissionGroup->permissions);
+
+        $this->assertEquals(trans('permissions/permission_group.group_created'), $action->getResultMessage());
 
         // Assert history
         $this->assertEquals(1, $permissionGroup->history->count());
@@ -84,6 +87,7 @@ class PermissionGroupUpdateActionTest extends TestCase
         $this->assertNotNull($permissionGroup);
 
         // Update existing permission group
+
         $vdto = new PermissionGroupVDTO([
             'name' => 'PermissionGroupUpdateActionTest',
             'active' => true,
@@ -103,6 +107,8 @@ class PermissionGroupUpdateActionTest extends TestCase
         $this->assertEquals('Description', $permissionGroup->description);
         $this->assertEquals([$permission->id], $permissionGroup->permissions->pluck('id')->toArray());
 
+        $this->assertEquals(trans('permissions/permission_group.group_updated'), $action->getResultMessage());
+
         // Assert history
         $this->assertEquals(2, $permissionGroup->history->count());
         /** @var History|null $history */
@@ -114,6 +120,11 @@ class PermissionGroupUpdateActionTest extends TestCase
             ['parameter' => 'permissions', 'old' => null, 'new' => [$permission->id]],
         ], $history->changes->toArray());
         $this->assertEquals($current->positionId(), $history->position_id);
+
+        // Assert unmodified
+        $action->execute($permissionGroup, $vdto);
+
+        $this->assertEquals(trans('permissions/permission_group.group_not_modified'), $action->getResultMessage());
     }
 
     public function test_execute_locked(): void
