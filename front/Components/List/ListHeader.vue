@@ -100,7 +100,7 @@ function changeOrder(item: HeaderItem): void {
         @include no_selection;
 
         &-actions {
-            width: 70px;
+            width: 42px;
         }
 
         &-inner {
