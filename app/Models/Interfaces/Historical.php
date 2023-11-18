@@ -20,9 +20,9 @@ interface Historical
     /**
      * History entry caption.
      *
-     * @return  string
+     * @return string|null
      */
-    public function historyEntryCaption(): string;
+    public function historyEntryCaption(): ?string;
 
     /**
      * History entry tag.
