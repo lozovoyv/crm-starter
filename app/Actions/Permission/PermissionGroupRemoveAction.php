@@ -38,24 +38,24 @@ class PermissionGroupRemoveAction extends Action
             throw new ModelLockedException('permissions/permission_group.model_locked_exception');
         }
 
-        try {
-            $changes = [
-                new HistoryChange(['parameter' => 'name', 'type' => Casting::string, 'old' => $group->name, 'new' => null]),
-                new HistoryChange(['parameter' => 'active', 'type' => Casting::bool, 'old' => $group->active, 'new' => null]),
-                new HistoryChange(['parameter' => 'description', 'type' => Casting::string, 'old' => $group->description, 'new' => null]),
-                new HistoryChange(['parameter' => 'permissions', 'type' => Casting::array, 'old' => $group->permissions()->pluck('id')->toArray(), 'new' => null]),
-            ];
+        $changes = [
+            new HistoryChange(['parameter' => 'name', 'type' => Casting::string, 'old' => $group->name, 'new' => null]),
+            new HistoryChange(['parameter' => 'active', 'type' => Casting::bool, 'old' => $group->active, 'new' => null]),
+            new HistoryChange(['parameter' => 'description', 'type' => Casting::string, 'old' => $group->description, 'new' => null]),
+            new HistoryChange(['parameter' => 'permissions', 'type' => Casting::array, 'old' => $group->permissions()->pluck('id')->toArray(), 'new' => null]),
+        ];
 
+        // TODO wrap with transaction
+        try {
             $group
                 ->addHistory(HistoryAction::permission_group_deleted, $this->current?->positionId())
                 ->addChanges($changes);
 
             $group->delete();
-
-            $this->resultMessage = 'permissions/permission_group.group_deleted';
-
         } catch (QueryException) {
             throw new ModelDeleteBlockedException('permissions/permission_group.model_delete_blocked_exception');
         }
+
+        $this->resultMessage = 'permissions/permission_group.group_deleted';
     }
 }
